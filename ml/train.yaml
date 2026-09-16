@@ -1,0 +1,38 @@
+# ═══════════════════════════════════════════════════════════════
+# Tier 3 · 오프라인 Autoencoder 학습 설정 (PDF p.9-10)
+#
+# 오프라인 학습과 온라인 추론은 철저히 분리된다.
+# 여기서 학습한 신경망은 ONNX 로 직렬화되어 공유 볼륨에 놓이고,
+# Flink TaskManager 가 이를 임베디드로 적재한다.
+# ═══════════════════════════════════════════════════════════════
+
+# ── 학습 데이터 생성 ──
+# 실제 운영이라면 InfluxDB 의 정상 운전 이력을 끌어오지만,
+# 자립 실행을 위해 동일한 물리 모델로 정상 구간을 합성한다.
+data:
+  warmup_s: 1800          # 초기 과도구간 폐기
+  duration_s: 21600       # 6시간 상당 정상 운전
+  dt_s: 1.0
+  # autopilot 이 설정치를 계속 바꾸므로 태그 간 정상 상관구조가 형성된다.
+  # 이 변동이 없으면 오토인코더가 학습할 구조 자체가 없어져
+  # 단일 태그 Z-Score 와 구별되지 않는다.
+  autopilot: true
+
+# ── 모델 구조: 120 → 64 → 16 → 64 → 120 ──
+model:
+  window_steps: 10        # 슬라이딩 윈도우 길이 (Flink job.properties 와 반드시 일치)
+  hidden: [64, 16]
+  epochs: 60
+  batch_size: 256
+  learning_rate: 0.001
+  val_split: 0.15
+  seed: 42
+
+# ── 이상 판정 임계치 ──
+threshold:
+  percentile: 99.5        # 정상 데이터 재구성 오차의 상위 백분위
+  safety_factor: 1.15     # 오탐 억제 여유
+
+output:
+  model: /opt/models/model.onnx
+  meta: /opt/models/model_meta.json

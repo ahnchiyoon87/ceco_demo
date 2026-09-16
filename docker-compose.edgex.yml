@@ -1,0 +1,216 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Tier 1 · EdgeX Foundry 4.0 — IoT 수집 미들웨어
+#
+#   plant-simulator ──Modbus/TCP──▶ device-modbus ──▶ core-data
+#        ▲                                                │
+#        └────── core-command (Southbound) ◀──────────────┤
+#                                                         ▼
+#                                   app-mqtt-export ──MQTT QoS1──▶ EMQX
+#                                   (Store-and-Forward 활성)
+#
+# ⚠ EdgeX 4.0 은 3.x 와 다릅니다: Consul → core-keeper, Redis → PostgreSQL,
+#   내부 메시지버스 → MQTT(mosquitto).
+#   내부 버스용 mosquitto 를 EMQX 와 분리해 두어야 EMQX 를 정지시켰을 때
+#   Store-and-Forward 만 단독으로 검증됩니다.
+#
+# 전 서비스 profile: edgex  →  COMPOSE_PROFILES=edgex 일 때만 기동
+# ═══════════════════════════════════════════════════════════════════════════
+
+x-edgex-common: &edgex-common
+  networks: [iiot]
+  restart: unless-stopped
+  profiles: [edgex]
+  read_only: true
+  security_opt: [ "no-new-privileges:true" ]
+  user: "2002:2001"
+
+x-edgex-env: &edgex-env
+  EDGEX_SECURITY_SECRET_STORE: "false"
+
+services:
+
+  # ── EdgeX 내부 영속 저장소 ──
+  # 주의: 공통 앵커(read_only + user 2002:2001)를 쓰지 않는다.
+  # postgres 엔트리포인트는 root 로 /run/postgresql 을 만든 뒤 강등되므로
+  # 비루트 사용자로 고정하면 소켓 락파일 생성에 실패한다.
+  edgex-postgres:
+    networks: [iiot]
+    restart: unless-stopped
+    profiles: [edgex]
+    security_opt: [ "no-new-privileges:true" ]
+    image: postgres:16.3-alpine3.20
+    container_name: edgex-postgres
+    hostname: edgex-postgres
+    environment:
+      POSTGRES_DB: edgex_db
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - edgex-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d edgex_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # ── EdgeX 내부 메시지버스 (EMQX 와 의도적으로 분리) ──
+  edgex-mqtt-broker:
+    <<: *edgex-common
+    image: eclipse-mosquitto:2.0.21
+    container_name: edgex-mqtt-broker
+    hostname: edgex-mqtt-broker
+    command: ["/usr/sbin/mosquitto", "-c", "/mosquitto-no-auth.conf"]
+
+  # ── 서비스 레지스트리 / 설정 저장소 (4.0 에서 Consul 을 대체) ──
+  edgex-core-keeper:
+    <<: *edgex-common
+    image: edgexfoundry/core-keeper:${EDGEX_VERSION}
+    container_name: edgex-core-keeper
+    hostname: edgex-core-keeper
+    depends_on:
+      edgex-postgres: { condition: service_healthy }
+      edgex-mqtt-broker: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      DATABASE_HOST: edgex-postgres
+      MESSAGEBUS_AUTHMODE: none
+      MESSAGEBUS_HOST: edgex-mqtt-broker
+      MESSAGEBUS_PORT: "1883"
+      MESSAGEBUS_PROTOCOL: tcp
+      MESSAGEBUS_SECRETNAME: ""
+      MESSAGEBUS_TYPE: mqtt
+      SERVICE_HOST: edgex-core-keeper
+
+  # ── 전 서비스 공통 설정 주입 (1회 실행) ──
+  edgex-common-config:
+    <<: *edgex-common
+    image: edgexfoundry/core-common-config-bootstrapper:${EDGEX_VERSION}
+    container_name: edgex-common-config
+    hostname: edgex-common-config
+    restart: "no"
+    command: ["/core-common-config-bootstrapper", "--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-core-keeper: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      ALL_SERVICES_DATABASE_HOST: edgex-postgres
+      ALL_SERVICES_MESSAGEBUS_HOST: edgex-mqtt-broker
+      ALL_SERVICES_REGISTRY_HOST: edgex-core-keeper
+      APP_SERVICES_CLIENTS_CORE_METADATA_HOST: edgex-core-metadata
+      DEVICE_SERVICES_CLIENTS_CORE_METADATA_HOST: edgex-core-metadata
+      # Store-and-Forward 의 재시도 파라미터는 서비스 private config 가 아니라
+      # 공통 설정(app-services/Writable/StoreAndForward/*)에 존재하므로
+      # 반드시 이 부트스트래퍼에서 주입해야 한다.
+      APP_SERVICES_WRITABLE_STOREANDFORWARD_RETRYINTERVAL: "5s"
+      APP_SERVICES_WRITABLE_STOREANDFORWARD_MAXRETRYCOUNT: "1000"
+
+  edgex-core-metadata:
+    <<: *edgex-common
+    image: edgexfoundry/core-metadata:${EDGEX_VERSION}
+    container_name: edgex-core-metadata
+    hostname: edgex-core-metadata
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-common-config: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      SERVICE_HOST: edgex-core-metadata
+
+  edgex-core-data:
+    <<: *edgex-common
+    image: edgexfoundry/core-data:${EDGEX_VERSION}
+    container_name: edgex-core-data
+    hostname: edgex-core-data
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-common-config: { condition: service_started }
+      edgex-core-metadata: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      SERVICE_HOST: edgex-core-data
+
+  # ── Southbound: SCADA 제어 명령을 Modbus 쓰기로 하달 ──
+  edgex-core-command:
+    <<: *edgex-common
+    image: edgexfoundry/core-command:${EDGEX_VERSION}
+    container_name: edgex-core-command
+    hostname: edgex-core-command
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-common-config: { condition: service_started }
+      edgex-core-metadata: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      SERVICE_HOST: edgex-core-command
+    ports:
+      - "${PORT_EDGEX_COMMAND}:59882"
+
+  # ── 산업 프로토콜 정규화: Modbus 바이너리 → EdgeX JSON 시맨틱 모델 ──
+  edgex-device-modbus:
+    <<: *edgex-common
+    image: edgexfoundry/device-modbus:${EDGEX_VERSION}
+    container_name: edgex-device-modbus
+    hostname: edgex-device-modbus
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-core-data: { condition: service_started }
+      edgex-core-metadata: { condition: service_started }
+      plant-simulator: { condition: service_healthy }
+    environment:
+      <<: *edgex-env
+      SERVICE_HOST: edgex-device-modbus
+      DEVICE_PROFILESDIR: /res/profiles
+      DEVICE_DEVICESDIR: /res/devices
+      DEVICE_UPDATELASTCONNECTED: "true"
+    volumes:
+      - ./edgex/profiles:/res/profiles:ro
+      - ./edgex/devices:/res/devices:ro
+    ports:
+      - "${PORT_EDGEX_MODBUS}:59901"
+
+  # ── 정제 이벤트를 EMQX 로 반출 (Store-and-Forward 로 무손실 보장) ──
+  edgex-app-mqtt-export:
+    <<: *edgex-common
+    image: edgexfoundry/app-service-configurable:${EDGEX_VERSION}
+    container_name: edgex-app-mqtt-export
+    hostname: edgex-app-mqtt-export
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on:
+      edgex-core-data: { condition: service_started }
+      emqx: { condition: service_healthy }
+    environment:
+      <<: *edgex-env
+      EDGEX_PROFILE: mqtt-export
+      SERVICE_HOST: edgex-app-mqtt-export
+      # ── Store-and-Forward: EMQX 단절 시 이벤트를 DB 에 적재 후 순차 재전송 ──
+      #    (PDF p.4 "에지 레벨 로컬 역단절 메커니즘" 구현)
+      WRITABLE_STOREANDFORWARD_ENABLED: "true"
+      # RetryInterval / MaxRetryCount 는 edgex-common-config 에서 주입된다
+      # ── MQTT 반출 ──
+      WRITABLE_PIPELINE_EXECUTIONORDER: "Transform, MQTTExport"
+      WRITABLE_PIPELINE_FUNCTIONS_TRANSFORM_PARAMETERS_TYPE: "json"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_BROKERADDRESS: "tcp://emqx:1883"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_TOPIC: "edgex/telemetry"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_CLIENTID: "edgex-mqtt-export"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_QOS: "1"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_AUTHMODE: "none"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_AUTORECONNECT: "true"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_PERSISTONERROR: "true"
+    ports:
+      - "${PORT_EDGEX_EXPORT}:59704"
+
+  # ── EdgeX 관리 UI (선택) ──
+  edgex-ui:
+    <<: *edgex-common
+    image: edgexfoundry/edgex-ui:${EDGEX_VERSION}
+    container_name: edgex-ui
+    hostname: edgex-ui
+    depends_on:
+      edgex-core-metadata: { condition: service_started }
+    environment:
+      <<: *edgex-env
+      SERVICE_HOST: edgex-ui
+    ports:
+      - "${PORT_EDGEX_UI}:4000"
+
+volumes:
+  edgex-db:

@@ -1,0 +1,305 @@
+"""AR-100 반응기 라인 물리 모델.
+
+질량수지 · 에너지수지 · 헤드스페이스 압력 모델을 1차 오일러 적분으로 푼다.
+모든 파라미터는 plant.yaml 에서 주입되며 이 파일에 하드코딩된 상수는 없다.
+"""
+from __future__ import annotations
+
+import math
+import random
+import time
+from dataclasses import dataclass, field
+
+# 센서 통신 불량을 나타내는 센티널. Telegraf 브리지가 이 값을 걸러내어
+# Kafka 상에 '실제 결측 구간'을 만들고, Flink 가 이를 보간한다.
+BAD_QUALITY = -999999.0
+
+ABS_ZERO_C = 273.15
+ATM_BAR = 1.013
+
+
+@dataclass
+class Fault:
+    """고장 주입 상태.
+
+    타이밍은 벽시계가 아니라 플랜트의 **시뮬레이션 시간**을 기준으로 한다.
+    그래야 1 Hz 실시간 구동과 가속 배속 테스트가 동일하게 재현된다.
+    """
+
+    scenario: str
+    started_at: float
+    expires_at: float
+    magnitude: float = 0.0
+    lag_s: float = 0.0
+    targets: tuple[str, ...] = ()
+    elapsed: float = 0.0
+
+
+class ReactorPlant:
+    def __init__(self, cfg: dict):
+        self.cfg = cfg
+        ph = cfg["physics"]
+        self.p_feed = ph["feed_tank"]
+        self.p_rx = ph["reactor"]
+        self.p_pump = ph["pump"]
+        self.p_valve = ph["valve"]
+        self.p_heater = ph["heater"]
+        self.p_agit = ph["agitator"]
+        self.p_ilk = ph["interlock"]
+        self.p_rxn = ph["reaction"]
+        self.noise = cfg["noise"]
+        # 트랜스미터 하한(LRV): 물리적으로 음수가 불가능한 계측점은 0 에서 클램프
+        self.clamp_lo = {
+            t["name"]: t["clamp_lo"] for t in cfg["tags"] if t.get("clamp_lo") is not None
+        }
+
+        # ── 상태 변수 ──
+        self.feed_vol = self.p_feed["area_m2"] * self.p_feed["height_m"] * 0.70
+        self.rx_vol = self.p_rx["area_m2"] * self.p_rx["height_m"] * 0.55
+        self.temp_c = self.p_rx["ambient_c"] + 30.0
+        self.jacket_c = self.temp_c
+        self.bearing_wear = 0.0
+        # 진동은 전류보다 늦게 반응한다. 전류 상승이 선행하고 진동이 뒤따라야
+        # CEP 의 시간 선후 패턴이 의미를 갖는다 (단순 AND 와 구별됨).
+        self.vib_wear = 0.0
+        self.interlocked = False
+        self.seq = 0
+        self.sim_time = 0.0          # 적분된 시뮬레이션 시각 [s]
+        self.measured_pressure = 0.0  # 인터록이 참조하는 '트랜스미터 지시값' 
+
+        # ── 명령 (Modbus 로부터 매 스캔 갱신) ──
+        self.cmd_pump = True
+        self.cmd_agitator = True
+        self.cmd_heater = True
+        self.sp_pump_speed = 60.0
+        self.sp_valve_open = 45.0
+        self.sp_temp_c = 72.0
+
+        self.faults: dict[str, Fault] = {}
+        self.readings: dict[str, float] = {}
+
+        # ── autopilot 상태 ──
+        self.ap = cfg.get("autopilot", {"enabled": False})
+        self._ap_next = 0.0
+        self._ap_target = {
+            "pump_speed_sp": self.sp_pump_speed,
+            "valve_open_sp": self.sp_valve_open,
+            "temp_sp_c": self.sp_temp_c,
+        }
+        self._manual_until: dict[str, float] = {}
+
+    # ── 운전원 수동 조작 등록 (해당 설정치를 일시적으로 autopilot 에서 제외) ──
+    def note_manual(self, key: str) -> None:
+        hold = float(self.ap.get("hold_after_manual_s", 300))
+        self._manual_until[key] = self.sim_time + hold
+
+    def _autopilot(self, dt_s: float) -> None:
+        if not self.ap.get("enabled"):
+            return
+        if self.sim_time >= self._ap_next:
+            self._ap_next = self.sim_time + float(self.ap["period_s"])
+            for key, (lo, hi) in self.ap["ranges"].items():
+                self._ap_target[key] = random.uniform(lo, hi)
+        step = dt_s / max(float(self.ap["ramp_s"]), 1.0)
+        for key, attr in (
+            ("pump_speed_sp", "sp_pump_speed"),
+            ("valve_open_sp", "sp_valve_open"),
+            ("temp_sp_c", "sp_temp_c"),
+        ):
+            if self.sim_time < self._manual_until.get(key, 0.0):
+                continue
+            cur = getattr(self, attr)
+            tgt = self._ap_target[key]
+            setattr(self, attr, cur + (tgt - cur) * min(step, 1.0))
+
+    # ── 고장 주입 ────────────────────────────────────────────────
+    def inject(self, scenario: str, duration_s: float | None = None) -> Fault:
+        spec = self.cfg["faults"][scenario]
+        dur = duration_s if duration_s is not None else spec["default_duration_s"]
+        f = Fault(
+            scenario=scenario,
+            started_at=self.sim_time,
+            expires_at=self.sim_time + dur,
+            magnitude=float(spec.get("magnitude", 0.0)),
+            lag_s=float(spec.get("lag_s", 0.0)),
+            targets=tuple(spec.get("target", [])),
+        )
+        self.faults[scenario] = f
+        return f
+
+    def clear_faults(self) -> None:
+        self.faults.clear()
+        self.bearing_wear = 0.0
+        self.vib_wear = 0.0
+
+    def _expire_faults(self) -> None:
+        now = self.sim_time
+        for f in self.faults.values():
+            f.elapsed = now - f.started_at
+        for k in [k for k, f in self.faults.items() if f.expires_at <= now]:
+            del self.faults[k]
+            if k == "bearing_wear":
+                self.bearing_wear = 0.0
+                self.vib_wear = 0.0
+
+    # ── 1 스캔 적분 ──────────────────────────────────────────────
+    def step(self, dt_s: float) -> dict[str, float]:
+        self.sim_time += dt_s
+        self._expire_faults()
+        self._autopilot(dt_s)
+        self.seq = (self.seq + 1) & 0xFFFFFFFF
+
+        rx_area = self.p_rx["area_m2"]
+        rx_h = self.p_rx["height_m"]
+        fd_area = self.p_feed["area_m2"]
+        fd_h = self.p_feed["height_m"]
+
+        feed_level_frac = self.feed_vol / (fd_area * fd_h)
+        rx_level_frac = self.rx_vol / (rx_area * rx_h)
+        rx_level_m = rx_level_frac * rx_h
+
+        # ── 고압 인터록 (결정론적 안전 로직, 히스테리시스 적용) ──
+        # 실제 PLC 와 동일하게 물리 진값이 아니라 직전 스캔의 '트랜스미터 지시값'을
+        # 참조한다. 따라서 계기 고장(spike)으로도 트립이 발생한다.
+        press_now = self.measured_pressure or self._pressure(rx_level_frac, self.temp_c)
+        if press_now >= self.p_ilk["pressure_trip_barg"]:
+            self.interlocked = True
+        elif press_now <= self.p_ilk["pressure_reset_barg"]:
+            self.interlocked = False
+        pump_active = self.cmd_pump and not self.interlocked
+
+        # ── 공급 유량 (펌프 특성 × 흡입측 레벨) ──
+        if pump_active and feed_level_frac > 0.02:
+            suction = min(1.0, feed_level_frac / 0.25)
+            q_in = self.p_pump["max_flow_m3h"] * (self.sp_pump_speed / 100.0) * suction
+            q_in *= max(0.35, 1.0 - press_now / 12.0)   # 토출 배압에 의한 유량 저하
+        else:
+            q_in = 0.0
+
+        # ── 배출 유량 (밸브 Cv × 정수두) ──
+        q_out = self.p_valve["cv"] * (self.sp_valve_open / 100.0) * math.sqrt(max(rx_level_m, 0.0))
+
+        # ── 질량수지 ──
+        self.feed_vol += (self.p_feed["refill_m3h"] - q_in) * dt_s / 3600.0
+        self.feed_vol = min(max(self.feed_vol, 0.0), fd_area * fd_h)
+
+        self.rx_vol += (q_in - q_out) * dt_s / 3600.0
+        self.rx_vol = min(max(self.rx_vol, 0.02 * rx_area * rx_h), rx_area * rx_h)
+
+        rx_level_frac = self.rx_vol / (rx_area * rx_h)
+
+        # ── 에너지수지 ──
+        rho = self.p_rx["rho_kg_m3"]
+        cp = self.p_rx["cp_kj_kgk"]
+        mass = max(self.rx_vol * rho, 1.0)
+        ambient = self.p_rx["ambient_c"]
+
+        if self.cmd_heater:
+            err = self.sp_temp_c - self.temp_c
+            duty = min(max(self.p_heater["kp"] * err / 100.0, 0.0), 1.0)
+        else:
+            duty = 0.0
+        q_heat = self.p_heater["max_power_kw"] * duty
+        self.jacket_c += ((self.temp_c + duty * 38.0 + 2.0) - self.jacket_c) * min(1.0, dt_s / 8.0)
+
+        q_loss = self.p_rx["heat_loss_kw_per_k"] * (self.temp_c - ambient)
+        q_feed = (q_in / 3600.0) * rho * cp * (ambient - self.temp_c)
+        self.temp_c += (q_heat - q_loss + q_feed) / (mass * cp) * dt_s
+        self.temp_c = min(max(self.temp_c, ambient), 140.0)
+
+        # ── 베어링 열화 (bearing_wear 고장 주입 시 누적) ──
+        # 전류는 즉시, 진동은 lag_s 경과 후부터 그리고 더 느리게 누적된다.
+        if "bearing_wear" in self.faults:
+            f = self.faults["bearing_wear"]
+            self.bearing_wear = min(1.0, self.bearing_wear + dt_s / 25.0)
+            if f.elapsed >= f.lag_s:
+                self.vib_wear = min(1.0, self.vib_wear + dt_s / 23.0)
+
+        pressure = self._pressure(rx_level_frac, self.temp_c)
+
+        # ── 계측 원값 산출 ──
+        raw = {
+            "LT-101": self.feed_vol / (fd_area * fd_h) * 100.0,
+            "LT-102": rx_level_frac * 100.0,
+            "TT-101": self.temp_c,
+            "TT-102": self.jacket_c,
+            "PT-101": pressure,
+            "FT-101": q_in,
+            "FT-102": q_out,
+            "IT-101": self._pump_current(pump_active, q_in, pressure),
+            "IT-102": self._agitator_current(rx_level_frac),
+            "VT-101": self._vibration(rx_level_frac),
+            "pH-101": self._ph(),
+            "CT-101": 0.0,   # pH 종속 → 아래에서 산출
+        }
+        raw["CT-101"] = (
+            self.p_rxn["conductivity_base"]
+            + self.p_rxn["conductivity_per_ph"] * (raw["pH-101"] - self.p_rxn["ph_setpoint"])
+            + 0.05 * (self.temp_c - 72.0) / 10.0
+        )
+
+        self.readings = {t: self._measure(t, v) for t, v in raw.items()}
+        pt = self.readings["PT-101"]
+        if pt != BAD_QUALITY:
+            self.measured_pressure = pt
+        return self.readings
+
+    # ── 헤드스페이스 압력: 레벨·온도와 물리적으로 결합 ──
+    def _pressure(self, level_frac: float, temp_c: float) -> float:
+        head_frac = max(1.0 - level_frac, 0.05)
+        ref_head = self.p_rx["headspace_ref_frac"]
+        charge = self.p_rx["charge_pressure_bara"]
+        p_abs = charge * (temp_c + ABS_ZERO_C) / (self.p_rx["ambient_c"] + ABS_ZERO_C) * (ref_head / head_frac)
+        p_vap = 0.0061094 * math.exp(17.625 * temp_c / (temp_c + 243.04))
+        return max(p_abs + p_vap - ATM_BAR, 0.0)
+
+    def _pump_current(self, active: bool, q_in: float, pressure: float) -> float:
+        if not active:
+            return 0.02
+        nl = self.p_pump["no_load_current_a"]
+        rated = self.p_pump["rated_current_a"]
+        load = q_in / self.p_pump["max_flow_m3h"]
+        return nl + (rated - nl) * load * (0.62 + 0.38 * min(pressure / 3.0, 1.6))
+
+    def _agitator_current(self, level_frac: float) -> float:
+        if not self.cmd_agitator:
+            return 0.02
+        rated = self.p_agit["rated_current_a"]
+        visc = 1.0 + 0.0045 * (72.0 - self.temp_c)      # 저온일수록 점도 ↑ → 부하 ↑
+        return rated * (0.55 + 0.45 * level_frac) * visc * (1.0 + 0.62 * self.bearing_wear)
+
+    def _vibration(self, level_frac: float) -> float:
+        if not self.cmd_agitator:
+            return 0.03
+        base = self.p_agit["base_vibration_mms"]
+        v = base * (0.82 + 0.30 * level_frac)
+        # 전류 상승이 선행하고 진동은 lag_s 이후 더 느리게 상승
+        # → CEP 의 "A 후 10초 이내 B" 패턴이 실제로 성립한다
+        if self.vib_wear > 0.0:
+            v *= 1.0 + 3.0 * self.vib_wear
+        return v
+
+    def _ph(self) -> float:
+        sp = self.p_rxn["ph_setpoint"]
+        return sp + self.p_rxn["ph_drift_per_degc"] * (self.temp_c - 72.0)
+
+    # ── 계측 단계: 노이즈 + 고장 효과 부착 ──
+    def _measure(self, tag: str, value: float) -> float:
+        for f in self.faults.values():
+            if tag not in f.targets:
+                continue
+            if f.scenario == "dropout":
+                return BAD_QUALITY
+            if f.scenario == "spike":
+                value += f.magnitude
+            elif f.scenario == "noise":
+                value += random.gauss(0.0, self.noise.get(tag, 0.05) * f.magnitude)
+            elif f.scenario == "drift":
+                ramp = min(1.0, f.elapsed / 45.0)
+                # 정상 상태에서 pH↑ ⇒ CT↓ 이지만, 이 고장은 둘을 동시에 상승시켜
+                # 센서 간 상관 구조를 붕괴시킨다. 각 태그는 규격 내에 머무른다.
+                scale = 1.0 if tag == "pH-101" else 1.6
+                value += f.magnitude * ramp * scale
+        value += random.gauss(0.0, self.noise.get(tag, 0.05))
+        lo = self.clamp_lo.get(tag)
+        return value if lo is None else max(value, lo)

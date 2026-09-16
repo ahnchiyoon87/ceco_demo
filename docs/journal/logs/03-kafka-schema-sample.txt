@@ -1,0 +1,62 @@
+===============================================================================
+Kafka 토픽 실제 메시지 샘플
+===============================================================================
+
+[토픽 구성]
+
+$ docker compose up kafka-init
+kafka-init  | Kafka 토픽 초기화...
+kafka-init  |   + sensor.telemetry.raw (파티션 6, 보존 24h)
+kafka-init  |   + sensor.telemetry.clean (파티션 6, 보존 24h)
+kafka-init  |   + sensor.anomaly.score (파티션 3, 보존 24h)
+kafka-init  |   + sensor.alerts (파티션 3, 보존 168h)
+kafka-init  | 완료:
+kafka-init  |   sensor.alerts
+kafka-init  |   sensor.anomaly.score
+kafka-init  |   sensor.telemetry.clean
+kafka-init  |   sensor.telemetry.raw
+
+===============================================================================
+[sensor.telemetry.raw — 무손실 원본]
+
+$ docker exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
+    --bootstrap-server localhost:9092 --topic sensor.telemetry.raw --max-messages 5
+
+{"device":"reactor-line-01","quality":"GOOD","site":"AR-100","tag":"FT-102","ts":1789546028493305900,"value":6.286102}
+{"device":"reactor-line-01","quality":"GOOD","site":"AR-100","tag":"LT-102","ts":1789546028492632000,"value":54.991196}
+{"device":"reactor-line-01","quality":"GOOD","site":"AR-100","tag":"TT-102","ts":1789546028492919000,"value":98.10802}
+{"device":"reactor-line-01","quality":"GOOD","site":"AR-100","tag":"IT-101","ts":1789546028493432800,"value":6.257151}
+{"device":"reactor-line-01","quality":"GOOD","site":"AR-100","tag":"FT-101","ts":1789546028493201400,"value":6.372263}
+
+→ ts 는 나노초(1.79e18). EdgeX origin 을 그대로 보존.
+
+===============================================================================
+[sensor.anomaly.score — Autoencoder 출력]
+
+  오차=0.00841 임계=0.03394 이상=False 추론=0.181ms 기여=CT-101(39%), pH-101(30%), IT-102(15%)
+  오차=0.00629 임계=0.03394 이상=False 추론=0.157ms 기여=CT-101(35%), pH-101(24%), IT-102(22%)
+  오차=0.00701 임계=0.03394 이상=False 추론=0.172ms 기여=CT-101(39%), IT-102(20%), pH-101(20%)
+
+→ 정상 운전 시 is_anomaly=False, 추론 0.16~0.18ms
+
+===============================================================================
+[sensor.alerts — 탐지기별]
+
+  [TIER1_RULE]   PT-101 = 7.493 barg / 규격 [-, 6.0]
+  [TIER1_CEP]    교반기 전류 9.69A (정격 120% 초과) 후 7초 내 진동 7.21mm/s 상회 → 베어링 열화 의심
+  [TIER2_ML]     재구성오차 0.03386 > 임계 0.02913 · 기여 상위: CT-101(52%), pH-101(30%) · 추론 0.15ms
+  [TIER1_ZSCORE] TT-101 z=3.09 (μ=72.319, σ=0.1431, 최근5중 3회 위반)
+
+===============================================================================
+[처리량 — 오프셋 차분 (콘슈머보다 정확)]
+
+$ off(){ docker exec kafka /opt/kafka/bin/kafka-get-offsets.sh \
+          --bootstrap-server localhost:9092 --topic "$1" | awk -F: '{s+=$3} END{print s+0}'; }
+
+  sensor.telemetry.raw     +528건/40초    (13.2/초)
+  sensor.telemetry.clean   +528건/40초    (손실 0)
+  sensor.anomaly.score     +44건/40초     (1.1/초)
+  sensor.alerts            +0건/40초      (정상 운전 오탐 없음)
+
+주의: kafka-console-consumer 로 측정하면 JVM 기동(10초 내외)과
+      백로그 드레인 때문에 과대 측정된다. 실제로 한때 "4.7배" 로 오판했다.

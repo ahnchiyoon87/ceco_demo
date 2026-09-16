@@ -1,0 +1,135 @@
+# ═══════════════════════════════════════════════════════════════
+# AR-100 반응기 라인 — 공정 정의
+# 이 파일만 수정하면 태그·물리파라미터·레지스터맵이 모두 바뀝니다.
+# ═══════════════════════════════════════════════════════════════
+site: AR-100
+device: reactor-line-01
+scan_interval_ms: 1000
+
+# ── 계측 태그 (12점) ───────────────────────────────────────────
+#  hr: float32 가 기록될 홀딩 레지스터 시작 주소 (2 워드 소비)
+tags:
+  - { name: LT-101, hr: 0,  unit: "%",     desc: "원료탱크 레벨",   lsl: 10.0, usl: 95.0, clamp_lo: 0.0 }
+  - { name: LT-102, hr: 2,  unit: "%",     desc: "반응기 레벨",     lsl: 15.0, usl: 90.0, clamp_lo: 0.0 }
+  - { name: TT-101, hr: 4,  unit: "degC",  desc: "반응기 온도",     lsl: 40.0, usl: 95.0 }
+  - { name: TT-102, hr: 6,  unit: "degC",  desc: "재킷 온도",       lsl: null, usl: 125.0 }
+  - { name: PT-101, hr: 8,  unit: "barg",  desc: "반응기 압력",     lsl: null, usl: 6.0, clamp_lo: 0.0 }
+  - { name: FT-101, hr: 10, unit: "m3/h",  desc: "공급 유량",       lsl: null, usl: null, clamp_lo: 0.0 }
+  - { name: FT-102, hr: 12, unit: "m3/h",  desc: "배출 유량",       lsl: null, usl: null, clamp_lo: 0.0 }
+  - { name: IT-101, hr: 14, unit: "A",     desc: "펌프 전류",       lsl: null, usl: 14.0, clamp_lo: 0.0 }
+  - { name: IT-102, hr: 16, unit: "A",     desc: "교반기 전류",     lsl: null, usl: 9.6, clamp_lo: 0.0 }
+  - { name: VT-101, hr: 18, unit: "mm/s",  desc: "교반기 진동",     lsl: null, usl: 7.1, clamp_lo: 0.0 }
+  - { name: pH-101, hr: 20, unit: "pH",    desc: "반응기 pH",       lsl: 6.2,  usl: 8.4, clamp_lo: 0.0 }
+  - { name: CT-101, hr: 22, unit: "mS/cm", desc: "전도도",          lsl: null, usl: null, clamp_lo: 0.0 }
+
+# ── 제어 포인트 (Southbound) ──────────────────────────────────
+commands:
+  coils:
+    pump_run:      { addr: 0,  desc: "P-101 공급펌프 기동" }
+    agitator_run:  { addr: 1,  desc: "M-101 교반기 기동" }
+    heater_enable: { addr: 2,  desc: "HX-101 재킷히터 Enable" }
+    alarm_ack:     { addr: 10, desc: "알람 Acknowledge" }
+    interlock:     { addr: 20, desc: "고압 인터록 발동 (읽기전용)", readonly: true }
+  holding:
+    pump_speed_sp: { addr: 100, desc: "P-101 속도 SP [%]",      min: 0, max: 100, default: 60 }
+    valve_open_sp: { addr: 101, desc: "CV-101 밸브 개도 SP [%]", min: 0, max: 100, default: 45 }
+    temp_sp_x10:   { addr: 102, desc: "반응기 온도 SP [degC*10]", min: 200, max: 1000, default: 720 }
+  # 스캔 시퀀스 카운터 (UINT32, 2워드) — QoS1 중복 진단용
+  sequence: { addr: 200 }
+
+# ── 물리 모델 파라미터 ────────────────────────────────────────
+physics:
+  feed_tank:
+    area_m2: 3.0
+    height_m: 4.0
+    refill_m3h: 8.0          # 원료 자동 보충 (무한 고갈 방지)
+  reactor:
+    area_m2: 2.2
+    height_m: 3.5
+    ambient_c: 22.0
+    headspace_ref_frac: 0.45      # 기준 헤드스페이스 비율
+    charge_pressure_bara: 3.4     # N2 블랭킷 초기 충전압 [bar abs]
+    cp_kj_kgk: 4.18
+    rho_kg_m3: 1000.0
+    heat_loss_kw_per_k: 0.055
+  pump:
+    max_flow_m3h: 14.0
+    rated_current_a: 11.0
+    no_load_current_a: 2.4
+  valve:
+    cv: 10.0
+  heater:
+    max_power_kw: 700.0
+    kp: 45.0                 # 재킷 온도 P 제어 게인 (P-only 이므로 소폭 droop 존재)
+  agitator:
+    rated_current_a: 8.0
+    base_vibration_mms: 2.1
+  # 고압 인터록: PT-101 초과 시 펌프 강제 트립 (결정론적 안전 로직)
+  interlock:
+    pressure_trip_barg: 6.5
+    pressure_reset_barg: 5.2
+  reaction:
+    ph_setpoint: 7.4
+    ph_drift_per_degc: -0.012
+    conductivity_base: 3.4
+    conductivity_per_ph: -0.85
+
+# ── Autopilot: 생산 스케줄에 따른 정상 운전 변동 ──────────────
+# 오토인코더가 학습할 '정상적인 다변량 상관 구조'를 만들기 위해
+# 설정치를 주기적으로 완만히 변경한다. 운전원이 FUXA 에서 수동
+# 조작하면 해당 설정치는 hold_after_manual_s 동안 autopilot 에서 제외된다.
+autopilot:
+  enabled: true
+  period_s: 240              # 설정치 재추첨 주기
+  ramp_s: 45                 # 목표까지 완만히 이동하는 시간
+  hold_after_manual_s: 300   # 수동 조작 후 autopilot 재개까지 대기
+  ranges:
+    pump_speed_sp: [45, 80]
+    valve_open_sp: [35, 60]
+    temp_sp_c:     [64, 80]
+
+# ── 계측 노이즈 (정상 운전) ───────────────────────────────────
+noise:
+  LT-101: 0.05
+  LT-102: 0.05
+  TT-101: 0.06
+  TT-102: 0.09
+  PT-101: 0.012
+  FT-101: 0.04
+  FT-102: 0.04
+  IT-101: 0.03
+  IT-102: 0.025
+  VT-101: 0.06
+  pH-101: 0.006
+  CT-101: 0.012
+
+# ── 고장 주입 시나리오 ────────────────────────────────────────
+# POST /fault {"scenario":"<key>", "duration_s":30}
+faults:
+  dropout:
+    desc: "TT-101 발행 중단 → Flink 결측치 보간(LOCF/선형) 검증"
+    default_duration_s: 15
+    target: [TT-101]
+  spike:
+    desc: "PT-101 순간 과압 → Tier-1 USL 규칙 + 고압 인터록 검증"
+    default_duration_s: 8
+    target: [PT-101]
+    magnitude: 3.6
+  noise:
+    desc: "TT-101 분산 급증 → Tier-1 롤링 Z-Score 검증"
+    default_duration_s: 30
+    target: [TT-101]
+    magnitude: 14.0
+  bearing_wear:
+    desc: "IT-102 상승 후 10초 내 VT-101 상승 → Flink CEP MATCH_RECOGNIZE 검증"
+    default_duration_s: 45
+    target: [IT-102, VT-101]
+    lag_s: 6
+  drift:
+    desc: "pH-101/CT-101 동시 미세 드리프트 → 단일 임계치 무반응, Autoencoder만 탐지"
+    default_duration_s: 90
+    target: [pH-101, CT-101]
+    magnitude: 0.55
+  # netdown 은 시뮬레이터가 아니라 compose 레벨에서 수행합니다 (EMQX 일시정지).
+  #   → make fault-netdown
+  # EdgeX app-service 의 Store-and-Forward 가 Redis 에 적재 후 재전송하는지 검증합니다.

@@ -1,0 +1,56 @@
+$ for img in frangoteam/fuxa:latest emqx/emqx:5.8.6 apache/kafka:3.9.0 \
+             flink:1.20-scala_2.12-java17 influxdb:2.7 grafana/grafana:11.4.0 \
+             telegraf:1.33 edgexfoundry/device-modbus:4.0.0 \
+             edgexfoundry/core-data:4.0.0 danielqsj/kafka-exporter:latest; do
+    printf "%-45s " "$img"
+    docker manifest inspect "$img" | grep -o '"architecture": "[a-z0-9]*"' | sort -u | tr '\n' ' '
+    echo
+  done
+
+frangoteam/fuxa:latest            "architecture": "amd64" "architecture": "arm" "architecture": "arm64" "architecture": "unknown"
+emqx/emqx:5.8.6                   "architecture": "amd64" "architecture": "arm64"
+apache/kafka:3.9.0                "architecture": "amd64" "architecture": "arm64" "architecture": "unknown"
+flink:1.20-scala_2.12-java17      "architecture": "amd64" "architecture": "arm64" "architecture": "unknown"
+influxdb:2.7                      "architecture": "amd64" "architecture": "arm64" "architecture": "unknown"
+grafana/grafana:11.4.0            "architecture": "amd64" "architecture": "arm" "architecture": "arm64"
+telegraf:1.33                     "architecture": "amd64" "architecture": "arm" "architecture": "arm64" "architecture": "unknown"
+edgexfoundry/device-modbus:4.0.0  "architecture": "amd64" "architecture": "arm64"
+edgexfoundry/core-data:4.0.0      "architecture": "amd64" "architecture": "arm64"
+danielqsj/kafka-exporter:latest   "architecture": "amd64" "architecture": "arm64" "architecture": "ppc64le" "architecture": "s390x" "architecture": "unknown"
+
+→ 전 이미지 arm64 지원 확인
+
+===============================================================================
+$ curl -s https://pypi.org/pypi/apache-flink/json | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print('latest:', d['info']['version'])
+for rel in ['2.1.0','2.0.0','1.20.0','1.20.1','1.20.2']:
+    fs=d['releases'].get(rel,[])
+    if not fs: continue
+    print(rel, sorted({f['filename'].split('-')[-1] for f in fs}))
+"
+
+latest: 2.3.0
+2.1.0 ['2.1.0.tar.gz', 'macosx_10_9_x86_64.whl', 'macosx_11_0_arm64.whl', 'manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl']
+2.0.0 ['2.0.0.tar.gz', 'macosx_10_9_x86_64.whl', 'macosx_11_0_arm64.whl', 'manylinux1_x86_64.whl']
+1.20.0 ['1.20.0.tar.gz', 'macosx_10_9_x86_64.whl', 'macosx_11_0_arm64.whl', 'manylinux1_x86_64.whl']
+1.20.1 ['1.20.1.tar.gz', 'macosx_10_9_x86_64.whl', 'macosx_11_0_arm64.whl', 'manylinux1_x86_64.whl']
+1.20.2 ['1.20.2.tar.gz', 'macosx_10_9_x86_64.whl', 'macosx_11_0_arm64.whl', 'manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl']
+
+→ linux-aarch64 휠 없음. macosx_11_0_arm64 는 있으나 리눅스 arm64 컨테이너에서는 사용 불가.
+→ PyFlink 포기, Java + onnxruntime 로 전환 결정
+
+===============================================================================
+$ curl -sL -o ort.jar "https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime/1.20.0/onnxruntime-1.20.0.jar"
+$ unzip -l ort.jar | grep -E "\.(so|dylib|dll)$"
+
+   ai/onnxruntime/native/linux-aarch64/libonnxruntime.so        (13648160 bytes)
+   ai/onnxruntime/native/linux-aarch64/libonnxruntime4j_jni.so    (133256 bytes)
+   ai/onnxruntime/native/linux-x64/libonnxruntime.so            (16551224 bytes)
+   ai/onnxruntime/native/linux-x64/libonnxruntime4j_jni.so         (80160 bytes)
+   ai/onnxruntime/native/osx-aarch64/libonnxruntime.dylib       (25477000 bytes)
+   ai/onnxruntime/native/osx-x64/libonnxruntime.dylib           (28600008 bytes)
+   ai/onnxruntime/native/win-x64/onnxruntime.dll                (11567672 bytes)
+
+→ linux-aarch64 네이티브 포함 확인. arm64 리스크 해소.

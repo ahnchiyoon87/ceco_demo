@@ -1,0 +1,27 @@
+# 데이터소스 이원화 (PDF p.7 · p.11)
+#   InfluxDB  → 공정 히스토리안 (센서 트렌드 · 이상 점수 · 알람 이력)
+#   Prometheus → 파이프라인 인프라 건전성 (컨슈머 랙 · 체크포인트 · 리소스)
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    uid: influx
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: ${INFLUX_ORG}
+      defaultBucket: ${INFLUX_BUCKET}
+      httpMode: POST
+    secureJsonData:
+      token: ${INFLUX_TOKEN}
+
+  - name: Prometheus
+    uid: prom
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    jsonData:
+      timeInterval: 10s

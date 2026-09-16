@@ -1,0 +1,252 @@
+# ⚠ 자동 생성 파일 — simulator/plant.yaml 수정 후 `make regen-edgex` 로 재생성
+name: AR100-Reactor-Line
+manufacturer: uEngine
+model: AR-100
+labels:
+- reactor
+- modbus-tcp
+- iiot-demo
+description: AR-100 반응기 라인 — 계측 12점 + 양방향 제어
+deviceResources:
+- name: LT-101
+  isHidden: true
+  description: 원료탱크 레벨 [%]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 0
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: '%'
+- name: LT-102
+  isHidden: true
+  description: 반응기 레벨 [%]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 2
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: '%'
+- name: TT-101
+  isHidden: true
+  description: 반응기 온도 [degC]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 4
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: degC
+- name: TT-102
+  isHidden: true
+  description: 재킷 온도 [degC]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 6
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: degC
+- name: PT-101
+  isHidden: true
+  description: 반응기 압력 [barg]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 8
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: barg
+- name: FT-101
+  isHidden: true
+  description: 공급 유량 [m3/h]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 10
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: m3/h
+- name: FT-102
+  isHidden: true
+  description: 배출 유량 [m3/h]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 12
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: m3/h
+- name: IT-101
+  isHidden: true
+  description: 펌프 전류 [A]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 14
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: A
+- name: IT-102
+  isHidden: true
+  description: 교반기 전류 [A]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 16
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: A
+- name: VT-101
+  isHidden: true
+  description: 교반기 진동 [mm/s]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 18
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: mm/s
+- name: pH-101
+  isHidden: true
+  description: 반응기 pH [pH]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 20
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: pH
+- name: CT-101
+  isHidden: true
+  description: 전도도 [mS/cm]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 22
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: mS/cm
+- name: SEQ
+  isHidden: true
+  description: 스캔 시퀀스 카운터 (QoS1 중복 진단용)
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 200
+  properties:
+    valueType: Uint32
+    readWrite: R
+- name: PumpRun
+  isHidden: true
+  description: P-101 공급펌프 기동
+  attributes:
+    primaryTable: COILS
+    startingAddress: 0
+  properties:
+    valueType: Bool
+    readWrite: RW
+- name: AgitatorRun
+  isHidden: true
+  description: M-101 교반기 기동
+  attributes:
+    primaryTable: COILS
+    startingAddress: 1
+  properties:
+    valueType: Bool
+    readWrite: RW
+- name: HeaterEnable
+  isHidden: true
+  description: HX-101 재킷히터 Enable
+  attributes:
+    primaryTable: COILS
+    startingAddress: 2
+  properties:
+    valueType: Bool
+    readWrite: RW
+- name: AlarmAck
+  isHidden: true
+  description: 알람 Acknowledge
+  attributes:
+    primaryTable: COILS
+    startingAddress: 10
+  properties:
+    valueType: Bool
+    readWrite: RW
+- name: Interlock
+  isHidden: true
+  description: 고압 인터록 발동 (읽기전용)
+  attributes:
+    primaryTable: COILS
+    startingAddress: 20
+  properties:
+    valueType: Bool
+    readWrite: R
+- name: PumpSpeedSp
+  isHidden: true
+  description: P-101 속도 SP [%]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 100
+  properties:
+    valueType: Int16
+    readWrite: RW
+    minimum: 0
+    maximum: 100
+- name: ValveOpenSp
+  isHidden: true
+  description: CV-101 밸브 개도 SP [%]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 101
+  properties:
+    valueType: Int16
+    readWrite: RW
+    minimum: 0
+    maximum: 100
+- name: TempSpX10
+  isHidden: true
+  description: 반응기 온도 SP [degC*10]
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 102
+  properties:
+    valueType: Int16
+    readWrite: RW
+    minimum: 200
+    maximum: 1000
+    scale: 0.1
+deviceCommands:
+- name: AllSensors
+  readWrite: R
+  isHidden: false
+  resourceOperations:
+  - deviceResource: LT-101
+  - deviceResource: LT-102
+  - deviceResource: TT-101
+  - deviceResource: TT-102
+  - deviceResource: PT-101
+  - deviceResource: FT-101
+  - deviceResource: FT-102
+  - deviceResource: IT-101
+  - deviceResource: IT-102
+  - deviceResource: VT-101
+  - deviceResource: pH-101
+  - deviceResource: CT-101
+- name: Control
+  readWrite: RW
+  isHidden: false
+  resourceOperations:
+  - deviceResource: PumpRun
+  - deviceResource: AgitatorRun
+  - deviceResource: HeaterEnable
+  - deviceResource: AlarmAck
+  - deviceResource: PumpSpeedSp
+  - deviceResource: ValveOpenSp
+  - deviceResource: TempSpX10
+- name: Status
+  readWrite: R
+  isHidden: false
+  resourceOperations:
+  - deviceResource: SEQ
+  - deviceResource: Interlock

@@ -1,0 +1,16 @@
+# 런타임 산출물
+*.log
+.DS_Store
+
+# 로컬 오버라이드 (.env 는 데모 기본값이므로 추적함)
+.env.local
+docker-compose.override.yml
+
+# 빌드 산출물
+flink/onnx-job/target/
+**/__pycache__/
+*.pyc
+
+# 모델은 model-trainer 가 기동 시 생성
+ml/*.onnx
+ml/model_meta.json
