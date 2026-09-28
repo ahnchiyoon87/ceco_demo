@@ -1,0 +1,86 @@
+# V2 온톨로지 — 증상·고장모드·확인 조건·조치 (데이터. 엔진은 조건 언어만 해석한다)
+#
+# 조건 언어 (engine/checks.py)
+#   {tag_last: TAG, cmp: ">"|">="|"<"|"<=", value: N | ref: usl|lsl}   태그 최신값 비교 (ref 는 plant.yaml 규격)
+#   {tag_diff: [A, B], cmp: ..., value: N}                                최신값 A - B 비교
+#   {command: NAME, cmp: ..., value: N | ref_tag: TAG, ref: usl|lsl}       /state 명령값 비교 (bool 은 0/1)
+#   {interlock: false|true}                                               /state 인터록
+#   {excursion: TAG, above: usl, max_s: N}                                관측 창 안에서 usl 초과가 N초 이하로 끝나고 현재 usl 미만
+#   {all: [조건...]}                                                       모두 참
+# 고장모드 판정 순서: requires 거짓 → not_applicable / refutes 중 하나 참 → refuted / supports 모두 참 → supported / 그 외 unknown
+# observable: false 이면 센서로 확인 불가 → unknown (현장 점검 항목)
+
+symptoms:
+  - id: SYM-MIXER-CURRENT-VIBRATION
+    name: 교반기 전류 상승 후 진동 상승
+    on: M-101
+    signatures: [{alert_type: CEP_BEARING, tag: VT-101}, {alert_type: THRESHOLD_USL, tag: IT-102}, {alert_type: THRESHOLD_USL, tag: VT-101}]
+    description: 교반기 모터 전류가 상한을 넘은 뒤 진동이 상한을 넘는 복합 이상. 기계적 부하 증가 또는 회전체 이상 가능성.
+  - id: SYM-REACTOR-OVERTEMP
+    name: 반응기 온도 상한 초과
+    on: R-101
+    signatures: [{alert_type: THRESHOLD_USL, tag: TT-101}, {alert_type: THRESHOLD_USL, tag: TT-102}]
+    description: 반응기 온도가 상한을 넘음. 열 공급 과다 또는 열 제거 부족 가능성.
+
+failure_modes:
+  - id: FM-MIXER-BEARING-WEAR
+    name: 교반기 베어링 마모
+    affects: M-101-BEARING
+    manifests_as: [SYM-MIXER-CURRENT-VIBRATION]
+    observable: false
+    field_check: 베어링 소음·온도·유격 현장 점검
+  - id: FM-MIXER-SHAFT-MISALIGNMENT
+    name: 교반기 축 변형·정렬 불량
+    affects: M-101-SHAFT
+    manifests_as: [SYM-MIXER-CURRENT-VIBRATION]
+    observable: false
+    field_check: 축 정렬·변형 현장 점검
+  - id: FM-MIXER-CRITICAL-SPEED
+    name: 임계 속도 부근 운전
+    affects: M-101
+    manifests_as: [SYM-MIXER-CURRENT-VIBRATION]
+    observable: false
+    field_check: 교반 속도 확인(속도 센서 없음)
+  - id: FM-MIXER-LOW-LEVEL
+    name: 반응기 액위 부족에 따른 교반 부하 변동
+    affects: R-101
+    manifests_as: [SYM-MIXER-CURRENT-VIBRATION]
+    observable: true
+    supports: [{tag_last: LT-102, cmp: "<", ref: lsl}]
+    refutes: [{tag_last: LT-102, cmp: ">=", ref: lsl}]
+  - id: FM-HEATER-STUCK-ON
+    name: 재킷히터 출력 고착(명령과 무관한 열 공급)
+    affects: HX-101
+    manifests_as: [SYM-REACTOR-OVERTEMP]
+    observable: true
+    supports: [{command: heater_enable, cmp: "==", value: 0}, {tag_diff: [TT-102, TT-101], cmp: ">", value: 10}]
+    refutes: [{all: [{command: heater_enable, cmp: "==", value: 0}, {tag_diff: [TT-102, TT-101], cmp: "<=", value: 5}]}]
+  - id: FM-COOLING-LOSS
+    name: 냉각 능력 상실
+    affects: HX-102
+    manifests_as: [SYM-REACTOR-OVERTEMP]
+    observable: true
+    requires: [{command: cooler_enable, cmp: "==", value: 1}]
+    supports: [{tag_diff: [TT-102, TT-101], cmp: ">=", value: 0}]
+    refutes: [{tag_diff: [TT-102, TT-101], cmp: "<", value: -5}]
+  - id: FM-SETPOINT-TOO-HIGH
+    name: 목표 온도 과대 설정
+    affects: R-101
+    manifests_as: [SYM-REACTOR-OVERTEMP]
+    observable: true
+    supports: [{command: temp_sp_c, cmp: ">=", ref_tag: TT-101, ref: usl}]
+    refutes: [{command: temp_sp_c, cmp: "<", ref_tag: TT-101, ref: usl}]
+
+# 조치: 허용 목록(V1 actions.py 와 같은 이름). 전제 조건이 모두 참일 때만 제안. 어느 것도 아니면 inspect_only.
+actions:
+  - id: stop_mixer
+    mitigates: [SYM-MIXER-CURRENT-VIBRATION]
+    preconditions: [{tag_last: IT-102, cmp: ">", ref: usl}, {tag_last: VT-101, cmp: ">", ref: usl},
+                    {command: agitator_run, cmp: "==", value: 1}, {interlock: false}]
+  - id: enable_cooling
+    mitigates: [SYM-REACTOR-OVERTEMP]
+    preconditions: [{tag_last: TT-101, cmp: ">", ref: usl}, {command: cooler_enable, cmp: "==", value: 0}, {interlock: false},
+                    {command: temp_sp_c, cmp: ">=", ref_tag: TT-101, ref: lsl}, {command: temp_sp_c, cmp: "<", ref_tag: TT-101, ref: usl}]
+  - id: inspect_only
+    mitigates: []
+    preconditions: []

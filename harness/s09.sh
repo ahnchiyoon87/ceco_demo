@@ -19,6 +19,8 @@ t0=$(PYTHONUTF8=1 python -c "import json;print(json.load(open('$man',encoding='u
 case "$t0" in ''|*[!0-9.]*) echo "t0 읽기 실패('$t0') — kill 하지 않고 중단"; wait $rp; exit 1;; esac
 log="experiments/$exp/raw/s09_${run}_actions.log"
 wait_until(){ python -c "import time;d=$1-time.time();time.sleep(max(0,d))"; }
-wait_until "$t0+3"; echo "$(date +%s.%N) kill $targets" | tee -a "$log"; docker kill $targets >> "$log" 2>&1
-wait_until "$t0+8"; echo "$(date +%s.%N) start $targets" | tee -a "$log"; docker start $targets >> "$log" 2>&1
+ka=${KILL_AT:-3}; sa=${START_AT:-8}   # 과전류 주입(t0) 기준 초. 진동은 t0+6
+echo "timing kill=+${ka}s start=+${sa}s (vib=+6s)" | tee -a "$log"
+wait_until "$t0+$ka"; echo "$(date +%s.%N) kill $targets" | tee -a "$log"; docker kill $targets >> "$log" 2>&1
+wait_until "$t0+$sa"; echo "$(date +%s.%N) start $targets" | tee -a "$log"; docker start $targets >> "$log" 2>&1
 wait $rp; tail -1 "experiments/$exp/raw/replay_${run}.out"

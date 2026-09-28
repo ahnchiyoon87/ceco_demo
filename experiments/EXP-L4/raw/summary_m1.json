@@ -1,0 +1,41 @@
+{
+ "run": "m1",
+ "alerts": {
+  "python": 263,
+  "flinksql": 263,
+  "flink22": 263
+ },
+ "diff_vs_python": {
+  "flinksql": {
+   "only_flinksql": 0,
+   "only_python": 0
+  },
+  "flink22": {
+   "only_flink22": 0,
+   "only_python": 0
+  }
+ },
+ "resources": {
+  "python": {
+   "n": 28,
+   "mem_avg_mib": 21,
+   "mem_max_mib": 21,
+   "cpu_avg_pct": 1.5,
+   "cpu_max_pct": 3.1
+  },
+  "flinksql": {
+   "n": 28,
+   "mem_avg_mib": 1193,
+   "mem_max_mib": 1236,
+   "cpu_avg_pct": 31.6,
+   "cpu_max_pct": 81.9
+  },
+  "flink22": {
+   "n": 28,
+   "mem_avg_mib": 1264,
+   "mem_max_mib": 1301,
+   "cpu_avg_pct": 25.9,
+   "cpu_max_pct": 85.7
+  }
+ }
+}

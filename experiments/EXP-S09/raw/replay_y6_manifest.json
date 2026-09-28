@@ -1,0 +1,52 @@
+{
+ "exp": "EXP-S09",
+ "run": "y6",
+ "token": "92c74",
+ "t0_wall_ms": 1790601202495,
+ "topic": "exp.l4.raw",
+ "seed": 20260928,
+ "repeat": 3,
+ "jitter": false,
+ "cases": "S09",
+ "background": "synthetic (plant.yaml 규격·노이즈 기반, 실측 아님)",
+ "normal": {
+  "IT-102": [
+   7.0,
+   0.025
+  ],
+  "VT-101": [
+   2.1,
+   0.06
+  ],
+  "TT-101": [
+   72.0,
+   0.06
+  ]
+ },
+ "high": {
+  "IT-102": 9.9,
+  "VT-101": 7.5,
+  "TT-101": 96.0
+ },
+ "window_s": 10,
+ "watermark_s": 5,
+ "t0_event_ns": 1790601224495773440,
+ "records": 342,
+ "expected": {
+  "y6.92c74-S09-1": {
+   "case": "S09",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "y6.92c74-S09-2": {
+   "case": "S09",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "y6.92c74-S09-3": {
+   "case": "S09",
+   "expected_cep": 1,
+   "lag_s": null
+  }
+ }
+}

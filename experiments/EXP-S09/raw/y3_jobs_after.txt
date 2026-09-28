@@ -1,0 +1,1 @@
+{'AR100-Tier1-Threshold': 'RUNNING', 'AR100-Tier1-ZScore': 'RUNNING', 'AR100-Tier1-CEP': 'RUNNING'}

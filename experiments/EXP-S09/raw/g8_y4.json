@@ -1,0 +1,20 @@
+{
+ "run": "y4",
+ "killed": "flink22",
+ "control": "python",
+ "alerts_killed": 18,
+ "alerts_control": 15,
+ "duplicates": 3,
+ "lost_vs_control": 0,
+ "extra_vs_control": 3,
+ "types_killed": {
+  "THRESHOLD_USL": 9,
+  "CEP_BEARING": 3,
+  "ZSCORE": 6
+ },
+ "types_control": {
+  "CEP_BEARING": 3,
+  "ZSCORE": 6,
+  "THRESHOLD_USL": 6
+ }
+}
