@@ -47,6 +47,8 @@ def main():
     ap.add_argument("--scenario", default="spike")
     ap.add_argument("--quiet-s", type=float, default=6.0)
     ap.add_argument("--timeout-s", type=float, default=60.0)
+    ap.add_argument("--fault-duration", type=float, default=None, help="스파이크 지속(시뮬레이터 초). 지연 측정값에 영향 없음, 회차 단축용")
+    ap.add_argument("--incident-api", default=None, help="AI 사건 목록 API(선택): 새 사건 생성 시각을 'incident' 지점으로 기록")
     a = ap.parse_args()
     raw = pathlib.Path(f"/experiments/{a.exp}/raw")
     raw.mkdir(parents=True, exist_ok=True)
@@ -83,7 +85,23 @@ def main():
         threading.Thread(target=kloop, daemon=True).start()
     time.sleep(5)
 
-    points = ([f"kafka:{a.kafka_topic}"] if a.kafka_topic else []) + [f"mqtt:{t}" for t in topics]
+    points = ([f"kafka:{a.kafka_topic}"] if a.kafka_topic else []) + [f"mqtt:{t}" for t in topics] + (["incident"] if a.incident_api else [])
+    if a.incident_api:
+        seen = {i["id"] for i in http(a.incident_api)["items"]}
+
+        def iloop():
+            while True:
+                try:
+                    for i in http(a.incident_api)["items"]:
+                        if i["id"] not in seen:
+                            seen.add(i["id"])
+                            if a.tag in json.dumps(i["alarm"]) and a.match in json.dumps(i["alarm"]):
+                                with lock:
+                                    events.append(("incident", time.time() * 1000))
+                except Exception:
+                    pass
+                time.sleep(0.2)
+        threading.Thread(target=iloop, daemon=True).start()
     reps = []
     for i in range(a.reps):
         http(a.sim + "/fault/clear", {})
@@ -97,7 +115,7 @@ def main():
                 break
             time.sleep(0.5)
         t0 = time.time() * 1000
-        http(a.sim + "/fault", {"scenario": a.scenario})
+        http(a.sim + "/fault", {"scenario": a.scenario} | ({"duration_s": a.fault_duration} if a.fault_duration else {}))
         got = {}
         while time.time() * 1000 - t0 < a.timeout_s * 1000 and len(got) < len(points):
             with lock:
