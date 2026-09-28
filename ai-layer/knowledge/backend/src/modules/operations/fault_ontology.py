@@ -34,6 +34,7 @@ def trace(site, device, sigs):
         MATCH (sym)-[:OBSERVED_ON]->(asset:Asset {site:$site, device:$device})
         MATCH (fm:FailureMode)-[:MANIFESTS_AS]->(sym)
         RETURN sym.symptom_id AS symptom, sym.name AS symptom_name, asset.name AS asset,
+          COLLECT { MATCH (sym)-[:INVESTIGATED_BY]->(d:DocumentSection) RETURN d.document_id + '#' + d.section_key } AS investigation,
           fm.failure_mode_id AS failure_mode, fm.name AS name,
           COLLECT { MATCH (fm)-[:AFFECTS]->(t) RETURN t.name } AS affects,
           COLLECT { MATCH (fm)-[:HAS_CAUSE]->(c:Cause) RETURN c.name } AS causes,
@@ -108,7 +109,7 @@ def index_sections():
 
 RETRIEVAL_QUERY = """
 WITH node, score
-OPTIONAL MATCH p = (node)<-[:DOCUMENTED_IN|PROCEDURE]-(x)-[:MANIFESTS_AS|MITIGATES*0..1]->(sym:Symptom)
+OPTIONAL MATCH p = (node)<-[:DOCUMENTED_IN|PROCEDURE|INVESTIGATED_BY]-(x)-[:MANIFESTS_AS|MITIGATES*0..1]->(sym:Symptom)
 WHERE sym.symptom_id IN $symptoms
 RETURN node.document_id + '#' + node.section_key AS section, node.name AS heading,
        node.content AS content, score, count(p) > 0 AS graph_linked

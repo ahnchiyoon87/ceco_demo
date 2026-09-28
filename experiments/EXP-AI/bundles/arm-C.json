@@ -604,6 +604,16 @@
       "type": "DOCUMENTED_IN"
     },
     {
+      "from_id": "v2/symptom/SYM-MIXER-CURRENT-VIBRATION",
+      "to_id": "AR100-MIXER-RESPONSE/section/1",
+      "type": "INVESTIGATED_BY"
+    },
+    {
+      "from_id": "v2/symptom/SYM-MIXER-CURRENT-VIBRATION",
+      "to_id": "AR100-MIXER-RESPONSE/section/2",
+      "type": "INVESTIGATED_BY"
+    },
+    {
       "from_id": "v2/signature/CEP_BEARING/VT-101",
       "to_id": "AR-100/reactor-line-01/sensor/VT-101",
       "type": "ON_SENSOR"
@@ -642,6 +652,16 @@
       "from_id": "v2/symptom/SYM-REACTOR-OVERTEMP",
       "to_id": "AR100-FAILURE-MODES/section/2",
       "type": "DOCUMENTED_IN"
+    },
+    {
+      "from_id": "v2/symptom/SYM-REACTOR-OVERTEMP",
+      "to_id": "AR100-THERMAL-RESPONSE/section/1",
+      "type": "INVESTIGATED_BY"
+    },
+    {
+      "from_id": "v2/symptom/SYM-REACTOR-OVERTEMP",
+      "to_id": "AR100-THERMAL-RESPONSE/section/2",
+      "type": "INVESTIGATED_BY"
     },
     {
       "from_id": "v2/signature/THRESHOLD_USL/TT-101",

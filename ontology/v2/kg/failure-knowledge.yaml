@@ -1,7 +1,7 @@
 # V2 고장 지식 그래프 데이터 — 증상 → 고장모드 → 원인 → 확인 관측·조치 절
 # 새 고장 유형은 이 파일(또는 같은 폴더의 다른 *.yaml)과 knowledge-docs 문서만 추가한다. 코드는 바꾸지 않는다.
 # 판정 규칙이 아니다: check.text 는 LLM 이 읽는 근거 설명이며 코드가 평가하지 않는다(PROTOCOL.md §2).
-# section 은 "문서ID#절" — 절은 제목 앞 번호(있으면) 또는 제목을 '-'로 이은 이름.
+# investigation: 증상의 조사 절차 절(확인 순서). section 은 "문서ID#절" — 절은 제목 앞 번호(있으면) 또는 제목을 '-'로 이은 이름.
 
 components:
   - {id: M-101-BEARING, name: 교반기 베어링, part_of: M-101}
@@ -15,11 +15,13 @@ symptoms:
     observed_on: M-101
     signatures: [{alert_type: CEP_BEARING, tag: VT-101}, {alert_type: THRESHOLD_USL, tag: IT-102}, {alert_type: THRESHOLD_USL, tag: VT-101}]
     section: AR100-FAILURE-MODES#1
+    investigation: [AR100-MIXER-RESPONSE#1, AR100-MIXER-RESPONSE#2]
   - id: SYM-REACTOR-OVERTEMP
     name: 반응기 온도 상한 초과
     observed_on: R-101
     signatures: [{alert_type: THRESHOLD_USL, tag: TT-101}, {alert_type: THRESHOLD_USL, tag: TT-102}]
     section: AR100-FAILURE-MODES#2
+    investigation: [AR100-THERMAL-RESPONSE#적용-근거와-범위, AR100-THERMAL-RESPONSE#조사와-제안]
 
 failure_modes:
   - id: FM-MIXER-BEARING-WEAR

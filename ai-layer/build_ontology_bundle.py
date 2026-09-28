@@ -147,6 +147,8 @@ def arm_c():
         sid = batch.node(f"v2/symptom/{s['id']}", "Symptom", {"symptom_id": s["id"], "name": s["name"]})
         batch.rel(sid, batch.asset(s["observed_on"]), "OBSERVED_ON")
         batch.rel(sid, batch.section(s["section"]), "DOCUMENTED_IN")
+        for ref in s.get("investigation", []):
+            batch.rel(sid, batch.section(ref), "INVESTIGATED_BY")
         for sig in s["signatures"]:
             gid = batch.node(f"v2/signature/{sig['alert_type']}/{sig['tag']}", "AlarmSignature",
                              {"alert_type": sig["alert_type"], "tag": sig["tag"]})
