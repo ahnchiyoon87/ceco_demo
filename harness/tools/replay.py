@@ -43,6 +43,8 @@ def cases():
         ("S07", "policy", [(0, 0, "IT-102", HIGH_IT), (6, WM + 3, "VT-101", HIGH_VT)], 1),
         ("S08a", 1, [(0, 0, "IT-102", HIGH_IT), (6, 0, "VT-101", HIGH_VT)], 2),
         ("S08b", 1, [(0, 0, "IT-102", HIGH_IT), (6, 0, "VT-101", HIGH_VT)], 1),  # 배경 IT-102 3점 누락
+        # S09: S04 와 같은 패턴. 처리기 kill/start 는 harness/s09.sh 가 manifest 의 t0_event_ns 기준으로 수행
+        ("S09", 1, [(0, 0, "IT-102", HIGH_IT), (6, 0, "VT-101", HIGH_VT)], 1),
     ]
     return lst
 
@@ -54,6 +56,8 @@ def main():
     ap.add_argument("--topic", default="exp.l4.raw")
     ap.add_argument("--repeat", type=int, default=C["repeat"])
     ap.add_argument("--seed", type=int, default=20260928)
+    ap.add_argument("--cases", default="S02,S04,S05,S06a,S06b,S07,S08a,S08b",
+                    help="쉼표 구분 케이스 이름 (S09 는 s09.sh 와 함께만 사용)")
     ap.add_argument("--require-jobs", type=int, default=0,
                     help="FLINK_REST 의 RUNNING 잡이 이 수 이상이고 비정상 잡이 없을 때만 발행 (0=점검 안 함)")
     a = ap.parse_args()
@@ -73,7 +77,8 @@ def main():
     plan = []   # (emit_at_wall, record)
     expected = {}
     last = 0.0
-    for name, exp_count, events, dup in cases():
+    wanted = set(a.cases.split(","))
+    for name, exp_count, events, dup in [c for c in cases() if c[0] in wanted]:
         for rep in range(1, a.repeat + 1):
             device = f"{a.run}-{name}-{rep}"
             expected[device] = {"case": name, "expected_cep": exp_count}

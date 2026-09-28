@@ -1,0 +1,50 @@
+{
+ "exp": "EXP-S09",
+ "run": "r5",
+ "alerts_topic": "exp.l4.alerts.python",
+ "pass": 0,
+ "fail": 3,
+ "record": [],
+ "cep_latency_ms": {
+  "n": 0,
+  "p50": null,
+  "p95": null,
+  "max": null,
+  "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+ },
+ "rows": [
+  {
+   "device": "r5-S09-1",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "FAIL"
+  },
+  {
+   "device": "r5-S09-2",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "FAIL"
+  },
+  {
+   "device": "r5-S09-3",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 1,
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "FAIL"
+  }
+ ]
+}

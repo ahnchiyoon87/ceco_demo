@@ -1,0 +1,110 @@
+# L4 비교 벤치. 원본 V1·실험 스택과 네트워크·볼륨·포트를 공유하지 않는다(호스트 포트 없음).
+#   python harness/l4bench/prepare.py
+#   docker compose -f harness/l4bench/compose.yml up -d --build
+#   docker compose -f harness/l4bench/compose.yml run --rm submit-flinksql
+name: l4bench
+
+x-flink: &flink
+  image: iiot/flink-onnx:1.0          # V1 과 같은 이미지
+  environment:
+    FLINK_PROPERTIES: "jobmanager.rpc.address: flink-jobmanager"
+  volumes:
+    - ./generated/config.yaml:/opt/flink/conf/config.yaml:ro
+    - ./generated/sql:/opt/flink/sql:ro
+
+services:
+  kafka:
+    image: apache/kafka:3.9.0         # V1 과 같은 버전·KRaft 단일 노드 설정
+    hostname: kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: "-Xmx384m -Xms384m"   # 벤치 PC 메모리 여유 때문에 축소
+      CLUSTER_ID: l4bench-kraft-cluster
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  kafka-init:
+    image: apache/kafka:3.9.0
+    depends_on: {kafka: {condition: service_healthy}}
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    # V1 과 같은 파티션 수: raw 6, alerts 3
+    command:
+      - |
+        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
+            --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1
+        done
+
+  flink-jobmanager:
+    <<: *flink
+    hostname: flink-jobmanager
+    command: jobmanager
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  flink-taskmanager:
+    <<: *flink
+    hostname: flink-taskmanager
+    command: taskmanager
+    depends_on: {flink-jobmanager: {condition: service_healthy}}
+
+  # EXP-113 후보: Python 스트림 서비스 (profile python)
+  l4-python:
+    build: ../../candidates/l4-python
+    profiles: [python]
+    depends_on: {kafka-init: {condition: service_completed_successfully}}
+    environment:
+      BOOTSTRAP: kafka:9092
+      TAG_LIMITS: /app/tag_limits.csv
+    volumes:
+      - ../../flink/sql/tag_limits.csv:/app/tag_limits.csv:ro   # V1 과 같은 규격 파일
+      - l4py-state:/state                                       # EXP-113b 재시작 스냅샷
+
+  # V1 submit-jobs.sh 와 같은 방식: 01~04 SQL 을 합쳐 sql-client 로 제출 (ONNX 잡은 L4 규칙 비교 범위 밖)
+  submit-flinksql:
+    image: iiot/flink-onnx:1.0
+    profiles: [tools]
+    depends_on:
+      flink-jobmanager: {condition: service_healthy}
+      kafka-init: {condition: service_completed_successfully}
+    volumes:
+      - ./generated/client-config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generated/sql:/opt/flink/sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
+        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+
+  tools:
+    build: ../tools
+    profiles: [tools]
+    depends_on: {kafka-init: {condition: service_completed_successfully}}
+    volumes:
+      - ../..:/repo:ro
+      - ../../experiments:/experiments
+    environment:
+      BOOTSTRAP: kafka:9092
+      FLINK_REST: http://flink-jobmanager:8081
+
+volumes:
+  l4py-state:
