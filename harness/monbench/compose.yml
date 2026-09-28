@@ -1,0 +1,156 @@
+# 운영 감시 비교 벤치 (EXP-MON, CANDIDATES §8). 이 파일만 쓰면 "단독 모드"(벤치 합성 대상만).
+# 전체 스택 모드는 compose.rot.yml 을 겹쳐 rot-iiot 네트워크에 읽기로(스크레이프만) 붙는다(09-29 결정 3).
+#   harness/monbench/stage2.sh <profile>                 # MODE=standalone(기본)
+#   MODE=rot FORCE=1 harness/monbench/stage2.sh <profile> # V1 과 같은 대상
+# 자원 한도 없음(09-29 결정 I5): 실제 사용량이 ③ 효율 측정값. 공정성은 같은 호스트에서 벤치 하나씩.
+# 호스트 포트 없음. rot 컨테이너를 멈추거나 바꾸지 않는다(E11 은 벤치 자체 대상 mon-victim·mon-detector 로).
+# 이름 충돌 방지: 벤치 서비스는 mon-* 별칭만(rot-iiot 에 prometheus·alertmanager·grafana 가 이미 있음).
+name: monbench
+
+networks:
+  mon: {}
+
+volumes:
+  prom-data:
+  vm-data:
+  grafana-data:
+
+x-prom-cmd: &prom-cmd                     # V1 과 같은 플래그
+  - --config.file=/etc/prometheus/prometheus.yml
+  - --storage.tsdb.path=/prometheus
+  - --storage.tsdb.retention.time=7d
+  - --web.enable-lifecycle
+
+# MON_PROM_CFG = prometheus.{standalone|rot}.{v1|v2}.yml (stage2.sh 가 고른다. v1 프로파일은 항상 v1)
+x-prom-vol: &prom-vol
+  - ./conf/${MON_PROM_CFG:-prometheus.standalone.v1.yml}:/etc/prometheus/prometheus.yml:ro
+  - ../../prometheus/rules.yml:/etc/prometheus/rules.yml:ro      # V1 규칙 파일 그대로
+  - ./conf/rules.v2.yml:/etc/prometheus/rules.v2.yml:ro          # v2 설정일 때만 rule_files 에 올라간다
+  - prom-data:/prometheus
+
+x-am: &am
+  networks: {mon: {aliases: [mon-am]}}
+  command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager"]
+  volumes: [./conf/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro]
+
+services:
+  # ── 기준 버전(V1): 설정·규칙 V1 그대로 ──
+  prom-v1:
+    profiles: [v1]
+    image: prom/prometheus:v3.1.0
+    networks: {mon: {aliases: [mon-prom]}}
+    command: *prom-cmd
+    volumes: *prom-vol
+  am-v1:
+    <<: *am
+    profiles: [v1]
+    image: prom/alertmanager:v0.28.0
+
+  # ── 같은 제품 최신 (v1 규칙 / v2 규칙은 stage2.sh 의 프로파일 prom315-v2) ──
+  prom315:
+    profiles: [prom315]
+    image: prom/prometheus:v3.15.0
+    networks: {mon: {aliases: [mon-prom]}}
+    command: *prom-cmd
+    volumes: *prom-vol
+  prom313:                                # LTS(지원 2027-07-31)
+    profiles: [prom313]
+    image: prom/prometheus:v3.13.3
+    networks: {mon: {aliases: [mon-prom]}}
+    command: *prom-cmd
+    volumes: *prom-vol
+  am034:
+    <<: *am
+    profiles: [prom315, prom313, vm]
+    image: prom/alertmanager:v0.34.1
+
+  # ── VictoriaMetrics single + vmalert ──
+  vm:
+    profiles: [vm]
+    image: victoriametrics/victoria-metrics:v1.153.0
+    networks: {mon: {aliases: [mon-vm, mon-prom]}}   # Grafana 의 Prometheus 데이터소스가 그대로 붙도록 mon-prom 별칭도
+    command: ["-storageDataPath=/vm", "-retentionPeriod=7d", "-promscrape.config=/etc/vm-scrape.yml", "-httpListenAddr=:9090"]
+    volumes: ["./conf/vm-scrape.${MON_MODE:-standalone}.yml:/etc/vm-scrape.yml:ro", "vm-data:/vm"]
+  vmalert:
+    profiles: [vm]
+    image: victoriametrics/vmalert:v1.153.0
+    networks: [mon]
+    command: ["-datasource.url=http://mon-vm:9090", "-notifier.url=http://mon-am:9093", "-rule=/etc/rules/*.yml",
+              "-evaluationInterval=10s", "-remoteWrite.url=http://mon-vm:9090", "-remoteRead.url=http://mon-vm:9090"]
+    volumes:
+      - ../../prometheus/rules.yml:/etc/rules/v1.yml:ro
+      - ./conf/${MON_VM_V2:-rules.empty.yml}:/etc/rules/v2.yml:ro   # vm-v2 일 때 rules.v2.yml
+
+  # ── Grafana(같은 제품 최신 13.x) — 기준(11.4.0)과 같은 프로비저닝. InfluxDB 패널은 전체 스택 모드에서만 의미 ──
+  grafana-v1:
+    profiles: [grafana-v1]
+    image: grafana/grafana:11.4.0
+    networks: [mon]
+    env_file: [../../.env]                 # INFLUX_ORG·INFLUX_BUCKET·INFLUX_TOKEN(값은 출력하지 않음)
+    environment: &gf-env
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: bench-admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"     # V1 과 같음(익명 Viewer) — ① 기본 보안 점검 항목으로 기록
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes: &gf-vol
+      - ./conf/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ../../grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../../grafana/dashboards:/var/lib/grafana/dashboards:ro
+  grafana13:
+    profiles: [grafana13]
+    image: grafana/grafana:13.2.2           # AGPL-3.0 ⚠
+    networks: [mon]
+    env_file: [../../.env]
+    environment: *gf-env
+    volumes: *gf-vol
+
+  # ── 수집기 후보(같은 제품 최신) ──
+  cadvisor:
+    profiles: [exporters]
+    image: ghcr.io/google/cadvisor:v0.60.6
+    networks: {mon: {aliases: [mon-cadvisor]}}
+    privileged: true
+    volumes:                              # V1 cadvisor 와 같은 마운트
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+  kafka-exporter:                         # kafka 대상이 있는 전체 스택 모드에서만 up
+    profiles: [exporters]
+    image: danielqsj/kafka-exporter:v1.10.0
+    networks: {mon: {aliases: [mon-kafka-exporter]}}
+    command: ["--kafka.server=kafka:9092"]
+
+  # ── 벤치 보조(합성 대상) ──
+  victim:                                 # E11 ①: 벤치가 stop/start 하는 대상(컨테이너 정지 탐지)
+    profiles: [v1, prom315, prom313, vm]
+    image: busybox:1.37.0
+    networks: {mon: {aliases: [mon-victim]}}
+    command: ["httpd", "-f", "-p", "8080", "-h", "/www"]
+    volumes: [./conf/victim:/www:ro]
+  detector:                               # E11 ②: Flink JobManager 지표 흉내 — stage2.sh 가 실행 잡 수를 4 → 0 으로 바꾼다
+    profiles: [v1, prom315, prom313, vm]
+    image: busybox:1.37.0
+    networks: {mon: {aliases: [mon-detector]}}
+    command: ["httpd", "-f", "-p", "8080", "-h", "/www"]
+    volumes: [../../experiments/EXP-MON/raw/detector_www:/www:ro]
+  sink:                                   # Alertmanager 웹훅 수신 기록
+    profiles: [v1, prom315, prom313, vm]
+    build: ../benchcommon
+    image: bench-client:1.0
+    networks: {mon: {aliases: [mon-sink]}}
+    environment: {PYTHONUTF8: "1", SINK_OUT: "/experiments/EXP-MON/raw/sink_${MON_PROFILE:-unset}.jsonl"}
+    command: ["python", "/repo/harness/monbench/mon_sink.py"]
+    volumes: ["../..:/repo:ro", "../../experiments:/experiments"]
+  client:
+    profiles: [tools]
+    build: ../benchcommon
+    image: bench-client:1.0
+    networks: [mon]
+    environment:
+      PYTHONUTF8: "1"
+      BENCH_GUARD_FORCED: ${BENCH_GUARD_FORCED:-0}
+      MON_MODE: ${MON_MODE:-standalone}
+      MON_PROM_CFG: ${MON_PROM_CFG:-prometheus.standalone.v1.yml}
+    volumes: ["../..:/repo:ro", "../../experiments:/experiments"]

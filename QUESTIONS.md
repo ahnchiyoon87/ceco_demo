@@ -35,7 +35,7 @@
 |---|---|---|---|
 | I1 | V1 위치 | 확정 | 원본 `D:\work\study\lecture-iiot-scada`(수정 금지) · 실험 `D:\work\study\scada-rotation`(브랜치 `exp/stack-rotation-202609`, 태그 `v1-original`) · 격리 실행 `.env.rotation`(프로젝트 `rot-iiot`, `rot-ai`) |
 | I2~I4 | CEP 창·판정값·워터마크 | 확정 | N=10초, IT-102>9.6A, VT-101>7.1mm/s, 워터마크 5초 (`harness/V1_FACTS.md`) |
-| I5 | 공통 리소스 제한 | 미정 | 벤치마다 같은 조건. 무거운 측정은 한 번에 하나 |
+| I5 | 공통 리소스 제한 | 확정(#79) | 컨테이너에 인위적 제한 없음(실사용량이 ③ 효율의 측정값). 한 번에 벤치 하나, 측정 중 다른 벤치·스택 없음, 같은 호스트(Docker VM 7.6GB·12 CPU) |
 | I6 | 유실·중복 허용 | 확정 | 기준 버전 이하(§1 ②) |
 | I7 | 판정 규칙 | 확정 | §1 |
 | I8 | LLM | 확정 | LiteLLM Cloud Run `knu-litellm`, 별칭 `coding`(`ai-layer/.env.local`, 커밋·출력 금지) |

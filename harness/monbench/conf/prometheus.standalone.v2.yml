@@ -1,0 +1,41 @@
+# mon_prepare.py 가 생성(손으로 고치지 말 것). V1 과 차이: alertmanager=mon-am, 벤치 잡 5개.
+# 단독 모드: V1 대상 없이 벤치 합성 대상만(규칙 적재·발화·E11·자원). V1 잡은 prometheus 자신만.
+# 규칙: V1 rules.yml + V2 개선 후보 conf/rules.v2.yml(탐지 잡 0개).
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  external_labels:
+    pipeline: ar100-iiot
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - mon-am:9093
+rule_files:
+- /etc/prometheus/rules.yml
+- /etc/prometheus/rules.v2.yml
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - targets:
+    - localhost:9090
+- job_name: synthetic-down
+  static_configs:
+  - targets:
+    - mon-nonexistent:9999
+- job_name: victim
+  static_configs:
+  - targets:
+    - mon-victim:8080
+- job_name: detector-sim
+  static_configs:
+  - targets:
+    - mon-detector:8080
+- job_name: cadvisor-next
+  static_configs:
+  - targets:
+    - mon-cadvisor:8080
+- job_name: kafka-next
+  static_configs:
+  - targets:
+    - mon-kafka-exporter:9308

@@ -1,0 +1,20 @@
+{
+  "broker": {"name": "mosquitto", "host": "mosquitto", "port": 1883, "clientId": "tb-gw", "version": 4,
+             "maxMessageNumberPerWorker": 10, "maxNumberOfWorkers": 100, "sendDataOnlyOnChange": false,
+             "security": {"type": "basic", "username": "tbgw", "password": "tbgw-bench-pw"}},
+  "mapping": [
+    {"topicFilter": "iiot/AR-100/reactor-line-01/+", "subscriptionQos": 1,
+     "converter": {"type": "json",
+                   "deviceInfo": {"deviceNameExpressionSource": "constant", "deviceNameExpression": "AR100",
+                                  "deviceProfileExpressionSource": "constant", "deviceProfileExpression": "default"},
+                   "sendDataOnlyOnChange": false, "timeout": 60000, "attributes": [],
+                   "timeseries": [{"type": "double", "key": "${tag}", "value": "${value}"}]}},
+    {"topicFilter": "scada/alerts/+", "subscriptionQos": 1,
+     "converter": {"type": "json",
+                   "deviceInfo": {"deviceNameExpressionSource": "constant", "deviceNameExpression": "AR100",
+                                  "deviceProfileExpressionSource": "constant", "deviceProfileExpression": "default"},
+                   "sendDataOnlyOnChange": false, "timeout": 60000, "attributes": [],
+                   "timeseries": [{"type": "string", "key": "last_alert", "value": "${tags.tag}|${tags.alert_type}|${tags.severity}"}]}}
+  ],
+  "requestsMapping": {}
+}

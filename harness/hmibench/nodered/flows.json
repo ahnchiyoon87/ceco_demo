@@ -1,0 +1,488 @@
+[
+ {
+  "id": "tab",
+  "type": "tab",
+  "label": "hmibench",
+  "disabled": false,
+  "info": "harness/hmibench — V1 12태그(MQTT)·알람 표시·인증 명령"
+ },
+ {
+  "id": "brk",
+  "type": "mqtt-broker",
+  "name": "mosquitto",
+  "broker": "mosquitto",
+  "port": "1883",
+  "clientid": "nr-hmi",
+  "autoConnect": true,
+  "usetls": false,
+  "protocolVersion": "4",
+  "keepalive": "30",
+  "cleansession": true,
+  "credentials": {
+   "user": "nodered",
+   "password": "nodered-bench-pw"
+  }
+ },
+ {
+  "id": "mbc",
+  "type": "modbus-client",
+  "name": "plant-simulator",
+  "clienttype": "tcp",
+  "bufferCommands": true,
+  "stateLogEnabled": false,
+  "queueLogEnabled": false,
+  "failureLogEnabled": true,
+  "tcpHost": "plant-simulator",
+  "tcpPort": "502",
+  "tcpType": "DEFAULT",
+  "unit_id": "1",
+  "commandDelay": "1",
+  "clientTimeout": "1000",
+  "reconnectOnTimeout": true,
+  "reconnectTimeout": "2000",
+  "parallelUnitIdsAllowed": true
+ },
+ {
+  "id": "uib",
+  "type": "ui-base",
+  "name": "hmibench",
+  "path": "/dashboard",
+  "includeClientData": true,
+  "acceptsClientConfig": [
+   "ui-control",
+   "ui-notification"
+  ],
+  "showPathInSidebar": false,
+  "navigationStyle": "default"
+ },
+ {
+  "id": "uith",
+  "type": "ui-theme",
+  "name": "Default",
+  "colors": {
+   "surface": "#ffffff",
+   "primary": "#0094CE",
+   "bgPage": "#eeeeee",
+   "groupBg": "#ffffff",
+   "groupOutline": "#cccccc"
+  },
+  "sizes": {
+   "pagePadding": "12px",
+   "groupGap": "12px",
+   "groupBorderRadius": "4px",
+   "widgetGap": "12px"
+  }
+ },
+ {
+  "id": "uip",
+  "type": "ui-page",
+  "name": "AR-100",
+  "ui": "uib",
+  "path": "/ar100",
+  "layout": "grid",
+  "theme": "uith",
+  "order": 1,
+  "className": "",
+  "visible": "true",
+  "disabled": "false"
+ },
+ {
+  "id": "uig",
+  "type": "ui-group",
+  "name": "공정 값",
+  "page": "uip",
+  "width": "6",
+  "height": "1",
+  "order": 1,
+  "showTitle": true,
+  "className": "",
+  "visible": "true",
+  "disabled": "false"
+ },
+ {
+  "id": "in1",
+  "type": "mqtt in",
+  "z": "tab",
+  "name": "iiot/+/+/+",
+  "topic": "iiot/+/+/+",
+  "qos": "1",
+  "datatype": "json",
+  "broker": "brk",
+  "nl": false,
+  "rap": true,
+  "rh": 0,
+  "inputs": 0,
+  "wires": [
+   [
+    "fn1"
+   ]
+  ]
+ },
+ {
+  "id": "fn1",
+  "type": "function",
+  "z": "tab",
+  "name": "최신값 저장",
+  "func": "const t = global.get('tags') || {};\nconst p = msg.payload;\nt[p.tag] = {value: p.value, ts: p.ts, seq: p.seq, recv_ms: Date.now()};\nglobal.set('tags', t);\nmsg.payload = Object.keys(t).sort().map(k => ({tag: k, value: t[k].value}));\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "tbl"
+   ]
+  ]
+ },
+ {
+  "id": "tbl",
+  "type": "ui-table",
+  "z": "tab",
+  "group": "uig",
+  "name": "12 태그",
+  "label": "12 태그",
+  "order": 1,
+  "width": "6",
+  "height": "8",
+  "maxrows": "12",
+  "passthru": false,
+  "autocols": true,
+  "showSearch": false,
+  "selectionType": "none",
+  "columns": [],
+  "wires": []
+ },
+ {
+  "id": "in2",
+  "type": "mqtt in",
+  "z": "tab",
+  "name": "scada/hmi/latest-alert",
+  "topic": "scada/hmi/latest-alert",
+  "qos": "1",
+  "datatype": "utf8",
+  "broker": "brk",
+  "nl": false,
+  "rap": true,
+  "rh": 0,
+  "inputs": 0,
+  "wires": [
+   [
+    "fn2"
+   ]
+  ]
+ },
+ {
+  "id": "fn2",
+  "type": "function",
+  "z": "tab",
+  "name": "최근 알람",
+  "func": "global.set('latestAlert', {text: msg.payload, recv_ms: Date.now()});\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "ntf"
+   ]
+  ]
+ },
+ {
+  "id": "ntf",
+  "type": "ui-notification",
+  "z": "tab",
+  "ui": "uib",
+  "position": "top right",
+  "colorDefault": true,
+  "color": "#ff0000",
+  "displayTime": "10",
+  "showCountdown": true,
+  "outputs": 0,
+  "allowDismiss": true,
+  "dismissText": "확인",
+  "raw": false,
+  "className": "",
+  "name": "알람",
+  "wires": []
+ },
+ {
+  "id": "in3",
+  "type": "mqtt in",
+  "z": "tab",
+  "name": "scada/alerts/+",
+  "topic": "scada/alerts/+",
+  "qos": "1",
+  "datatype": "json",
+  "broker": "brk",
+  "nl": false,
+  "rap": true,
+  "rh": 0,
+  "inputs": 0,
+  "wires": [
+   [
+    "fn3"
+   ]
+  ]
+ },
+ {
+  "id": "fn3",
+  "type": "function",
+  "z": "tab",
+  "name": "알람 목록",
+  "func": "const a = global.get('alerts') || [];\na.unshift({topic: msg.topic, body: msg.payload, recv_ms: Date.now()});\nglobal.set('alerts', a.slice(0, 50));\nreturn null;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   []
+  ]
+ },
+ {
+  "id": "h1",
+  "type": "http in",
+  "z": "tab",
+  "name": "GET /bench/values",
+  "url": "/bench/values",
+  "method": "get",
+  "upload": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "fv"
+   ]
+  ]
+ },
+ {
+  "id": "fv",
+  "type": "function",
+  "z": "tab",
+  "name": "값",
+  "func": "msg.payload = {tags: global.get('tags') || {}, now_ms: Date.now()};\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "r1"
+   ]
+  ]
+ },
+ {
+  "id": "r1",
+  "type": "http response",
+  "z": "tab",
+  "name": "",
+  "statusCode": "",
+  "headers": {
+   "content-type": "application/json"
+  },
+  "wires": []
+ },
+ {
+  "id": "h2",
+  "type": "http in",
+  "z": "tab",
+  "name": "GET /bench/alarm",
+  "url": "/bench/alarm",
+  "method": "get",
+  "upload": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "fa"
+   ]
+  ]
+ },
+ {
+  "id": "fa",
+  "type": "function",
+  "z": "tab",
+  "name": "알람",
+  "func": "msg.payload = {latest: global.get('latestAlert') || null, alerts: global.get('alerts') || [], now_ms: Date.now()};\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "r2"
+   ]
+  ]
+ },
+ {
+  "id": "r2",
+  "type": "http response",
+  "z": "tab",
+  "name": "",
+  "statusCode": "",
+  "headers": {
+   "content-type": "application/json"
+  },
+  "wires": []
+ },
+ {
+  "id": "h4",
+  "type": "http in",
+  "z": "tab",
+  "name": "GET /bench/audit",
+  "url": "/bench/audit",
+  "method": "get",
+  "upload": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "fau"
+   ]
+  ]
+ },
+ {
+  "id": "fau",
+  "type": "function",
+  "z": "tab",
+  "name": "감사",
+  "func": "msg.payload = {audit: global.get('audit') || []};\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "r4"
+   ]
+  ]
+ },
+ {
+  "id": "r4",
+  "type": "http response",
+  "z": "tab",
+  "name": "",
+  "statusCode": "",
+  "headers": {
+   "content-type": "application/json"
+  },
+  "wires": []
+ },
+ {
+  "id": "h3",
+  "type": "http in",
+  "z": "tab",
+  "name": "POST /bench/command",
+  "url": "/bench/command",
+  "method": "post",
+  "upload": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "fc"
+   ]
+  ]
+ },
+ {
+  "id": "fc",
+  "type": "function",
+  "z": "tab",
+  "name": "명령 검증·감사",
+  "func": "const allow = {agitator_run: 1, cooler_enable: 3};\nconst b = msg.payload || {};\nconst audit = global.get('audit') || [];\nconst rec = {at: new Date().toISOString(), user: msg.req.benchUser || null, target: b.target, value: b.value};\nif (!(b.target in allow) || ![0, 1, true, false].includes(b.value)) {\n  rec.result = 'rejected'; audit.push(rec); global.set('audit', audit);\n  msg.statusCode = 400; msg.payload = {ok: false, reason: 'not allowed'}; return [null, msg];\n}\nrec.result = 'dispatched'; audit.push(rec); global.set('audit', audit);\nmsg.payload = {value: !!b.value, fc: 5, unitid: 1, address: allow[b.target], quantity: 1};\nreturn [msg, null];",
+  "outputs": 2,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "mfw"
+   ],
+   [
+    "r3"
+   ]
+  ]
+ },
+ {
+  "id": "mfw",
+  "type": "modbus-flex-write",
+  "z": "tab",
+  "name": "코일 쓰기",
+  "showStatusActivities": false,
+  "showErrors": true,
+  "showWarnings": true,
+  "server": "mbc",
+  "emptyMsgOnFail": false,
+  "keepMsgProperties": true,
+  "delayOnStart": false,
+  "startDelayTime": "",
+  "wires": [
+   [
+    "fok"
+   ],
+   []
+  ]
+ },
+ {
+  "id": "fok",
+  "type": "function",
+  "z": "tab",
+  "name": "응답",
+  "func": "msg.statusCode = 200; msg.payload = {ok: true, written: msg.payload};\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "r3"
+   ]
+  ]
+ },
+ {
+  "id": "cat",
+  "type": "catch",
+  "z": "tab",
+  "name": "쓰기 실패",
+  "scope": [
+   "mfw"
+  ],
+  "uncaught": false,
+  "wires": [
+   [
+    "ferr"
+   ]
+  ]
+ },
+ {
+  "id": "ferr",
+  "type": "function",
+  "z": "tab",
+  "name": "실패 응답",
+  "func": "msg.statusCode = 502; msg.payload = {ok: false, error: String(msg.error && msg.error.message)};\nreturn msg;",
+  "outputs": 1,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "r3"
+   ]
+  ]
+ },
+ {
+  "id": "r3",
+  "type": "http response",
+  "z": "tab",
+  "name": "",
+  "statusCode": "",
+  "headers": {
+   "content-type": "application/json"
+  },
+  "wires": []
+ }
+]

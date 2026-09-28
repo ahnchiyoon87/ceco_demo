@@ -1,0 +1,70 @@
+# 수집 후보 P1: benthos-umh v0.16.0 — modbus 입력 → mqtt 출력 (CANDIDATES §2, 패턴 P-UNS)
+# V1 이 하던 일: EdgeX device-modbus + app-mqtt-export(edgex/telemetry, QoS1)
+# 재현 방법:
+#   - modbus 입력이 1초마다 12태그(FLOAT32, ABCD)를 읽는다. 태그마다 메시지 1건 + 메타데이터(modbus_tag_name_original).
+#   - reading 모양으로 바꾼 뒤 archive(json_array)로 한 번의 읽기 묶음을 배열로 합쳐 EdgeX Event v3 모양으로 감싼다.
+#     (묶음 = modbus 입력이 한 번에 내보내는 배치 — v0.16.0 modbus_plugin 은 RegisterBatchInput/ReadBatch. 실동작은 검사기 "이벤트당 reading 수"로 확인)
+#   - 단절 보관: 없음(기본). buffer.memory 는 입력 배치 경계를 흩뜨릴 수 있어(한 읽기 = Event 1건 깨짐) 넣지 않았다.
+#     출력이 막히면 역압으로 폴링이 멈춘다 → R02 에서 유실로 드러남(변형 시험으로 buffer 추가 가능).
+# 가공 로직은 Bloblang 설정(엔진 기능)이며 직접 짠 프로그램이 아니다.
+input:
+  modbus:
+    controller: "tcp://plant-simulator:502"
+    transmissionMode: "TCP"
+    slaveIDs: [1]
+    timeout: "1s"
+    busyRetries: 0
+    timeBetweenReads: "1s"
+    optimization: "none"
+    byteOrder: "ABCD"
+    addresses:
+      - {name: "LT-101", register: "holding", address: 0,  type: "FLOAT32"}
+      - {name: "LT-102", register: "holding", address: 2,  type: "FLOAT32"}
+      - {name: "TT-101", register: "holding", address: 4,  type: "FLOAT32"}
+      - {name: "TT-102", register: "holding", address: 6,  type: "FLOAT32"}
+      - {name: "PT-101", register: "holding", address: 8,  type: "FLOAT32"}
+      - {name: "FT-101", register: "holding", address: 10, type: "FLOAT32"}
+      - {name: "FT-102", register: "holding", address: 12, type: "FLOAT32"}
+      - {name: "IT-101", register: "holding", address: 14, type: "FLOAT32"}
+      - {name: "IT-102", register: "holding", address: 16, type: "FLOAT32"}
+      - {name: "VT-101", register: "holding", address: 18, type: "FLOAT32"}
+      - {name: "pH-101", register: "holding", address: 20, type: "FLOAT32"}
+      - {name: "CT-101", register: "holding", address: 22, type: "FLOAT32"}
+
+pipeline:
+  processors:
+    - mapping: |
+        let units = {"LT-101":"%","LT-102":"%","TT-101":"degC","TT-102":"degC","PT-101":"barg","FT-101":"m3/h",
+                     "FT-102":"m3/h","IT-101":"A","IT-102":"A","VT-101":"mm/s","pH-101":"pH","CT-101":"mS/cm"}
+        let tag = meta("modbus_tag_name_original")
+        root = {
+          "origin": timestamp_unix_nano(),
+          "deviceName": "reactor-line-01",
+          "resourceName": $tag,
+          "profileName": "AR100-Reactor-Line",
+          "valueType": "Float32",
+          "units": $units.get($tag).catch(""),
+          "value": content().string()
+        }
+    - archive:
+        format: json_array
+    - mapping: |
+        root = {
+          "apiVersion": "v3",
+          "deviceName": "reactor-line-01",
+          "profileName": "AR100-Reactor-Line",
+          "sourceName": "AllSensors",
+          "origin": this.index(0).origin,
+          "readings": this
+        }
+
+output:
+  mqtt:
+    urls: ["tcp://mosquitto:1883"]
+    topic: "edgex/telemetry"
+    client_id: "benthos-umh-ingest"
+    qos: 1
+    max_in_flight: 64
+
+logger:
+  level: INFO

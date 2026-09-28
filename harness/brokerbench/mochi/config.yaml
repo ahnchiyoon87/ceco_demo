@@ -1,0 +1,29 @@
+# EXP-142 Mochi-MQTT 2.7.9 (MIT, 18개월 무릴리스 — 유지보수 위험 기록). V1 EMQX 역할만:
+# TCP 1883, WebSocket 8083, $SYS 정보 HTTP 8080, 익명 허용(V1 과 같음), 디스크 영속(badger 훅) — BR-04 조건 맞춤.
+# 형식 출처: mochi-mqtt/server v2 config 예제(listeners/hooks/options). 로드 여부는 ② 기동 로그로 확인 [미검증].
+listeners:
+  - type: "tcp"
+    id: "tcp1"
+    address: ":1883"
+  - type: "ws"
+    id: "ws1"
+    address: ":8083"
+  - type: "sysinfo"
+    id: "stats"
+    address: ":8080"
+hooks:
+  auth:
+    allow_all: true
+  storage:
+    badger:
+      path: /data/badger.db
+# V1 보장 맞춤(09-29 지시): 기본 maximum_inflight 8192(오프라인 QoS1 보관 상한) → 65535(제품 최대, V1 10만에 못 미침 — 약점 기록),
+# maximum_client_writes_pending 기본 8192 → 65535, 세션 만료 상한은 기본(무제한) 유지, 메시지 만료 2h 이상(86400 기본 유지).
+options:
+  inline_client: true
+  capabilities:
+    maximum_inflight: 65535
+    maximum_client_writes_pending: 65535
+    maximum_message_expiry_interval: 86400
+logging:
+  level: WARN

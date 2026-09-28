@@ -80,7 +80,8 @@ metrics:
 # ── 자동 복구 후보: Flink 고가용성(ZooKeeper) ──
 high-availability:
   type: zookeeper
-  storageDir: file:///opt/flink/ha
+  # 이미지에서 flink 사용자 소유로 만들어 둔 체크포인트 볼륨 안에 둔다(별도 명명 볼륨은 root 소유라 JM 이 못 쓴다)
+  storageDir: file:///opt/flink/checkpoints/ha
   cluster-id: /l4bench-flinkha
   zookeeper:
     quorum: zookeeper:2181

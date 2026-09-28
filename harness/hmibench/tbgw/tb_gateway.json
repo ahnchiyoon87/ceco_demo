@@ -1,0 +1,15 @@
+{
+  "thingsboard": {
+    "host": "thingsboard", "port": 1883, "remoteShell": false, "remoteConfiguration": false,
+    "statistics": {"enable": false}, "deviceFiltering": {"enable": false},
+    "maxPayloadSizeBytes": 8196, "minPackSendDelayMS": 50, "checkConnectorsConfigurationInSeconds": 60,
+    "handleDeviceRenaming": true, "checkingDeviceActivity": {"checkDeviceInactivity": false},
+    "security": {"type": "accessToken", "accessToken": "bench-gw-token"}, "qos": 1
+  },
+  "storage": {"type": "memory", "read_records_count": 100, "max_records_count": 100000},
+  "grpc": {"enabled": false},
+  "connectors": [
+    {"type": "mqtt", "name": "UNS", "configuration": "mqtt.json"},
+    {"type": "modbus", "name": "PlantRPC", "configuration": "modbus.json"}
+  ]
+}

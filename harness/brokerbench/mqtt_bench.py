@@ -9,9 +9,14 @@
                  같은 client_id 로 재접속(재구독 없음)해 받은 건수, 새 클라이언트가 retained 를 받는지
 - ws           : WebSocket(8083, /mqtt)으로 발행·구독 왕복 20건
 결과: /experiments/<exp>/raw/<broker>_<mode>_<run>.json
+
+회전 1 후보용 환경변수(없으면 기존과 똑같이 동작 — EXP-130 측정분과 조건 동일):
+  BENCH_MQTT_USER / BENCH_MQTT_PASS : 제품 기본이 인증 필수인 브로커(RobustMQ·LavinMQ)
+  BENCH_WS_PORT / BENCH_WS_PATH     : WebSocket 포트·경로가 8083 /mqtt 가 아닌 브로커(TBMQ 8084, BifroMQ 80 등)
 """
 import argparse
 import json
+import os
 import pathlib
 import statistics
 import threading
@@ -27,7 +32,9 @@ def client(cid, broker, clean=False, transport="tcp"):
     c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=cid, clean_session=clean,
                     protocol=mqtt.MQTTv311, transport=transport)
     if transport == "websockets":
-        c.ws_set_options(path="/mqtt")
+        c.ws_set_options(path=os.environ.get("BENCH_WS_PATH", "/mqtt"))
+    if os.environ.get("BENCH_MQTT_USER"):
+        c.username_pw_set(os.environ["BENCH_MQTT_USER"], os.environ.get("BENCH_MQTT_PASS", ""))
     c.reconnect_delay_set(1, 2)
     c.max_inflight_messages_set(100)
     return c
@@ -167,7 +174,7 @@ def ws(a):
     c.on_connect = lambda cl, u, f, rc, p=None: (cl.subscribe(f"{base}/#", qos=1), ok.set()) if rc == 0 else None
     c.on_message = lambda cl, u, m: got.append(m.payload)
     try:
-        c.connect_async(a.broker, 8083)
+        c.connect_async(a.broker, int(os.environ.get("BENCH_WS_PORT", "8083")))
         c.loop_start()
         if not wait_connected(c, ok, 20):
             return {"ws_connected": False, "roundtrip": 0}

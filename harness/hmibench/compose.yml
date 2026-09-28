@@ -1,0 +1,194 @@
+# HMI 비교 벤치 (EXP-HMI, CANDIDATES §9). 호스트 포트 없음, rot 스택과 비공유. latest 금지.
+#   PYTHONUTF8=1 python harness/hmibench/hmi_prepare.py     # 준비물(generated/) — 한 번
+#   harness/hmibench/stage2.sh <profile>
+# 공통 부품: 가상설비(V1 simulator 소스 빌드, MQTT 직발행 켬 = V1 lite 경로) + Mosquitto 2.1.2(인증·ACL).
+# 자원 한도 없음(09-29 결정 I5): 실제 사용량 자체가 ③ 효율 측정값이다. 공정성은 같은 호스트에서 벤치 하나씩 실행으로 확보.
+name: hmibench
+
+
+networks:
+  hmi: {}
+
+volumes:
+  mosq-data:
+  fuxa-appdata:
+  fuxa-db:
+  nr-data:
+  tb-db:
+  tb-data:
+  lts-db:
+  sp-backend:
+  sp-couch:
+  sp-influx:
+
+x-common: &common
+  profiles: [fuxa-v1, fuxa134, fuxa134-uns, nodered, thingsboard, scadalts, streampipes]
+
+services:
+  plant-simulator:
+    <<: *common
+    build: ../../simulator
+    image: bench-plant-simulator:1.0
+    hostname: plant-simulator
+    networks: [hmi]
+    environment: {SCAN_INTERVAL_MS: "1000", DIRECT_MQTT_ENABLE: "true", MQTT_HOST: mosquitto, MQTT_TOPIC_PREFIX: iiot}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mosquitto:
+    <<: *common
+    image: eclipse-mosquitto:2.1.2-alpine
+    networks: [hmi]
+    volumes:
+      - ./conf/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./conf/mosquitto.acl:/mosquitto/config/mosquitto.acl:ro
+      - ./generated/mosquitto.passwd:/mosquitto/config/mosquitto.passwd:ro
+      - mosq-data:/mosquitto/data
+
+  # ── FUXA: 기준(V1 digest, V1 설정 = 인증 꺼짐) / 1.3.4 태그 + 인증 / 1.3.4 + UNS 구독 ──
+  fuxa-v1:
+    profiles: [fuxa-v1]
+    image: frangoteam/fuxa@sha256:aa5002fd927bee32df59dba0ee8b649a84816588625c27454ea9f553668d7daf   # V1 실행 이미지(1.3.4-2898)
+    hostname: fuxa
+    networks: {hmi: {aliases: [fuxa]}}
+    volumes: [fuxa-appdata:/usr/src/app/FUXA/server/_appdata, fuxa-db:/usr/src/app/FUXA/server/_db]
+  fuxa134:
+    profiles: [fuxa134]
+    image: frangoteam/fuxa:1.3.4
+    networks: {hmi: {aliases: [fuxa]}}
+    volumes:
+      - ./fuxa/settings.js:/usr/src/app/FUXA/server/_appdata/settings.js:ro
+      - fuxa-db:/usr/src/app/FUXA/server/_db
+  fuxa134-uns:
+    profiles: [fuxa134-uns]
+    image: frangoteam/fuxa:1.3.4
+    networks: {hmi: {aliases: [fuxa]}}
+    volumes:
+      - ./fuxa/settings.js:/usr/src/app/FUXA/server/_appdata/settings.js:ro
+      - fuxa-db:/usr/src/app/FUXA/server/_db
+
+  # ── Node-RED 5 + Dashboard 2 ──
+  nodered:
+    profiles: [nodered]
+    build: ./nodered
+    image: bench-nodered:5.0.7-db2-1.32.0
+    networks: [hmi]
+    environment: {NR_OPERATOR_PW: nr-operator-bench-pw}
+    volumes:
+      - ./nodered/flows.json:/data/flows.json
+      - ./nodered/settings.js:/data/settings.js:ro
+      - nr-data:/data/context
+
+  # ── ThingsBoard CE 4.3 + IoT Gateway 3.8.5(MQTT 커넥터로 UNS 구독, Modbus 커넥터는 RPC 쓰기만) ──
+  tb-db:
+    profiles: [thingsboard]
+    image: postgres:17.11
+    networks: [hmi]
+    environment: {POSTGRES_PASSWORD: bench, POSTGRES_DB: thingsboard}
+    volumes: [tb-db:/var/lib/postgresql/data]
+    healthcheck: {test: ["CMD", "pg_isready", "-U", "postgres"], interval: 5s, timeout: 5s, retries: 30}
+  tb-install:
+    profiles: [thingsboard]
+    image: thingsboard/tb-node:4.3.1.6
+    networks: [hmi]
+    depends_on: {tb-db: {condition: service_healthy}}
+    restart: "no"
+    environment: &tb-env
+      TB_SERVICE_ID: tb-ce-node
+      SPRING_DATASOURCE_URL: jdbc:postgresql://tb-db:5432/thingsboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bench
+      DATABASE_TS_TYPE: sql
+      TB_QUEUE_TYPE: in-memory
+      INSTALL_TB: "true"
+      LOAD_DEMO: "true"
+  thingsboard:
+    profiles: [thingsboard]
+    image: thingsboard/tb-node:4.3.1.6
+    hostname: thingsboard
+    networks: [hmi]
+    depends_on: {tb-install: {condition: service_completed_successfully}}
+    environment:
+      TB_SERVICE_ID: tb-ce-node
+      SPRING_DATASOURCE_URL: jdbc:postgresql://tb-db:5432/thingsboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bench
+      DATABASE_TS_TYPE: sql
+      TB_QUEUE_TYPE: in-memory
+    volumes: [tb-data:/data]
+  tb-gateway:
+    profiles: [tb-gw]                       # stage2.sh 가 tb-prepare 뒤에 띄운다
+    image: thingsboard/tb-gateway:3.8.5
+    networks: [hmi]
+    volumes: [./tbgw:/thingsboard_gateway/config]
+
+  # ── Scada-LTS 2.8.0 (GPL-2.0 ⚠, LICENSE 원문 확인 2026-09-29) + MySQL 8.4 LTS(상류 예시 8.0.32 는 2026-04 EOL) ──
+  lts-db:
+    profiles: [scadalts]
+    image: mysql:8.4.6
+    networks: [hmi]
+    environment: {MYSQL_ROOT_PASSWORD: bench, MYSQL_DATABASE: scadalts}
+    command: ["--log_bin_trust_function_creators=1"]
+    volumes: [lts-db:/var/lib/mysql]
+    healthcheck: {test: ["CMD", "mysqladmin", "ping", "-pbench"], interval: 5s, timeout: 5s, retries: 40}
+  scadalts:
+    profiles: [scadalts]
+    image: scadalts/scadalts:v2.8.0
+    networks: [hmi]
+    depends_on: {lts-db: {condition: service_healthy}}
+    links: ["lts-db:database"]              # 이미지가 호스트명 database 를 기대(상류 compose)
+    environment: {CATALINA_OPTS: "-Xmx2G -Xms2G"}   # 상류 docker-compose.yml 값
+    command: ["/usr/bin/wait-for-it", "--host=database", "--port=3306", "--timeout=60", "--strict", "--",
+              "/usr/local/tomcat/bin/catalina.sh", "run"]
+
+  # ── Apache StreamPipes 0.98.0 (상류 minimal 구성. 상류 compose 의 backend-nats:0.98.0 이미지가 없음 → backend:0.98.0) ──
+  sp-couchdb:
+    profiles: [streampipes]
+    image: couchdb:3.3.1                    # 상류 고정값(3.3 계열 지원 상태 [미확인])
+    networks: {hmi: {aliases: [couchdb]}}
+    environment: {COUCHDB_USER: admin, COUCHDB_PASSWORD: admin}
+    volumes: [sp-couch:/opt/couchdb/data]
+  sp-nats:
+    profiles: [streampipes]
+    image: nats:2.15.0-alpine               # 상류는 nats(무태그)
+    networks: {hmi: {aliases: [nats]}}
+  sp-influx:
+    profiles: [streampipes]
+    image: influxdb:2.9.1                   # 상류는 influxdb:2.6(지원 종료) → 지원 중인 2.9.1 로 바꿔 시험(호환 [미확인])
+    networks: {hmi: {aliases: [influxdb]}}
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: sp-admin-pw
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: sp-admin
+      DOCKER_INFLUXDB_INIT_ORG: sp
+      DOCKER_INFLUXDB_INIT_BUCKET: sp
+    volumes: [sp-influx:/var/lib/influxdb2]
+  sp-backend:
+    profiles: [streampipes]
+    image: apachestreampipes/backend:0.98.0
+    networks: {hmi: {aliases: [backend]}}
+    depends_on: [sp-couchdb, sp-nats, sp-influx]
+    environment: {SP_PRIORITIZED_PROTOCOL: nats}
+    volumes: [sp-backend:/root/.streampipes]
+  sp-extensions:
+    profiles: [streampipes]
+    image: apachestreampipes/extensions-iiot-minimal:0.98.0
+    networks: {hmi: {aliases: [extensions-iiot-minimal]}}
+  sp-ui:
+    profiles: [streampipes]
+    image: apachestreampipes/ui:0.98.0
+    networks: [hmi]
+    environment: {SP_HTTP_SERVER_ADAPTER_ENDPOINT: "extensions-iiot-minimal:8090"}
+    depends_on: [sp-backend]
+
+  client:
+    profiles: [tools]
+    build: ../benchcommon
+    image: bench-client:1.0
+    networks: [hmi]
+    environment: {PYTHONUTF8: "1", BENCH_GUARD_FORCED: "${BENCH_GUARD_FORCED:-0}"}
+    volumes: ["../..:/repo:ro", "../../experiments:/experiments"]

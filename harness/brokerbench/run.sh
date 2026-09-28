@@ -2,6 +2,8 @@
 # 브로커 비교 한 바퀴: 브로커마다 normal(자원 기록) → live_restart → offline_queue → ws.
 #   harness/brokerbench/run.sh <run 접두사> [브로커 목록]
 set -uo pipefail
+. harness/benchguard.sh   # 09-29 추가: rot-iiot/rot-ai 실행 중이면 거부(FORCE=1 무시). 측정 로직 불변
+bench_guard
 pre=$1; brokers=${2:-"emqx mosquitto nanomq hivemq"}
 export MSYS_NO_PATHCONV=1 PYTHONUTF8=1
 B="docker compose -f harness/brokerbench/compose.yml"

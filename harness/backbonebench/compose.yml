@@ -1,0 +1,258 @@
+# 백본 비교 벤치 (EXP-BB, CANDIDATES §5). 원본 V1·rot 스택과 네트워크·볼륨·포트를 공유하지 않는다(호스트 포트 없음).
+# 프로파일 하나 = 후보 하나. 한 번에 한 프로파일만 띄운다(stage2.sh 가 강제). latest 태그 금지.
+#   harness/backbonebench/stage2.sh <profile>
+# 자원 한도 없음(09-29 결정 I5): 실제 사용량 자체가 ③ 효율 측정값이다. 공정성은 같은 호스트에서 벤치 하나씩 실행으로 확보.
+# Kafka 프로토콜 후보는 네트워크 별칭 kafka 를 같이 쓴다 → 클라이언트·Telegraf 설정이 같다.
+name: backbonebench
+
+
+# V1 docker-compose.yml 의 kafka 환경 그대로(KRaft 단일 노드). 차이: 외부 리스너 없음(호스트 포트 없음), CLUSTER_ID 만 벤치용.
+x-kafka-env: &kafka-env
+  KAFKA_NODE_ID: 1
+  KAFKA_PROCESS_ROLES: broker,controller
+  KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+  KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+  KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+  KAFKA_LOG_RETENTION_HOURS: 24
+  CLUSTER_ID: bb-kraft-cluster-000001
+
+x-kafka-health: &kafka-health
+  test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+  interval: 5s
+  timeout: 10s
+  retries: 30
+
+networks:
+  bb: {}
+
+volumes:
+  kafka-data:
+  nats-data:
+  pulsar-data:
+  rmq-data:
+  s3-data:
+  tansu-db:
+  iggy-data:
+  rmq-store:
+  mosq-data:
+
+services:
+  # ── 기준 버전(V1) · 같은 제품 최신 ─────────────────────────────
+  kafka39:
+    profiles: [kafka39]
+    image: apache/kafka:3.9.0            # V1 과 같은 이미지(강제 교체 대상, 기준선 측정용)
+    networks: {bb: {aliases: [kafka]}}
+    environment: *kafka-env
+    volumes: [kafka-data:/var/lib/kafka/data]
+    healthcheck: *kafka-health
+
+  kafka43:
+    profiles: [kafka43]
+    image: apache/kafka:4.3.1
+    networks: {bb: {aliases: [kafka]}}
+    environment: *kafka-env
+    volumes: [kafka-data:/var/lib/kafka/data]
+    healthcheck: *kafka-health
+
+  kafka42:
+    profiles: [kafka42]
+    image: apache/kafka:4.2.2
+    networks: {bb: {aliases: [kafka]}}
+    environment: *kafka-env
+    volumes: [kafka-data:/var/lib/kafka/data]
+    healthcheck: *kafka-health
+
+  kafka41:
+    profiles: [kafka41]
+    image: apache/kafka:4.1.2            # 종료 2027-10-15(경계), P3
+    networks: {bb: {aliases: [kafka]}}
+    environment: *kafka-env
+    volumes: [kafka-data:/var/lib/kafka/data]
+    healthcheck: *kafka-health
+
+  # ── Kafka 프로토콜 호환 ───────────────────────────────────────
+  s3:                                     # AutoMQ 용 S3 호환 저장소. MinIO 커뮤니티판은 이미지 배포 중단(①) → SeaweedFS(Apache-2.0)
+    profiles: [automq]
+    image: chrislusf/seaweedfs:4.47
+    networks: [bb]
+    command: ["server", "-dir=/data", "-s3", "-s3.port=8333", "-volume.max=0", "-master.volumeSizeLimitMB=256"]
+    volumes: [s3-data:/data]
+    healthcheck: {test: ["CMD-SHELL", "wget -qO- http://localhost:9333/cluster/status >/dev/null"], interval: 5s, timeout: 5s, retries: 30}
+
+  s3-init:
+    profiles: [automq]
+    image: chrislusf/seaweedfs:4.47
+    networks: [bb]
+    depends_on: {s3: {condition: service_healthy}}
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c", "sleep 5; printf 's3.bucket.create -name automq-data\\ns3.bucket.create -name automq-ops\\n' | weed shell -master=s3:9333"]
+
+  automq:
+    profiles: [automq]
+    image: automqinc/automq:1.7.4
+    networks: {bb: {aliases: [kafka]}}
+    depends_on: {s3-init: {condition: service_completed_successfully}}
+    stop_grace_period: 1m
+    environment:
+      KAFKA_S3_ACCESS_KEY: bench            # SeaweedFS 무인증 모드 — 키는 형식상 값
+      KAFKA_S3_SECRET_KEY: bench
+      KAFKA_HEAP_OPTS: "-Xms1g -Xmx4g -XX:MetaspaceSize=96m -XX:MaxDirectMemorySize=1G"   # 상류 docker-compose.yaml(1.7.4) 값 그대로
+      CLUSTER_ID: 3D4fXN-yS1-vsQ8aJ_q4Mg
+    # 상류 docker/docker-compose.yaml(1.7.4) 명령 그대로, 엔드포인트만 s3:8333
+    command:
+      - bash
+      - -c
+      - |
+        /opt/automq/kafka/bin/kafka-server-start.sh /opt/automq/kafka/config/kraft/server.properties \
+        --override cluster.id=$$CLUSTER_ID --override node.id=0 \
+        --override controller.quorum.voters=0@automq:9093 --override controller.quorum.bootstrap.servers=automq:9093 \
+        --override advertised.listeners=PLAINTEXT://kafka:9092 \
+        --override auto.create.topics.enable=false --override log.retention.hours=24 \
+        --override s3.data.buckets='0@s3://automq-data?region=us-east-1&endpoint=http://s3:8333&pathStyle=true' \
+        --override s3.ops.buckets='1@s3://automq-ops?region=us-east-1&endpoint=http://s3:8333&pathStyle=true' \
+        --override s3.wal.path='0@s3://automq-data?region=us-east-1&endpoint=http://s3:8333&pathStyle=true'
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/automq/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 15s
+      retries: 40
+
+  tansu-db:
+    profiles: [tansu]
+    image: postgres:18.6
+    networks: [bb]
+    environment: {POSTGRES_PASSWORD: postgres, PGUSER: postgres}
+    volumes: [tansu-db:/var/lib/postgresql]
+    healthcheck: {test: ["CMD", "pg_isready"], interval: 5s, timeout: 5s, retries: 30}
+
+  tansu:
+    profiles: [tansu]
+    image: ghcr.io/tansu-io/tansu:0.6.0   # 이미지 존재 확인(2026-09-29 manifest) → CANDIDATES §12-2 [미확인] 해소
+    networks: {bb: {aliases: [kafka]}}
+    depends_on: {tansu-db: {condition: service_healthy}}
+    # 저장 엔진 = PostgreSQL(디스크 영속). memory:// 는 재시작 시 유실이라 V1 동등성 불가.
+    command: ["--kafka-cluster-id", "bb-tansu", "--kafka-listener-url", "tcp://0.0.0.0:9092/",
+              "--kafka-advertised-listener-url", "tcp://kafka:9092/",
+              "--storage-engine", "postgres://postgres:postgres@tansu-db"]
+
+  # ── 다른 프로토콜 ─────────────────────────────────────────────
+  nats:
+    profiles: [nats]
+    image: nats:2.15.0-alpine
+    networks: [bb]
+    command: ["-c", "/etc/nats/nats.conf"]
+    volumes:
+      - ./conf/nats.conf:/etc/nats/nats.conf:ro
+      - nats-data:/data
+    healthcheck: {test: ["CMD-SHELL", "wget -qO- http://localhost:8222/healthz?js-enabled-only=true | grep -q ok"], interval: 5s, timeout: 5s, retries: 30}
+
+  pulsar:
+    profiles: [pulsar]
+    image: apachepulsar/pulsar:4.0.13
+    networks: [bb]
+    command: ["bin/pulsar", "standalone", "-nfw", "-nss"]   # 함수 워커·스트림 저장 끔(백본 기능만)
+    volumes: [pulsar-data:/pulsar/data]
+    healthcheck: {test: ["CMD-SHELL", "curl -sf http://localhost:8080/admin/v2/brokers/health >/dev/null"], interval: 10s, timeout: 10s, retries: 30}
+
+  rabbitmq:
+    profiles: [rabbitmq]
+    image: rabbitmq:4.3.6-alpine
+    networks: [bb]
+    hostname: rabbitmq
+    environment: {RABBITMQ_DEFAULT_USER: bench, RABBITMQ_DEFAULT_PASS: bench}
+    volumes:
+      - ./conf/rabbitmq.conf:/etc/rabbitmq/conf.d/90-bench.conf:ro
+      - ./conf/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+      - rmq-data:/var/lib/rabbitmq
+    healthcheck: {test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"], interval: 10s, timeout: 10s, retries: 30}
+
+  iggy:
+    profiles: [iggy]
+    image: apache/iggy:0.9.0
+    networks: [bb]
+    # 상류 docker-compose.yml(server-0.9.0) 그대로: io_uring 때문에 seccomp 해제 필요 → ① 기본 보안 약점으로 기록
+    cap_add: [SYS_NICE]
+    security_opt: ["seccomp:unconfined"]
+    ulimits: {memlock: {soft: -1, hard: -1}}
+    environment:
+      IGGY_NODE_ADVERTISED_ADDRESS: iggy
+      IGGY_ROOT_USERNAME: iggy
+      IGGY_ROOT_PASSWORD: iggy-bench-pw
+    volumes: [iggy-data:/local_data]
+
+  rocketmq-namesrv:
+    profiles: [rocketmq]
+    image: apache/rocketmq:5.5.0
+    networks: [bb]
+    command: ["sh", "mqnamesrv"]
+
+  rocketmq-broker:
+    profiles: [rocketmq]
+    image: apache/rocketmq:5.5.0
+    networks: [bb]
+    depends_on: [rocketmq-namesrv]
+    command: ["sh", "mqbroker", "-n", "rocketmq-namesrv:9876", "--enable-proxy", "-c", "/home/rocketmq/broker.conf"]
+    environment: {NAMESRV_ADDR: "rocketmq-namesrv:9876"}
+    volumes:
+      - ./conf/rocketmq-broker.conf:/home/rocketmq/broker.conf:ro
+      - rmq-store:/home/rocketmq/store
+
+  mosquitto:
+    profiles: [mqtt]
+    image: eclipse-mosquitto:2.1.2-alpine
+    networks: [bb]
+    volumes:
+      - ./conf/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosq-data:/mosquitto/data
+
+  # ── Telegraf 1.40 호환(#17570) — Kafka 프로토콜 프로파일과 함께 --profile telegraf ──
+  telegraf-out:
+    profiles: [telegraf]
+    image: telegraf:1.40.1-alpine
+    networks: [bb]
+    environment: {KAFKA_BROKER: "kafka:9092"}
+    volumes: [./telegraf/out.conf:/etc/telegraf/telegraf.conf:ro]
+
+  telegraf-in-v1cfg:
+    profiles: [telegraf]
+    image: telegraf:1.40.1-alpine
+    networks: [bb]
+    environment: {KAFKA_BROKER: "kafka:9092", PROFILE: "${BB_PROFILE:-unset}"}
+    volumes:
+      - ./telegraf/in_v1cfg.conf:/etc/telegraf/telegraf.conf:ro
+      - ../../experiments/EXP-BB/raw/telegraf:/out
+
+  telegraf-in-kver:
+    profiles: [telegraf]
+    image: telegraf:1.40.1-alpine
+    networks: [bb]
+    environment: {KAFKA_BROKER: "kafka:9092", PROFILE: "${BB_PROFILE:-unset}"}
+    volumes:
+      - ./telegraf/in_kver.conf:/etc/telegraf/telegraf.conf:ro
+      - ../../experiments/EXP-BB/raw/telegraf:/out
+
+  # ── 측정 클라이언트(하니스) ─────────────────────────────────
+  client:
+    profiles: [tools]
+    build: ../benchcommon
+    image: bench-client:1.0
+    networks: [bb]
+    environment:
+      PYTHONUTF8: "1"
+      BENCH_GUARD_FORCED: ${BENCH_GUARD_FORCED:-0}
+      BENCH_GUARD_ROT_RUNNING: ${BENCH_GUARD_ROT_RUNNING:-0}
+      IGGY_USER: iggy
+      IGGY_PASS: iggy-bench-pw
+      RMQ_USER: bench
+      RMQ_PASS: bench
+    volumes:
+      - ../..:/repo:ro
+      - ../../experiments:/experiments

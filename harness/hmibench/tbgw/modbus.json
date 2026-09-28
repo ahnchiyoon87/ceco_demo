@@ -1,0 +1,15 @@
+{
+  "master": {
+    "slaves": [
+      {"host": "plant-simulator", "port": 502, "type": "tcp", "method": "socket", "timeout": 35,
+       "byteOrder": "BIG", "wordOrder": "BIG", "retries": true, "retryOnEmpty": true, "retryOnInvalid": true,
+       "pollPeriod": 3600000, "unitId": 1, "deviceName": "AR100-CMD", "deviceType": "default",
+       "sendDataOnlyOnChange": true, "connectAttemptTimeMs": 5000, "connectAttemptCount": 5, "waitAfterFailedAttemptsMs": 300000,
+       "attributes": [], "timeseries": [], "attributeUpdates": [],
+       "rpc": [
+         {"tag": "agitator_run", "type": "bits", "functionCode": 5, "objectsCount": 1, "address": 1},
+         {"tag": "cooler_enable", "type": "bits", "functionCode": 5, "objectsCount": 1, "address": 3}
+       ]}
+    ]
+  }
+}
