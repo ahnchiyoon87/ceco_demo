@@ -38,6 +38,7 @@
 - I2~I4: CEP 창 10초, IT-102>9.6A, VT-101>7.1mm/s, 워터마크 5초(`flink/sql/01·04`).
 - 11:52 원본 V1 Flink 잡 소멸 원인 = Docker Desktop 자체 재시작(프로세스 시작 11:51:56). HA 없는 세션 클러스터라 JobManager 재시작 시 잡이 사라지고 latest-offset이라 공백 구간 유실.
 - 환경: Windows 11 Home, Docker Desktop 4.87.0, WSL2, Docker 메모리 7.6GB. 원본 V1 29개가 약 4.9GB 사용 → 동시 실행 시 호스트 RAM 고갈로 엔진 500 오류 발생(09-28). **현재 원본 V1은 정지(볼륨 보존)**.
+- 원본 폴더는 **다른 작업이 오늘도 수정 중**(2026-09-28 17:52~21:43: `ai-web/src`, `ai-layer/knowledge`, `docs/ai-work`, `화면캡처/*_20260928`, `TODO.md`). 이 세션은 원본에 쓴 적 없음. `v1-original` 대비 308파일 차이(임시 인덱스 트리 비교, 22:45). → "원본 76건 그대로"는 판정 기준으로 쓸 수 없고 "이 세션이 원본 무수정"으로 판정한다. V1 기준선을 다시 뜰지(최신 원본 기준 `v1-original-2` 등)는 사용자 결정(§7).
 - G10: FINAL 후보 29개 전부 컨테이너 가능(Mosquitto 2.1.x는 `-alpine` 태그만) → `harness/G10_CONTAINER.md`.
 - L4 정상 조건(케이스당 10회·간격 무작위·시드 1001/2002, 원본 정지 상태): 3후보 모두 70/70, 알람 집합 V1과 차이 0. CEP p95 Python ≈5.91s, Flink1.20 ≈6.1s, Flink2.2 ≈6.05~6.14s. 메모리 평균 Python 21~22MiB, Flink1.20 1,193~1,237MiB, Flink2.2 1,264~1,289MiB → `experiments/EXP-L4/raw/summary_m1·m2.json`.
 - L4 재시작(유실·중복, 대조군 대비): Python kill 3회 모두 0/0. Flink1.20 TaskManager kill 3회 중 1회 중복3. Flink2.2 TaskManager kill 3회 중 2회 중복3. JobManager kill(1.20 2회 유실12·12, 2.2 2회 유실12·11) 모두 잡 소멸로 대량 유실 → `experiments/EXP-S09/raw/g8_*.json`, 행렬 로그 `matrix_y.log`.
@@ -59,6 +60,7 @@
 - "아주 약간 하락"·"엄청 큰 이득"의 수치 경계(제안: 지연·처리량 5% 이내, 유실 0 유지 / 자원 10배 이상 절감) — 미확정.
 - AI 비교용 LLM 호출 허용 횟수(비용은 회사 부담이나 크레딧 절약 지시 있음).
 - AGENT_BRIEF_FINAL·ARCHITECTURE_SIMPLIFICATION 원문 파일(→ `docs/research/`에 두기).
+- 원본 폴더에서 진행 중인 다른 작업과의 관계: 원본 V1 컨테이너를 정지해 둔 것(사용자 "리소스 정리" 지시)이 그 작업에 영향이 없었는지, V1 기준선을 최신 원본으로 다시 뜰지.
 - LiteLLM Cloud Run 프록시 버전(1.82.7/1.82.8 여부), Docker Desktop 유료 조건(회사 규모) — `QUESTIONS.md` Q4·Q6.
 
 ## 8. 자산 지도
