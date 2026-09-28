@@ -1,0 +1,183 @@
+{
+ "arm": "A",
+ "results": {
+  "CQ01": {
+   "kind": "graph",
+   "query": "MATCH (a:Asset)-[:HAS_SENSOR]->(s:Sensor {name:'VT-101'}) OPTIONAL MATCH (c)-[:PART_OF]->(a) RETURN a.name, s.description, s.unit, collect(c.name) AS parts;",
+   "need": "설비·측정량·단위(부품은 있으면 추가)",
+   "ok": true,
+   "header": [
+    "a.name, s.description, s.unit, parts"
+   ],
+   "rows": [
+    "\"M-101\", \"교반기 진동\", \"mm/s\", []"
+   ],
+   "error": ""
+  },
+  "CQ02": {
+   "kind": "graph",
+   "query": "MATCH (r:Asset {name:'R-101'}) OPTIONAL MATCH (x)-[:INSTALLED_IN|PART_OF]->(r) OPTIONAL MATCH (r)-[:HAS_SENSOR]->(s) RETURN collect(DISTINCT x.name) AS members, collect(DISTINCT s.name) AS sensors;",
+   "need": "소속 설비와 센서 둘 다",
+   "ok": true,
+   "header": [
+    "members, sensors"
+   ],
+   "rows": [
+    "[\"M-101\"], [\"CT-101\", \"pH-101\", \"LT-102\", \"PT-101\", \"TT-101\"]"
+   ],
+   "error": ""
+  },
+  "CQ03": {
+   "kind": "graph",
+   "query": "MATCH (:Asset {name:'M-101'})-[:HAS_PROCEDURE]->(d:Document) RETURN d.name, d.version ORDER BY d.version DESC;",
+   "need": "문서 ID·버전",
+   "ok": true,
+   "header": [
+    "d.name, d.version"
+   ],
+   "rows": [
+    "\"AR100-MIXER-RESPONSE\", 2"
+   ],
+   "error": ""
+  },
+  "CQ04": {
+   "kind": "sql",
+   "query": "SELECT e.payload->>'tag', e.payload->>'value', e.payload->>'ts', e.payload->>'quality' FROM manufacturing_events e WHERE kind='alarm_received' ORDER BY id DESC LIMIT 3;",
+   "need": "센서·값·시각·품질(품질은 알람 원문에 있어야 answered)",
+   "ok": true,
+   "rows": [
+    "TT-101 | 95.722565 | 1790633428613688000 | ",
+    "TT-102 | 126.10907 | 1790633420613721300 | ",
+    "TT-101 | 95.047226 | 1790633349619850000 | "
+   ],
+   "error": ""
+  },
+  "CQ05": {
+   "kind": "sql",
+   "query": "SELECT p.id, jsonb_array_length(coalesce(p.body->'cause_assessment','[]')) AS candidates, p.body->'citations', p.evidence->'graph'->'documents'->0->>'version' FROM manufacturing_proposals p WHERE NOT (p.body ? 'cause_assessment') ORDER BY created_at DESC LIMIT 3;",
+   "need": "구조화된 원인후보 + 관측 근거 + 문서 버전(요약문에만 있으면 partial)",
+   "ok": true,
+   "rows": [
+    "43e66581-7907-4b13-94b6-69a0a95f4b23 | 0 | [\"AR100-THERMAL-RESPONSE\", \"AR100-FAILURE-MODES\"] | 1",
+    "0d602f57-8c88-4f66-a6ad-3dedee8981e6 | 0 | [\"AR100-THERMAL-RESPONSE\", \"AR100-FAILURE-MODES\"] | 1",
+    "2dee0fa2-62a7-4e61-8155-c61de4185c37 | 0 | [\"AR100-THERMAL-RESPONSE\", \"AR100-FAILURE-MODES\", \"AR100-ASSET-CONTEXT\"] | 1"
+   ],
+   "error": ""
+  },
+  "CQ06": {
+   "kind": "sql",
+   "query": "SELECT p.id, (p.evidence ? 'history') AS observed, (p.body ? 'summary') AS inferred FROM manufacturing_proposals p WHERE NOT (p.body ? 'cause_assessment') LIMIT 3;",
+   "need": "관측(evidence)과 추론(body)이 분리 저장",
+   "ok": true,
+   "rows": [
+    "49118afe-8462-4971-abc0-1f73443a538e | t | t",
+    "8afe65c2-064f-4cec-a339-0794000acc2e | t | t",
+    "293b6126-ab2d-4eea-8a01-22d58f599001 | t | t"
+   ],
+   "error": ""
+  },
+  "CQ07": {
+   "kind": "sql",
+   "query": "SELECT r.model, (SELECT string_agg(DISTINCT e.payload->>'tool', ',') FROM manufacturing_events e WHERE e.payload->>'run_id'=r.id::text AND e.kind='agent_tool_started') AS tools, NULL AS prompt_version FROM manufacturing_analysis_runs r ORDER BY created_at DESC LIMIT 3;",
+   "need": "모델·도구·프롬프트 버전",
+   "ok": true,
+   "rows": [
+    "openai:coding | alarm,documents,manual_search,observations,ontology | ",
+    "openai:coding | alarm,documents,manual_search,observations,ontology | ",
+    "openai:coding | alarm,documents,manual_search,observations,ontology | "
+   ],
+   "error": ""
+  },
+  "CQ08": {
+   "kind": "sql",
+   "query": "SELECT column_name FROM information_schema.columns WHERE table_name='manufacturing_proposals' AND column_name IN ('decision','completed_at','decided_by');",
+   "need": "결정·사유·시각·결정자 칸(capability)",
+   "ok": true,
+   "rows": [
+    "completed_at",
+    "decision"
+   ],
+   "error": ""
+  },
+  "CQ09": {
+   "kind": "sql",
+   "query": "SELECT column_name FROM information_schema.columns WHERE table_name='manufacturing_proposals' AND column_name IN ('state_fingerprint','result','started_at');",
+   "need": "승인 시점 조건 지문과 실행 직전 재검사 결과 칸(capability)",
+   "ok": true,
+   "rows": [
+    "result",
+    "started_at",
+    "state_fingerprint"
+   ],
+   "error": ""
+  },
+  "CQ10": {
+   "kind": "sql",
+   "query": "SELECT column_name FROM information_schema.columns WHERE table_name IN ('manufacturing_proposals','manufacturing_operator_commands') AND column_name='result';",
+   "need": "명령 응답과 상태 반영 확인 결과 칸(capability)",
+   "ok": true,
+   "rows": [
+    "result",
+    "result"
+   ],
+   "error": ""
+  },
+  "CQ11": {
+   "kind": "sql",
+   "query": "SELECT column_name FROM information_schema.columns WHERE table_name IN ('manufacturing_operator_commands','manufacturing_proposals') AND column_name IN ('blocked_by','path');",
+   "need": "인터록 차단 기록 + 경로 C1/C2/C3 구분 칸(capability)",
+   "ok": true,
+   "rows": [],
+   "error": ""
+  },
+  "CQ12": {
+   "kind": "sql",
+   "query": "SELECT count(*) FILTER (WHERE jsonb_array_length(coalesce(p.body->'citations','[]'))=0) AS without_docs, count(*) AS total FROM manufacturing_proposals p WHERE NOT (p.body ? 'cause_assessment');",
+   "need": "근거 문서 없는 원인후보 수를 셀 수 있음",
+   "ok": true,
+   "rows": [
+    "0 | 23"
+   ],
+   "error": ""
+  },
+  "CQ13": {
+   "kind": "sql",
+   "query": "SELECT device, correlation_key, count(*) FROM manufacturing_incidents GROUP BY 1,2 HAVING count(*)>1 ORDER BY 3 DESC LIMIT 3;",
+   "need": "같은 설비 반복 사건",
+   "ok": true,
+   "rows": [
+    "reactor-line-01 | [\"AR-100\",\"reactor-line-01\",\"MULTIVARIATE:ML_AUTOENCODER\"] | 72",
+    "reactor-line-01 | [\"AR-100\",\"reactor-line-01\",\"TT-102:ZSCORE\"] | 21",
+    "reactor-line-01 | [\"AR-100\",\"reactor-line-01\",\"TT-102:THRESHOLD_USL\"] | 18"
+   ],
+   "error": ""
+  },
+  "CQ14": {
+   "kind": "graph",
+   "query": "MATCH (i) WHERE i:Interlock OR (i:ControlPoint AND i.name='interlock') OPTIONAL MATCH (i)-[r]-(x) RETURN labels(i), i.name, type(r), x.name;",
+   "need": "인터록 → 막는 명령 관계(문서 절 검색으로만 찾으면 partial)",
+   "ok": true,
+   "header": [
+    "labels(i), i.name, type(r), x.name"
+   ],
+   "rows": [
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"EXPOSES_POINT\", \"reactor-line-01\"",
+    "[\"_Entity\", \"ControlPoint\"], \"interlock\", \"IMPORTED\", NULL"
+   ],
+   "error": ""
+  },
+  "CQ15": {
+   "kind": "sql",
+   "query": "SELECT column_name FROM information_schema.columns WHERE table_name LIKE 'manufacturing%' AND column_name IN ('ack_state','acknowledged_by','acknowledged_at','shelved');",
+   "need": "ISA-18.2 확인 상태·확인자·시각",
+   "ok": true,
+   "rows": [],
+   "error": ""
+  }
+ }
+}
