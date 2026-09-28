@@ -5,6 +5,8 @@
 
   generated/    V1 Flink 1.20.1 (EXP-112a)  → 알람 토픽 exp.l4.alerts.flinksql
   generated22/  Flink 2.2.1     (EXP-112)   → 알람 토픽 exp.l4.alerts.flink22, 호스트 flink22-*
+각 변형은 V1 ONNX 잡 설정(flink/onnx-job/job.properties)의 사본도 받는다. 토픽만 후보별로 바꾼다
+(clean → exp.l4.clean.<후보>, score → exp.l4.score.<후보>, ML 알람 → 후보 알람 토픽). 보간·창·임계치 값은 V1 그대로.
 """
 import pathlib
 import re
@@ -49,6 +51,15 @@ def build(outdir, v):
     leftover = [p.name for p in (out / "sql").glob("*.sql")
                 if any(f"'{t}'" in p.read_text(encoding="utf-8") for t in topics)]
     assert not leftover, f"원본 토픽이 남은 SQL: {leftover}"
+    suffix = v["alerts"].rsplit(".", 1)[1]
+    props = (ROOT / "flink" / "onnx-job" / "job.properties").read_text(encoding="utf-8")
+    subs = {"sensor.telemetry.raw": "exp.l4.raw", "sensor.telemetry.clean": f"exp.l4.clean.{suffix}",
+            "sensor.anomaly.score": f"exp.l4.score.{suffix}", "sensor.alerts": v["alerts"],
+            "flink-tier2-onnx": f"{v['host']}-tier2-onnx"}
+    for old, new in subs.items():
+        props, n = re.subn(rf"= {re.escape(old)}\n", f"= {new}\n", props)
+        assert n == 1, (old, n)
+    (out / "job.properties").write_text(props, encoding="utf-8")
     print(f"{outdir}: alerts={v['alerts']} host={v['host']}-* | JM 800m, TM 1600m, slots 8 (V1 동일)")
 
 

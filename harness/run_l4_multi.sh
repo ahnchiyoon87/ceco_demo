@@ -12,12 +12,12 @@ T="$B --profile tools run --rm -T tools"
 raw="experiments/$exp/raw"; mkdir -p "$raw"
 [ -e "$raw/replay_${run}_manifest.json" ] && { echo "실행 ID $run 은 $exp 에서 이미 쓰였다"; exit 1; }
 
-# 사전 점검: 두 Flink 모두 잡 3개 RUNNING (후보 목록에 있을 때)
+# 사전 점검: 각 Flink 클러스터 잡 4개 RUNNING (규칙 SQL/CEP 3 + V1 ONNX 잡 1, 후보 목록에 있을 때)
 for pair in "flinksql:http://flink-jobmanager:8081" "flink22:http://flink22-jobmanager:8081" "cep:http://flinkcep-jobmanager:8081"; do
   c=${pair%%:*}; url=${pair#*:}
   case " $cands " in *" $c "*) ;; *) continue;; esac
   st=$($T python -c "import json,urllib.request;j=json.load(urllib.request.urlopen('$url/jobs/overview'))['jobs'];print(sum(x['state']=='RUNNING' for x in j),len(j))" 2>/dev/null | tail -1)
-  [ "$st" = "3 3" ] || { echo "사전 점검 실패: $c 잡 상태 '$st'"; exit 1; }
+  [ "$st" = "${JOBS:-4} ${JOBS:-4}" ] || { echo "사전 점검 실패: $c 잡 상태 '$st'"; exit 1; }
   echo "사전 점검 통과: $c ($st)"
 done
 
@@ -38,8 +38,10 @@ done
 python - "$raw" "$run" $cands <<'EOF'
 import collections, csv, json, statistics as st, sys
 raw, run, cands = sys.argv[1], sys.argv[2], sys.argv[3:]
+# ML(TIER2_ML) 알람은 처리시각 타이머라 실행마다 시각이 달라 규칙 비교에서 뺀다. 동일성은 S13(harness/tools/s13.py)에서 따로 판정
 load = lambda t: collections.Counter((r["device"], r["alert_type"], r["tag"], r["ts"])
-                                     for r in map(json.loads, open(f"{raw}/alerts_{run}_{t}.jsonl", encoding="utf-8")))
+                                     for r in map(json.loads, open(f"{raw}/alerts_{run}_{t}.jsonl", encoding="utf-8"))
+                                     if r.get("detector") != "TIER2_ML")
 sets = {c: load(c) for c in cands}
 base = cands[0]
 summary = {"run": run, "alerts": {c: sum(s.values()) for c, s in sets.items()},

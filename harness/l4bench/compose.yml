@@ -11,6 +11,7 @@ x-flink: &flink
   volumes:
     - ./generated/config.yaml:/opt/flink/conf/config.yaml:ro
     - ./generated/sql:/opt/flink/sql:ro
+    - ./models:/opt/models:ro          # V1 model-store 볼륨의 model.onnx·model_meta.json 사본(sha256 은 decision-log)
 
 services:
   kafka:
@@ -30,7 +31,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_HEAP_OPTS: "-Xmx384m -Xms384m"   # 벤치 PC 메모리 여유 때문에 축소
+      KAFKA_HEAP_OPTS: "-Xmx768m -Xms768m"   # 384m 에서 GC 과부하(유휴 CPU 205%, EXP-L4 m3 무효) → 상향. 모든 후보 공통
       CLUSTER_ID: l4bench-kraft-cluster
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
@@ -46,9 +47,9 @@ services:
     # V1 과 같은 파티션 수: raw 6, alerts 3
     command:
       - |
-        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1 exp.l4.dropped.cep:1; do
+        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.clean.flinksql:6 exp.l4.clean.flink22:6 exp.l4.clean.cep:6 exp.l4.clean.python:6 exp.l4.score.flinksql:3 exp.l4.score.flink22:3 exp.l4.score.cep:3 exp.l4.score.python:3 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1 exp.l4.dropped.cep:1; do
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
-            --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1
+            --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1             --config message.timestamp.type=LogAppendTime   # 지연 측정 기준을 브로커 수신 시각으로 통일(Flink DataStream 싱크는 이벤트 시각을 찍음)
         done
 
   flink-jobmanager:
@@ -95,6 +96,7 @@ services:
     volumes:
       - ./generated22/config.yaml:/opt/flink/conf/config.yaml:ro
       - ./generated22/sql:/opt/flink/sql:ro
+      - ./models:/opt/models:ro
 
   submit-flink22:
     image: l4bench-flink22:2.2.1
@@ -104,11 +106,14 @@ services:
     volumes:
       - ./generated22/client-config.yaml:/opt/flink/conf/config.yaml:ro
       - ./generated22/sql:/opt/flink/sql:ro
+      - ./generated22/job.properties:/opt/flink/job/job.properties:ro
+      - ../../candidates/l4-flink22-onnx/target/anomaly-job-1.0.jar:/opt/flink/usrlib/anomaly-job.jar:ro
     entrypoint: ["/bin/bash", "-c"]
     command:
       - |
         cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
         /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+        /opt/flink/bin/flink run -d -c org.uengine.iiot.AnomalyJob /opt/flink/usrlib/anomaly-job.jar /opt/flink/job/job.properties 2>&1 | grep -E "JobID|ERROR|Exception" | head -20
 
   # EXP-111 후보: Flink 2.2.1 전용 클러스터 = V1 SQL 임계치·Z-Score + DataStream CEP 잡 (profile flinkcep)
   flinkcep-jobmanager:
@@ -138,6 +143,7 @@ services:
     volumes:
       - ./generatedcep/config.yaml:/opt/flink/conf/config.yaml:ro
       - ./generatedcep/sql:/opt/flink/sql:ro
+      - ./models:/opt/models:ro
 
   submit-flinkcep:
     image: l4bench-flink22:2.2.1
@@ -148,12 +154,15 @@ services:
       - ./generatedcep/client-config.yaml:/opt/flink/conf/config.yaml:ro
       - ./generatedcep/sql:/opt/flink/sql:ro
       - ../../candidates/l4-flink-cep/target/cep-job-1.0.jar:/opt/flink/usrlib/cep-job.jar:ro
+      - ./generatedcep/job.properties:/opt/flink/job/job.properties:ro
+      - ../../candidates/l4-flink22-onnx/target/anomaly-job-1.0.jar:/opt/flink/usrlib/anomaly-job.jar:ro
     entrypoint: ["/bin/bash", "-c"]
     command:
       - |
         cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql > /tmp/p.sql
         /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
         /opt/flink/bin/flink run -d -c exp.CepJob /opt/flink/usrlib/cep-job.jar 2>&1 | grep -E "JobID|Job has been submitted|ERROR|Exception" | head -20
+        /opt/flink/bin/flink run -d -c org.uengine.iiot.AnomalyJob /opt/flink/usrlib/anomaly-job.jar /opt/flink/job/job.properties 2>&1 | grep -E "JobID|ERROR|Exception" | head -20
 
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:
@@ -166,8 +175,9 @@ services:
     volumes:
       - ../../flink/sql/tag_limits.csv:/app/tag_limits.csv:ro   # V1 과 같은 규격 파일
       - l4py-state:/state                                       # EXP-113b 재시작 스냅샷
+      - ./models:/opt/models:ro                                 # V1 ONNX 모델 사본
 
-  # V1 submit-jobs.sh 와 같은 방식: 01~04 SQL 을 합쳐 sql-client 로 제출 (ONNX 잡은 L4 규칙 비교 범위 밖)
+  # V1 submit-jobs.sh 와 같은 방식: 01~04 SQL 을 합쳐 sql-client 로 제출 + V1 이미지 안의 ONNX 잡(anomaly-job.jar) 제출
   submit-flinksql:
     image: iiot/flink-onnx:1.0
     profiles: [tools]
@@ -177,11 +187,13 @@ services:
     volumes:
       - ./generated/client-config.yaml:/opt/flink/conf/config.yaml:ro
       - ./generated/sql:/opt/flink/sql:ro
+      - ./generated/job.properties:/opt/flink/job/job.properties:ro
     entrypoint: ["/bin/bash", "-c"]
     command:
       - |
         cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
         /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+        /opt/flink/bin/flink run -d -c org.uengine.iiot.AnomalyJob /opt/flink/job/anomaly-job.jar /opt/flink/job/job.properties 2>&1 | grep -E "JobID|ERROR|Exception" | head -20
 
   tools:
     build: ../tools

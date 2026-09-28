@@ -20,6 +20,9 @@ services:
   nanomq:
     image: emqx/nanomq:0.25.6
     hostname: nanomq
+    volumes:
+      - ./nanomq.conf:/etc/nanomq.conf:ro    # 기본 설정 + 큐 10만·SQLite 영속(파일 머리 주석)
+      - nanomq-data:/data
 
   hivemq:
     image: hivemq/hivemq-ce:2026.5
@@ -37,4 +40,5 @@ services:
 
 volumes:
   mosq-data:
+  nanomq-data:
   hivemq-data:

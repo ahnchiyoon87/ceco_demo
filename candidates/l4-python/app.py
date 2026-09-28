@@ -10,6 +10,8 @@ V1 Flink SQL(flink/sql/01~04)의 의미를 그대로 옮긴다.
 - 재시작 복구: 1초마다 {파티션별 다음 오프셋, 버퍼, 규칙 상태, 워터마크}를 한 파일에 원자적으로 저장하고,
   시작할 때 있으면 그 지점부터 다시 읽는다(Flink 체크포인트 대응). 스냅샷 뒤 발행한 알람은 재발행될 수 있다(최소 1회).
 - 출력: alerts 스키마(SCHEMA.md §3)와 같은 필드.
+- V1 ONNX 잡 대응(ml.py): raw → 보간(clean 토픽) → 장치별 ONNX 점수(score 토픽) → ML 알람(alerts 토픽). 상태는 같은 스냅샷에 저장.
+- 운영 지표: Prometheus 형식 :9249/metrics (V1 Flink 리포터 포트와 같음).
 """
 import collections
 import csv
@@ -20,6 +22,9 @@ import os
 import time
 
 from confluent_kafka import OFFSET_END, Consumer, Producer, TopicPartition
+from prometheus_client import Counter, Gauge, Histogram, start_http_server
+
+import ml
 
 BOOT = os.environ["BOOTSTRAP"]
 IN = os.environ.get("IN_TOPIC", "exp.l4.raw")
@@ -33,6 +38,22 @@ VT_LIMIT = float(os.environ.get("VT101_LIMIT", "7.1"))
 LIMITS_CSV = os.environ.get("TAG_LIMITS", "/app/tag_limits.csv")
 SNAP = os.environ.get("SNAPSHOT", "/state/snapshot.json")
 SNAP_EVERY_S = float(os.environ.get("SNAPSHOT_EVERY_S", "1"))
+ML_ON = os.environ.get("ML", "1") == "1"
+CLEAN = os.environ.get("CLEAN_TOPIC", "exp.l4.clean.python")
+SCORE = os.environ.get("SCORE_TOPIC", "exp.l4.score.python")
+MODEL = os.environ.get("MODEL_PATH", "/opt/models/model.onnx")
+META = os.environ.get("MODEL_META", "/opt/models/model_meta.json")
+METRICS_PORT = int(os.environ.get("METRICS_PORT", "9249"))
+
+M_IN = Counter("l4_records_in_total", "입력 레코드 수")
+M_ALERT = Counter("l4_alerts_out_total", "발행 알람 수", ["detector"])
+M_DROP = Counter("l4_late_dropped_total", "늦게 도착해 순서 규칙에서 폐기한 레코드 수")
+M_CLEAN = Counter("l4_clean_out_total", "clean 발행 수", ["quality"])
+M_SCORE = Counter("l4_scores_out_total", "ONNX 점수 발행 수")
+M_INFER = Histogram("l4_inference_ms", "ONNX 추론 시간(ms)", buckets=(0.1, 0.25, 0.5, 1, 2, 5, 10, 50))
+M_WM_LAG = Gauge("l4_watermark_lag_seconds", "현재 시각 - 워터마크")
+M_SNAP_AGE = Gauge("l4_snapshot_age_seconds", "마지막 스냅샷 이후 경과")
+M_RESTARTS = Gauge("l4_restarts_total", "스냅샷에서 복구해 재시작한 횟수")
 
 
 def load_limits(path):
@@ -142,9 +163,33 @@ def main():
                "value": r["value"], "alert_type": kind, "severity": sev, "detector": det, "detail": detail}
         prod.produce(OUT, value=json.dumps(out, ensure_ascii=False))
         prod.poll(0)
+        M_ALERT.labels(det).inc()
 
     snap = load_snapshot()
     rules = Rules(emit, snap.get("rules") if snap else None)
+    restarts = (snap.get("restarts", 0) + 1) if snap else 0
+    M_RESTARTS.set(restarts)
+    start_http_server(METRICS_PORT)
+    interp = scorer = None
+    if ML_ON:
+        interp = ml.Interpolator(state=snap.get("interp") if snap else None)
+        scorer = ml.OnnxScorer(MODEL, META, state=snap.get("scorer") if snap else None)
+
+    def ml_in(r):
+        for c in interp.process(r):
+            prod.produce(CLEAN, value=json.dumps(c, ensure_ascii=False))
+            M_CLEAN.labels(c["quality"]).inc()
+            scorer.process(c, int(time.time() * 1000))
+
+    def ml_fire():
+        scores, alerts = scorer.fire_due(int(time.time() * 1000))
+        for sc in scores:
+            prod.produce(SCORE, value=json.dumps(sc, ensure_ascii=False))
+            M_SCORE.inc()
+            M_INFER.observe(sc["inference_ms"])
+        for al in alerts:
+            prod.produce(OUT, value=json.dumps(al, ensure_ascii=False))
+            M_ALERT.labels(al["detector"]).inc()
     heap = [tuple(x) for x in snap["heap"]] if snap else []
     heapq.heapify(heap)
     seq = max((x[1] for x in heap), default=-1) + 1
@@ -160,7 +205,12 @@ def main():
 
     last_snap = now
     while True:
-        m = cons.poll(0.2)
+        wait = 0.2
+        if scorer is not None:
+            nf = scorer.next_fire_ms()
+            if nf is not None:
+                wait = max(0.0, min(wait, nf / 1000 - time.time()))
+        m = cons.poll(wait)
         now = time.time()
         if m is not None and not m.error():
             p = m.partition()
@@ -171,11 +221,15 @@ def main():
             except (ValueError, KeyError, TypeError):
                 r = None
             if r is not None:
+                M_IN.inc()
                 rules.on_arrival(r)
+                if interp is not None:
+                    ml_in(r)
                 pmax[p] = r["ts"] if pmax[p] is None else max(pmax[p], r["ts"])
                 pseen[p] = now
                 if r["ts"] <= emitted_wm:
                     prod.produce(DROP, value=json.dumps({**r, "reason": "late", "watermark_ns": emitted_wm}))
+                    M_DROP.inc()
                 else:
                     heapq.heappush(heap, (r["ts"], seq, r))
                     seq += 1
@@ -186,10 +240,17 @@ def main():
                 emitted_wm = wm
         while heap and heap[0][0] <= emitted_wm:
             rules.on_ordered(heapq.heappop(heap)[2])
+        if scorer is not None:
+            ml_fire()
         prod.poll(0)
+        if emitted_wm > 0:
+            M_WM_LAG.set(now - emitted_wm / 1e9)
+        M_SNAP_AGE.set(now - last_snap)
         if now - last_snap >= SNAP_EVERY_S:
             prod.flush(5)   # 스냅샷 이전 알람은 브로커에 확정
-            save_snapshot({"offsets": next_off, "heap": heap, "emitted_wm": emitted_wm, "rules": rules.state()})
+            save_snapshot({"offsets": next_off, "heap": heap, "emitted_wm": emitted_wm, "rules": rules.state(),
+                           "restarts": restarts,
+                           "interp": interp.state() if interp else None, "scorer": scorer.state() if scorer else None})
             last_snap = now
 
 

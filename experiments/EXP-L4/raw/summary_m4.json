@@ -1,0 +1,53 @@
+{
+ "run": "m4",
+ "alerts": {
+  "flinksql": 259,
+  "flink22": 259,
+  "cep": 259,
+  "python": 259
+ },
+ "diff_vs_flinksql": {
+  "flink22": {
+   "only_flink22": 0,
+   "only_flinksql": 0
+  },
+  "cep": {
+   "only_cep": 0,
+   "only_flinksql": 0
+  },
+  "python": {
+   "only_python": 0,
+   "only_flinksql": 0
+  }
+ },
+ "resources": {
+  "flinksql": {
+   "n": 31,
+   "mem_avg_mib": 1223,
+   "mem_max_mib": 1256,
+   "cpu_avg_pct": 67.1,
+   "cpu_max_pct": 358.4
+  },
+  "flink22": {
+   "n": 31,
+   "mem_avg_mib": 1221,
+   "mem_max_mib": 1289,
+   "cpu_avg_pct": 68.7,
+   "cpu_max_pct": 278.3
+  },
+  "cep": {
+   "n": 31,
+   "mem_avg_mib": 1204,
+   "mem_max_mib": 1254,
+   "cpu_avg_pct": 66.6,
+   "cpu_max_pct": 297.4
+  },
+  "python": {
+   "n": 31,
+   "mem_avg_mib": 16,
+   "mem_max_mib": 18,
+   "cpu_avg_pct": 3.8,
+   "cpu_max_pct": 21.4
+  }
+ }
+}

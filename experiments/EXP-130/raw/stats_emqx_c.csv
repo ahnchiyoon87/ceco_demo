@@ -1,0 +1,11 @@
+t_epoch,name,cpu_pct,mem_mib
+1790605967,brokerbench-emqx-1,127.31,273.2
+1790605971,brokerbench-emqx-1,14.06,229.9
+1790605974,brokerbench-emqx-1,62.84,229.6
+1790605977,brokerbench-emqx-1,13.09,229.6
+1790605981,brokerbench-emqx-1,139.58,230.5
+1790605985,brokerbench-emqx-1,12.32,229.5
+1790605988,brokerbench-emqx-1,15.47,229.8
+1790605991,brokerbench-emqx-1,15.33,229.6
+1790605995,brokerbench-emqx-1,11.74,230.0
+1790605998,brokerbench-emqx-1,16.08,229.8

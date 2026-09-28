@@ -1,0 +1,20 @@
+{
+ "sent": 7200,
+ "received_unique": 7200,
+ "lost": 0,
+ "duplicates": 1,
+ "publish_rc_fail": 0,
+ "latency_ms": {
+  "p50": 1.08,
+  "p95": 1.93,
+  "p99": 468.58,
+  "max": 1007.2
+ },
+ "max_gap_ms": 1013.7,
+ "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart",
+ "broker": "mosquitto",
+ "mode": "live_restart",
+ "run": "br",
+ "rate": 120,
+ "duration": 60
+}

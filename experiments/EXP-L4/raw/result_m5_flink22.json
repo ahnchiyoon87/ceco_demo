@@ -1,0 +1,994 @@
+{
+ "exp": "EXP-L4",
+ "run": "m5",
+ "alerts_topic": "exp.l4.alerts.flink22",
+ "pass": 70,
+ "fail": 0,
+ "record": [
+  {
+   "device": "m5.93a1c-S07-1",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-10",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-2",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-3",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-4",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-5",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-6",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-7",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-8",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-9",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  }
+ ],
+ "cep_latency_ms": {
+  "n": 40,
+  "p50": 5722.6,
+  "p95": 6006.0,
+  "max": 6112.0,
+  "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+ },
+ "rows": [
+  {
+   "device": "m5.93a1c-S02-1",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 4,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-10",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-2",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 3,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-3",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 2,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-4",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 2,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-5",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 2,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-6",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "ZSCORE": 2,
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-7",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-8",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S02-9",
+   "case": "S02",
+   "expected_cep": null,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-1",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-10",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-2",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-3",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-4",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-5",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-6",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-7",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-8",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S04-9",
+   "case": "S04",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-1",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-10",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-2",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-3",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-4",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-5",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-6",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-7",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-8",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S05-9",
+   "case": "S05",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-1",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-10",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-2",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-3",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-4",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-5",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-6",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-7",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-8",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06a-9",
+   "case": "S06a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-1",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-10",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-2",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-3",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-4",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-5",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-6",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-7",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-8",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S06b-9",
+   "case": "S06b",
+   "expected_cep": 0,
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S07-1",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-10",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-2",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-3",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-4",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-5",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-6",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-7",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-8",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S07-9",
+   "case": "S07",
+   "expected_cep": "policy",
+   "cep": 0,
+   "types": {
+    "THRESHOLD_USL": 2
+   },
+   "verdict": "RECORD(cep=0, dropped_logged=0)"
+  },
+  {
+   "device": "m5.93a1c-S08a-1",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-10",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-2",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-3",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-4",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-5",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-6",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-7",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-8",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08a-9",
+   "case": "S08a",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 4,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-1",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-10",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-2",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-3",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-4",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-5",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-6",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-7",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1,
+    "ZSCORE": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-8",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "m5.93a1c-S08b-9",
+   "case": "S08b",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "THRESHOLD_USL": 2,
+    "CEP_BEARING": 1
+   },
+   "verdict": "PASS"
+  }
+ ]
+}

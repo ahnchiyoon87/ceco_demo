@@ -14,3 +14,7 @@ flink/onnx-job/target/
 # 모델은 model-trainer 가 기동 시 생성
 ml/*.onnx
 ml/model_meta.json
+
+# 빌드 산출물·원본 볼륨에서 복사한 모델(해시는 decision-log #42)
+candidates/*/target/
+harness/l4bench/models/
