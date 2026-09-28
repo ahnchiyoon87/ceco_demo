@@ -14,8 +14,8 @@ import yaml
 
 API = "http://127.0.0.1:38000/api/operations"
 SIM = "http://127.0.0.1:37080"
-DURATION = {"bearing_wear": 600, "heater_stuck": 1200, "spike": None}
-WAIT_ALARM = {"SC1_bearing": 240, "SC2_heater_stuck": 1200, "SC3_overpressure": 180}
+DURATION = {"bearing_wear": 600, "heater_stuck": 2400, "spike": None}  # heater: 71→95°C 에 약 27분(#76)
+WAIT_ALARM = {"SC1_bearing": 240, "SC2_heater_stuck": 2400, "SC3_overpressure": 180}
 arm, scenario, run_id = sys.argv[1:4]
 out = Path(f"experiments/EXP-AI/raw/{run_id}.json")
 if out.exists():

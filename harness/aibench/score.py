@@ -35,7 +35,9 @@ for path in sorted(Path("experiments/EXP-AI/raw").glob("*.json")):
     text = " ".join([body.get("summary", "")] + [c.get("evidence", "") for c in body.get("cause_assessment", [])]) if body else ""
     steps = {s["step"]: s for s in d["steps"]}
     rows.append({
-        "run_id": d["run_id"], "arm": d["arm"], "scenario": d["scenario"], "outcome": outcome,
+        "run_id": d["run_id"], "arm": d["arm"], "outcome": outcome,
+        # 보조 변형(분석 지연, 비맹검 #75)은 본 실험과 따로 집계한다
+        "scenario": d["scenario"] + ("+지연(보조)" if d.get("analyze_delay_s") else ""),
         "action_match": outcome == sc["action"] if outcome != "invalid" else None,
         "cause_score": cause_score, "cause_detail": {fm: [causes.get(fm), st] for fm, st in expected.items()} if causes else None,
         "forbidden_cited": sorted(cited & forbidden_docs), "citations": sorted(cited), "tools": tools,

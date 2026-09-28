@@ -1,0 +1,812 @@
+{
+ "rows": [
+  {
+   "run_id": "A-SC1-1",
+   "arm": "A",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 12.1,
+   "alarm_wait_s": 32.5,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC1-2",
+   "arm": "A",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 12.1,
+   "alarm_wait_s": 33.3,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC1-3",
+   "arm": "A",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "observations"
+   ],
+   "analysis_s": 12.2,
+   "alarm_wait_s": 32.4,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3-1",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "observations"
+   ],
+   "analysis_s": 12.2,
+   "alarm_wait_s": 3.3,
+   "confirm_review": [
+    "이는 압력 센서 이상을 뒷받침하지만 원인이나 고장 위치를 확정하지 않습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3-2",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "observations"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 3.6,
+   "confirm_review": [
+    "이 값만으로 고장 원인이나 압력 상승 원인을 확정할 수 없습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3-3",
+   "arm": "A",
+   "outcome": "needs_evidence",
+   "scenario": "SC3_overpressure",
+   "action_match": false,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 9.2,
+   "alarm_wait_s": 3.4,
+   "confirm_review": [
+    "원인이나 실제 설비 고장은 확정하지 않습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3d-1",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 12.3,
+   "alarm_wait_s": 3.7,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3d-2",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 12.1,
+   "alarm_wait_s": 3.6,
+   "confirm_review": [
+    "압력 이상 원인은 이 자료만으로 확정할 수 없습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC3d-3",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "observations",
+    "alarm"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 3.5,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "B-SC1-1",
+   "arm": "B",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 31.9,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "B-SC1-2",
+   "arm": "B",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 32.2,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "B-SC1-3",
+   "arm": "B",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 9.2,
+   "alarm_wait_s": 32.4,
+   "confirm_review": [
+    "전류 상승 후 진동 상승은 베어링 마모 가설과 모순되지 않지만, 베어링 상태·축 정렬·윤활·속도 조건은 센서로 확인되지 않아 고장 원인은 확정하지 않습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "C-SC1-1",
+   "arm": "C",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": [
+    4,
+    4
+   ],
+   "cause_detail": {
+    "FM-MIXER-BEARING-WEAR": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-SHAFT-MISALIGNMENT": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-CRITICAL-SPEED": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-LOW-LEVEL": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "observations",
+    "ontology",
+    "manual_search"
+   ],
+   "analysis_s": 84.7,
+   "alarm_wait_s": 31.5,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC1-2",
+   "arm": "C",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": [
+    4,
+    4
+   ],
+   "cause_detail": {
+    "FM-MIXER-BEARING-WEAR": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-SHAFT-MISALIGNMENT": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-CRITICAL-SPEED": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-LOW-LEVEL": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "observations",
+    "manual_search",
+    "ontology",
+    "alarm"
+   ],
+   "analysis_s": 21.2,
+   "alarm_wait_s": 31.6,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC1-3",
+   "arm": "C",
+   "outcome": "stop_mixer",
+   "scenario": "SC1_bearing",
+   "action_match": true,
+   "cause_score": [
+    4,
+    4
+   ],
+   "cause_detail": {
+    "FM-MIXER-BEARING-WEAR": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-SHAFT-MISALIGNMENT": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-CRITICAL-SPEED": [
+     "unknown",
+     "unknown"
+    ],
+    "FM-MIXER-LOW-LEVEL": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-EVIDENCE-POLICY",
+    "AR100-FAILURE-MODES",
+    "AR100-MIXER-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "ontology",
+    "manual_search",
+    "observations"
+   ],
+   "analysis_s": 18.1,
+   "alarm_wait_s": 31.4,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC2-1",
+   "arm": "C",
+   "outcome": "invalid",
+   "scenario": "SC2_heater_stuck",
+   "action_match": null,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [],
+   "tools": [],
+   "analysis_s": null,
+   "alarm_wait_s": 1201.8,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3-1",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "refuted",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "observations",
+    "manual_search",
+    "ontology"
+   ],
+   "analysis_s": 18.2,
+   "alarm_wait_s": 3.3,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3-2",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "refuted",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "ontology",
+    "observations",
+    "manual_search"
+   ],
+   "analysis_s": 12.2,
+   "alarm_wait_s": 3.3,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3-3",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "unknown",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "ontology",
+    "documents",
+    "manual_search",
+    "observations"
+   ],
+   "analysis_s": 15.2,
+   "alarm_wait_s": 3.3,
+   "confirm_review": [
+    "이 관측은 과열이 과압 원인이라는 설명에 반대하지만 다른 원인을 확정하지 않습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3d-1",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "unknown",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "manual_search",
+    "ontology",
+    "observations"
+   ],
+   "analysis_s": 66.6,
+   "alarm_wait_s": 3.4,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3d-2",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "unknown",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "ontology",
+    "observations",
+    "manual_search"
+   ],
+   "analysis_s": 15.1,
+   "alarm_wait_s": 3.3,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC3d-3",
+   "arm": "C",
+   "outcome": "inspect_only",
+   "scenario": "SC3_overpressure+지연(보조)",
+   "action_match": true,
+   "cause_score": [
+    2,
+    3
+   ],
+   "cause_detail": {
+    "FM-PRESSURE-OVERHEAT": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-OUTLET-BLOCKED": [
+     "refuted",
+     "refuted"
+    ],
+    "FM-PRESSURE-TRANSIENT": [
+     "unknown",
+     "supported"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-PRESSURE-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "manual_search",
+    "alarm",
+    "observations",
+    "ontology"
+   ],
+   "analysis_s": 15.2,
+   "alarm_wait_s": 3.4,
+   "confirm_review": [
+    "원인은 확정하지 않았고 제안은 조치 실행이나 승인 권한을 부여하지 않습니다"
+   ],
+   "error": null
+  }
+ ],
+ "summary": {
+  "A|SC1_bearing": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    12.1,
+    12.1,
+    12.2
+   ]
+  },
+  "A|SC3_overpressure": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 2,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    12.2,
+    9.1,
+    9.2
+   ]
+  },
+  "A|SC3_overpressure+지연(보조)": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    12.3,
+    12.1,
+    9.1
+   ]
+  },
+  "B|SC1_bearing": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    9.1,
+    9.1,
+    9.2
+   ]
+  },
+  "C|SC1_bearing": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 12,
+   "cause_n": 12,
+   "forbidden": 0,
+   "analysis_s": [
+    84.7,
+    21.2,
+    18.1
+   ]
+  },
+  "C|SC2_heater_stuck": {
+   "runs": 1,
+   "valid": 0,
+   "action_ok": 0,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": []
+  },
+  "C|SC3_overpressure": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 6,
+   "cause_n": 9,
+   "forbidden": 0,
+   "analysis_s": [
+    18.2,
+    12.2,
+    15.2
+   ]
+  },
+  "C|SC3_overpressure+지연(보조)": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 6,
+   "cause_n": 9,
+   "forbidden": 0,
+   "analysis_s": [
+    66.6,
+    15.1,
+    15.2
+   ]
+  }
+ }
+}

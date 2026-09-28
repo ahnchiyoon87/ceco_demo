@@ -1,0 +1,86 @@
+{
+ "run_id": "C-SC2-1",
+ "arm": "C",
+ "scenario": "SC2_heater_stuck",
+ "started_at": "2026-09-28T17:10:41.376572+00:00",
+ "steps": [
+  {
+   "at": 1790615441.4009213,
+   "step": "precheck",
+   "active_faults": {},
+   "commands": {
+    "pump_run": true,
+    "agitator_run": true,
+    "heater_enable": true,
+    "cooler_enable": false,
+    "pump_speed_sp": 60.0,
+    "valve_open_sp": 45.1,
+    "temp_sp_c": 70.6
+   },
+   "interlock": false
+  },
+  {
+   "at": 1790615442.3292856,
+   "step": "setup",
+   "target": "heater_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790615443.4228063,
+   "step": "setup",
+   "target": "cooler_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790615443.4263425,
+   "step": "inject",
+   "response": {
+    "injected": "heater_stuck",
+    "duration_s": 1200.0,
+    "targets": [
+     "TT-101",
+     "TT-102"
+    ],
+    "desc": "히터 출력 고착: 정지 명령과 무관하게 열 공급 지속 (실제 모형 온도 변화)"
+   }
+  },
+  {
+   "at": 1790616645.1729043,
+   "step": "alarm",
+   "incident": null,
+   "waited_s": 1201.8
+  },
+  {
+   "at": 1790616645.1785765,
+   "step": "clear",
+   "response": {
+    "cleared": true
+   }
+  },
+  {
+   "at": 1790616646.2624135,
+   "step": "restore_cooling_on",
+   "result": "verified"
+  },
+  {
+   "at": 1790616867.3002894,
+   "step": "restore_cooled",
+   "seconds": 221.0,
+   "tt101": 71.2889
+  },
+  {
+   "at": 1790616868.3867857,
+   "step": "restore",
+   "target": "cooler_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790616869.1858478,
+   "step": "restore",
+   "target": "heater_enable",
+   "result": "verified"
+  }
+ ],
+ "invalid": "정해진 시간 안에 alarm_trigger 사건이 생기지 않음",
+ "finished_at": "2026-09-28T17:34:29.185885+00:00"
+}

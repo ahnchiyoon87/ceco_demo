@@ -16,12 +16,13 @@ switch_arm() {   # $1 = A|B|C
   current=$1
 }
 for item in $1; do
-  arm=${item%%:*}; rest=${item#*:}; sc=${rest%%:*}; rest=${rest#*:}; from=${rest%%:*}; to=${rest#*:}
+  arm=${item%%:*}; rest=${item#*:}; sc=${rest%%:*}; rest=${rest#*:}; from=${rest%%:*}; rest=${rest#*:}; to=${rest%%:*}
+  delay=0; [ "$rest" != "$to" ] && delay=${rest#*:}   # 선택 5번째 칸: 분석 지연 초(보조 변형 #75)
   [ "$arm" = "$current" ] || switch_arm $arm
   i=$from
   while [ $i -le $to ]; do
-    short=$(echo $sc | cut -d_ -f1)
-    python harness/aibench/run_scenario.py $arm $sc $arm-$short-$i 2>&1 | tail -1
+    short=$(echo $sc | cut -d_ -f1); [ "$delay" != 0 ] && short=${short}d
+    ANALYZE_DELAY_S=$delay python harness/aibench/run_scenario.py $arm $sc $arm-$short-$i 2>&1 | tail -1
     i=$((i+1))
   done
 done
