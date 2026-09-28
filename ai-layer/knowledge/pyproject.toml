@@ -29,6 +29,7 @@ dependencies = [
     "langchain-mcp-adapters>=0.1",
     "confluent-kafka>=2.6",
     "pymodbus==3.8.3",
+    "neo4j-graphrag[ollama]==1.21.0",
 ]
 
 [project.scripts]

@@ -22,6 +22,7 @@ from ..modules.operations.agent import router as manufacturing_agent_router, ini
 from ..modules.ontology.prepare import router as knowledge_prepare_router
 from ..modules.ontology.build import router as knowledge_build_router, initialize as initialize_knowledge_builds, mark_interrupted as mark_knowledge_interrupted
 from ..modules.operations.thermal_observation import run as observe_temperature
+from ..modules.operations.fault_ontology import router as fault_ontology_router
 
 
 @asynccontextmanager
@@ -67,6 +68,7 @@ def create_app() -> FastAPI:
     app.include_router(manufacturing_agent_router)
     app.include_router(knowledge_prepare_router)
     app.include_router(knowledge_build_router)
+    app.include_router(fault_ontology_router)
     return app
 
 

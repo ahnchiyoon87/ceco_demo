@@ -25,6 +25,7 @@ from ...shared.structured_failure import rejected_model_output
 from .api import connection, get_incident
 from .evidence import incident_evidence, live_state, history
 from .actions import Proposal, Decision, create_proposal, decide, event, knowledge_fingerprint
+from .fault_ontology import signatures, fault_context, search as manual_search
 from ..agent_session.service import _init_model, _resolve_agent_model_profile
 from ..process_runtime.checkpointer import checkpoint_postgres_uri
 from ..process_runtime.hitl import _ask_user_impl, extract_interrupt_payload
@@ -80,21 +81,41 @@ class NeedsEvidence(BaseModel):
     citations: list[str] = Field(default_factory=list, max_length=30)
 
 
-def grounded_response_schema(evidence):
+class CauseAssessment(BaseModel):
+    """Observation-based status of one graph candidate. There is no 'confirmed' status."""
+    model_config = ConfigDict(extra="forbid")
+    failure_mode: str
+    status: Literal["supported", "refuted", "unknown", "not_applicable"]
+    evidence: str = Field(min_length=5, max_length=2000)
+
+
+def assessment_field(failure_modes):
+    """Every graph candidate must be assessed exactly by its returned ID."""
+    if not failure_modes:
+        return (list[CauseAssessment], Field(default_factory=list, max_length=0,
+                description='No graph candidates were returned; must be empty.'))
+    item = create_model('GraphCauseAssessment', __base__=CauseAssessment,
+                        failure_mode=(Literal[tuple(failure_modes)], Field(description='failure_mode ID from trace_fault_ontology')))
+    return (list[item], Field(min_length=len(failure_modes), max_length=len(failure_modes),
+            description='One entry per failure_mode returned by trace_fault_ontology.'))
+
+
+def grounded_response_schema(evidence, failure_modes=()):
     """Expose exact retrieved document IDs, without repairing invalid citations."""
     ids = tuple(sorted({d['document_id'] for d in evidence['graph'].get('documents', [])}))
     description = ('Exact document_id values from get_asset_documents only. '
                    'Put version, section, quotation and observation/time explanations in summary, '
                    'never append them to an ID or add sensor observations as document IDs.')
+    causes = assessment_field(failure_modes)
     if not ids:
-        return create_model('GroundedNeedsEvidence', __base__=NeedsEvidence,
+        return create_model('GroundedNeedsEvidence', __base__=NeedsEvidence, cause_assessment=causes,
                             citations=(list[str], Field(default_factory=list, max_length=0,
                                                         description='No documents retrieved; must be empty.')))
     citation = Literal[ids]
-    proposal = create_model('GroundedProposal', __base__=Proposal,
+    proposal = create_model('GroundedProposal', __base__=Proposal, cause_assessment=causes,
                             citations=(list[citation], Field(min_length=1, max_length=30,
                                                             description=description)))
-    missing = create_model('GroundedNeedsEvidence', __base__=NeedsEvidence,
+    missing = create_model('GroundedNeedsEvidence', __base__=NeedsEvidence, cause_assessment=causes,
                            citations=(list[citation], Field(default_factory=list, max_length=30,
                                                            description=description)))
     return proposal | missing
@@ -119,6 +140,7 @@ enable_cooling은 R-101과 TT-101 관계, 실제 조회된 AR100-THERMAL-RESPONS
 summary에는 관찰, 가능한 해석, 제안 행동, 근거의 연결을 설명하세요. 수치·문서·조회 결과를 창작하지 마세요.
 근거가 없어 대응안을 만들 수 없으면 그 이유를 답하세요. 형식을 맞추려고 인용을 만들지 마세요.
 적용 문서 누락·충돌·근거 부족으로 조치를 제안할 수 없으면 NeedsEvidence 형식을 사용해 부족한 근거와 다음 확인 단계를 반환하세요. 이 결과에는 조치나 승인 권한이 없습니다.
+trace_fault_ontology와 search_manual_sections도 반드시 호출하세요. trace_fault_ontology는 알람 증상에 연결된 고장모드 후보, 원인, 확인 방법과 그 방법이 가리키는 현재 관측·명령을 돌려줍니다. 그래프는 판정하지 않습니다. 후보마다 실제 관측으로 supported(관측이 지지), refuted(관측이 반대), unknown(센서로 확인 불가·관측 부족, 현장 점검 항목), not_applicable(판단 전제 불성립) 중 하나를 cause_assessment에 적고 근거 관측값을 evidence에 쓰세요. 지지하는 관측이 있어도 원인 확정이 아닙니다. 최신·GOOD 관측이 없으면 unknown으로 두세요. search_manual_sections는 매뉴얼 절을 검색합니다. 검색된 절의 문서가 citations 허용 목록에 없으면 summary에 절 이름으로만 언급하세요.
 최종 출력은 제공된 구조화 도구 중 하나를 사용하세요. GroundedProposal에는 expected_revision, summary, action, citations, uncertainties 다섯 필드를 모두 포함해야 합니다. summary에 점검이라고 적어도 action 필드를 생략하지 마세요.
 GroundedNeedsEvidence를 선택하면 summary, missing, next_steps, citations를 반환하세요. 이때 대응안이 생성됐거나 inspect_only로 결정됐다고 표현하지 말고 자료 확인 요청으로 설명하세요.
 """
@@ -195,6 +217,11 @@ async def investigate(state: WorkflowState):
     if existing:
         return {"proposal_id": str(existing["id"]), "proposal_summary": existing["body"]["summary"]}
     detail, evidence = await asyncio.gather(asyncio.to_thread(get_incident, str(uid)), asyncio.to_thread(incident_evidence, str(uid)))
+    alarm = detail["incident"]["alarm"]
+    sigs = signatures(detail)
+    ontology = await asyncio.to_thread(fault_context, alarm["site"], alarm["device"], sigs)
+    failure_modes = sorted({c["failure_mode"] for c in ontology["candidates"]})
+    symptoms = sorted({c["symptom"] for c in ontology["candidates"]})
     used = set()
 
     def receipt(name, operation):
@@ -235,15 +262,26 @@ async def investigate(state: WorkflowState):
         """Read sensor statistics, quality, time windows, live commands and interlock. No diagnosis."""
         return receipt("observations", lambda: refresh_analysis_observations(evidence, detail['incident']['alarm']))
 
+    @tool
+    def trace_fault_ontology() -> dict:
+        """Follow alarm signatures in the ontology graph: symptom, candidate failure modes, causes, checks, the current observations and commands those checks name, procedure sections. Returns no verdicts."""
+        return receipt("ontology", lambda: {**ontology, "check_observations": fault_context(alarm["site"], alarm["device"], sigs)["check_observations"]})
+
+    @tool
+    def search_manual_sections(query: str) -> dict:
+        """Semantic search over manual sections; sections linked in the graph to this incident's symptoms rank first."""
+        return receipt("manual_search", lambda: manual_search(query, symptoms))
+
     model = _init_model("answer", request_timeout=90, max_retries=0)
-    agent = create_agent(model=model, tools=[get_incident_alarm, get_asset_documents, get_sensor_observations],
-                         system_prompt=SYSTEM_PROMPT, response_format=ToolStrategy(grounded_response_schema(evidence), handle_errors=False))
+    agent = create_agent(model=model, tools=[get_incident_alarm, get_asset_documents, get_sensor_observations,
+                                             trace_fault_ontology, search_manual_sections],
+                         system_prompt=SYSTEM_PROMPT, response_format=ToolStrategy(grounded_response_schema(evidence, failure_modes), handle_errors=False))
     message = build_user_message(f"사건 {uid}의 근거를 조회하고 검토 가능한 제조 대응안을 작성하세요.")
-    response = await agent.ainvoke({"messages": [{"role": "user", "content": message}]}, {"recursion_limit": 12})
+    response = await agent.ainvoke({"messages": [{"role": "user", "content": message}]}, {"recursion_limit": 20})
     with connection() as conn:
         event(conn, uid, "agent_model_output", {"run_id": state["run_id"],
               "messages": [message.model_dump(mode="json") for message in response.get("messages", [])]})
-    if used != {"alarm", "documents", "observations"}:
+    if used != {"alarm", "documents", "observations", "ontology", "manual_search"}:
         raise ValueError("필수 근거 도구 조회가 누락되었습니다. 대응안을 게시하지 않았습니다.")
     proposal_body = response.get("structured_response")
     if isinstance(proposal_body, NeedsEvidence):
