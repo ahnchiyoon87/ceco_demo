@@ -87,15 +87,16 @@ def main():
 
     points = ([f"kafka:{a.kafka_topic}"] if a.kafka_topic else []) + [f"mqtt:{t}" for t in topics] + (["incident"] if a.incident_api else [])
     if a.incident_api:
-        seen = {i["id"] for i in http(a.incident_api)["items"]}
+        # 새 사건 생성 또는 기존 사건에 결합(alarm_count 증가) — 30초 안의 반복 알람은 기존 사건에 묶이므로 둘 다 도착으로 본다
+        seen = {i["id"]: i["alarm_count"] for i in http(a.incident_api)["items"]}
 
         def iloop():
             while True:
                 try:
                     for i in http(a.incident_api)["items"]:
-                        if i["id"] not in seen:
-                            seen.add(i["id"])
-                            if a.tag in json.dumps(i["alarm"]) and a.match in json.dumps(i["alarm"]):
+                        if seen.get(i["id"]) != i["alarm_count"]:
+                            seen[i["id"]] = i["alarm_count"]
+                            if a.tag in json.dumps(i["alarm"]) or a.tag in (i.get("correlation_key") or ""):
                                 with lock:
                                     events.append(("incident", time.time() * 1000))
                 except Exception:

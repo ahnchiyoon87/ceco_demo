@@ -51,7 +51,7 @@ phase1(){
 phase2(){
   say "P2 E1 알람→화면 100회 × 3"
   for k in 1 2 3; do
-    $CLIENT python harness/e2e/e1.py --exp $EXP --run e1_${NAME}_$k --reps 100 --sim http://plant-simulator:8080 \
+    $CLIENT python harness/e2e/e1.py --exp $EXP --run e1_${NAME}_r2_$k --reps 100 --sim http://plant-simulator:8080 \
       --mqtt emqx --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics scada/alerts/PT-101,scada/hmi/latest-alert \
       --match THRESHOLD_USL --fault-duration 2 --incident-api http://host.docker.internal:38000/api/operations/incidents 2>&1 | tail -1 | tee -a $LOG
   done
@@ -98,5 +98,5 @@ phase3(){
 }
 
 say "== baseline $NAME 시작"
-phase0; phase1; phase2; phase3
+for ph in ${PHASES:-0 1 2 3}; do phase$ph; done
 say "== baseline $NAME 끝"
