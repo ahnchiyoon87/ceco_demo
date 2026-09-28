@@ -72,7 +72,7 @@ public class KStreamsL4 {
         attempt("L4-03/04 CEP", "DSL 연산자·Processor API", false,
                 "Kafka Streams DSL 에 패턴(CEP) 연산 없음. Processor API 로는 CEP 엔진(NFA) 재구현 필요 — 직접 제작 금지로 미구현");
         attempt("L4-12 ONNX", "Processor API punctuator", false,
-                "V1 ONNX 잡(처리시각 1초 표본·선형 보간) 이식 필요 — 이번 준비 범위 밖, 미시도");
+                "미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략");
 
         Properties p = props(boot);
         org.apache.kafka.streams.Topology t = topology(out);

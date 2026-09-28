@@ -56,7 +56,7 @@ public class BeamL4 {
     public static void main(String[] args) throws Exception {
         String boot = env("BOOTSTRAP", "kafka:9092");
         String out = env("ALERT_TOPIC", "exp.l4.alerts.beam");
-        attempt("L4-12 ONNX", "Beam Java SDK", false, "Beam Java 에 RunInference 없음(Python SDK 전용). V1 ONNX 잡 이식 필요 — 미시도");
+        attempt("L4-12 ONNX", "Beam Java SDK", false, "Beam Java 에 RunInference 없음(Python SDK 전용). 미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략");
 
         PipelineOptions o = PipelineOptionsFactory.fromArgs(args).create();
         o.setRunner(DirectRunner.class);

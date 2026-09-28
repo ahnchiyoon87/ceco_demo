@@ -706,9 +706,11 @@ services:
     depends_on: [backend]
     environment:
       SP_API: http://backend:8030/streampipes-backend
+      BOOTSTRAP: kafka:9092
+      PATTERN_WINDOW_S: ${PATTERN_WINDOW_S:-10}
       RUN: ${RUN:-manual}
     volumes: ["../..:/repo:ro", "../../experiments:/experiments"]
-    command: ["python", "/repo/candidates/l4-streampipes/probe.py"]
+    command: ["python", "/repo/candidates/l4-streampipes/deploy.py"]   # 어댑터·파이프라인 REST 조립(compact API)
 
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:

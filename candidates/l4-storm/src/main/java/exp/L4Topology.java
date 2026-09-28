@@ -180,7 +180,7 @@ public class L4Topology {
         }
         attempt("L4-03/04 CEP", "Storm 모듈 목록", false,
                 "Storm 3.1.0 에 CEP·패턴 모듈 없음, Storm SQL 은 2.8.2 가 마지막 — 시도할 엔진 기능이 없음");
-        attempt("L4-12 ONNX", "틱 튜플 볼트", false, "V1 ONNX 잡(처리시각 표본·보간) 이식 필요 — 이번 준비 범위 밖, 미시도");
+        attempt("L4-12 ONNX", "틱 튜플 볼트", false, "미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략");
 
         KafkaSpoutConfig<String, String> sc = KafkaSpoutConfig.builder(boot, "exp.l4.raw")
                 .setProp(ConsumerConfig.GROUP_ID_CONFIG, "storm-l4")
