@@ -37,7 +37,7 @@ for path in sorted(Path("experiments/EXP-AI/raw").glob("*.json")):
     rows.append({
         "run_id": d["run_id"], "arm": d["arm"], "outcome": outcome,
         # 보조 변형(분석 지연, 비맹검 #75)은 본 실험과 따로 집계한다
-        "scenario": d["scenario"] + ("+지연(보조)" if d.get("analyze_delay_s") else ""),
+        "scenario": d["scenario"] + ("+지연(보조)" if d.get("analyze_delay_s") else "") + (f"@{d['physics_time_scale']:g}배속" if d.get("physics_time_scale", 1) != 1 else ""),
         "action_match": outcome == sc["action"] if outcome != "invalid" else None,
         "cause_score": cause_score, "cause_detail": {fm: [causes.get(fm), st] for fm, st in expected.items()} if causes else None,
         "forbidden_cited": sorted(cited & forbidden_docs), "citations": sorted(cited), "tools": tools,

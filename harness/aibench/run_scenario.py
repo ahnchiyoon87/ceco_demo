@@ -14,14 +14,14 @@ import yaml
 
 API = "http://127.0.0.1:38000/api/operations"
 SIM = "http://127.0.0.1:37080"
-DURATION = {"bearing_wear": 600, "heater_stuck": 2400, "spike": None}  # heater: 71→95°C 에 약 27분(#76)
+DURATION = {"bearing_wear": 600, "heater_stuck": 60000, "spike": None}  # 시뮬레이터 시간(초). 60배속에서 heater 실제 약 17분(#82)
 WAIT_ALARM = {"SC1_bearing": 240, "SC2_heater_stuck": 2400, "SC3_overpressure": 180}
 arm, scenario, run_id = sys.argv[1:4]
 out = Path(f"experiments/EXP-AI/raw/{run_id}.json")
 if out.exists():
     raise SystemExit(f"실행 ID 재사용 금지: {out}")
 sc = yaml.safe_load(open("ontology/v2/answer-key.yaml", encoding="utf-8"))["scenarios"][scenario]
-log = {"run_id": run_id, "arm": arm, "scenario": scenario, "started_at": datetime.now(timezone.utc).isoformat(), "steps": []}
+log = {"run_id": run_id, "arm": arm, "scenario": scenario, "physics_time_scale": float(os.environ.get("PHYSICS_TIME_SCALE", "1")), "physics_time_scale": float(os.environ.get("PHYSICS_TIME_SCALE", "1")), "started_at": datetime.now(timezone.utc).isoformat(), "steps": []}
 
 
 def call(url, body=None, method=None, timeout=60):

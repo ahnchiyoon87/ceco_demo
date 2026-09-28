@@ -21,7 +21,7 @@ for item in $1; do
   [ "$arm" = "$current" ] || switch_arm $arm
   i=$from
   while [ $i -le $to ]; do
-    short=$(echo $sc | cut -d_ -f1); [ "$delay" != 0 ] && short=${short}d
+    short=$(echo $sc | cut -d_ -f1)${RUN_TAG:-}; [ "$delay" != 0 ] && short=${short}d
     ANALYZE_DELAY_S=$delay python harness/aibench/run_scenario.py $arm $sc $arm-$short-$i 2>&1 | tail -1
     i=$((i+1))
   done

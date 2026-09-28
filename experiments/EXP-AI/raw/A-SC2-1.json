@@ -1,0 +1,2618 @@
+{
+ "run_id": "A-SC2-1",
+ "arm": "A",
+ "scenario": "SC2_heater_stuck",
+ "started_at": "2026-09-28T17:52:48.156600+00:00",
+ "steps": [
+  {
+   "at": 1790617968.1748672,
+   "step": "precheck",
+   "active_faults": {},
+   "commands": {
+    "pump_run": true,
+    "agitator_run": true,
+    "heater_enable": true,
+    "cooler_enable": false,
+    "pump_speed_sp": 59.7,
+    "valve_open_sp": 45.3,
+    "temp_sp_c": 69.1
+   },
+   "interlock": false
+  },
+  {
+   "at": 1790617969.1167014,
+   "step": "setup",
+   "target": "heater_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790617970.169237,
+   "step": "setup",
+   "target": "cooler_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790617970.1715162,
+   "step": "inject",
+   "response": {
+    "injected": "heater_stuck",
+    "duration_s": 2400.0,
+    "targets": [
+     "TT-101",
+     "TT-102"
+    ],
+    "desc": "히터 출력 고착: 정지 명령과 무관하게 열 공급 지속 (실제 모형 온도 변화)"
+   }
+  },
+  {
+   "at": 1790619627.2900956,
+   "step": "alarm",
+   "incident": "55820760-115a-4fa9-98e5-b133ed2cb763",
+   "waited_s": 1657.1
+  },
+  {
+   "at": 1790619630.3432705,
+   "step": "analyze",
+   "response": {
+    "replayed": false,
+    "http_error": null,
+    "body": null
+   }
+  },
+  {
+   "at": 1790619687.709531,
+   "step": "analysis_done",
+   "status": "awaiting_review",
+   "seconds": 57.4,
+   "error": null
+  },
+  {
+   "at": 1790619687.8576193,
+   "step": "clear",
+   "response": {
+    "cleared": true
+   }
+  },
+  {
+   "at": 1790619688.1616166,
+   "step": "restore_cooling_on",
+   "result": "verified"
+  },
+  {
+   "at": 1790620009.0199754,
+   "step": "restore_cooled",
+   "seconds": 320.9,
+   "tt101": 70.0755
+  },
+  {
+   "at": 1790620010.086097,
+   "step": "restore",
+   "target": "cooler_enable",
+   "result": "verified"
+  },
+  {
+   "at": 1790620010.8964884,
+   "step": "restore",
+   "target": "heater_enable",
+   "result": "verified"
+  }
+ ],
+ "analyze_delay_s": 0.0,
+ "analysis_run": {
+  "id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+  "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+  "status": "awaiting_review",
+  "model": "openai:coding",
+  "result": {
+   "result": null,
+   "review": {
+    "context": "사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.",
+    "options": [
+     {
+      "label": "approve",
+      "description": "검토 후 제안된 조치를 진행"
+     },
+     {
+      "label": "reject",
+      "description": "설비 명령 없이 반려"
+     }
+    ],
+    "question": "제조 대응안을 검토하세요",
+    "multi_select": false
+   },
+   "proposal_id": "5bdd40d7-829d-40f4-8b93-fe1b2bdae754"
+  },
+  "error": null,
+  "created_at": "2026-09-28T18:20:30.331001+00:00",
+  "updated_at": "2026-09-28T18:21:26.000739+00:00"
+ },
+ "trace": {
+  "run": {
+   "id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+   "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+   "status": "awaiting_review",
+   "model": "openai:coding",
+   "result": {
+    "result": null,
+    "review": {
+     "context": "사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.",
+     "options": [
+      {
+       "label": "approve",
+       "description": "검토 후 제안된 조치를 진행"
+      },
+      {
+       "label": "reject",
+       "description": "설비 명령 없이 반려"
+      }
+     ],
+     "question": "제조 대응안을 검토하세요",
+     "multi_select": false
+    },
+    "proposal_id": "5bdd40d7-829d-40f4-8b93-fe1b2bdae754"
+   },
+   "error": null,
+   "created_at": "2026-09-28T18:20:30.331001+00:00",
+   "updated_at": "2026-09-28T18:21:26.000739+00:00"
+  },
+  "items": [
+   {
+    "id": 4531,
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "observations",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "af32a0dd-4224-4684-841a-e9c85905b01f"
+    },
+    "created_at": "2026-09-28T18:21:20.003876+00:00"
+   },
+   {
+    "id": 4532,
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "documents",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "6a51b827-8e30-490c-ae4e-f10c7060a8ee"
+    },
+    "created_at": "2026-09-28T18:21:20.004084+00:00"
+   },
+   {
+    "id": 4533,
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "alarm",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "08a8b2ba-70e7-4368-9e15-2ccdab281ac1"
+    },
+    "created_at": "2026-09-28T18:21:20.006128+00:00"
+   },
+   {
+    "id": 4534,
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "documents",
+     "result": {
+      "assets": [
+       {
+        "name": "R-101",
+        "source_id": "AR-100/reactor-line-01/asset/R-101",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35"
+       }
+      ],
+      "status": "available",
+      "sensors": [
+       {
+        "lsl": null,
+        "tag": "CT-101",
+        "usl": null,
+        "unit": "mS/cm",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 6.2,
+        "tag": "pH-101",
+        "usl": 8.4,
+        "unit": "pH",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 15,
+        "tag": "LT-102",
+        "usl": 90,
+        "unit": "%",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": null,
+        "tag": "PT-101",
+        "usl": 6,
+        "unit": "barg",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 40,
+        "tag": "TT-101",
+        "usl": 95,
+        "unit": "degC",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       }
+      ],
+      "documents": [
+       {
+        "sha256": "e1591ee93069de598e95673a64b1fe1e22f8a1ff4ab1221f708552b5b1ed71fb",
+        "content": "---\ndocument_id: AR100-THERMAL-RESPONSE\nversion: 1\nstatus: educational-draft\napplies_to: [AR-100, reactor-line-01, R-101, HX-102]\nalarm_types: [THRESHOLD_USL, ZSCORE]\nsource_kind: authored-simulation-procedure\n---\n\n# 반응기 온도 이상과 냉각 대응\n\nAR-100 가상 공정의 교육용 절차다. 실물 설비의 운전·안전 승인 기준이 아니다. HX-102는 이 프로젝트에 추가한 가상 냉각 장치다.\n\n## 적용 근거와 범위\n\nR-101 반응기의 온도는 TT-101로 확인한다. 프로젝트의 plant.yaml에는 TT-101 단위 degC, 하한 40°C, 상한 95°C가 설정되어 있다. 적용 시에는 현재 게시된 센서 관계와 출처 있는 기준을 다시 조회한다. 이 수치를 제조사 공통 안전 기준으로 사용하지 않는다.\n\n## 조사와 제안\n\n사건 당시 온도 이력과 최근 온도 이력을 구분한다. 최근 TT-101 관측은 10초 이내이고 품질이 GOOD이어야 한다. 최신 이력과 현재 설비 조회 온도가 모두 적용 상한을 초과하는지 확인한다. 자료 누락·단위 불일치·서로 다른 기준이 있으면 냉각 실행을 제안하지 않는다.\n\n현재 냉각 기능이 지원되고 명령이 꺼져 있으며 고압 인터록이 없는지 확인한다. 현재 목표 온도가 적용 하한 이상, 상한 미만인지 확인한다. enable_cooling은 담당자가 검토한 현재 목표값을 그대로 사용해 냉각 명령만 켠다. 목표값이나 히터 명령을 함께 바꾸는 조치가 아니다.\n\n이상 원인을 단정하지 않는다. 냉각 성능 부족이나 열 공급 지속 같은 원인 후보는 관측 근거와 함께 제시한다. 교육용 고장 주입 정답을 Agent의 판단 근거로 사용하지 않는다.\n\n## 승인과 실행\n\n담당자가 근거·목표값·예상 행동을 확인하고 승인한다. 실행 직전 사건 버전, 문서·설비 관계, 운전 명령·인터록 및 현재 온도를 다시 확인한다. 상태가 바뀌거나 온도가 이미 상한 이하이면 명령하지 않는다. 반려하면 설비에 명령하지 않는다.\n\n허용된 가상 설비의 냉각 코일에 Modbus 명령을 한 번 보낸다. 응답이 불명확하면 자동 재전송하지 않는다. 새 상태 번호에서 냉각 명령 켜짐을 다시 확인한다.\n\n## 결과의 구분\n\n명령 응답, 냉각 명령 반영, 실제 온도 하강, 목표 범위 유지, 원인 제거는 서로 다르다. 냉각 명령 반영만 확인한 결과를 회복 완료로 표시하지 않는다.\n\n교육용 관측 기준은 목표 ±1°C에서 새로운 관측값이 30초 이어지는 것이다. 목표 변경이나 관측 단절이 발생하면 같은 조건에서 회복을 확인했다고 할 수 없다. 온도가 안정되어도 히터 고착이나 냉각 장치의 고장이 수리된 것은 아니므로 점검을 이어간다.\n",
+        "version": 1,
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "document_id": "AR100-THERMAL-RESPONSE",
+        "source_path": "uploads/AR100-THERMAL-RESPONSE.md"
+       },
+       {
+        "sha256": "b7a8ff10b17dbe21fb8ed3fe2e7b09de09e866736a1f36285e1b555a21286d44",
+        "content": "---\ndocument_id: AR100-ASSET-CONTEXT\nversion: 1\nstatus: educational-draft\nsource_kind: project-configuration\n---\n\n# AR-100 설비와 데이터 맥락\n\nAR-100은 Python 물리모델로 동작하는 가상 반응기 라인이다. 특정 공장이나 제조사 실물 설비의 복제본이 아니다. 원료탱크, 공급펌프 P-101, 반응기 R-101, 교반기 M-101, 재킷히터 HX-101 및 밸브를 포함한다.\n\n| 대상 | 식별자 | 데이터·명령 |\n|---|---|---|\n| 전체 데이터 장치 | reactor-line-01 | 한 장치가 여러 공정 태그를 노출 |\n| 교반기 | M-101 | IT-102 전류(A), VT-101 진동(mm/s), agitator_run 기동 coil |\n| 반응기 | R-101 | LT-102 액위(%), TT-101 온도(degC), PT-101 압력(barg) |\n| 공급펌프 | P-101 | IT-101 전류, FT-101 공급 유량, pump_run 명령 |\n\n태그·단위·레지스터는 `simulator/plant.yaml`이 정본이다. 위 설비별 매핑은 해당 설명과 `ARCHITECTURE.md` 공정도에 근거한 교육용 의미 연결이다. 모든 태그가 같은 device에서 온다는 이유로 모든 고장을 같은 설비 문제로 합치지 않는다.\n\n시계열 데이터는 기존 InfluxDB에서 조회한다. 그래프는 설비·센서·문서·절차의 관계를 제공하며 초 단위 측정값 전체를 대신 저장하지 않는다. 승인·조치 이력은 업무 DB에 저장한다.\n\n현재 시뮬레이터가 직접 관측하지 않는 정보: 실제 베어링 손상, 축 정렬, 윤활 상태, 실제 유체 점도, 정비 담당자의 현장 점검 결과. 해당 정보는 미확인으로 취급한다.\n",
+        "version": 1,
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "document_id": "AR100-ASSET-CONTEXT",
+        "source_path": "uploads/AR100-ASSET-CONTEXT.md"
+       }
+      ],
+      "lookup_scope": {
+       "site": "AR-100",
+       "device": "reactor-line-01",
+       "alarm_tags": [
+        "TT-101"
+       ],
+       "limitation": "Empty results do not establish that the device or factory has no assets, documents or sensors. Unknown tags require checking tag identity and mapping; do not assign them to M-101 without evidence.",
+       "asset_selection": "Assets in this site/device linked by HAS_SENSOR to an alarm tag.",
+       "document_selection": "Documents linked to those matched assets only."
+      }
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "6a51b827-8e30-490c-ae4e-f10c7060a8ee",
+     "duration_ms": 18
+    },
+    "created_at": "2026-09-28T18:21:20.013296+00:00"
+   },
+   {
+    "id": 4535,
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "alarm",
+     "result": {
+      "revision": 1,
+      "first_alarm": {
+       "ts": 1790619625487521500,
+       "tag": "TT-101",
+       "site": "AR-100",
+       "value": 95.0017,
+       "detail": "TT-101 = 95.002 degC / 규격 [40.0, 95.0]",
+       "device": "reactor-line-01",
+       "detector": "TIER1_RULE",
+       "severity": "CRITICAL",
+       "alert_type": "THRESHOLD_USL"
+      },
+      "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+      "snapshot_at": "2026-09-28T18:21:20.009552+00:00",
+      "correlated_alarms": {
+       "groups": [
+        {
+         "tag": "TT-101",
+         "count": 4,
+         "last_ts": 1790619629488075800,
+         "detector": "TIER1_RULE",
+         "first_ts": 1790619625487521500,
+         "severity": "CRITICAL",
+         "max_value": 95.05577,
+         "min_value": 95.0017,
+         "alert_type": "THRESHOLD_USL"
+        }
+       ],
+       "method": "All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.",
+       "original_count": 4
+      },
+      "observation_revision": 4
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "08a8b2ba-70e7-4368-9e15-2ccdab281ac1",
+     "duration_ms": 27
+    },
+    "created_at": "2026-09-28T18:21:20.019098+00:00"
+   },
+   {
+    "id": 4536,
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "observations",
+     "result": {
+      "plant_state": {
+       "seq": 4864,
+       "site": "AR-100",
+       "device": "reactor-line-01",
+       "status": "available",
+       "commands": {
+        "pump_run": true,
+        "temp_sp_c": 68.7,
+        "agitator_run": true,
+        "cooler_enable": false,
+        "heater_enable": false,
+        "pump_speed_sp": 60.1,
+        "valve_open_sp": 45.0
+       },
+       "interlock": false,
+       "retrieved_at": "2026-09-28T18:21:20.035081+00:00",
+       "timestamp_note": "조회 시각이며 센서 측정 시각은 아닙니다."
+      },
+      "current_window": {
+       "limit": 2000,
+       "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+       "source": "InfluxDB/process_raw",
+       "status": "available",
+       "stop_ns": "1790619680006156270",
+       "start_ns": "1790619650006156270",
+       "truncated": false,
+       "statistics": [
+        {
+         "max": 51.983303,
+         "min": 51.735756,
+         "tag": "LT-102",
+         "last": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:21:19.481088Z",
+          "value": 51.84428,
+          "quality": "GOOD"
+         },
+         "mean": 51.868338900000005,
+         "count": 30,
+         "first": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:20:50.4853187Z",
+          "value": 51.93112,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.555
+        },
+        {
+         "max": 95.67365,
+         "min": 95.254395,
+         "tag": "TT-101",
+         "last": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:21:19.481557Z",
+          "value": 95.67365,
+          "quality": "GOOD"
+         },
+         "mean": 95.49390163333334,
+         "count": 30,
+         "first": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:20:50.4857677Z",
+          "value": 95.33194,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.554
+        },
+        {
+         "max": 3.8565028,
+         "min": 3.8065674,
+         "tag": "PT-101",
+         "last": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:21:19.4822943Z",
+          "value": 3.8424327,
+          "quality": "GOOD"
+         },
+         "mean": 3.8348504733333333,
+         "count": 30,
+         "first": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:20:50.4871206Z",
+          "value": 3.8387911,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.553
+        },
+        {
+         "max": 7.135803,
+         "min": 7.110428,
+         "tag": "pH-101",
+         "last": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:21:19.4841052Z",
+          "value": 7.11549,
+          "quality": "GOOD"
+         },
+         "mean": 7.1185516,
+         "count": 30,
+         "first": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:20:50.4889085Z",
+          "value": 7.131229,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.552
+        },
+        {
+         "max": 3.7759092,
+         "min": 3.7253306,
+         "tag": "CT-101",
+         "last": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:21:19.484435Z",
+          "value": 3.746993,
+          "quality": "GOOD"
+         },
+         "mean": 3.7544496,
+         "count": 30,
+         "first": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:20:50.4892506Z",
+          "value": 3.7666128,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.551
+        }
+       ],
+       "age_reference_at": "2026-09-28T18:21:20.035790+00:00"
+      },
+      "incident_window": {
+       "limit": 2000,
+       "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+       "source": "InfluxDB/process_raw",
+       "status": "available",
+       "stop_ns": "1790619644488075800",
+       "start_ns": "1790619595487521500",
+       "truncated": false,
+       "statistics": [
+        {
+         "max": 52.00586,
+         "min": 51.789265,
+         "tag": "LT-102",
+         "last": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:20:28.4873024Z",
+          "value": 51.918602,
+          "quality": "GOOD"
+         },
+         "mean": 51.92322452941176,
+         "count": 34,
+         "first": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:19:55.4902564Z",
+          "value": 52.00497,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.548
+        },
+        {
+         "max": 95.02057,
+         "min": 94.540924,
+         "tag": "TT-101",
+         "last": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:20:28.4875707Z",
+          "value": 95.01472,
+          "quality": "GOOD"
+         },
+         "mean": 94.81888076470588,
+         "count": 34,
+         "first": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:19:55.49046Z",
+          "value": 94.58508,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.548
+        },
+        {
+         "max": 3.848498,
+         "min": 3.8020825,
+         "tag": "PT-101",
+         "last": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:20:28.4880591Z",
+          "value": 3.8296828,
+          "quality": "GOOD"
+         },
+         "mean": 3.8203296558823525,
+         "count": 34,
+         "first": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:19:55.4908173Z",
+          "value": 3.812411,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.547
+        },
+        {
+         "max": 7.134566,
+         "min": 7.1134696,
+         "tag": "pH-101",
+         "last": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:20:28.4914176Z",
+          "value": 7.123564,
+          "quality": "GOOD"
+         },
+         "mean": 7.125046520588235,
+         "count": 34,
+         "first": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:19:55.4917396Z",
+          "value": 7.1204643,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.544
+        },
+        {
+         "max": 3.7776217,
+         "min": 3.7210853,
+         "tag": "CT-101",
+         "last": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:20:28.4919478Z",
+          "value": 3.74457,
+          "quality": "GOOD"
+         },
+         "mean": 3.748465685294118,
+         "count": 34,
+         "first": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:19:55.4919747Z",
+          "value": 3.7588618,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.544
+        }
+       ],
+       "age_reference_at": "2026-09-28T18:21:20.035539+00:00"
+      },
+      "incident_window_capped": false
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "af32a0dd-4224-4684-841a-e9c85905b01f",
+     "duration_ms": 46
+    },
+    "created_at": "2026-09-28T18:21:20.042329+00:00"
+   },
+   {
+    "id": 4555,
+    "kind": "agent_model_output",
+    "payload": {
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "messages": [
+      {
+       "id": "39ac3bab-3286-4fa1-9b10-20b607c566aa",
+       "name": null,
+       "type": "human",
+       "content": "사건 55820760-115a-4fa9-98e5-b133ed2cb763의 근거를 조회하고 검토 가능한 제조 대응안을 작성하세요.",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "lc_run--01a0e93f-3d34-75b1-80f5-c9b68d91411e-0",
+       "name": null,
+       "type": "ai",
+       "content": "",
+       "tool_calls": [
+        {
+         "id": "call_n90gPr4yS5sng0Q5bCWbvsj2",
+         "args": {},
+         "name": "get_incident_alarm",
+         "type": "tool_call"
+        },
+        {
+         "id": "call_WZLQ87YxsMbEZHWn7zV1nz1s",
+         "args": {},
+         "name": "get_asset_documents",
+         "type": "tool_call"
+        },
+        {
+         "id": "call_5CBupdkTiq2EXnu0KoQnVuRu",
+         "args": {},
+         "name": "get_sensor_observations",
+         "type": "tool_call"
+        }
+       ],
+       "usage_metadata": {
+        "input_tokens": 1479,
+        "total_tokens": 1538,
+        "output_tokens": 59,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 1311
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 0
+        }
+       },
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "id": "chatcmpl-ETAGVzGSx2MPcUO5Mz648VFwgi6hP",
+        "logprobs": null,
+        "model_name": "coding",
+        "token_usage": {
+         "total_tokens": 1538,
+         "prompt_tokens": 1479,
+         "completion_tokens": 59,
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 1311,
+          "cache_write_tokens": 42
+         },
+         "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+         }
+        },
+        "service_tier": "default",
+        "finish_reason": "tool_calls",
+        "model_provider": "openai",
+        "system_fingerprint": null
+       },
+       "invalid_tool_calls": []
+      },
+      {
+       "id": "5152a7b7-0e37-4bba-af22-3d9af9ab0ef0",
+       "name": "get_incident_alarm",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"incident_id\": \"55820760-115a-4fa9-98e5-b133ed2cb763\", \"revision\": 1, \"observation_revision\": 4, \"snapshot_at\": \"2026-09-28T18:21:20.009552+00:00\", \"first_alarm\": {\"ts\": 1790619625487521500, \"tag\": \"TT-101\", \"site\": \"AR-100\", \"value\": 95.0017, \"detail\": \"TT-101 = 95.002 degC / 규격 [40.0, 95.0]\", \"device\": \"reactor-line-01\", \"detector\": \"TIER1_RULE\", \"severity\": \"CRITICAL\", \"alert_type\": \"THRESHOLD_USL\"}, \"correlated_alarms\": {\"groups\": [{\"tag\": \"TT-101\", \"alert_type\": \"THRESHOLD_USL\", \"detector\": \"TIER1_RULE\", \"severity\": \"CRITICAL\", \"count\": 4, \"min_value\": 95.0017, \"max_value\": 95.05577, \"first_ts\": 1790619625487521500, \"last_ts\": 1790619629488075800}], \"original_count\": 4, \"method\": \"All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.\"}}",
+       "artifact": null,
+       "tool_call_id": "call_n90gPr4yS5sng0Q5bCWbvsj2",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "210b437e-9140-4b80-b7d9-b8b7f0ff3f3f",
+       "name": "get_asset_documents",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"status\": \"available\", \"assets\": [{\"name\": \"R-101\", \"source_id\": \"AR-100/reactor-line-01/asset/R-101\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"documents\": [{\"document_id\": \"AR100-THERMAL-RESPONSE\", \"content\": \"---\\ndocument_id: AR100-THERMAL-RESPONSE\\nversion: 1\\nstatus: educational-draft\\napplies_to: [AR-100, reactor-line-01, R-101, HX-102]\\nalarm_types: [THRESHOLD_USL, ZSCORE]\\nsource_kind: authored-simulation-procedure\\n---\\n\\n# 반응기 온도 이상과 냉각 대응\\n\\nAR-100 가상 공정의 교육용 절차다. 실물 설비의 운전·안전 승인 기준이 아니다. HX-102는 이 프로젝트에 추가한 가상 냉각 장치다.\\n\\n## 적용 근거와 범위\\n\\nR-101 반응기의 온도는 TT-101로 확인한다. 프로젝트의 plant.yaml에는 TT-101 단위 degC, 하한 40°C, 상한 95°C가 설정되어 있다. 적용 시에는 현재 게시된 센서 관계와 출처 있는 기준을 다시 조회한다. 이 수치를 제조사 공통 안전 기준으로 사용하지 않는다.\\n\\n## 조사와 제안\\n\\n사건 당시 온도 이력과 최근 온도 이력을 구분한다. 최근 TT-101 관측은 10초 이내이고 품질이 GOOD이어야 한다. 최신 이력과 현재 설비 조회 온도가 모두 적용 상한을 초과하는지 확인한다. 자료 누락·단위 불일치·서로 다른 기준이 있으면 냉각 실행을 제안하지 않는다.\\n\\n현재 냉각 기능이 지원되고 명령이 꺼져 있으며 고압 인터록이 없는지 확인한다. 현재 목표 온도가 적용 하한 이상, 상한 미만인지 확인한다. enable_cooling은 담당자가 검토한 현재 목표값을 그대로 사용해 냉각 명령만 켠다. 목표값이나 히터 명령을 함께 바꾸는 조치가 아니다.\\n\\n이상 원인을 단정하지 않는다. 냉각 성능 부족이나 열 공급 지속 같은 원인 후보는 관측 근거와 함께 제시한다. 교육용 고장 주입 정답을 Agent의 판단 근거로 사용하지 않는다.\\n\\n## 승인과 실행\\n\\n담당자가 근거·목표값·예상 행동을 확인하고 승인한다. 실행 직전 사건 버전, 문서·설비 관계, 운전 명령·인터록 및 현재 온도를 다시 확인한다. 상태가 바뀌거나 온도가 이미 상한 이하이면 명령하지 않는다. 반려하면 설비에 명령하지 않는다.\\n\\n허용된 가상 설비의 냉각 코일에 Modbus 명령을 한 번 보낸다. 응답이 불명확하면 자동 재전송하지 않는다. 새 상태 번호에서 냉각 명령 켜짐을 다시 확인한다.\\n\\n## 결과의 구분\\n\\n명령 응답, 냉각 명령 반영, 실제 온도 하강, 목표 범위 유지, 원인 제거는 서로 다르다. 냉각 명령 반영만 확인한 결과를 회복 완료로 표시하지 않는다.\\n\\n교육용 관측 기준은 목표 ±1°C에서 새로운 관측값이 30초 이어지는 것이다. 목표 변경이나 관측 단절이 발생하면 같은 조건에서 회복을 확인했다고 할 수 없다. 온도가 안정되어도 히터 고착이나 냉각 장치의 고장이 수리된 것은 아니므로 점검을 이어간다.\\n\", \"source_path\": \"uploads/AR100-THERMAL-RESPONSE.md\", \"sha256\": \"e1591ee93069de598e95673a64b1fe1e22f8a1ff4ab1221f708552b5b1ed71fb\", \"version\": 1, \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"document_id\": \"AR100-ASSET-CONTEXT\", \"content\": \"---\\ndocument_id: AR100-ASSET-CONTEXT\\nversion: 1\\nstatus: educational-draft\\nsource_kind: project-configuration\\n---\\n\\n# AR-100 설비와 데이터 맥락\\n\\nAR-100은 Python 물리모델로 동작하는 가상 반응기 라인이다. 특정 공장이나 제조사 실물 설비의 복제본이 아니다. 원료탱크, 공급펌프 P-101, 반응기 R-101, 교반기 M-101, 재킷히터 HX-101 및 밸브를 포함한다.\\n\\n| 대상 | 식별자 | 데이터·명령 |\\n|---|---|---|\\n| 전체 데이터 장치 | reactor-line-01 | 한 장치가 여러 공정 태그를 노출 |\\n| 교반기 | M-101 | IT-102 전류(A), VT-101 진동(mm/s), agitator_run 기동 coil |\\n| 반응기 | R-101 | LT-102 액위(%), TT-101 온도(degC), PT-101 압력(barg) |\\n| 공급펌프 | P-101 | IT-101 전류, FT-101 공급 유량, pump_run 명령 |\\n\\n태그·단위·레지스터는 `simulator/plant.yaml`이 정본이다. 위 설비별 매핑은 해당 설명과 `ARCHITECTURE.md` 공정도에 근거한 교육용 의미 연결이다. 모든 태그가 같은 device에서 온다는 이유로 모든 고장을 같은 설비 문제로 합치지 않는다.\\n\\n시계열 데이터는 기존 InfluxDB에서 조회한다. 그래프는 설비·센서·문서·절차의 관계를 제공하며 초 단위 측정값 전체를 대신 저장하지 않는다. 승인·조치 이력은 업무 DB에 저장한다.\\n\\n현재 시뮬레이터가 직접 관측하지 않는 정보: 실제 베어링 손상, 축 정렬, 윤활 상태, 실제 유체 점도, 정비 담당자의 현장 점검 결과. 해당 정보는 미확인으로 취급한다.\\n\", \"source_path\": \"uploads/AR100-ASSET-CONTEXT.md\", \"sha256\": \"b7a8ff10b17dbe21fb8ed3fe2e7b09de09e866736a1f36285e1b555a21286d44\", \"version\": 1, \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"sensors\": [{\"tag\": \"CT-101\", \"unit\": \"mS/cm\", \"lsl\": null, \"usl\": null, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"pH-101\", \"unit\": \"pH\", \"lsl\": 6.2, \"usl\": 8.4, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"LT-102\", \"unit\": \"%\", \"lsl\": 15, \"usl\": 90, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"PT-101\", \"unit\": \"barg\", \"lsl\": null, \"usl\": 6, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"TT-101\", \"unit\": \"degC\", \"lsl\": 40, \"usl\": 95, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"lookup_scope\": {\"site\": \"AR-100\", \"device\": \"reactor-line-01\", \"alarm_tags\": [\"TT-101\"], \"asset_selection\": \"Assets in this site/device linked by HAS_SENSOR to an alarm tag.\", \"document_selection\": \"Documents linked to those matched assets only.\", \"limitation\": \"Empty results do not establish that the device or factory has no assets, documents or sensors. Unknown tags require checking tag identity and mapping; do not assign them to M-101 without evidence.\"}}",
+       "artifact": null,
+       "tool_call_id": "call_WZLQ87YxsMbEZHWn7zV1nz1s",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "63cf6644-72ce-4128-986c-e88ee7cbed30",
+       "name": "get_sensor_observations",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"incident_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1790619595487521500\", \"stop_ns\": \"1790619644488075800\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 34, \"min\": 51.789265, \"max\": 52.00586, \"mean\": 51.92322452941176, \"first\": {\"time\": \"2026-09-28T18:19:55.4902564Z\", \"tag\": \"LT-102\", \"value\": 52.00497, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4873024Z\", \"tag\": \"LT-102\", \"value\": 51.918602, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.548, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"TT-101\", \"count\": 34, \"min\": 94.540924, \"max\": 95.02057, \"mean\": 94.81888076470588, \"first\": {\"time\": \"2026-09-28T18:19:55.49046Z\", \"tag\": \"TT-101\", \"value\": 94.58508, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4875707Z\", \"tag\": \"TT-101\", \"value\": 95.01472, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.548, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"PT-101\", \"count\": 34, \"min\": 3.8020825, \"max\": 3.848498, \"mean\": 3.8203296558823525, \"first\": {\"time\": \"2026-09-28T18:19:55.4908173Z\", \"tag\": \"PT-101\", \"value\": 3.812411, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4880591Z\", \"tag\": \"PT-101\", \"value\": 3.8296828, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.547, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"pH-101\", \"count\": 34, \"min\": 7.1134696, \"max\": 7.134566, \"mean\": 7.125046520588235, \"first\": {\"time\": \"2026-09-28T18:19:55.4917396Z\", \"tag\": \"pH-101\", \"value\": 7.1204643, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4914176Z\", \"tag\": \"pH-101\", \"value\": 7.123564, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.544, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"CT-101\", \"count\": 34, \"min\": 3.7210853, \"max\": 3.7776217, \"mean\": 3.748465685294118, \"first\": {\"time\": \"2026-09-28T18:19:55.4919747Z\", \"tag\": \"CT-101\", \"value\": 3.7588618, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4919478Z\", \"tag\": \"CT-101\", \"value\": 3.74457, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.544, \"quality_counts\": {\"GOOD\": 34}}], \"age_reference_at\": \"2026-09-28T18:21:20.035539+00:00\", \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"current_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1790619650006156270\", \"stop_ns\": \"1790619680006156270\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 30, \"min\": 51.735756, \"max\": 51.983303, \"mean\": 51.868338900000005, \"first\": {\"time\": \"2026-09-28T18:20:50.4853187Z\", \"tag\": \"LT-102\", \"value\": 51.93112, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.481088Z\", \"tag\": \"LT-102\", \"value\": 51.84428, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.555, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"TT-101\", \"count\": 30, \"min\": 95.254395, \"max\": 95.67365, \"mean\": 95.49390163333334, \"first\": {\"time\": \"2026-09-28T18:20:50.4857677Z\", \"tag\": \"TT-101\", \"value\": 95.33194, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.481557Z\", \"tag\": \"TT-101\", \"value\": 95.67365, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.554, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"PT-101\", \"count\": 30, \"min\": 3.8065674, \"max\": 3.8565028, \"mean\": 3.8348504733333333, \"first\": {\"time\": \"2026-09-28T18:20:50.4871206Z\", \"tag\": \"PT-101\", \"value\": 3.8387911, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.4822943Z\", \"tag\": \"PT-101\", \"value\": 3.8424327, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.553, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"pH-101\", \"count\": 30, \"min\": 7.110428, \"max\": 7.135803, \"mean\": 7.1185516, \"first\": {\"time\": \"2026-09-28T18:20:50.4889085Z\", \"tag\": \"pH-101\", \"value\": 7.131229, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.4841052Z\", \"tag\": \"pH-101\", \"value\": 7.11549, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.552, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"CT-101\", \"count\": 30, \"min\": 3.7253306, \"max\": 3.7759092, \"mean\": 3.7544496, \"first\": {\"time\": \"2026-09-28T18:20:50.4892506Z\", \"tag\": \"CT-101\", \"value\": 3.7666128, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.484435Z\", \"tag\": \"CT-101\", \"value\": 3.746993, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.551, \"quality_counts\": {\"GOOD\": 30}}], \"age_reference_at\": \"2026-09-28T18:21:20.035790+00:00\", \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"plant_state\": {\"status\": \"available\", \"site\": \"AR-100\", \"device\": \"reactor-line-01\", \"seq\": 4864, \"commands\": {\"pump_run\": true, \"agitator_run\": true, \"heater_enable\": false, \"cooler_enable\": false, \"pump_speed_sp\": 60.1, \"valve_open_sp\": 45.0, \"temp_sp_c\": 68.7}, \"interlock\": false, \"retrieved_at\": \"2026-09-28T18:21:20.035081+00:00\", \"timestamp_note\": \"조회 시각이며 센서 측정 시각은 아닙니다.\"}, \"incident_window_capped\": false}",
+       "artifact": null,
+       "tool_call_id": "call_5CBupdkTiq2EXnu0KoQnVuRu",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "lc_run--01a0e93f-fd31-7f43-98ce-68252806fa89-0",
+       "name": null,
+       "type": "ai",
+       "content": "",
+       "tool_calls": [
+        {
+         "id": "call_mjLsz6qehrgv2kIhJeB03lq6",
+         "args": {
+          "action": "enable_cooling",
+          "summary": "사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.",
+          "citations": [
+           "AR100-THERMAL-RESPONSE",
+           "AR100-ASSET-CONTEXT"
+          ],
+          "uncertainties": [
+           "센서 관측만으로 고장 원인이나 냉각 성능 부족, 지속 열 공급 여부를 확정할 수 없습니다.",
+           "plant_state는 조회 당시 명령·인터록 상태이며 센서 측정 시각이 아닙니다. 실행 직전에 현재 상태와 온도를 재확인해야 합니다.",
+           "냉각 명령 반영만으로 실제 온도 하강, 안정화 또는 원인 제거가 확인되는 것은 아닙니다."
+          ],
+          "expected_revision": 1
+         },
+         "name": "GroundedProposal",
+         "type": "tool_call"
+        }
+       ],
+       "usage_metadata": {
+        "input_tokens": 6027,
+        "total_tokens": 6490,
+        "output_tokens": 463,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 1353
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 0
+        }
+       },
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "id": "chatcmpl-ETAGXURCTbI8AmvNdgI0Bed7zgtL1",
+        "logprobs": null,
+        "model_name": "coding",
+        "token_usage": {
+         "total_tokens": 6490,
+         "prompt_tokens": 6027,
+         "completion_tokens": 463,
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 1353,
+          "cache_write_tokens": 4548
+         },
+         "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+         }
+        },
+        "service_tier": "default",
+        "finish_reason": "tool_calls",
+        "model_provider": "openai",
+        "system_fingerprint": null
+       },
+       "invalid_tool_calls": []
+      },
+      {
+       "id": "4bdf65f1-3df9-4f84-978b-f1191f724624",
+       "name": "GroundedProposal",
+       "type": "tool",
+       "status": "success",
+       "content": "Returning structured response: expected_revision=1 summary='사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.' action='enable_cooling' citations=['AR100-THERMAL-RESPONSE', 'AR100-ASSET-CONTEXT'] uncertainties=['센서 관측만으로 고장 원인이나 냉각 성능 부족, 지속 열 공급 여부를 확정할 수 없습니다.', 'plant_state는 조회 당시 명령·인터록 상태이며 센서 측정 시각이 아닙니다. 실행 직전에 현재 상태와 온도를 재확인해야 합니다.', '냉각 명령 반영만으로 실제 온도 하강, 안정화 또는 원인 제거가 확인되는 것은 아닙니다.']",
+       "artifact": null,
+       "tool_call_id": "call_mjLsz6qehrgv2kIhJeB03lq6",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      }
+     ]
+    },
+    "created_at": "2026-09-28T18:21:25.869778+00:00"
+   },
+   {
+    "id": 4556,
+    "kind": "proposal_created",
+    "payload": {
+     "origin": "ai-run:8b18fe91-bba6-4655-bb3d-4fe41691e73a:openai:coding",
+     "proposal_id": "5bdd40d7-829d-40f4-8b93-fe1b2bdae754"
+    },
+    "created_at": "2026-09-28T18:21:25.978266+00:00"
+   }
+  ],
+  "truncated": false
+ },
+ "proposal": {
+  "id": "5bdd40d7-829d-40f4-8b93-fe1b2bdae754",
+  "status": "pending",
+  "body": {
+   "action": "enable_cooling",
+   "summary": "사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.",
+   "citations": [
+    "AR100-THERMAL-RESPONSE",
+    "AR100-ASSET-CONTEXT"
+   ],
+   "uncertainties": [
+    "센서 관측만으로 고장 원인이나 냉각 성능 부족, 지속 열 공급 여부를 확정할 수 없습니다.",
+    "plant_state는 조회 당시 명령·인터록 상태이며 센서 측정 시각이 아닙니다. 실행 직전에 현재 상태와 온도를 재확인해야 합니다.",
+    "냉각 명령 반영만으로 실제 온도 하강, 안정화 또는 원인 제거가 확인되는 것은 아닙니다."
+   ],
+   "expected_revision": 1
+  },
+  "origin": "ai-run:8b18fe91-bba6-4655-bb3d-4fe41691e73a:openai:coding",
+  "created_at": "2026-09-28T18:21:25.978266+00:00"
+ },
+ "incident": {
+  "incident": {
+   "id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+   "alarm_key": "c53bf7866f582c168b503f4edcbebc82e96f6c0a0901ef6ae41d7609de872b6b",
+   "site": "AR-100",
+   "device": "reactor-line-01",
+   "status": "awaiting_review",
+   "revision": 61,
+   "alarm": {
+    "ts": 1790619625487521500,
+    "tag": "TT-101",
+    "site": "AR-100",
+    "value": 95.0017,
+    "detail": "TT-101 = 95.002 degC / 규격 [40.0, 95.0]",
+    "device": "reactor-line-01",
+    "detector": "TIER1_RULE",
+    "severity": "CRITICAL",
+    "alert_type": "THRESHOLD_USL"
+   },
+   "created_at": "2026-09-28T18:20:26.573072+00:00",
+   "correlation_key": "[\"AR-100\",\"reactor-line-01\",\"TT-101:THRESHOLD_USL\"]",
+   "first_ts": 1790619625487521500,
+   "last_ts": 1790619687480238300,
+   "alarm_count": 61,
+   "review_revision": 1
+  },
+  "events": [
+   {
+    "id": 4370,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_received",
+    "payload": {
+     "ts": 1790619625487521500,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.0017,
+     "detail": "TT-101 = 95.002 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:26.573072+00:00"
+   },
+   {
+    "id": 4374,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619627488707600,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.02057,
+     "detail": "TT-101 = 95.021 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:28.477636+00:00"
+   },
+   {
+    "id": 4377,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619628487570700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.01472,
+     "detail": "TT-101 = 95.015 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:29.480436+00:00"
+   },
+   {
+    "id": 4380,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619629488075800,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.05577,
+     "detail": "TT-101 = 95.056 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:30.481236+00:00"
+   },
+   {
+    "id": 4383,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619630488160000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.06788,
+     "detail": "TT-101 = 95.068 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:31.481548+00:00"
+   },
+   {
+    "id": 4386,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619631487600600,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.12775,
+     "detail": "TT-101 = 95.128 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:32.484439+00:00"
+   },
+   {
+    "id": 4391,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619633488187000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.12334,
+     "detail": "TT-101 = 95.123 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:34.489148+00:00"
+   },
+   {
+    "id": 4394,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619634488003000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.14419,
+     "detail": "TT-101 = 95.144 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:35.484639+00:00"
+   },
+   {
+    "id": 4397,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619635484639200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.00595,
+     "detail": "TT-101 = 95.006 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:36.489836+00:00"
+   },
+   {
+    "id": 4400,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619636484859000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.1453,
+     "detail": "TT-101 = 95.145 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:37.489325+00:00"
+   },
+   {
+    "id": 4403,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619637484316200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.10539,
+     "detail": "TT-101 = 95.105 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:38.490955+00:00"
+   },
+   {
+    "id": 4406,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619638485168400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.14826,
+     "detail": "TT-101 = 95.148 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:39.490970+00:00"
+   },
+   {
+    "id": 4409,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619639484764700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.219315,
+     "detail": "TT-101 = 95.219 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:40.492829+00:00"
+   },
+   {
+    "id": 4412,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619640484941000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.196754,
+     "detail": "TT-101 = 95.197 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:41.498087+00:00"
+   },
+   {
+    "id": 4415,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619641484894500,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.13307,
+     "detail": "TT-101 = 95.133 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:42.494251+00:00"
+   },
+   {
+    "id": 4418,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619642484570400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.2115,
+     "detail": "TT-101 = 95.212 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:43.495880+00:00"
+   },
+   {
+    "id": 4421,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619643484853200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.19892,
+     "detail": "TT-101 = 95.199 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:44.497765+00:00"
+   },
+   {
+    "id": 4424,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619644484494300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.18422,
+     "detail": "TT-101 = 95.184 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:45.498640+00:00"
+   },
+   {
+    "id": 4427,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619645484464000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.38376,
+     "detail": "TT-101 = 95.384 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:46.502426+00:00"
+   },
+   {
+    "id": 4430,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619646485114400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.218544,
+     "detail": "TT-101 = 95.219 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:47.501802+00:00"
+   },
+   {
+    "id": 4433,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619647484149200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.219406,
+     "detail": "TT-101 = 95.219 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:48.509384+00:00"
+   },
+   {
+    "id": 4436,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619648485282800,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.24084,
+     "detail": "TT-101 = 95.241 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:49.506158+00:00"
+   },
+   {
+    "id": 4439,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619649484935400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.31089,
+     "detail": "TT-101 = 95.311 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:50.507457+00:00"
+   },
+   {
+    "id": 4442,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619650485767700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.33194,
+     "detail": "TT-101 = 95.332 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:51.511305+00:00"
+   },
+   {
+    "id": 4445,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619651484569000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.30128,
+     "detail": "TT-101 = 95.301 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:52.511529+00:00"
+   },
+   {
+    "id": 4448,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619652484381700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.274994,
+     "detail": "TT-101 = 95.275 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:53.519274+00:00"
+   },
+   {
+    "id": 4451,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619653484075300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.33643,
+     "detail": "TT-101 = 95.336 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:54.517465+00:00"
+   },
+   {
+    "id": 4454,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619654484683500,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.39254,
+     "detail": "TT-101 = 95.393 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:55.521554+00:00"
+   },
+   {
+    "id": 4457,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619655485089800,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.51301,
+     "detail": "TT-101 = 95.513 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:56.522906+00:00"
+   },
+   {
+    "id": 4460,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619656483922700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.44418,
+     "detail": "TT-101 = 95.444 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:57.522161+00:00"
+   },
+   {
+    "id": 4463,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619657485414000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.42773,
+     "detail": "TT-101 = 95.428 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:58.523813+00:00"
+   },
+   {
+    "id": 4466,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619658484540000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.254395,
+     "detail": "TT-101 = 95.254 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:20:59.527300+00:00"
+   },
+   {
+    "id": 4469,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619659484258800,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.481674,
+     "detail": "TT-101 = 95.482 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:00.528938+00:00"
+   },
+   {
+    "id": 4472,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619660484827600,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.5237,
+     "detail": "TT-101 = 95.524 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:01.532174+00:00"
+   },
+   {
+    "id": 4475,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619661488161000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.45879,
+     "detail": "TT-101 = 95.459 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:02.533548+00:00"
+   },
+   {
+    "id": 4478,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619662484532700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.406235,
+     "detail": "TT-101 = 95.406 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:03.538074+00:00"
+   },
+   {
+    "id": 4481,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619663488631800,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.52981,
+     "detail": "TT-101 = 95.53 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:04.535373+00:00"
+   },
+   {
+    "id": 4484,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619664484096500,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.543045,
+     "detail": "TT-101 = 95.543 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:05.533266+00:00"
+   },
+   {
+    "id": 4487,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619665480699000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.53496,
+     "detail": "TT-101 = 95.535 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:06.534854+00:00"
+   },
+   {
+    "id": 4490,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619666483243300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.51685,
+     "detail": "TT-101 = 95.517 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:07.535296+00:00"
+   },
+   {
+    "id": 4493,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619667481074400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.43438,
+     "detail": "TT-101 = 95.434 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:08.538325+00:00"
+   },
+   {
+    "id": 4494,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619668480290600,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.55122,
+     "detail": "TT-101 = 95.551 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:08.554952+00:00"
+   },
+   {
+    "id": 4499,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619669480710400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.61254,
+     "detail": "TT-101 = 95.613 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:10.539858+00:00"
+   },
+   {
+    "id": 4502,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619670481712000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.57139,
+     "detail": "TT-101 = 95.571 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:11.546782+00:00"
+   },
+   {
+    "id": 4503,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619671480291300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.56139,
+     "detail": "TT-101 = 95.561 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:11.585553+00:00"
+   },
+   {
+    "id": 4507,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619672480909300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.4891,
+     "detail": "TT-101 = 95.489 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:12.544278+00:00"
+   },
+   {
+    "id": 4511,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619673482126000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.65291,
+     "detail": "TT-101 = 95.653 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:14.550590+00:00"
+   },
+   {
+    "id": 4514,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619674482206200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.633736,
+     "detail": "TT-101 = 95.634 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:15.554113+00:00"
+   },
+   {
+    "id": 4515,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619675480155100,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.63293,
+     "detail": "TT-101 = 95.633 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:15.572504+00:00"
+   },
+   {
+    "id": 4522,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619676480934700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.553925,
+     "detail": "TT-101 = 95.554 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:17.551935+00:00"
+   },
+   {
+    "id": 4523,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619677480301000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.574875,
+     "detail": "TT-101 = 95.575 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:17.568176+00:00"
+   },
+   {
+    "id": 4526,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619678481013200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.60344,
+     "detail": "TT-101 = 95.603 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:18.552988+00:00"
+   },
+   {
+    "id": 4529,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619679481557000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.67365,
+     "detail": "TT-101 = 95.674 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:19.555267+00:00"
+   },
+   {
+    "id": 4531,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "observations",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "af32a0dd-4224-4684-841a-e9c85905b01f"
+    },
+    "created_at": "2026-09-28T18:21:20.003876+00:00"
+   },
+   {
+    "id": 4532,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "documents",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "6a51b827-8e30-490c-ae4e-f10c7060a8ee"
+    },
+    "created_at": "2026-09-28T18:21:20.004084+00:00"
+   },
+   {
+    "id": 4533,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_started",
+    "payload": {
+     "tool": "alarm",
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "08a8b2ba-70e7-4368-9e15-2ccdab281ac1"
+    },
+    "created_at": "2026-09-28T18:21:20.006128+00:00"
+   },
+   {
+    "id": 4534,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "documents",
+     "result": {
+      "assets": [
+       {
+        "name": "R-101",
+        "source_id": "AR-100/reactor-line-01/asset/R-101",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35"
+       }
+      ],
+      "status": "available",
+      "sensors": [
+       {
+        "lsl": null,
+        "tag": "CT-101",
+        "usl": null,
+        "unit": "mS/cm",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 6.2,
+        "tag": "pH-101",
+        "usl": 8.4,
+        "unit": "pH",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 15,
+        "tag": "LT-102",
+        "usl": 90,
+        "unit": "%",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": null,
+        "tag": "PT-101",
+        "usl": 6,
+        "unit": "barg",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       },
+       {
+        "lsl": 40,
+        "tag": "TT-101",
+        "usl": 95,
+        "unit": "degC",
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e"
+       }
+      ],
+      "documents": [
+       {
+        "sha256": "e1591ee93069de598e95673a64b1fe1e22f8a1ff4ab1221f708552b5b1ed71fb",
+        "content": "---\ndocument_id: AR100-THERMAL-RESPONSE\nversion: 1\nstatus: educational-draft\napplies_to: [AR-100, reactor-line-01, R-101, HX-102]\nalarm_types: [THRESHOLD_USL, ZSCORE]\nsource_kind: authored-simulation-procedure\n---\n\n# 반응기 온도 이상과 냉각 대응\n\nAR-100 가상 공정의 교육용 절차다. 실물 설비의 운전·안전 승인 기준이 아니다. HX-102는 이 프로젝트에 추가한 가상 냉각 장치다.\n\n## 적용 근거와 범위\n\nR-101 반응기의 온도는 TT-101로 확인한다. 프로젝트의 plant.yaml에는 TT-101 단위 degC, 하한 40°C, 상한 95°C가 설정되어 있다. 적용 시에는 현재 게시된 센서 관계와 출처 있는 기준을 다시 조회한다. 이 수치를 제조사 공통 안전 기준으로 사용하지 않는다.\n\n## 조사와 제안\n\n사건 당시 온도 이력과 최근 온도 이력을 구분한다. 최근 TT-101 관측은 10초 이내이고 품질이 GOOD이어야 한다. 최신 이력과 현재 설비 조회 온도가 모두 적용 상한을 초과하는지 확인한다. 자료 누락·단위 불일치·서로 다른 기준이 있으면 냉각 실행을 제안하지 않는다.\n\n현재 냉각 기능이 지원되고 명령이 꺼져 있으며 고압 인터록이 없는지 확인한다. 현재 목표 온도가 적용 하한 이상, 상한 미만인지 확인한다. enable_cooling은 담당자가 검토한 현재 목표값을 그대로 사용해 냉각 명령만 켠다. 목표값이나 히터 명령을 함께 바꾸는 조치가 아니다.\n\n이상 원인을 단정하지 않는다. 냉각 성능 부족이나 열 공급 지속 같은 원인 후보는 관측 근거와 함께 제시한다. 교육용 고장 주입 정답을 Agent의 판단 근거로 사용하지 않는다.\n\n## 승인과 실행\n\n담당자가 근거·목표값·예상 행동을 확인하고 승인한다. 실행 직전 사건 버전, 문서·설비 관계, 운전 명령·인터록 및 현재 온도를 다시 확인한다. 상태가 바뀌거나 온도가 이미 상한 이하이면 명령하지 않는다. 반려하면 설비에 명령하지 않는다.\n\n허용된 가상 설비의 냉각 코일에 Modbus 명령을 한 번 보낸다. 응답이 불명확하면 자동 재전송하지 않는다. 새 상태 번호에서 냉각 명령 켜짐을 다시 확인한다.\n\n## 결과의 구분\n\n명령 응답, 냉각 명령 반영, 실제 온도 하강, 목표 범위 유지, 원인 제거는 서로 다르다. 냉각 명령 반영만 확인한 결과를 회복 완료로 표시하지 않는다.\n\n교육용 관측 기준은 목표 ±1°C에서 새로운 관측값이 30초 이어지는 것이다. 목표 변경이나 관측 단절이 발생하면 같은 조건에서 회복을 확인했다고 할 수 없다. 온도가 안정되어도 히터 고착이나 냉각 장치의 고장이 수리된 것은 아니므로 점검을 이어간다.\n",
+        "version": 1,
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "document_id": "AR100-THERMAL-RESPONSE",
+        "source_path": "uploads/AR100-THERMAL-RESPONSE.md"
+       },
+       {
+        "sha256": "b7a8ff10b17dbe21fb8ed3fe2e7b09de09e866736a1f36285e1b555a21286d44",
+        "content": "---\ndocument_id: AR100-ASSET-CONTEXT\nversion: 1\nstatus: educational-draft\nsource_kind: project-configuration\n---\n\n# AR-100 설비와 데이터 맥락\n\nAR-100은 Python 물리모델로 동작하는 가상 반응기 라인이다. 특정 공장이나 제조사 실물 설비의 복제본이 아니다. 원료탱크, 공급펌프 P-101, 반응기 R-101, 교반기 M-101, 재킷히터 HX-101 및 밸브를 포함한다.\n\n| 대상 | 식별자 | 데이터·명령 |\n|---|---|---|\n| 전체 데이터 장치 | reactor-line-01 | 한 장치가 여러 공정 태그를 노출 |\n| 교반기 | M-101 | IT-102 전류(A), VT-101 진동(mm/s), agitator_run 기동 coil |\n| 반응기 | R-101 | LT-102 액위(%), TT-101 온도(degC), PT-101 압력(barg) |\n| 공급펌프 | P-101 | IT-101 전류, FT-101 공급 유량, pump_run 명령 |\n\n태그·단위·레지스터는 `simulator/plant.yaml`이 정본이다. 위 설비별 매핑은 해당 설명과 `ARCHITECTURE.md` 공정도에 근거한 교육용 의미 연결이다. 모든 태그가 같은 device에서 온다는 이유로 모든 고장을 같은 설비 문제로 합치지 않는다.\n\n시계열 데이터는 기존 InfluxDB에서 조회한다. 그래프는 설비·센서·문서·절차의 관계를 제공하며 초 단위 측정값 전체를 대신 저장하지 않는다. 승인·조치 이력은 업무 DB에 저장한다.\n\n현재 시뮬레이터가 직접 관측하지 않는 정보: 실제 베어링 손상, 축 정렬, 윤활 상태, 실제 유체 점도, 정비 담당자의 현장 점검 결과. 해당 정보는 미확인으로 취급한다.\n",
+        "version": 1,
+        "_element_id": "4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35",
+        "document_id": "AR100-ASSET-CONTEXT",
+        "source_path": "uploads/AR100-ASSET-CONTEXT.md"
+       }
+      ],
+      "lookup_scope": {
+       "site": "AR-100",
+       "device": "reactor-line-01",
+       "alarm_tags": [
+        "TT-101"
+       ],
+       "limitation": "Empty results do not establish that the device or factory has no assets, documents or sensors. Unknown tags require checking tag identity and mapping; do not assign them to M-101 without evidence.",
+       "asset_selection": "Assets in this site/device linked by HAS_SENSOR to an alarm tag.",
+       "document_selection": "Documents linked to those matched assets only."
+      }
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "6a51b827-8e30-490c-ae4e-f10c7060a8ee",
+     "duration_ms": 18
+    },
+    "created_at": "2026-09-28T18:21:20.013296+00:00"
+   },
+   {
+    "id": 4535,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "alarm",
+     "result": {
+      "revision": 1,
+      "first_alarm": {
+       "ts": 1790619625487521500,
+       "tag": "TT-101",
+       "site": "AR-100",
+       "value": 95.0017,
+       "detail": "TT-101 = 95.002 degC / 규격 [40.0, 95.0]",
+       "device": "reactor-line-01",
+       "detector": "TIER1_RULE",
+       "severity": "CRITICAL",
+       "alert_type": "THRESHOLD_USL"
+      },
+      "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+      "snapshot_at": "2026-09-28T18:21:20.009552+00:00",
+      "correlated_alarms": {
+       "groups": [
+        {
+         "tag": "TT-101",
+         "count": 4,
+         "last_ts": 1790619629488075800,
+         "detector": "TIER1_RULE",
+         "first_ts": 1790619625487521500,
+         "severity": "CRITICAL",
+         "max_value": 95.05577,
+         "min_value": 95.0017,
+         "alert_type": "THRESHOLD_USL"
+        }
+       ],
+       "method": "All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.",
+       "original_count": 4
+      },
+      "observation_revision": 4
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "08a8b2ba-70e7-4368-9e15-2ccdab281ac1",
+     "duration_ms": 27
+    },
+    "created_at": "2026-09-28T18:21:20.019098+00:00"
+   },
+   {
+    "id": 4536,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_tool_result",
+    "payload": {
+     "tool": "observations",
+     "result": {
+      "plant_state": {
+       "seq": 4864,
+       "site": "AR-100",
+       "device": "reactor-line-01",
+       "status": "available",
+       "commands": {
+        "pump_run": true,
+        "temp_sp_c": 68.7,
+        "agitator_run": true,
+        "cooler_enable": false,
+        "heater_enable": false,
+        "pump_speed_sp": 60.1,
+        "valve_open_sp": 45.0
+       },
+       "interlock": false,
+       "retrieved_at": "2026-09-28T18:21:20.035081+00:00",
+       "timestamp_note": "조회 시각이며 센서 측정 시각은 아닙니다."
+      },
+      "current_window": {
+       "limit": 2000,
+       "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+       "source": "InfluxDB/process_raw",
+       "status": "available",
+       "stop_ns": "1790619680006156270",
+       "start_ns": "1790619650006156270",
+       "truncated": false,
+       "statistics": [
+        {
+         "max": 51.983303,
+         "min": 51.735756,
+         "tag": "LT-102",
+         "last": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:21:19.481088Z",
+          "value": 51.84428,
+          "quality": "GOOD"
+         },
+         "mean": 51.868338900000005,
+         "count": 30,
+         "first": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:20:50.4853187Z",
+          "value": 51.93112,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.555
+        },
+        {
+         "max": 95.67365,
+         "min": 95.254395,
+         "tag": "TT-101",
+         "last": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:21:19.481557Z",
+          "value": 95.67365,
+          "quality": "GOOD"
+         },
+         "mean": 95.49390163333334,
+         "count": 30,
+         "first": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:20:50.4857677Z",
+          "value": 95.33194,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.554
+        },
+        {
+         "max": 3.8565028,
+         "min": 3.8065674,
+         "tag": "PT-101",
+         "last": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:21:19.4822943Z",
+          "value": 3.8424327,
+          "quality": "GOOD"
+         },
+         "mean": 3.8348504733333333,
+         "count": 30,
+         "first": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:20:50.4871206Z",
+          "value": 3.8387911,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.553
+        },
+        {
+         "max": 7.135803,
+         "min": 7.110428,
+         "tag": "pH-101",
+         "last": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:21:19.4841052Z",
+          "value": 7.11549,
+          "quality": "GOOD"
+         },
+         "mean": 7.1185516,
+         "count": 30,
+         "first": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:20:50.4889085Z",
+          "value": 7.131229,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.552
+        },
+        {
+         "max": 3.7759092,
+         "min": 3.7253306,
+         "tag": "CT-101",
+         "last": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:21:19.484435Z",
+          "value": 3.746993,
+          "quality": "GOOD"
+         },
+         "mean": 3.7544496,
+         "count": 30,
+         "first": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:20:50.4892506Z",
+          "value": 3.7666128,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 30
+         },
+         "latest_age_seconds": 0.551
+        }
+       ],
+       "age_reference_at": "2026-09-28T18:21:20.035790+00:00"
+      },
+      "incident_window": {
+       "limit": 2000,
+       "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+       "source": "InfluxDB/process_raw",
+       "status": "available",
+       "stop_ns": "1790619644488075800",
+       "start_ns": "1790619595487521500",
+       "truncated": false,
+       "statistics": [
+        {
+         "max": 52.00586,
+         "min": 51.789265,
+         "tag": "LT-102",
+         "last": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:20:28.4873024Z",
+          "value": 51.918602,
+          "quality": "GOOD"
+         },
+         "mean": 51.92322452941176,
+         "count": 34,
+         "first": {
+          "tag": "LT-102",
+          "time": "2026-09-28T18:19:55.4902564Z",
+          "value": 52.00497,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.548
+        },
+        {
+         "max": 95.02057,
+         "min": 94.540924,
+         "tag": "TT-101",
+         "last": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:20:28.4875707Z",
+          "value": 95.01472,
+          "quality": "GOOD"
+         },
+         "mean": 94.81888076470588,
+         "count": 34,
+         "first": {
+          "tag": "TT-101",
+          "time": "2026-09-28T18:19:55.49046Z",
+          "value": 94.58508,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.548
+        },
+        {
+         "max": 3.848498,
+         "min": 3.8020825,
+         "tag": "PT-101",
+         "last": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:20:28.4880591Z",
+          "value": 3.8296828,
+          "quality": "GOOD"
+         },
+         "mean": 3.8203296558823525,
+         "count": 34,
+         "first": {
+          "tag": "PT-101",
+          "time": "2026-09-28T18:19:55.4908173Z",
+          "value": 3.812411,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.547
+        },
+        {
+         "max": 7.134566,
+         "min": 7.1134696,
+         "tag": "pH-101",
+         "last": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:20:28.4914176Z",
+          "value": 7.123564,
+          "quality": "GOOD"
+         },
+         "mean": 7.125046520588235,
+         "count": 34,
+         "first": {
+          "tag": "pH-101",
+          "time": "2026-09-28T18:19:55.4917396Z",
+          "value": 7.1204643,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.544
+        },
+        {
+         "max": 3.7776217,
+         "min": 3.7210853,
+         "tag": "CT-101",
+         "last": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:20:28.4919478Z",
+          "value": 3.74457,
+          "quality": "GOOD"
+         },
+         "mean": 3.748465685294118,
+         "count": 34,
+         "first": {
+          "tag": "CT-101",
+          "time": "2026-09-28T18:19:55.4919747Z",
+          "value": 3.7588618,
+          "quality": "GOOD"
+         },
+         "quality_counts": {
+          "GOOD": 34
+         },
+         "latest_age_seconds": 51.544
+        }
+       ],
+       "age_reference_at": "2026-09-28T18:21:20.035539+00:00"
+      },
+      "incident_window_capped": false
+     },
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "call_id": "af32a0dd-4224-4684-841a-e9c85905b01f",
+     "duration_ms": 46
+    },
+    "created_at": "2026-09-28T18:21:20.042329+00:00"
+   },
+   {
+    "id": 4538,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619680480943000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.60013,
+     "detail": "TT-101 = 95.6 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:20.557309+00:00"
+   },
+   {
+    "id": 4541,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619681483146000,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.68234,
+     "detail": "TT-101 = 95.682 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:21.563522+00:00"
+   },
+   {
+    "id": 4544,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619682480276500,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.6709,
+     "detail": "TT-101 = 95.671 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:22.563492+00:00"
+   },
+   {
+    "id": 4547,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619683480509700,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.62008,
+     "detail": "TT-101 = 95.62 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:23.564924+00:00"
+   },
+   {
+    "id": 4550,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619684480815900,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.75331,
+     "detail": "TT-101 = 95.753 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:24.563920+00:00"
+   },
+   {
+    "id": 4553,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619685480679200,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.755844,
+     "detail": "TT-101 = 95.756 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:25.566497+00:00"
+   },
+   {
+    "id": 4555,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "agent_model_output",
+    "payload": {
+     "run_id": "8b18fe91-bba6-4655-bb3d-4fe41691e73a",
+     "messages": [
+      {
+       "id": "39ac3bab-3286-4fa1-9b10-20b607c566aa",
+       "name": null,
+       "type": "human",
+       "content": "사건 55820760-115a-4fa9-98e5-b133ed2cb763의 근거를 조회하고 검토 가능한 제조 대응안을 작성하세요.",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "lc_run--01a0e93f-3d34-75b1-80f5-c9b68d91411e-0",
+       "name": null,
+       "type": "ai",
+       "content": "",
+       "tool_calls": [
+        {
+         "id": "call_n90gPr4yS5sng0Q5bCWbvsj2",
+         "args": {},
+         "name": "get_incident_alarm",
+         "type": "tool_call"
+        },
+        {
+         "id": "call_WZLQ87YxsMbEZHWn7zV1nz1s",
+         "args": {},
+         "name": "get_asset_documents",
+         "type": "tool_call"
+        },
+        {
+         "id": "call_5CBupdkTiq2EXnu0KoQnVuRu",
+         "args": {},
+         "name": "get_sensor_observations",
+         "type": "tool_call"
+        }
+       ],
+       "usage_metadata": {
+        "input_tokens": 1479,
+        "total_tokens": 1538,
+        "output_tokens": 59,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 1311
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 0
+        }
+       },
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "id": "chatcmpl-ETAGVzGSx2MPcUO5Mz648VFwgi6hP",
+        "logprobs": null,
+        "model_name": "coding",
+        "token_usage": {
+         "total_tokens": 1538,
+         "prompt_tokens": 1479,
+         "completion_tokens": 59,
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 1311,
+          "cache_write_tokens": 42
+         },
+         "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+         }
+        },
+        "service_tier": "default",
+        "finish_reason": "tool_calls",
+        "model_provider": "openai",
+        "system_fingerprint": null
+       },
+       "invalid_tool_calls": []
+      },
+      {
+       "id": "5152a7b7-0e37-4bba-af22-3d9af9ab0ef0",
+       "name": "get_incident_alarm",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"incident_id\": \"55820760-115a-4fa9-98e5-b133ed2cb763\", \"revision\": 1, \"observation_revision\": 4, \"snapshot_at\": \"2026-09-28T18:21:20.009552+00:00\", \"first_alarm\": {\"ts\": 1790619625487521500, \"tag\": \"TT-101\", \"site\": \"AR-100\", \"value\": 95.0017, \"detail\": \"TT-101 = 95.002 degC / 규격 [40.0, 95.0]\", \"device\": \"reactor-line-01\", \"detector\": \"TIER1_RULE\", \"severity\": \"CRITICAL\", \"alert_type\": \"THRESHOLD_USL\"}, \"correlated_alarms\": {\"groups\": [{\"tag\": \"TT-101\", \"alert_type\": \"THRESHOLD_USL\", \"detector\": \"TIER1_RULE\", \"severity\": \"CRITICAL\", \"count\": 4, \"min_value\": 95.0017, \"max_value\": 95.05577, \"first_ts\": 1790619625487521500, \"last_ts\": 1790619629488075800}], \"original_count\": 4, \"method\": \"All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.\"}}",
+       "artifact": null,
+       "tool_call_id": "call_n90gPr4yS5sng0Q5bCWbvsj2",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "210b437e-9140-4b80-b7d9-b8b7f0ff3f3f",
+       "name": "get_asset_documents",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"status\": \"available\", \"assets\": [{\"name\": \"R-101\", \"source_id\": \"AR-100/reactor-line-01/asset/R-101\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"documents\": [{\"document_id\": \"AR100-THERMAL-RESPONSE\", \"content\": \"---\\ndocument_id: AR100-THERMAL-RESPONSE\\nversion: 1\\nstatus: educational-draft\\napplies_to: [AR-100, reactor-line-01, R-101, HX-102]\\nalarm_types: [THRESHOLD_USL, ZSCORE]\\nsource_kind: authored-simulation-procedure\\n---\\n\\n# 반응기 온도 이상과 냉각 대응\\n\\nAR-100 가상 공정의 교육용 절차다. 실물 설비의 운전·안전 승인 기준이 아니다. HX-102는 이 프로젝트에 추가한 가상 냉각 장치다.\\n\\n## 적용 근거와 범위\\n\\nR-101 반응기의 온도는 TT-101로 확인한다. 프로젝트의 plant.yaml에는 TT-101 단위 degC, 하한 40°C, 상한 95°C가 설정되어 있다. 적용 시에는 현재 게시된 센서 관계와 출처 있는 기준을 다시 조회한다. 이 수치를 제조사 공통 안전 기준으로 사용하지 않는다.\\n\\n## 조사와 제안\\n\\n사건 당시 온도 이력과 최근 온도 이력을 구분한다. 최근 TT-101 관측은 10초 이내이고 품질이 GOOD이어야 한다. 최신 이력과 현재 설비 조회 온도가 모두 적용 상한을 초과하는지 확인한다. 자료 누락·단위 불일치·서로 다른 기준이 있으면 냉각 실행을 제안하지 않는다.\\n\\n현재 냉각 기능이 지원되고 명령이 꺼져 있으며 고압 인터록이 없는지 확인한다. 현재 목표 온도가 적용 하한 이상, 상한 미만인지 확인한다. enable_cooling은 담당자가 검토한 현재 목표값을 그대로 사용해 냉각 명령만 켠다. 목표값이나 히터 명령을 함께 바꾸는 조치가 아니다.\\n\\n이상 원인을 단정하지 않는다. 냉각 성능 부족이나 열 공급 지속 같은 원인 후보는 관측 근거와 함께 제시한다. 교육용 고장 주입 정답을 Agent의 판단 근거로 사용하지 않는다.\\n\\n## 승인과 실행\\n\\n담당자가 근거·목표값·예상 행동을 확인하고 승인한다. 실행 직전 사건 버전, 문서·설비 관계, 운전 명령·인터록 및 현재 온도를 다시 확인한다. 상태가 바뀌거나 온도가 이미 상한 이하이면 명령하지 않는다. 반려하면 설비에 명령하지 않는다.\\n\\n허용된 가상 설비의 냉각 코일에 Modbus 명령을 한 번 보낸다. 응답이 불명확하면 자동 재전송하지 않는다. 새 상태 번호에서 냉각 명령 켜짐을 다시 확인한다.\\n\\n## 결과의 구분\\n\\n명령 응답, 냉각 명령 반영, 실제 온도 하강, 목표 범위 유지, 원인 제거는 서로 다르다. 냉각 명령 반영만 확인한 결과를 회복 완료로 표시하지 않는다.\\n\\n교육용 관측 기준은 목표 ±1°C에서 새로운 관측값이 30초 이어지는 것이다. 목표 변경이나 관측 단절이 발생하면 같은 조건에서 회복을 확인했다고 할 수 없다. 온도가 안정되어도 히터 고착이나 냉각 장치의 고장이 수리된 것은 아니므로 점검을 이어간다.\\n\", \"source_path\": \"uploads/AR100-THERMAL-RESPONSE.md\", \"sha256\": \"e1591ee93069de598e95673a64b1fe1e22f8a1ff4ab1221f708552b5b1ed71fb\", \"version\": 1, \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"document_id\": \"AR100-ASSET-CONTEXT\", \"content\": \"---\\ndocument_id: AR100-ASSET-CONTEXT\\nversion: 1\\nstatus: educational-draft\\nsource_kind: project-configuration\\n---\\n\\n# AR-100 설비와 데이터 맥락\\n\\nAR-100은 Python 물리모델로 동작하는 가상 반응기 라인이다. 특정 공장이나 제조사 실물 설비의 복제본이 아니다. 원료탱크, 공급펌프 P-101, 반응기 R-101, 교반기 M-101, 재킷히터 HX-101 및 밸브를 포함한다.\\n\\n| 대상 | 식별자 | 데이터·명령 |\\n|---|---|---|\\n| 전체 데이터 장치 | reactor-line-01 | 한 장치가 여러 공정 태그를 노출 |\\n| 교반기 | M-101 | IT-102 전류(A), VT-101 진동(mm/s), agitator_run 기동 coil |\\n| 반응기 | R-101 | LT-102 액위(%), TT-101 온도(degC), PT-101 압력(barg) |\\n| 공급펌프 | P-101 | IT-101 전류, FT-101 공급 유량, pump_run 명령 |\\n\\n태그·단위·레지스터는 `simulator/plant.yaml`이 정본이다. 위 설비별 매핑은 해당 설명과 `ARCHITECTURE.md` 공정도에 근거한 교육용 의미 연결이다. 모든 태그가 같은 device에서 온다는 이유로 모든 고장을 같은 설비 문제로 합치지 않는다.\\n\\n시계열 데이터는 기존 InfluxDB에서 조회한다. 그래프는 설비·센서·문서·절차의 관계를 제공하며 초 단위 측정값 전체를 대신 저장하지 않는다. 승인·조치 이력은 업무 DB에 저장한다.\\n\\n현재 시뮬레이터가 직접 관측하지 않는 정보: 실제 베어링 손상, 축 정렬, 윤활 상태, 실제 유체 점도, 정비 담당자의 현장 점검 결과. 해당 정보는 미확인으로 취급한다.\\n\", \"source_path\": \"uploads/AR100-ASSET-CONTEXT.md\", \"sha256\": \"b7a8ff10b17dbe21fb8ed3fe2e7b09de09e866736a1f36285e1b555a21286d44\", \"version\": 1, \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"sensors\": [{\"tag\": \"CT-101\", \"unit\": \"mS/cm\", \"lsl\": null, \"usl\": null, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"pH-101\", \"unit\": \"pH\", \"lsl\": 6.2, \"usl\": 8.4, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"LT-102\", \"unit\": \"%\", \"lsl\": 15, \"usl\": 90, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"PT-101\", \"unit\": \"barg\", \"lsl\": null, \"usl\": 6, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}, {\"tag\": \"TT-101\", \"unit\": \"degC\", \"lsl\": 40, \"usl\": 95, \"source_sha256\": \"72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e\", \"_element_id\": \"4:fcc7e867-6334-4bfa-8c6e-d0be39cbdf3f:35\"}], \"lookup_scope\": {\"site\": \"AR-100\", \"device\": \"reactor-line-01\", \"alarm_tags\": [\"TT-101\"], \"asset_selection\": \"Assets in this site/device linked by HAS_SENSOR to an alarm tag.\", \"document_selection\": \"Documents linked to those matched assets only.\", \"limitation\": \"Empty results do not establish that the device or factory has no assets, documents or sensors. Unknown tags require checking tag identity and mapping; do not assign them to M-101 without evidence.\"}}",
+       "artifact": null,
+       "tool_call_id": "call_WZLQ87YxsMbEZHWn7zV1nz1s",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "63cf6644-72ce-4128-986c-e88ee7cbed30",
+       "name": "get_sensor_observations",
+       "type": "tool",
+       "status": "success",
+       "content": "{\"incident_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1790619595487521500\", \"stop_ns\": \"1790619644488075800\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 34, \"min\": 51.789265, \"max\": 52.00586, \"mean\": 51.92322452941176, \"first\": {\"time\": \"2026-09-28T18:19:55.4902564Z\", \"tag\": \"LT-102\", \"value\": 52.00497, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4873024Z\", \"tag\": \"LT-102\", \"value\": 51.918602, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.548, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"TT-101\", \"count\": 34, \"min\": 94.540924, \"max\": 95.02057, \"mean\": 94.81888076470588, \"first\": {\"time\": \"2026-09-28T18:19:55.49046Z\", \"tag\": \"TT-101\", \"value\": 94.58508, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4875707Z\", \"tag\": \"TT-101\", \"value\": 95.01472, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.548, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"PT-101\", \"count\": 34, \"min\": 3.8020825, \"max\": 3.848498, \"mean\": 3.8203296558823525, \"first\": {\"time\": \"2026-09-28T18:19:55.4908173Z\", \"tag\": \"PT-101\", \"value\": 3.812411, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4880591Z\", \"tag\": \"PT-101\", \"value\": 3.8296828, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.547, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"pH-101\", \"count\": 34, \"min\": 7.1134696, \"max\": 7.134566, \"mean\": 7.125046520588235, \"first\": {\"time\": \"2026-09-28T18:19:55.4917396Z\", \"tag\": \"pH-101\", \"value\": 7.1204643, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4914176Z\", \"tag\": \"pH-101\", \"value\": 7.123564, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.544, \"quality_counts\": {\"GOOD\": 34}}, {\"tag\": \"CT-101\", \"count\": 34, \"min\": 3.7210853, \"max\": 3.7776217, \"mean\": 3.748465685294118, \"first\": {\"time\": \"2026-09-28T18:19:55.4919747Z\", \"tag\": \"CT-101\", \"value\": 3.7588618, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:20:28.4919478Z\", \"tag\": \"CT-101\", \"value\": 3.74457, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 51.544, \"quality_counts\": {\"GOOD\": 34}}], \"age_reference_at\": \"2026-09-28T18:21:20.035539+00:00\", \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"current_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1790619650006156270\", \"stop_ns\": \"1790619680006156270\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 30, \"min\": 51.735756, \"max\": 51.983303, \"mean\": 51.868338900000005, \"first\": {\"time\": \"2026-09-28T18:20:50.4853187Z\", \"tag\": \"LT-102\", \"value\": 51.93112, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.481088Z\", \"tag\": \"LT-102\", \"value\": 51.84428, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.555, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"TT-101\", \"count\": 30, \"min\": 95.254395, \"max\": 95.67365, \"mean\": 95.49390163333334, \"first\": {\"time\": \"2026-09-28T18:20:50.4857677Z\", \"tag\": \"TT-101\", \"value\": 95.33194, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.481557Z\", \"tag\": \"TT-101\", \"value\": 95.67365, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.554, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"PT-101\", \"count\": 30, \"min\": 3.8065674, \"max\": 3.8565028, \"mean\": 3.8348504733333333, \"first\": {\"time\": \"2026-09-28T18:20:50.4871206Z\", \"tag\": \"PT-101\", \"value\": 3.8387911, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.4822943Z\", \"tag\": \"PT-101\", \"value\": 3.8424327, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.553, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"pH-101\", \"count\": 30, \"min\": 7.110428, \"max\": 7.135803, \"mean\": 7.1185516, \"first\": {\"time\": \"2026-09-28T18:20:50.4889085Z\", \"tag\": \"pH-101\", \"value\": 7.131229, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.4841052Z\", \"tag\": \"pH-101\", \"value\": 7.11549, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.552, \"quality_counts\": {\"GOOD\": 30}}, {\"tag\": \"CT-101\", \"count\": 30, \"min\": 3.7253306, \"max\": 3.7759092, \"mean\": 3.7544496, \"first\": {\"time\": \"2026-09-28T18:20:50.4892506Z\", \"tag\": \"CT-101\", \"value\": 3.7666128, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-28T18:21:19.484435Z\", \"tag\": \"CT-101\", \"value\": 3.746993, \"quality\": \"GOOD\"}, \"latest_age_seconds\": 0.551, \"quality_counts\": {\"GOOD\": 30}}], \"age_reference_at\": \"2026-09-28T18:21:20.035790+00:00\", \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"plant_state\": {\"status\": \"available\", \"site\": \"AR-100\", \"device\": \"reactor-line-01\", \"seq\": 4864, \"commands\": {\"pump_run\": true, \"agitator_run\": true, \"heater_enable\": false, \"cooler_enable\": false, \"pump_speed_sp\": 60.1, \"valve_open_sp\": 45.0, \"temp_sp_c\": 68.7}, \"interlock\": false, \"retrieved_at\": \"2026-09-28T18:21:20.035081+00:00\", \"timestamp_note\": \"조회 시각이며 센서 측정 시각은 아닙니다.\"}, \"incident_window_capped\": false}",
+       "artifact": null,
+       "tool_call_id": "call_5CBupdkTiq2EXnu0KoQnVuRu",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      },
+      {
+       "id": "lc_run--01a0e93f-fd31-7f43-98ce-68252806fa89-0",
+       "name": null,
+       "type": "ai",
+       "content": "",
+       "tool_calls": [
+        {
+         "id": "call_mjLsz6qehrgv2kIhJeB03lq6",
+         "args": {
+          "action": "enable_cooling",
+          "summary": "사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.",
+          "citations": [
+           "AR100-THERMAL-RESPONSE",
+           "AR100-ASSET-CONTEXT"
+          ],
+          "uncertainties": [
+           "센서 관측만으로 고장 원인이나 냉각 성능 부족, 지속 열 공급 여부를 확정할 수 없습니다.",
+           "plant_state는 조회 당시 명령·인터록 상태이며 센서 측정 시각이 아닙니다. 실행 직전에 현재 상태와 온도를 재확인해야 합니다.",
+           "냉각 명령 반영만으로 실제 온도 하강, 안정화 또는 원인 제거가 확인되는 것은 아닙니다."
+          ],
+          "expected_revision": 1
+         },
+         "name": "GroundedProposal",
+         "type": "tool_call"
+        }
+       ],
+       "usage_metadata": {
+        "input_tokens": 6027,
+        "total_tokens": 6490,
+        "output_tokens": 463,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 1353
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 0
+        }
+       },
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "id": "chatcmpl-ETAGXURCTbI8AmvNdgI0Bed7zgtL1",
+        "logprobs": null,
+        "model_name": "coding",
+        "token_usage": {
+         "total_tokens": 6490,
+         "prompt_tokens": 6027,
+         "completion_tokens": 463,
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 1353,
+          "cache_write_tokens": 4548
+         },
+         "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+         }
+        },
+        "service_tier": "default",
+        "finish_reason": "tool_calls",
+        "model_provider": "openai",
+        "system_fingerprint": null
+       },
+       "invalid_tool_calls": []
+      },
+      {
+       "id": "4bdf65f1-3df9-4f84-978b-f1191f724624",
+       "name": "GroundedProposal",
+       "type": "tool",
+       "status": "success",
+       "content": "Returning structured response: expected_revision=1 summary='사건 당시 TT-101에서 상한 95°C를 넘는 알람이 4건 기록되었습니다. 사건 구간 센서는 GOOD였으나 해당 구간의 마지막 값 95.01472°C와 조회 당시 나이 약 51.5초는 현재 상태를 대신하지 않습니다. 별도로 현재 구간에서는 TT-101 GOOD 관측 30건이 95.254395~95.67365°C였고 최신값은 95.67365°C(측정 2026-09-28 18:21:19.481557Z, 조회 기준 나이 약 0.554초)로 모두 프로젝트 usl 95°C를 초과합니다. 문서상 적용 관계 R-101–TT-101과 절차의 최근 GOOD 온도 및 현재 조회 온도 조건에 부합합니다. 조회 당시 plant_state에서는 냉각이 꺼져 있고 인터록은 없으며 목표값 68.7°C는 프로젝트 lsl 40°C 이상, usl 95°C 미만이었습니다. 따라서 검토 가능한 대응안으로 현재 목표값을 바꾸지 않고 냉각 명령만 켜는 enable_cooling을 제안합니다. 이는 온도 회복 또는 원인 제거·수리를 뜻하지 않으며, 실행 전 상태·온도·사건 버전을 재확인하고 담당자 승인이 필요합니다. 이는 프로젝트 설정 상한에 대한 판단이지 제조사 공통 안전 기준이 아닙니다.' action='enable_cooling' citations=['AR100-THERMAL-RESPONSE', 'AR100-ASSET-CONTEXT'] uncertainties=['센서 관측만으로 고장 원인이나 냉각 성능 부족, 지속 열 공급 여부를 확정할 수 없습니다.', 'plant_state는 조회 당시 명령·인터록 상태이며 센서 측정 시각이 아닙니다. 실행 직전에 현재 상태와 온도를 재확인해야 합니다.', '냉각 명령 반영만으로 실제 온도 하강, 안정화 또는 원인 제거가 확인되는 것은 아닙니다.']",
+       "artifact": null,
+       "tool_call_id": "call_mjLsz6qehrgv2kIhJeB03lq6",
+       "additional_kwargs": {},
+       "response_metadata": {}
+      }
+     ]
+    },
+    "created_at": "2026-09-28T18:21:25.869778+00:00"
+   },
+   {
+    "id": 4556,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "proposal_created",
+    "payload": {
+     "origin": "ai-run:8b18fe91-bba6-4655-bb3d-4fe41691e73a:openai:coding",
+     "proposal_id": "5bdd40d7-829d-40f4-8b93-fe1b2bdae754"
+    },
+    "created_at": "2026-09-28T18:21:25.978266+00:00"
+   },
+   {
+    "id": 4558,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619686481415400,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.7133,
+     "detail": "TT-101 = 95.713 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:26.570021+00:00"
+   },
+   {
+    "id": 4561,
+    "incident_id": "55820760-115a-4fa9-98e5-b133ed2cb763",
+    "kind": "alarm_correlated",
+    "payload": {
+     "ts": 1790619687480238300,
+     "tag": "TT-101",
+     "site": "AR-100",
+     "value": 95.813774,
+     "detail": "TT-101 = 95.814 degC / 규격 [40.0, 95.0]",
+     "device": "reactor-line-01",
+     "detector": "TIER1_RULE",
+     "severity": "CRITICAL",
+     "alert_type": "THRESHOLD_USL"
+    },
+    "created_at": "2026-09-28T18:21:27.570193+00:00"
+   }
+  ]
+ },
+ "plant_at_analysis_end": {
+  "site": "AR-100",
+  "device": "reactor-line-01",
+  "uptime_s": 4870.5,
+  "sim_time_s": 4871.0,
+  "seq": 4871,
+  "readings": {
+   "LT-101": 92.7984,
+   "LT-102": 51.7681,
+   "TT-101": 95.8138,
+   "TT-102": 135.6303,
+   "PT-101": 3.8423,
+   "FT-101": 5.7717,
+   "FT-102": 6.1107,
+   "IT-101": 6.2893,
+   "IT-102": 5.5926,
+   "VT-101": 2.0379,
+   "pH-101": 7.1157,
+   "CT-101": 3.7823
+  },
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": false,
+   "cooler_enable": false,
+   "pump_speed_sp": 60.1,
+   "valve_open_sp": 45.0,
+   "temp_sp_c": 68.7
+  },
+  "interlock": false,
+  "thermal_model": {
+   "heater_kw": 700.0,
+   "cooler_kw": 0.0
+  },
+  "active_faults": {
+   "heater_stuck": {
+    "elapsed_s": 1717.0,
+    "remaining_s": 683.0
+   }
+  }
+ },
+ "finished_at": "2026-09-28T18:26:50.896527+00:00"
+}
