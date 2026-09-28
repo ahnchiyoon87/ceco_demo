@@ -31,7 +31,7 @@
 
 - MQTT: `edgex/telemetry` (EdgeX export) · `iiot/+/+/+` (lite) · `scada/alerts/{tag}` · `scada/hmi/latest-alert`
 - Kafka: `sensor.telemetry.raw` (6파티션, 24h) · `sensor.telemetry.clean` (6, 24h) · `sensor.anomaly.score` (3, 24h) · `sensor.alerts` (3, 7일)
-- raw 레코드(Flink 소스 정의 기준): `ts`(µs, BIGINT) · `site` · `device` · `tag` · `value` · `quality`. `trace_id`·발행 시각 필드 없음 → 하니스 쪽에서 추가 필요
+- raw 레코드(Flink 소스 정의 기준): `ts`(ns, BIGINT — Flink가 `ts/1000000`으로 ms 변환) · `site` · `device` · `tag` · `value` · `quality`. `trace_id`·발행 시각 필드 없음 → 하니스 쪽에서 추가 필요
 - alerts 레코드: `ts, site, device, tag, value, alert_type(THRESHOLD_USL|THRESHOLD_LSL|ZSCORE|CEP_BEARING|ML_AUTOENCODER), severity, detector, detail`
 - Modbus: 계측 HR 0~22(float32 2워드) · 코일 0 펌프, 1 교반기, 2 히터, 3 냉각기, 10 알람 확인, 20 인터록(읽기 전용) · HR 100 펌프 속도, 101 밸브 개도, 102 온도 SP×10 · HR 200 seq(UINT32)
 - 이상 주입: `POST /fault {"scenario","duration_s"}`, 해제 `POST /fault/clear`. 시나리오 `heater_stuck, cooling_loss, dropout, spike, noise, bearing_wear(lag 6s), drift`
@@ -44,7 +44,17 @@
 2. 원본과 같은 compose 프로젝트명(`iiot`, `ar100-ai`)과 `container_name`을 쓰면 원본 컨테이너를 교체해 버린다. 실험 스택은 프로젝트명·컨테이너명·포트를 모두 바꾼다.
 3. 무시 파일은 worktree에 따라오지 않는다: `ai-layer/.env.local`(LiteLLM 키), `ml/*.onnx`·`ml/model_meta.json`. 키는 커밋하지 않고 복사만 한다.
 
-## 5. 코드로 예상했지만 실행으로 확인할 항목
+## 5. 실행 중 관측한 사실
+
+| 시각(KST) | 관측 | 근거 | 관련 |
+|---|---|---|---|
+| 2026-09-28 11:00 | `flink-job-submitter`가 4개 잡(CEP·ZScore·Threshold·ONNX) 제출, 모두 RUNNING | 제출기 로그 | — |
+| 2026-09-28 11:52 | kafka·flink-jobmanager·flink-taskmanager 동시 재시작(RestartCount 0 → 수동 재기동으로 보임) | `docker inspect` StartedAt 02:52Z | — |
+| 2026-09-28 조사 시점 | Flink 잡 0개(`/jobs/overview` = `[]`). `sensor.telemetry.clean` 오프셋 10초간 증가 0. raw는 계속 유입 | REST·`kafka-get-offsets` | **CAP-06·07·08 중단**, CAP-18 |
+
+해석: Flink가 HA 없는 세션 클러스터라 JobManager 재시작 시 잡이 사라지고, 제출기는 1회성 컨테이너라 재제출하지 않는다. 탐지·알람이 조용히 멈추고 화면에는 "알람 없음"으로만 보인다. 재제출해도 소스가 `latest-offset`이라 중단 구간은 탐지되지 않는다. → S09·S11 기준선의 실측 약점. 후보 비교 항목 "재시작 후 자동 복구 여부"로 쓴다.
+
+## 6. 코드로 예상했지만 실행으로 확인할 항목
 
 | 항목 | 코드상 예상 | 관련 |
 |---|---|---|
