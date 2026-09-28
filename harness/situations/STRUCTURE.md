@@ -1,5 +1,7 @@
 # 구조 비교 판정표 (레이어 재설계, QUESTIONS.md Q2-0) — 결과 보기 전 고정 2026-09-29
 
+> **09-29 개정(#57, 결과 보기 전):** 비교 대상은 V1 대 "다듬은 V2"(HANDOFF §0.5 수정 목록)다. 아래 §1의 A·C는 검토서 원안 기록으로 남기되, C는 직접 제작 요소 때문에 Q2-0b로 본안 제외. 비정상 상황은 `ROBUSTNESS.md`를 함께 적용한다. §2 기능 보존·§3 E 측정은 그대로 V1·V2에 적용.
+
 정본: `docs/research/ARCHITECTURE_SIMPLIFICATION.md` §6·§9·§10, `docs/research/AGENT_BRIEF_FINAL.md` §4.5(CAP)·§13.2.
 사용자 지시 우선: Neo4j 유지(검토서 단계 10 제외, 그래프 DB 필수), 판정 규칙은 HANDOFF §2. FINAL §3-3 "한 모듈 교체"의 예외인 **구조 비교**로 표시한다.
 
