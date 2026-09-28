@@ -1,0 +1,20 @@
+{
+ "sent": 7200,
+ "received_unique": 7200,
+ "lost": 0,
+ "duplicates": 0,
+ "publish_rc_fail": 0,
+ "latency_ms": {
+  "p50": 1.16,
+  "p95": 1.73,
+  "p99": 5.29,
+  "max": 17.03
+ },
+ "max_gap_ms": 32.2,
+ "note": null,
+ "broker": "mosquitto",
+ "mode": "normal",
+ "run": "cn",
+ "rate": 120,
+ "duration": 60
+}

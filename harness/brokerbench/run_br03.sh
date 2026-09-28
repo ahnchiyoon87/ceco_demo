@@ -10,7 +10,7 @@ C="$B --profile tools run --rm -T client python /repo/harness/brokerbench/mqtt_b
 raw=experiments/EXP-130/raw; mkdir -p "$raw"
 for b in $brokers; do
   echo "######## $b (BR-03, 재시작 없음)"
-  $C --broker "$b" --mode offline_queue --run "${pre}q0" 2>&1 | grep -v Container | tail -1 &
+  $C --broker "$b" --mode offline_queue --run "${pre}q0" ${RESUB:+--resub} 2>&1 | grep -v Container | tail -1 &
   cp=$!
   for i in $(seq 1 240); do [ -e "$raw/${b}_${pre}q0.ready" ] && break; sleep 0.5; done
   echo "$(date +%s.%N) no-restart $b (BR-03)" >> "$raw/${b}_${pre}q0_actions.log"

@@ -1,0 +1,9 @@
+{
+ "ws_connected": true,
+ "roundtrip": 20,
+ "broker": "hivemq",
+ "mode": "ws",
+ "run": "cw",
+ "rate": 120,
+ "duration": 60
+}

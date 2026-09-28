@@ -139,7 +139,9 @@ def offline_queue(a):
     def on_c2(c, u, flags, rc, p=None):
         sp["session_present"] = bool(getattr(flags, "session_present", False))
         sp["rc"] = str(rc)
-    sub2.on_connect = on_c2              # 재구독하지 않는다: 브로커가 세션·큐를 보존했는지만 본다
+    sub2.on_connect = on_c2              # 기본: 재구독하지 않는다(브로커가 세션·큐를 보존했는지만 본다)
+    if a.resub:                          # 변형: 재접속 후 같은 필터 재구독(Telegraf 처럼 접속마다 구독하는 클라이언트 모사)
+        sub2.on_connect = lambda c, u, f, rc, p=None: (on_c2(c, u, f, rc, p), c.subscribe(f"{base}/q/#", qos=1))
     sub2.connect_async(a.broker, 1883)
     sub2.loop_start()
     time.sleep(15)
@@ -187,6 +189,7 @@ def main():
     ap.add_argument("--run", required=True)
     ap.add_argument("--rate", type=float, default=120)
     ap.add_argument("--duration", type=float, default=60)
+    ap.add_argument("--resub", action="store_true", help="offline_queue: 재접속 후 재구독 변형")
     a = ap.parse_args()
     out = pathlib.Path(f"/experiments/{a.exp}/raw/{a.broker}_{a.mode}_{a.run}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

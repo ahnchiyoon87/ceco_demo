@@ -1,0 +1,20 @@
+######## emqx
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 1.59, "p95": 2.26, "p99": 4.33, "max": 11.5}, "max_gap_ms": 52.3, "note": null, "broker": "emqx", "mode": "normal", "run": "cn", "rate": 120, "duration": 60}
+{"sent": 7200, "received_unique": 7131, "lost": 69, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 1.56, "p95": 7878.94, "p99": 9931.24, "max": 10479.11}, "max_gap_ms": 11060.9, "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart", "broker": "emqx", "mode": "live_restart", "run": "cr", "rate": 120, "duration": 60}
+{"queued_acked": 600, "received_after_restart": 0, "session_present": false, "connect_rc": "Success", "retained_after_restart": false, "broker": "emqx", "mode": "offline_queue", "run": "cq", "rate": 120, "duration": 60}
+{"ws_connected": true, "roundtrip": 20, "broker": "emqx", "mode": "ws", "run": "cw", "rate": 120, "duration": 60}
+######## mosquitto
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 1.16, "p95": 1.73, "p99": 5.29, "max": 17.03}, "max_gap_ms": 32.2, "note": null, "broker": "mosquitto", "mode": "normal", "run": "cn", "rate": 120, "duration": 60}
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 1, "publish_rc_fail": 0, "latency_ms": {"p50": 1.03, "p95": 1.71, "p99": 454.35, "max": 1008.47}, "max_gap_ms": 1014.3, "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart", "broker": "mosquitto", "mode": "live_restart", "run": "cr", "rate": 120, "duration": 60}
+{"queued_acked": 600, "received_after_restart": 600, "session_present": true, "connect_rc": "Success", "retained_after_restart": true, "broker": "mosquitto", "mode": "offline_queue", "run": "cq", "rate": 120, "duration": 60}
+{"ws_connected": true, "roundtrip": 20, "broker": "mosquitto", "mode": "ws", "run": "cw", "rate": 120, "duration": 60}
+######## nanomq
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 1.41, "p95": 1.98, "p99": 4.49, "max": 48.28}, "max_gap_ms": 31.2, "note": null, "broker": "nanomq", "mode": "normal", "run": "cn", "rate": 120, "duration": 60}
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 1.4, "p95": 2.08, "p99": 453.78, "max": 1005.77}, "max_gap_ms": 1012.7, "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart", "broker": "nanomq", "mode": "live_restart", "run": "cr", "rate": 120, "duration": 60}
+{"queued_acked": 600, "received_after_restart": 0, "session_present": false, "connect_rc": "Success", "retained_after_restart": false, "broker": "nanomq", "mode": "offline_queue", "run": "cq", "rate": 120, "duration": 60}
+{"ws_connected": true, "roundtrip": 20, "broker": "nanomq", "mode": "ws", "run": "cw", "rate": 120, "duration": 60}
+######## hivemq
+{"sent": 7200, "received_unique": 7200, "lost": 0, "duplicates": 0, "publish_rc_fail": 0, "latency_ms": {"p50": 26.8, "p95": 47.66, "p99": 227.62, "max": 544.62}, "max_gap_ms": 543.5, "note": null, "broker": "hivemq", "mode": "normal", "run": "cn", "rate": 120, "duration": 60}
+{"sent": 7200, "received_unique": 6631, "lost": 569, "duplicates": 5, "publish_rc_fail": 0, "latency_ms": {"p50": 29.5, "p95": 11451.33, "p99": 13229.41, "max": 13453.77}, "max_gap_ms": 13302.2, "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart", "broker": "hivemq", "mode": "live_restart", "run": "cr", "rate": 120, "duration": 60}
+{"queued_acked": 600, "received_after_restart": 600, "session_present": true, "connect_rc": "Success", "retained_after_restart": true, "broker": "hivemq", "mode": "offline_queue", "run": "cq", "rate": 120, "duration": 60}
+{"ws_connected": true, "roundtrip": 20, "broker": "hivemq", "mode": "ws", "run": "cw", "rate": 120, "duration": 60}

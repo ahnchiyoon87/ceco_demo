@@ -1,0 +1,130 @@
+{
+ "emqx": {
+  "http": [
+   {
+    "url": "http://emqx:18083/api/v5/prometheus/stats",
+    "status": 200,
+    "bytes": 18309,
+    "sample": [
+     "emqx_connections_count 3",
+     "emqx_connections_max 4",
+     "emqx_live_connections_count 0",
+     "emqx_live_connections_max 1",
+     "emqx_sessions_count 3"
+    ]
+   }
+  ],
+  "sys_topics": 0,
+  "sys_sample": [],
+  "http_found": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  },
+  "sys_found": {
+   "connections": false,
+   "received": false,
+   "sent": false
+  },
+  "verdict": "PASS",
+  "covered": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  }
+ },
+ "mosquitto": {
+  "http": [],
+  "sys_topics": 56,
+  "sys_sample": [
+   "$SYS/broker/bytes/received",
+   "$SYS/broker/bytes/sent",
+   "$SYS/broker/clients/active",
+   "$SYS/broker/clients/connected",
+   "$SYS/broker/clients/disconnected",
+   "$SYS/broker/clients/expired",
+   "$SYS/broker/clients/inactive",
+   "$SYS/broker/clients/maximum",
+   "$SYS/broker/clients/total",
+   "$SYS/broker/connections/socket/count",
+   "$SYS/broker/heap/current",
+   "$SYS/broker/heap/maximum"
+  ],
+  "http_found": {},
+  "sys_found": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  },
+  "verdict": "PASS",
+  "covered": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  }
+ },
+ "nanomq": {
+  "http": [
+   {
+    "url": "http://nanomq:8081/api/v4/prometheus",
+    "status": 200,
+    "bytes": 1361,
+    "sample": [
+     "nanomq_connections_count 0",
+     "nanomq_connections_max 0",
+     "nanomq_sessions_count 3",
+     "nanomq_sessions_max 3",
+     "nanomq_topics_count 2"
+    ]
+   },
+   {
+    "url": "http://nanomq:8081/api/v4/metrics",
+    "status": 200,
+    "bytes": 67,
+    "sample": [
+     "{\"metrics\":[],\"cpuinfo\":\"0.00%\",\"memory\":\"1703936\",\"connections\":3}"
+    ]
+   }
+  ],
+  "sys_topics": 0,
+  "sys_sample": [],
+  "http_found": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  },
+  "sys_found": {
+   "connections": false,
+   "received": false,
+   "sent": false
+  },
+  "verdict": "PASS",
+  "covered": {
+   "connections": true,
+   "received": true,
+   "sent": true
+  }
+ },
+ "hivemq": {
+  "http": [
+   {
+    "url": "http://hivemq:9399/metrics",
+    "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+   }
+  ],
+  "sys_topics": 0,
+  "sys_sample": [],
+  "http_found": {},
+  "sys_found": {
+   "connections": false,
+   "received": false,
+   "sent": false
+  },
+  "verdict": "FAIL",
+  "covered": {
+   "connections": false,
+   "received": false,
+   "sent": false
+  }
+ }
+}
