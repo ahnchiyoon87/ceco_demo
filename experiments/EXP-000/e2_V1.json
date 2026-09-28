@@ -1,0 +1,66 @@
+{
+ "structure": "V1",
+ "services_total": 34,
+ "services_long_running": 30,
+ "oneshot": [
+  "flink-job-submitter",
+  "fuxa-provisioner",
+  "kafka-init",
+  "model-trainer"
+ ],
+ "images": [
+  "(build)",
+  "apache/kafka:3.9.0",
+  "danielqsj/kafka-exporter@sha256:c4baf22519805f527c59a663cb1d52601220ba64c5062521636fc804285f982d",
+  "eclipse-mosquitto:2.0.21",
+  "edgexfoundry/app-service-configurable:4.0.0",
+  "edgexfoundry/core-command:4.0.0",
+  "edgexfoundry/core-common-config-bootstrapper:4.0.0",
+  "edgexfoundry/core-data:4.0.0",
+  "edgexfoundry/core-keeper:4.0.0",
+  "edgexfoundry/core-metadata:4.0.0",
+  "edgexfoundry/device-modbus:4.0.0",
+  "edgexfoundry/edgex-ui:4.0.0",
+  "emqx/emqx:5.8.6",
+  "frangoteam/fuxa@sha256:aa5002fd927bee32df59dba0ee8b649a84816588625c27454ea9f553668d7daf",
+  "gcr.io/cadvisor/cadvisor:v0.49.1",
+  "grafana/grafana:11.4.0",
+  "iiot/flink-onnx:1.0",
+  "iiot/model-trainer:1.0",
+  "iiot/plant-simulator:1.0",
+  "influxdb:2.7",
+  "neo4j:5.26-community",
+  "postgres:16.3-alpine3.20",
+  "postgres:17",
+  "prom/alertmanager:v0.28.0",
+  "prom/prometheus:v3.1.0",
+  "python:3.12-slim",
+  "telegraf:1.33-alpine"
+ ],
+ "bind_mounts": 24,
+ "published_ports": 20,
+ "alarm_to_hmi_hops": 12,
+ "duplicates": {
+  "brokers": [
+   "edgex-mqtt-broker",
+   "emqx"
+  ],
+  "relays": [
+   "edgex-app-mqtt-export",
+   "telegraf-bridge",
+   "telegraf-sink",
+   "alert-republisher"
+  ],
+  "device_polling": [
+   "edgex-device-modbus",
+   "fuxa"
+  ],
+  "stores": [
+   "influxdb",
+   "work-db(postgres)",
+   "graph(neo4j)",
+   "edgex-postgres"
+  ]
+ },
+ "image_count": 27
+}

@@ -6,7 +6,7 @@
 
   python harness/aibench/run_scenario.py <arm A|B|C> <SC1_bearing|SC2_heater_stuck|SC3_overpressure> <run_id>
 """
-import json, subprocess, sys, time, urllib.request, uuid
+import json, os, subprocess, sys, time, urllib.request, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -98,6 +98,10 @@ step("alarm", incident=incident, waited_s=round(time.time() - t0, 1))
 
 if incident:
     time.sleep(3)  # 같은 사건으로 묶일 동반 알람이 도착할 짧은 여유
+    delay = float(os.environ.get("ANALYZE_DELAY_S", "0"))  # 보조 변형(#75): 순간 이상이 끝난 뒤 분석
+    if delay:
+        step("analyze_delay", seconds=delay); time.sleep(delay)
+    log["analyze_delay_s"] = delay
     started = call(f"{API}/incidents/{incident}/analyze", {}, timeout=30)
     step("analyze", response={k: started.get(k) for k in ("replayed", "http_error", "body")})
     run = (started.get("run") or {})

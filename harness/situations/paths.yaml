@@ -1,0 +1,20 @@
+# 알람→화면 경로 정의(E2 경유 단계). 각 단계는 설정 근거(파일:줄)와 함께. 새 구조는 같은 형식으로 추가한다.
+V1:
+  alarm_to_hmi:
+    - {hop: plant-simulator, via: "Modbus TCP 폴링", evidence: "docker-compose.edgex.yml edgex-device-modbus"}
+    - {hop: edgex-device-modbus, via: "EdgeX 메시지버스(MQTT)", evidence: "docker-compose.edgex.yml:75-80 MESSAGEBUS_TYPE mqtt"}
+    - {hop: edgex-mqtt-broker, via: "내부 Mosquitto 2.0.21", evidence: "docker-compose.edgex.yml:56"}
+    - {hop: edgex-core-data/app-mqtt-export, via: "Transform, MQTTExport", evidence: "docker-compose.edgex.yml:189-192"}
+    - {hop: emqx, via: "edgex/telemetry QoS1", evidence: "docker-compose.edgex.yml:192"}
+    - {hop: telegraf-bridge, via: "mqtt_consumer edgex/telemetry → kafka", evidence: "telegraf/bridge-edgex.conf:25,92"}
+    - {hop: kafka, via: "sensor.telemetry.raw", evidence: "telegraf/bridge-edgex.conf:92"}
+    - {hop: flink, via: "SQL 규칙·CEP·ONNX", evidence: "flink/sql/*.sql"}
+    - {hop: kafka, via: "sensor.alerts", evidence: "flink/sql/02~04"}
+    - {hop: alert-republisher, via: "kafka_consumer sensor.alerts → mqtt", evidence: "telegraf/alert-republish.conf:14,44,55"}
+    - {hop: emqx, via: "scada/alerts/<tag>, scada/hmi/latest-alert", evidence: "telegraf/alert-republish.conf:44,55"}
+    - {hop: fuxa, via: "MQTT 구독 scada/hmi/latest-alert(되돌아온 알람). 계측은 Modbus 직접 폴링(plant-simulator:502)", evidence: "fuxa/build_project.py:94-117"}
+  duplicates:
+    brokers: [edgex-mqtt-broker, emqx]
+    relays: [edgex-app-mqtt-export, telegraf-bridge, telegraf-sink, alert-republisher]
+    device_polling: [edgex-device-modbus, fuxa]
+    stores: [influxdb, work-db(postgres), graph(neo4j), edgex-postgres]
