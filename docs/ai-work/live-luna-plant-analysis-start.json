@@ -1,0 +1,13 @@
+{
+  "run": {
+    "id": "cb1167b8-645e-4842-94f9-dbe0d96099fd",
+    "incident_id": "733f175d-a587-49bc-99d4-6a84d61bdc8f",
+    "status": "running",
+    "model": "openai:coding",
+    "result": null,
+    "error": null,
+    "created_at": "2026-09-21T04:14:24.160653+00:00",
+    "updated_at": "2026-09-21T04:14:24.160653+00:00"
+  },
+  "replayed": false
+}

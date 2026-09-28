@@ -1,0 +1,25 @@
+{
+  "verification": "real-neo4j-neighbor-depth",
+  "results": [
+    {
+      "depth": 1,
+      "nodes": 7,
+      "edges": 6,
+      "matches_graph_bfs": true
+    },
+    {
+      "depth": 2,
+      "nodes": 27,
+      "edges": 33,
+      "matches_graph_bfs": true
+    },
+    {
+      "depth": 3,
+      "nodes": 35,
+      "edges": 41,
+      "matches_graph_bfs": true
+    }
+  ],
+  "missing_node_empty": true,
+  "browser_verified": false
+}

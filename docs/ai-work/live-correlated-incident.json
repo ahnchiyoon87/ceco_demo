@@ -1,0 +1,1235 @@
+﻿{
+    "incident":  {
+                     "id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                     "alarm_key":  "97fc09177419acb1332619713e4fcf014b36ad167d784636383a755bb2ad76e7",
+                     "site":  "AR-100",
+                     "device":  "reactor-line-01",
+                     "status":  "received",
+                     "revision":  71,
+                     "alarm":  {
+                                   "ts":  1789956455930523400,
+                                   "tag":  "IT-102",
+                                   "site":  "AR-100",
+                                   "value":  9.74826,
+                                   "detail":  "IT-102 = 9.748 A / ê·ê²© [-, 9.6]",
+                                   "device":  "reactor-line-01",
+                                   "detector":  "TIER1_RULE",
+                                   "severity":  "CRITICAL",
+                                   "alert_type":  "THRESHOLD_USL"
+                               },
+                     "created_at":  "2026-09-21T02:07:42.242180+00:00",
+                     "correlation_key":  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]",
+                     "first_ts":  1789956440934204400,
+                     "last_ts":  1789956476923708200,
+                     "alarm_count":  71
+                 },
+    "events":  [
+                   {
+                       "id":  259,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_received",
+                       "payload":  {
+                                       "ts":  1789956455930523400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  9.74826,
+                                       "detail":  "IT-102 = 9.748 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.242180+00:00"
+                   },
+                   {
+                       "id":  260,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956456928385300,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  9.934905,
+                                       "detail":  "IT-102 = 9.935 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.259282+00:00"
+                   },
+                   {
+                       "id":  261,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956457928063000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.041948,
+                                       "detail":  "IT-102 = 10.042 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.275946+00:00"
+                   },
+                   {
+                       "id":  262,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956458927738000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.281326,
+                                       "detail":  "IT-102 = 10.281 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.292502+00:00"
+                   },
+                   {
+                       "id":  263,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956459927476700,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.42752,
+                                       "detail":  "IT-102 = 10.428 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.309445+00:00"
+                   },
+                   {
+                       "id":  264,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956460930985000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.598981,
+                                       "detail":  "IT-102 = 10.599 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.325984+00:00"
+                   },
+                   {
+                       "id":  293,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956440934204400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  7.2690625,
+                                       "detail":  "IT-102 z=5.73 (Î¼=6.797, Ï=0.0823, ìµê·¼5ì¤ 3í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.831748+00:00"
+                   },
+                   {
+                       "id":  295,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956441928846800,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  7.4234242,
+                                       "detail":  "IT-102 z=5.34 (Î¼=6.807, Ï=0.1154, ìµê·¼5ì¤ 4í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.866499+00:00"
+                   },
+                   {
+                       "id":  296,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956442928586800,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  7.6327477,
+                                       "detail":  "IT-102 z=5.17 (Î¼=6.821, Ï=0.1571, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.883423+00:00"
+                   },
+                   {
+                       "id":  299,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956443929857000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  7.7452097,
+                                       "detail":  "IT-102 z=4.61 (Î¼=6.837, Ï=0.1972, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.936613+00:00"
+                   },
+                   {
+                       "id":  300,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956444926984000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  7.903577,
+                                       "detail":  "IT-102 z=4.36 (Î¼=6.856, Ï=0.2401, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:42.953284+00:00"
+                   },
+                   {
+                       "id":  303,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956445928070100,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.121024,
+                                       "detail":  "IT-102 z=4.28 (Î¼=6.878, Ï=0.2902, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.003031+00:00"
+                   },
+                   {
+                       "id":  304,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956445928553700,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  2.8240736,
+                                       "detail":  "VT-101 z=5.52 (Î¼=2.099, Ï=0.1312, ìµê·¼5ì¤ 3í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.019261+00:00"
+                   },
+                   {
+                       "id":  306,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956446927123200,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.26485,
+                                       "detail":  "IT-102 z=4.0 (Î¼=6.902, Ï=0.3408, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.053823+00:00"
+                   },
+                   {
+                       "id":  307,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956446927555600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  3.2292628,
+                                       "detail":  "VT-101 z=5.66 (Î¼=2.119, Ï=0.1961, ìµê·¼5ì¤ 4í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.071072+00:00"
+                   },
+                   {
+                       "id":  309,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956447929627400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.411325,
+                                       "detail":  "IT-102 z=3.78 (Î¼=6.928, Ï=0.3924, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.104301+00:00"
+                   },
+                   {
+                       "id":  310,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956447929978400,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  3.286187,
+                                       "detail":  "VT-101 z=4.65 (Î¼=2.14, Ï=0.2465, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.120941+00:00"
+                   },
+                   {
+                       "id":  311,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956448926976800,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.548985,
+                                       "detail":  "IT-102 z=3.58 (Î¼=6.957, Ï=0.4443, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.137397+00:00"
+                   },
+                   {
+                       "id":  312,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956448927236400,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  3.6875305,
+                                       "detail":  "VT-101 z=4.8 (Î¼=2.169, Ï=0.3165, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.153924+00:00"
+                   },
+                   {
+                       "id":  315,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956449928093700,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.7571125,
+                                       "detail":  "IT-102 z=3.53 (Î¼=6.99, Ï=0.5007, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.203061+00:00"
+                   },
+                   {
+                       "id":  316,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956449928633000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  3.9713204,
+                                       "detail":  "VT-101 z=4.51 (Î¼=2.2, Ï=0.3927, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.221801+00:00"
+                   },
+                   {
+                       "id":  318,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956450929670000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  4.2208066,
+                                       "detail":  "VT-101 z=4.22 (Î¼=2.236, Ï=0.4708, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.255071+00:00"
+                   },
+                   {
+                       "id":  319,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956450929350400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  8.939979,
+                                       "detail":  "IT-102 z=3.42 (Î¼=7.025, Ï=0.5599, ìµê·¼5ì¤ 4í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.271929+00:00"
+                   },
+                   {
+                       "id":  320,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956451927277300,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  4.6094327,
+                                       "detail":  "VT-101 z=4.15 (Î¼=2.278, Ï=0.5614, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.289041+00:00"
+                   },
+                   {
+                       "id":  321,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956451927116000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  9.092098,
+                                       "detail":  "IT-102 z=3.28 (Î¼=7.063, Ï=0.6193, ìµê·¼5ì¤ 3í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.305668+00:00"
+                   },
+                   {
+                       "id":  324,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956452930605600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  4.7608147,
+                                       "detail":  "VT-101 z=3.78 (Î¼=2.324, Ï=0.645, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.354522+00:00"
+                   },
+                   {
+                       "id":  326,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956453928531000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  5.021811,
+                                       "detail":  "VT-101 z=3.62 (Î¼=2.373, Ï=0.7319, ìµê·¼5ì¤ 5í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.395540+00:00"
+                   },
+                   {
+                       "id":  328,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956454927149800,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  5.220428,
+                                       "detail":  "VT-101 z=3.42 (Î¼=2.426, Ï=0.8177, ìµê·¼5ì¤ 4í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.430970+00:00"
+                   },
+                   {
+                       "id":  330,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956461930865200,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.765517,
+                                       "detail":  "IT-102 = 10.766 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.464854+00:00"
+                   },
+                   {
+                       "id":  331,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956461931264300,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.1165733,
+                                       "detail":  "VT-101 = 7.117 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.482317+00:00"
+                   },
+                   {
+                       "id":  332,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956455931504600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  5.449736,
+                                       "detail":  "VT-101 z=3.28 (Î¼=2.482, Ï=0.9046, ìµê·¼5ì¤ 3í ìë°)",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_ZSCORE",
+                                       "severity":  "WARNING",
+                                       "alert_type":  "ZSCORE"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.499179+00:00"
+                   },
+                   {
+                       "id":  334,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956462926968600,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.9096985,
+                                       "detail":  "IT-102 = 10.91 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.533194+00:00"
+                   },
+                   {
+                       "id":  335,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956462927137800,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.475557,
+                                       "detail":  "VT-101 = 7.476 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:43.550170+00:00"
+                   },
+                   {
+                       "id":  337,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956463928929000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.92274,
+                                       "detail":  "IT-102 = 10.923 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:44.423458+00:00"
+                   },
+                   {
+                       "id":  338,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956463929298000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.7930684,
+                                       "detail":  "VT-101 = 7.793 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:44.440625+00:00"
+                   },
+                   {
+                       "id":  340,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956464927003100,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.907988,
+                                       "detail":  "IT-102 = 10.908 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:45.429939+00:00"
+                   },
+                   {
+                       "id":  341,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956464927225600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.021699,
+                                       "detail":  "VT-101 = 8.022 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:45.450678+00:00"
+                   },
+                   {
+                       "id":  343,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956465927593200,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.908406,
+                                       "detail":  "IT-102 = 10.908 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:46.420744+00:00"
+                   },
+                   {
+                       "id":  344,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956465927903500,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.251755,
+                                       "detail":  "VT-101 = 8.252 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:46.443402+00:00"
+                   },
+                   {
+                       "id":  346,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956466927917000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.936399,
+                                       "detail":  "IT-102 = 10.936 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:47.431298+00:00"
+                   },
+                   {
+                       "id":  347,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956466928184800,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.197906,
+                                       "detail":  "VT-101 = 8.198 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:47.454904+00:00"
+                   },
+                   {
+                       "id":  349,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956467926491100,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.979526,
+                                       "detail":  "IT-102 = 10.98 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:48.429086+00:00"
+                   },
+                   {
+                       "id":  350,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956467926628900,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.158818,
+                                       "detail":  "VT-101 = 8.159 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:48.460388+00:00"
+                   },
+                   {
+                       "id":  351,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956461931264300,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.1165733,
+                                       "detail":  "êµë°ê¸° ì ë¥ 9.75A (ì ê²© 120% ì´ê³¼) í 6ì´ ë´ ì§ë 7.12mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:48.536424+00:00"
+                   },
+                   {
+                       "id":  353,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956468925716700,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.909231,
+                                       "detail":  "IT-102 = 10.909 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:49.428684+00:00"
+                   },
+                   {
+                       "id":  354,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956468925896700,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.327851,
+                                       "detail":  "VT-101 = 8.328 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:49.453867+00:00"
+                   },
+                   {
+                       "id":  355,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956462927137800,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.475557,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.91A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 7.48mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:49.537653+00:00"
+                   },
+                   {
+                       "id":  357,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956469928050200,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.9155035,
+                                       "detail":  "IT-102 = 10.916 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:50.431282+00:00"
+                   },
+                   {
+                       "id":  358,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956469928520000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.26308,
+                                       "detail":  "VT-101 = 8.263 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:50.460838+00:00"
+                   },
+                   {
+                       "id":  359,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956463929298000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  7.7930684,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.92A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 7.79mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:50.529469+00:00"
+                   },
+                   {
+                       "id":  361,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956470927820300,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.908472,
+                                       "detail":  "IT-102 = 10.908 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:51.428333+00:00"
+                   },
+                   {
+                       "id":  362,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956470928187600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.322931,
+                                       "detail":  "VT-101 = 8.323 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:51.446401+00:00"
+                   },
+                   {
+                       "id":  363,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956464927225600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.021699,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.91A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.02mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:51.530187+00:00"
+                   },
+                   {
+                       "id":  365,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956471926901800,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.930324,
+                                       "detail":  "IT-102 = 10.93 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:52.431029+00:00"
+                   },
+                   {
+                       "id":  366,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956471927171000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.202542,
+                                       "detail":  "VT-101 = 8.203 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:52.451505+00:00"
+                   },
+                   {
+                       "id":  367,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956465927903500,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.251755,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.91A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.25mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:52.532962+00:00"
+                   },
+                   {
+                       "id":  369,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956472930806500,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.886583,
+                                       "detail":  "IT-102 = 10.887 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:53.438020+00:00"
+                   },
+                   {
+                       "id":  370,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956472931243300,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.212409,
+                                       "detail":  "VT-101 = 8.212 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:53.456095+00:00"
+                   },
+                   {
+                       "id":  371,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956466928184800,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.197906,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.94A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.2mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:53.546321+00:00"
+                   },
+                   {
+                       "id":  372,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956467926628900,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.158818,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.98A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.16mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:53.566863+00:00"
+                   },
+                   {
+                       "id":  374,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956473926918400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.891803,
+                                       "detail":  "IT-102 = 10.892 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:54.430096+00:00"
+                   },
+                   {
+                       "id":  375,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956473927262200,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.276859,
+                                       "detail":  "VT-101 = 8.277 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:54.447317+00:00"
+                   },
+                   {
+                       "id":  376,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956468925896700,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.327851,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.91A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.33mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:54.530597+00:00"
+                   },
+                   {
+                       "id":  378,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956474925711400,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.902632,
+                                       "detail":  "IT-102 = 10.903 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:55.442322+00:00"
+                   },
+                   {
+                       "id":  379,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956474926565000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.260935,
+                                       "detail":  "VT-101 = 8.261 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:55.470751+00:00"
+                   },
+                   {
+                       "id":  381,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956475925907700,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.932346,
+                                       "detail":  "IT-102 = 10.932 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:56.433742+00:00"
+                   },
+                   {
+                       "id":  382,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956475926289200,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.233723,
+                                       "detail":  "VT-101 = 8.234 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:56.454298+00:00"
+                   },
+                   {
+                       "id":  383,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956469928520000,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.26308,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.92A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.26mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:56.532905+00:00"
+                   },
+                   {
+                       "id":  385,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956476923571000,
+                                       "tag":  "IT-102",
+                                       "site":  "AR-100",
+                                       "value":  10.887163,
+                                       "detail":  "IT-102 = 10.887 A / ê·ê²© [-, 9.6]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:57.434633+00:00"
+                   },
+                   {
+                       "id":  386,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956476923708200,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.230683,
+                                       "detail":  "VT-101 = 8.231 mm/s / ê·ê²© [-, 7.1]",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_RULE",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "THRESHOLD_USL"
+                                   },
+                       "created_at":  "2026-09-21T02:07:57.454176+00:00"
+                   },
+                   {
+                       "id":  387,
+                       "incident_id":  "e5a9cc23-5b0e-44d5-ad6c-d6d531903fd5",
+                       "kind":  "alarm_correlated",
+                       "payload":  {
+                                       "ts":  1789956470928187600,
+                                       "tag":  "VT-101",
+                                       "site":  "AR-100",
+                                       "value":  8.322931,
+                                       "detail":  "êµë°ê¸° ì ë¥ 10.91A (ì ê²© 120% ì´ê³¼) í 0ì´ ë´ ì§ë 8.32mm/s ìí â ë² ì´ë§ ì´í ìì¬",
+                                       "device":  "reactor-line-01",
+                                       "detector":  "TIER1_CEP",
+                                       "severity":  "CRITICAL",
+                                       "alert_type":  "CEP_BEARING"
+                                   },
+                       "created_at":  "2026-09-21T02:07:57.535002+00:00"
+                   }
+               ]
+}

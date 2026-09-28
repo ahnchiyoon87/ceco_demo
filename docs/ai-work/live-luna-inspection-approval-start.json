@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "decision": "approve",
+    "note": "강사 시연 검증: 과거 전류·진동 이상과 현재 안정 관측, 운전 명령 true 및 인터록 false를 구분한 대응안을 검토했습니다. 문서 3종 근거에 따른 점검 요청만 승인하며 고장 원인 확정이나 정비 완료로 처리하지 않습니다."
+  },
+  "response": {
+    "run_id": "cb1167b8-645e-4842-94f9-dbe0d96099fd",
+    "status": "resuming"
+  }
+}

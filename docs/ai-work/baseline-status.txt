@@ -1,0 +1,35 @@
+﻿ M .env.example
+ M docker-compose.edgex.yml
+ M docker-compose.yml
+ M edgex/devices/ar100.devices.yaml
+ M edgex/gen_profile.py
+ M edgex/profiles/ar100.profile.yaml
+ M emqx/emqx.conf
+ M flink/conf/client-config.yaml
+ M flink/conf/config.yaml
+ M flink/onnx-job/job.properties
+ M flink/sql/01_sources.sql
+ M flink/sql/02_tier1_rules.sql
+ M flink/sql/03_tier1_zscore.sql
+ M flink/sql/04_tier1_cep.sql
+ M flink/submit-jobs.sh
+ M fuxa/build_project.py
+ M fuxa/provision.py
+ M grafana/provisioning/dashboards/dashboards.yml
+ M grafana/provisioning/datasources/datasources.yml
+ M kafka/create-topics.sh
+ M ml/train.py
+ M ml/train.yaml
+ M prometheus/alertmanager.yml
+ M prometheus/prometheus.yml
+ M prometheus/rules.yml
+ M scripts/verify.py
+ M simulator/plant.py
+ M simulator/plant.yaml
+ M simulator/sim.py
+ M telegraf/alert-republish.conf
+ M telegraf/bridge-edgex.conf
+ M telegraf/bridge-lite.conf
+ M telegraf/sink.conf
+?? docs/ai-work/
+?? telegraf/bridge-lite.conf.orig

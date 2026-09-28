@@ -1,0 +1,53 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MQTT → Kafka 브리지 (lite 프로파일 — EdgeX 우회 경로)
+#
+# 시뮬레이터가 이미 최종 스키마로 발행하므로 변환이 없다.
+# EdgeX 경로와 동일한 Kafka 스키마를 산출하므로 하위 계층(Flink 이후)은
+# 어느 경로로 기동했든 완전히 동일하게 동작한다.
+# ═══════════════════════════════════════════════════════════════════════════
+[agent]
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 2000
+  metric_buffer_limit = 100000
+  flush_interval = "1s"
+  omit_hostname = true
+
+[[inputs.mqtt_consumer]]
+  servers = ["tcp://emqx:1883"]
+  topics = ["iiot/+/+/+"]
+  qos = 1
+  client_id = "telegraf-bridge-lite"
+  persistent_session = true
+  name_override = "sensor"
+  data_format = "json_v2"
+
+  [[inputs.mqtt_consumer.json_v2]]
+    measurement_name = "sensor"
+    [[inputs.mqtt_consumer.json_v2.object]]
+      path = ""
+      timestamp_key = "ts"
+      timestamp_format = "unix_ns"
+      tags = ["site", "device", "tag", "quality"]
+      [inputs.mqtt_consumer.json_v2.object.fields]
+        value = "float"
+
+[[outputs.kafka]]
+  brokers = ["kafka:9092"]
+  topic = "sensor.telemetry.raw"
+  routing_tag = "tag"
+  compression_codec = 3
+  required_acks = -1
+  max_retry = 10
+  data_format = "json"
+  json_timestamp_units = "1ns"
+  json_transformation = '''
+  {
+    "ts":      $number(timestamp),
+    "site":    tags.site,
+    "device":  tags.device,
+    "tag":     tags.tag,
+    "value":   fields.value,
+    "quality": tags.quality
+  }
+  '''

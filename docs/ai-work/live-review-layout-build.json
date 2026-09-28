@@ -1,0 +1,16 @@
+{
+  "html_status": 200,
+  "assets": [
+    {
+      "path": "/assets/index-C5N8TLRj.js",
+      "status": 200,
+      "bytes": 110920
+    },
+    {
+      "path": "/assets/index-QMwKHN2C.css",
+      "status": 200,
+      "bytes": 55537
+    }
+  ],
+  "scope": "Built service HTML and assets served; browser rendering and interaction not verified."
+}

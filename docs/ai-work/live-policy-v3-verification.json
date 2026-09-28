@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "document": "AR100-EVIDENCE-POLICY",
+      "version": 3,
+      "sha256": "100385adb7dbf5ed6ac207655d5695f1756772bc9bc0f60e04ae48e2d46bba4a",
+      "local_registered_graph_equal": true
+    },
+    {
+      "document": "AR100-MIXER-RESPONSE",
+      "version": 2,
+      "sha256": "8aa414db8fe15baacb67f361f927daf3e39a43aaa494e80310bdab74fc338672",
+      "local_registered_graph_equal": true
+    }
+  ],
+  "node_count": 35,
+  "published_sha256": "a875341a46e01bf07f2ea7a10d9263416d9a75c05e0a97ca305beebd30e30c4d",
+  "prior_sources_archived": true,
+  "incident_retrieval_versions": {
+    "AR100-ASSET-CONTEXT": 1,
+    "AR100-EVIDENCE-POLICY": 3,
+    "AR100-MIXER-RESPONSE": 2
+  },
+  "backend_regression": {
+    "passed": 130,
+    "skipped": 1,
+    "seconds": 8.76,
+    "scope": "Full backend/tests in deployed knowledge container",
+    "checked_at": "2026-09-21T05:02:01.835007+00:00"
+  },
+  "browser_state": {
+    "apps": [],
+    "browsers": [],
+    "visual_verification": "not performed"
+  }
+}

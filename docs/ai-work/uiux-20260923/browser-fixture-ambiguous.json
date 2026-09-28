@@ -1,0 +1,30 @@
+﻿[
+  {
+    "method": "GET",
+    "path": "/api/operations/incidents/fixture-incident/proposals",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/operations/incidents/fixture-incident/analysis",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/operations/model-status",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/operations/analysis/fixture-run/trace",
+    "body": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/operations/proposals/fixture-proposal/decision",
+    "body": {
+      "decision": "approve",
+      "note": "응답 실패 때 자동 재전송 금지 확인"
+    }
+  }
+]

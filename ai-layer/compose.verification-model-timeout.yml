@@ -1,0 +1,13 @@
+services:
+  model-timeout-fixture:
+    image: ar100-ai-knowledge:latest
+    entrypoint: [python, /fixture/slow_model_fixture.py]
+    volumes:
+      - ./verification/slow_model_fixture.py:/fixture/slow_model_fixture.py:ro
+  knowledge:
+    environment:
+      OPENAI_BASE_URL: http://model-timeout-fixture:8080/v1
+      OPENAI_API_KEY: verification-dummy-token
+    depends_on:
+      model-timeout-fixture:
+        condition: service_started

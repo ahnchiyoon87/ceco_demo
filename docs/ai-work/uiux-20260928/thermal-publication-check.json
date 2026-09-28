@@ -1,0 +1,10 @@
+{
+    "before_edges":  54,
+    "after_edges":  60,
+    "before_nodes":  43,
+    "publication_sha":  "abfd2c72b64862c64396827024d406b57691aa770234e64bbd96efdacc21c6d5",
+    "missing_old_nodes":  0,
+    "missing_old_edges":  0,
+    "after_nodes":  49,
+    "edge_comparison":  "from,type,to tuple"
+}

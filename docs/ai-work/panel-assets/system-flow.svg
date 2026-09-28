@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1160" viewBox="0 0 2000 1160">
+<title>온톨로지 기반 제조 AI 업무도우미 시스템 구성도</title>
+<desc>SCADA 알람, 지식 연결, AI 분석, 사람 검토와 승인 후 결과 확인의 실제 구현 구조를 설명한다. 서비스 화면 캡처가 아니다.</desc>
+<rect x="0" y="0" width="2000" height="1160" rx="0" fill="#f5f8fa" stroke="#f5f8fa" stroke-width="2"/>
+<text x="64" y="68.36" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#147c70">ASSEMBLY  /  MANUFACTURING AI</text>
+<text x="60" y="156.76" font-family="Malgun Gothic, sans-serif" font-size="66" font-weight="700" fill="#142e40">알람에서 근거 있는 대응까지</text>
+<text x="64" y="224.24" font-family="Malgun Gothic, sans-serif" font-size="34" font-weight="400" fill="#294255">기존 SCADA 위에 지식 연결과 AI 업무 흐름을 더합니다.</text>
+<rect x="60" y="294" width="430" height="434" rx="20" fill="#ffffff" stroke="#dce5ea" stroke-width="2"/>
+<rect x="88" y="322" width="66" height="50" rx="10" fill="#476e88" stroke="#476e88" stroke-width="2"/>
+<text x="101" y="356.36" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#ffffff">01</text>
+<text x="88" y="441.98" font-family="Malgun Gothic, sans-serif" font-size="43" font-weight="700" fill="#173548">이상 신호 수집</text>
+<text x="88" y="492.8" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#476e88">기존 IIoT · SCADA</text>
+<text x="88" y="559.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">가상 반응기 AR-100</text>
+<text x="88" y="607.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">전류·진동 알람 수신</text>
+<text x="88" y="655.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">관련 알람을 사건으로 묶기</text>
+<text x="88" y="705.5" font-family="Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#627885">센서 이력 · 원본 알람 보존</text>
+<path d="M502,510 L530,510" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="530,510 518,502 518,518" fill="#7e9ba8"/>
+<rect x="543" y="294" width="430" height="434" rx="20" fill="#ffffff" stroke="#dce5ea" stroke-width="2"/>
+<rect x="571" y="322" width="66" height="50" rx="10" fill="#187f75" stroke="#187f75" stroke-width="2"/>
+<text x="584" y="356.36" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#ffffff">02</text>
+<text x="571" y="441.98" font-family="Malgun Gothic, sans-serif" font-size="43" font-weight="700" fill="#173548">설비·문서 연결</text>
+<text x="571" y="492.8" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#187f75">온톨로지 · Neo4j</text>
+<text x="571" y="559.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">센서 ↔ 설비 ↔ 적용 문서</text>
+<text x="571" y="607.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">게시된 설비 관계로 조회</text>
+<text x="571" y="655.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">문서 버전과 출처 확인</text>
+<text x="571" y="705.5" font-family="Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#627885">사전 준비: 자료 등록·관계 검토</text>
+<path d="M985,510 L1013,510" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="1013,510 1001,502 1001,518" fill="#7e9ba8"/>
+<rect x="1026" y="294" width="430" height="434" rx="20" fill="#ffffff" stroke="#dce5ea" stroke-width="2"/>
+<rect x="1054" y="322" width="66" height="50" rx="10" fill="#5c62a0" stroke="#5c62a0" stroke-width="2"/>
+<text x="1067" y="356.36" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#ffffff">03</text>
+<text x="1054" y="441.98" font-family="Malgun Gothic, sans-serif" font-size="43" font-weight="700" fill="#173548">근거 분석</text>
+<text x="1054" y="492.8" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#5c62a0">Luna · LiteLLM 중계</text>
+<text x="1054" y="559.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">사건 당시와 현재 비교</text>
+<text x="1054" y="607.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">관측·문서 도구 조회</text>
+<text x="1054" y="655.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">원인 후보·미확인 항목 정리</text>
+<text x="1054" y="705.5" font-family="Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#627885">검토할 대응안 또는 근거 보완</text>
+<path d="M1468,510 L1496,510" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="1496,510 1484,502 1484,518" fill="#7e9ba8"/>
+<rect x="1509" y="294" width="430" height="434" rx="20" fill="#ffffff" stroke="#dce5ea" stroke-width="2"/>
+<rect x="1537" y="322" width="66" height="50" rx="10" fill="#aa7440" stroke="#aa7440" stroke-width="2"/>
+<text x="1550" y="356.36" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#ffffff">04</text>
+<text x="1537" y="441.98" font-family="Malgun Gothic, sans-serif" font-size="43" font-weight="700" fill="#173548">사람이 결정</text>
+<text x="1537" y="492.8" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#aa7440">승인 · 반려</text>
+<text x="1537" y="559.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">근거와 대응안 확인</text>
+<text x="1537" y="607.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">검토 의견과 결정 기록</text>
+<text x="1537" y="655.94" font-family="Malgun Gothic, sans-serif" font-size="29" font-weight="400" fill="#294255">승인 전에는 명령 없음</text>
+<text x="1537" y="705.5" font-family="Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#627885">반려·근거 보완 시 명령 없음</text>
+<path d="M1724,739 L1724,781" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="1724,781 1716,769 1732,769" fill="#7e9ba8"/>
+<rect x="60" y="796" width="1879" height="220" rx="20" fill="#e8f3ef" stroke="#c5ded6" stroke-width="2"/>
+<text x="88" y="848.38" font-family="Malgun Gothic, sans-serif" font-size="33" font-weight="700" fill="#176858">승인 후에도 다시 확인합니다</text>
+<text x="88" y="924.1" font-family="Malgun Gothic, sans-serif" font-size="35" font-weight="700" fill="#214d43">01  실행 조건 재검사</text>
+<text x="88" y="978.08" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="400" fill="#4b6b61">최신 관측 · 대상 · 문서 · 인터록</text>
+<text x="730" y="924.1" font-family="Malgun Gothic, sans-serif" font-size="35" font-weight="700" fill="#214d43">02  시뮬레이터 조치</text>
+<text x="730" y="978.08" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="400" fill="#4b6b61">허용된 교반기 정지 명령</text>
+<text x="1365" y="924.1" font-family="Malgun Gothic, sans-serif" font-size="35" font-weight="700" fill="#214d43">03  새 관측으로 확인</text>
+<text x="1365" y="978.08" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="400" fill="#4b6b61">정지 확인 후에도 정비는 대기</text>
+<path d="M665,916 L702,916" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="702,916 690,908 690,924" fill="#7e9ba8"/>
+<path d="M1301,916 L1338,916" stroke="#7e9ba8" stroke-width="4"/>
+<polygon points="1338,916 1326,908 1326,924" fill="#7e9ba8"/>
+<text x="64" y="1080.22" font-family="Malgun Gothic, sans-serif" font-size="27" font-weight="400" fill="#5b7180">가상 공정 기반 교육·전시 시연  |  구성 설명 그림 · 실제 서비스 캡처 아님</text>
+<text x="64" y="1122.5" font-family="Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#5b7180">사건·조회 근거·검토·조치 결과는 업무 DB에 보존합니다. 정지 확인은 원인 제거·정비 완료를 뜻하지 않습니다.</text>
+</svg>

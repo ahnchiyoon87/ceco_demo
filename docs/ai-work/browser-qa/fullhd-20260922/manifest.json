@@ -1,0 +1,59 @@
+{
+  "capture": "Actual browser viewport 1920x1080. No resizing. AI review and timeline show stored 2026-09-21 event; SCADA/current values are 2026-09-22. No new approval or model execution.",
+  "files": [
+    {
+      "file": "01_제조운영_대시보드.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    },
+    {
+      "file": "02_온톨로지_관계그래프.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    },
+    {
+      "file": "03_AI분석_승인결과.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    },
+    {
+      "file": "04_승인_정지확인_처리이력.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    },
+    {
+      "file": "05_원본자료_지식구축.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    },
+    {
+      "file": "06_SCADA_공정감시.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 6223997,
+      "identical_capture_pixels": true
+    }
+  ]
+}

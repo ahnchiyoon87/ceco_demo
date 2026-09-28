@@ -1,0 +1,16 @@
+{
+  "backend_tests": {
+    "passed": 138,
+    "skipped": 1,
+    "seconds": 21.09
+  },
+  "restored_history": true,
+  "fixture_stopped": true,
+  "server_stale_guard": {
+    "status": 409,
+    "reason": "IT-102의 최신 관측이 없거나 오래되었습니다. 재조회가 필요합니다."
+  },
+  "model_final_status": "failed: missing required action field",
+  "stale_semantics": "Latest age correctly identified; structured completion still failed",
+  "raw_rejected_response_saved": true
+}

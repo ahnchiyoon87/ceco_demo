@@ -1,0 +1,13 @@
+{
+  "backend_tests": {
+    "passed": 122,
+    "skipped": 1,
+    "seconds": 13.6
+  },
+  "baseline_checked": 85,
+  "baseline_changed": [],
+  "real_luna_run": "6096a972-2b69-404c-a008-6f380f6d7248",
+  "stop_result": "stop_verified",
+  "post_state": "awaiting_maintenance",
+  "restored_agitator": true
+}

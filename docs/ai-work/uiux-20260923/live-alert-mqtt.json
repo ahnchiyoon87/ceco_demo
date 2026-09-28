@@ -1,0 +1,15 @@
+﻿{
+  "at": "2026-09-23T04:55:41.267Z",
+  "synthetic": false,
+  "records": [
+    {
+      "topic": "scada/hmi/latest-alert",
+      "payload": "09-23 04:55:40 UTC | WARNING | MULTIVARIATE | ML_AUTOENCODER"
+    },
+    {
+      "topic": "scada/alerts/MULTIVARIATE",
+      "payload": "{\"fields\":{\"detail\":\"재구성오차 0.03612 \\u003e 임계 0.03508 · 기여 상위: VT-101(69%), pH-101(15%), CT-101(8%) · 추론 0.56ms\",\"value\":0.03612187276139809},\"name\":\"alert\",\"tags\":{\"alert_type\":\"ML_AUTOENCODER\",\"detector\":\"TIER2_ML\",\"device\":\"reactor-line-01\",\"severity\":\"WARNING\",\"site\":\"AR-100\",\"tag\":\"MULTIVARIATE\"},\"timestamp\":1790139340908000000}\n"
+    }
+  ],
+  "eventMatches": true
+}

@@ -1,0 +1,3 @@
+﻿229M	/app/.venv
+216M	/usr/lib/libreoffice
+uv_cache_exists=False

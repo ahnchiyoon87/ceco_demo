@@ -1,0 +1,3 @@
+﻿188M	/root/.cache/uv
+229M	/app/.venv
+216M	/usr/lib/libreoffice

@@ -1,0 +1,44 @@
+{
+  "intake": {
+    "incident": {
+      "id": "17946035-c9a2-4eaf-9020-39e8fef79f66",
+      "alarm_key": "95d9c2550478dc7c03c06565ff4109c2e00782f88e86577a392d57f844ef053e",
+      "site": "AR-100",
+      "device": "reactor-line-01",
+      "status": "received",
+      "revision": 1,
+      "alarm": {
+        "ts": 1789967622687951600,
+        "tag": "VT-101",
+        "site": "AR-100",
+        "value": 8.3,
+        "detail": "ISOLATED SYNTHETIC TEST: transport server accepts request but sends no response; not a model answer or real equipment fault.",
+        "device": "reactor-line-01",
+        "detector": "TIER1_CEP",
+        "severity": "WARNING",
+        "alert_type": "CEP_BEARING"
+      },
+      "created_at": "2026-09-21T05:13:42.751005+00:00",
+      "correlation_key": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]",
+      "first_ts": 1789967622687951600,
+      "last_ts": 1789967622687951600,
+      "alarm_count": 1,
+      "review_revision": 1
+    },
+    "duplicate": false,
+    "correlated": false
+  },
+  "analysis": {
+    "run": {
+      "id": "83ada599-c7a4-42cb-8839-80fd08c3e77c",
+      "incident_id": "17946035-c9a2-4eaf-9020-39e8fef79f66",
+      "status": "running",
+      "model": "openai:coding",
+      "result": null,
+      "error": null,
+      "created_at": "2026-09-21T05:13:42.769560+00:00",
+      "updated_at": "2026-09-21T05:13:42.769560+00:00"
+    },
+    "replayed": false
+  }
+}

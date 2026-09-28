@@ -1,0 +1,71 @@
+{
+  "note": "Original screenshot pixels retained. Lossless PNG compression_level=0; 300 dpi is print metadata, not additional resolution. No upscaling or AI regeneration.",
+  "images": [
+    {
+      "file": "01_원본자료_관계후보검토.png",
+      "source": "ui-knowledge-reviewed.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "f9de56aa8bc32aa6dd7a798f03ca3797e343a5299a85bcf8c18931035b7c1957"
+    },
+    {
+      "file": "02_온톨로지_설비센서문서관계.png",
+      "source": "final-graph.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "c44465f13768b57dc7017fc06f77c623644681ea9b41d2c5b47e8e6ad3d38334"
+    },
+    {
+      "file": "03_AI_근거분석_대응안.png",
+      "source": "ui-review-layout.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "8435487edfcc8ccf3023f412ac2968a74eb1e06081e950d6b5cc796dd729e997"
+    },
+    {
+      "file": "04_사람승인_정지확인_처리이력.png",
+      "source": "ui-stop-persisted.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "8847cfca1a5d7992a29910faac7f42575b590570d84764c509837336e77747a2"
+    },
+    {
+      "file": "05_반려사유_기록보존.png",
+      "source": "ai-rejection-persisted.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "81addeee556289f4830977b1b961ec3c76f144d36f24ad4aac749825b894c343"
+    },
+    {
+      "file": "06_SCADA_공정감시_재가동.png",
+      "source": "scada-after-restart.png",
+      "pixels": [
+        1600,
+        1000
+      ],
+      "bytes": 4802675,
+      "identical_rgb_pixels": true,
+      "sha256": "73223d4327bae04c6f5486457f72d40cad0cba034d6bbb412d02865717b732d2"
+    }
+  ]
+}

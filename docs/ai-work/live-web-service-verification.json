@@ -1,0 +1,11 @@
+{
+  "static_build_and_api": true,
+  "backend_down": {
+    "http": 503,
+    "json_error": true,
+    "static_available": true
+  },
+  "backend_recovered": true,
+  "web_restart_recovered": true,
+  "browser_render_verified": false
+}

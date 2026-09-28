@@ -88,6 +88,8 @@ class Simulator:
         self.store.setValues(FC_COIL, self.coils["pump_run"]["addr"], [1])
         self.store.setValues(FC_COIL, self.coils["agitator_run"]["addr"], [1])
         self.store.setValues(FC_COIL, self.coils["heater_enable"]["addr"], [1])
+        if "cooler_enable" in self.coils:
+            self.store.setValues(FC_COIL, self.coils["cooler_enable"]["addr"], [0])
         for key, spec in self.holding.items():
             self.store.setValues(FC_HOLDING, spec["addr"], [int(spec["default"])])
             self._last_written[key] = int(spec["default"])
@@ -121,6 +123,7 @@ class Simulator:
         p.cmd_pump = bool(self.store.getValues(FC_COIL, self.coils["pump_run"]["addr"], 1)[0])
         p.cmd_agitator = bool(self.store.getValues(FC_COIL, self.coils["agitator_run"]["addr"], 1)[0])
         p.cmd_heater = bool(self.store.getValues(FC_COIL, self.coils["heater_enable"]["addr"], 1)[0])
+        p.cmd_cooler = bool(self.store.getValues(FC_COIL, self.coils["cooler_enable"]["addr"], 1)[0]) if "cooler_enable" in self.coils else False
 
         for key, spec in self.holding.items():
             raw = self.store.getValues(FC_HOLDING, spec["addr"], 1)[0]
@@ -187,11 +190,13 @@ class Simulator:
                 "pump_run": p.cmd_pump,
                 "agitator_run": p.cmd_agitator,
                 "heater_enable": p.cmd_heater,
+                "cooler_enable": p.cmd_cooler,
                 "pump_speed_sp": round(p.sp_pump_speed, 1),
                 "valve_open_sp": round(p.sp_valve_open, 1),
                 "temp_sp_c": round(p.sp_temp_c, 1),
             },
             "interlock": p.interlocked,
+            "thermal_model": {key: round(value, 3) for key, value in p.thermal.items()},
             "active_faults": {
                 k: {"elapsed_s": round(f.elapsed, 1),
                     "remaining_s": round(f.expires_at - p.sim_time, 1)}

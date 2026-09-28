@@ -1,0 +1,16 @@
+# Synthetic observations for ar100-verification only. No model response mocking.
+services:
+  observation-fixture:
+    image: ar100-ai-knowledge:latest
+    entrypoint: [python, /fixture/observation_fixture.py]
+    volumes:
+      - ./verification/observation_fixture.py:/fixture/observation_fixture.py:ro
+  knowledge:
+    environment:
+      INFLUX_URL: http://observation-fixture:8080
+      INFLUX_TOKEN: verification-dummy-token
+      INFLUX_ORG: verification
+      INFLUX_BUCKET: synthetic-bad-quality
+    depends_on:
+      observation-fixture:
+        condition: service_started

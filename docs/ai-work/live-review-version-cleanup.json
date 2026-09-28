@@ -1,0 +1,67 @@
+{
+  "stopped_state_before_clear": {
+    "site": "AR-100",
+    "device": "reactor-line-01",
+    "uptime_s": 9359.0,
+    "sim_time_s": 9360.0,
+    "seq": 9360,
+    "readings": {
+      "LT-101": 100.0393,
+      "LT-102": 53.8744,
+      "TT-101": 70.7068,
+      "TT-102": 91.9595,
+      "PT-101": 3.1771,
+      "FT-101": 6.1345,
+      "FT-102": 6.2055,
+      "IT-101": 6.2866,
+      "IT-102": 0.0613,
+      "VT-101": 0.0152,
+      "pH-101": 7.4251,
+      "CT-101": 3.3871
+    },
+    "commands": {
+      "pump_run": true,
+      "agitator_run": false,
+      "heater_enable": true,
+      "pump_speed_sp": 60.1,
+      "valve_open_sp": 44.9,
+      "temp_sp_c": 71.8
+    },
+    "interlock": false,
+    "active_faults": {}
+  },
+  "clear": {
+    "cleared": true
+  },
+  "restored": {
+    "site": "AR-100",
+    "device": "reactor-line-01",
+    "uptime_s": 9399.4,
+    "sim_time_s": 9401.0,
+    "seq": 9401,
+    "readings": {
+      "LT-101": 100.0125,
+      "LT-102": 53.7537,
+      "TT-101": 70.7009,
+      "TT-102": 91.2489,
+      "PT-101": 3.1532,
+      "FT-101": 6.2321,
+      "FT-102": 6.1647,
+      "IT-101": 6.3074,
+      "IT-102": 6.4091,
+      "VT-101": 2.0363,
+      "pH-101": 7.4151,
+      "CT-101": 3.3869
+    },
+    "commands": {
+      "pump_run": true,
+      "agitator_run": true,
+      "heater_enable": true,
+      "pump_speed_sp": 60.3,
+      "valve_open_sp": 45.3,
+      "temp_sp_c": 71.8
+    },
+    "interlock": false,
+    "active_faults": {}
+  }
+}

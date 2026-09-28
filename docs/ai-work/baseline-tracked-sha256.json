@@ -1,0 +1,342 @@
+﻿[
+    {
+        "path":  ".env",
+        "sha256":  "4EA6834A72068450B1C46CF80B9BA97A999F4D611A77254414B1FB54DA5AC42C"
+    },
+    {
+        "path":  ".env.example",
+        "sha256":  "92CA8CF7955F74CEBF4130D644FE749B6613E3B5743EA93561BE4984AB55F977"
+    },
+    {
+        "path":  ".gitignore",
+        "sha256":  "A65B1CAEAC53DCA7AFEF4393C28017D041E72AEA5FE8F964014B812938B16BA2"
+    },
+    {
+        "path":  "ARCHITECTURE.md",
+        "sha256":  "EED2FF4F5EE174F3542E41F101AD778D27F6312676C826E891EF2D793CF7B19E"
+    },
+    {
+        "path":  "IoT SCADA 파이프라인 아키텍처.pdf",
+        "sha256":  "B77EF61C3BCA05AE14114EEFB963FA9A20D49C0CDBF56375C39FE1105572DD5E"
+    },
+    {
+        "path":  "Makefile",
+        "sha256":  "BC8FB8CA285EE71B18721B06B2ABA503146CE0590C4BC629181E9C6F557A018C"
+    },
+    {
+        "path":  "README.md",
+        "sha256":  "70D3470A9D848C27ED8D61C2107D2633DE58D7FA00C9BF0746FB07C534B0A348"
+    },
+    {
+        "path":  "docker-compose.edgex.yml",
+        "sha256":  "AABFEFE51DC83BE02BAE1B7952C6DE49E9BEA7AF7570148B2A6D708504CFDE6D"
+    },
+    {
+        "path":  "docker-compose.yml",
+        "sha256":  "153CA8D7F9867181AE20C922FFD4AA7D471B0D3346BDD41494BB5D52CA4D864D"
+    },
+    {
+        "path":  "docs/DEMO.md",
+        "sha256":  "CD936DE108AE27111D6C1CC63E541696D2BE0508A54D08F99B1120DE96E27D98"
+    },
+    {
+        "path":  "docs/GOTCHAS.md",
+        "sha256":  "C51D76521858302BC21D4DD9773EC20CF80CFC2F5368D3BF0918A814AF11EACA"
+    },
+    {
+        "path":  "docs/RUNBOOK.md",
+        "sha256":  "6E0FD9092B5000A3E4DB21EDBC453924E3B0093625F5A72CA36DD15DCD699E20"
+    },
+    {
+        "path":  "docs/VERIFICATION.md",
+        "sha256":  "77D8BBEE77A09954EDE18EF644DDF4FA23A0403B93262169AC3C8966403468CF"
+    },
+    {
+        "path":  "docs/journal/00-method.md",
+        "sha256":  "2FC2EC54EF5709844B83B349499EC4ED1228D6DA028FCFB963359BA9F30E1882"
+    },
+    {
+        "path":  "docs/journal/01-analysis.md",
+        "sha256":  "FE749DD20543D3C3C594E2C36EE718D8C066E1AE5159B809DF0B0B0D713DA300"
+    },
+    {
+        "path":  "docs/journal/02-tier1-edge.md",
+        "sha256":  "9499BE11E2026CECE9DB84193AB88A1A00BC0BEA23A74228FECB49670D12BB1C"
+    },
+    {
+        "path":  "docs/journal/03-tier2-backbone.md",
+        "sha256":  "E29A863B4ED16FFF6BFDEF0B078D6EAC58971B2D49D05C06FD744862BFCA8319"
+    },
+    {
+        "path":  "docs/journal/04-tier3-stream.md",
+        "sha256":  "7F64BCECD997225622B365BC30E7795E71089D968C8AD27EBF32D597D5A00D45"
+    },
+    {
+        "path":  "docs/journal/05-tier3-ml.md",
+        "sha256":  "8DAD26A1FBFAA257976F9EA72910BEA65689B0C28A4281725DC0578BBC192B66"
+    },
+    {
+        "path":  "docs/journal/06-tier4-scada.md",
+        "sha256":  "1AF7AF8CC743F986B0C5E41BFE3909551D319530F6DE69DA592935C0FDF141DB"
+    },
+    {
+        "path":  "docs/journal/07-troubleshooting.md",
+        "sha256":  "58F5945E6B9AB1A09821D69C0A1C6CE766C381BAA9897E656B7A0F065F843C50"
+    },
+    {
+        "path":  "docs/journal/08-decisions.md",
+        "sha256":  "7C4C8A716F1F6998B649A8924BE5CEDF12686E939CF4F8ED2167F41D5C1B59A4"
+    },
+    {
+        "path":  "docs/journal/09-metrics.md",
+        "sha256":  "BE4DC04C047BF8AAAB7D21D604C8CDC55627718003AB2E72902F15EC6002012B"
+    },
+    {
+        "path":  "docs/journal/10-config-reference.md",
+        "sha256":  "3B51FC0C894617420E5E354C1EE35AEB7BAF0B63A3B0951FC3C3F9698A8B4640"
+    },
+    {
+        "path":  "docs/journal/11-teaching-guide.md",
+        "sha256":  "F3D4F823A4652C431EB17DC09026CB8999F8161DDEFCF6FA34E0F18F251E09CA"
+    },
+    {
+        "path":  "docs/journal/README.md",
+        "sha256":  "FEC69C5622CB92FA72C754341B4AD25D9DEE40DF95ED5300C16E56B521E1282D"
+    },
+    {
+        "path":  "docs/journal/logs/00-pdf-extracted.txt",
+        "sha256":  "9570AA6F7FDC0EC9259E7A4063BA0E0A870E78C9F7AED2D9D7700BBEFB2BB5D0"
+    },
+    {
+        "path":  "docs/journal/logs/01-image-arch-check.txt",
+        "sha256":  "FC119FF9F913EB4BE94FFA50D9FBC32A38429804FAC30757D1990632D5E60369"
+    },
+    {
+        "path":  "docs/journal/logs/02-edgex-bootstrap.txt",
+        "sha256":  "F492C42D69BA408922E690F702E3DB001B31ED47FD2C6F5F8D04215B37FA80CF"
+    },
+    {
+        "path":  "docs/journal/logs/03-kafka-schema-sample.txt",
+        "sha256":  "2B470CF942AFE4B87F79AF87EFBBC4CF6D07202B75B3100BC347ADE4EB2B0FF7"
+    },
+    {
+        "path":  "docs/journal/logs/04-flink-jobs.txt",
+        "sha256":  "AA99BB8455D22B92C9AC3BB3B4FC7AE357C2D9BA16A0F3CF60B896D7EA7F2058"
+    },
+    {
+        "path":  "docs/journal/logs/05-model-training.txt",
+        "sha256":  "F752572F87ECDF1332564E885E98E90085EE6E758CE68EB3C91DE2041DC6C710"
+    },
+    {
+        "path":  "docs/journal/logs/06-detection-results.txt",
+        "sha256":  "24C8F8654597FBF0DDFD68C9EEC9C2AE7BAD04B10FA7864A03D0A3219DA430C5"
+    },
+    {
+        "path":  "docs/journal/logs/07-verification-full.txt",
+        "sha256":  "5E34DFA22FA7A86678DCE5E9B28563AF48FE58A93AF9722CB6EC1633A6DC6E6D"
+    },
+    {
+        "path":  "docs/journal/logs/08-fuxa-control.txt",
+        "sha256":  "A27732A77967BC7F8C83870A2296E66A07053561106D79FBBE2B6C39080C5536"
+    },
+    {
+        "path":  "docs/journal/logs/09-clean-boot.txt",
+        "sha256":  "DA395D88B3EA5AC186DD254EEF2EC6AE4E477D943F670A65FBD500E9F4D24F5F"
+    },
+    {
+        "path":  "docs/journal/logs/README.md",
+        "sha256":  "47C0075E32B12B869B1847129986A8AADA8FFF568306B925C3CB7471344FFB9D"
+    },
+    {
+        "path":  "edgex/devices/ar100.devices.yaml",
+        "sha256":  "E9881CDEDF27268D1314A1178EA3F56C7C48778C1244921B3E73640F35FC33D1"
+    },
+    {
+        "path":  "edgex/gen_profile.py",
+        "sha256":  "98651CB1660504B016E295169E9B7FCED52580335B93A7AFEBCE87E3C812C0BE"
+    },
+    {
+        "path":  "edgex/profiles/ar100.profile.yaml",
+        "sha256":  "6A307B4AAF11FF4451936C95DB40736205A7114B8E25BEDC0BF6A0091838FAEA"
+    },
+    {
+        "path":  "emqx/emqx.conf",
+        "sha256":  "009F7F8F2A9FA525A612ED1053110F3FC74C209A0D0799C4DB5A86536974DC81"
+    },
+    {
+        "path":  "flink/Dockerfile",
+        "sha256":  "79F87DFA87D59D7C48914EDD1ADA13CF6597F751EBD1513CB78FBE280CF27F7B"
+    },
+    {
+        "path":  "flink/conf/client-config.yaml",
+        "sha256":  "546077C415C5C2F5EFE8CF90C5CAA1AEFBE1F625914D904B4CA10BB6BB3300B3"
+    },
+    {
+        "path":  "flink/conf/config.yaml",
+        "sha256":  "298AF818BC14C317089AB630C6B005C8D07E642A20DBEDC8B0720A13E04DD5BD"
+    },
+    {
+        "path":  "flink/onnx-job/job.properties",
+        "sha256":  "6F746937E4A6100105EA952BA74C1960C46B63AE2B072DB1CBE614E2D86929C0"
+    },
+    {
+        "path":  "flink/onnx-job/pom.xml",
+        "sha256":  "FDBCD1A843CD28236B95AB375DAAC68DAAFC5F99C6152B4CD8189BAE2854246E"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/Alert.java",
+        "sha256":  "21FCA52E77E4880A2F10AAA36FB3C4DDEFFD8C7D5AE53E7B4FFD26F8ABFC1968"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/AnomalyJob.java",
+        "sha256":  "9F08A6D654960B899DC944510D73D5961C1D9BC577BAC15EC1BC2BF12BF25564"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/AnomalyScore.java",
+        "sha256":  "B187458B0F8DBA7CB0FD5B3C61177608D49A97341E1C4DC9521186DA10055234"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/Interpolator.java",
+        "sha256":  "A35FE8E68E54D581348354367FF3DA7FA3CFD76D412BA6AEB775483ED3F9068F"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/OnnxScorer.java",
+        "sha256":  "2799715F3C80C0C69F1A7B6A9B6784A6A0444D3197A18B686A1B813C237811EA"
+    },
+    {
+        "path":  "flink/onnx-job/src/main/java/org/uengine/iiot/Reading.java",
+        "sha256":  "BCABDA7F260699C6C9B05CDE37BB934BCBC21918A54254A7A4EDAC31DE9FEC4F"
+    },
+    {
+        "path":  "flink/sql/01_sources.sql",
+        "sha256":  "A9F2B1F8F41EA2D3CE467030F9C4F4F81ABEE72D3A542F92A6D684F6DB103210"
+    },
+    {
+        "path":  "flink/sql/02_tier1_rules.sql",
+        "sha256":  "86338520D48FD65D9694E5F3BDE9D154302BE9E3DEF882D4019185CB2D28A6A3"
+    },
+    {
+        "path":  "flink/sql/03_tier1_zscore.sql",
+        "sha256":  "F31F5409CBB765B3440E86891CA412B6A979B6954DA1F47BFC7429BD741B5391"
+    },
+    {
+        "path":  "flink/sql/04_tier1_cep.sql",
+        "sha256":  "C7C2EF5404068AF5D84AF3141AF81419A53B760E372A41C4FBEECF0A31D5CF96"
+    },
+    {
+        "path":  "flink/sql/tag_limits.csv",
+        "sha256":  "59AA45794BDB3F21BB347D7FBDF305B0144B8D40627236F3EA4550E32F5CFDE1"
+    },
+    {
+        "path":  "flink/submit-jobs.sh",
+        "sha256":  "2382EA25DCC147C51491209EA7CDD062DEE53E6703EDF88127BD95F2B9E6B0B5"
+    },
+    {
+        "path":  "fuxa/build_project.py",
+        "sha256":  "70D1DCC92E58C639016BD30EFF2B1BEABC58B26B9EE2B6AD7F7BBD35C8710D91"
+    },
+    {
+        "path":  "fuxa/project.json",
+        "sha256":  "667E443B53200997D207EA0981DDC3FC25364FA1C43B9F60DBDE9BA05A7F254D"
+    },
+    {
+        "path":  "fuxa/provision.py",
+        "sha256":  "0D8B5834BC7EAD6C46B0A9597F62B89F1CA9C773113990A4C848914D04DBBAF4"
+    },
+    {
+        "path":  "grafana/dashboards/01-process.json",
+        "sha256":  "301105B603F969114286342F0A41992D82FAE09BC14CA168564CB52255A26E33"
+    },
+    {
+        "path":  "grafana/dashboards/02-anomaly.json",
+        "sha256":  "29B3A8901C924C8AE3AC56D4454810187B5CCB510ECE8B643BDB7B0CC4EC3EFD"
+    },
+    {
+        "path":  "grafana/dashboards/03-alerts.json",
+        "sha256":  "69A2B95A4D0CA19FD15FDD6F70B61899F6BA539D53CB463E4623B983ACD95C1B"
+    },
+    {
+        "path":  "grafana/dashboards/04-infra.json",
+        "sha256":  "02267B13BAD809DF6E6498471A046AA76808BFF08F73252048CCDAFBD4D6A19C"
+    },
+    {
+        "path":  "grafana/provisioning/dashboards/dashboards.yml",
+        "sha256":  "476E5AD3A0E40222CDB666CD8147F2810110A7182E01A1EDC05F73134EC02776"
+    },
+    {
+        "path":  "grafana/provisioning/datasources/datasources.yml",
+        "sha256":  "DE1F0FCD13CBA65816A1F955F8E0A65255BF358BD04E8BB0FFC892CD759F0266"
+    },
+    {
+        "path":  "kafka/create-topics.sh",
+        "sha256":  "A176E733970CFF29955DA3225ED1C33B0491BE09C0082B5DE51D31B96269F069"
+    },
+    {
+        "path":  "ml/Dockerfile",
+        "sha256":  "B7A3D4B7C2BDD302680942A191B786763C8A15900AB8BD39C4EB505F0CD2C4BF"
+    },
+    {
+        "path":  "ml/requirements.txt",
+        "sha256":  "8C1105CFCBD29EE0D28E18A721BEA905CD05F1DD6E46E39D6328936E020121E5"
+    },
+    {
+        "path":  "ml/train.py",
+        "sha256":  "F7B333453C19B5EC6EA68949AB26C757ABA43F61878ECD13A65B699FA31B3221"
+    },
+    {
+        "path":  "ml/train.yaml",
+        "sha256":  "7940D5A68C712DEACA41D929D6444B39E9A49350E4A6F926EFA6B1782086D7CD"
+    },
+    {
+        "path":  "prometheus/alertmanager.yml",
+        "sha256":  "F7BD8E890D5D06060E415368B57F3A96B851045788B297798DA284395487EC7B"
+    },
+    {
+        "path":  "prometheus/prometheus.yml",
+        "sha256":  "0DA50B258B4B92974E5A5AE1A829A4BBD2AD36BF069F7D91419F14BD21004872"
+    },
+    {
+        "path":  "prometheus/rules.yml",
+        "sha256":  "6CD1DAF7389D12AB36C1E16017B5D9E49AEA47A4A10C43FD138B4025986DCDBC"
+    },
+    {
+        "path":  "scripts/verify.py",
+        "sha256":  "DA07743F21A8B3180C2F24538A19B22BFB67B38892E477635BA65E7E5C667EAD"
+    },
+    {
+        "path":  "simulator/Dockerfile",
+        "sha256":  "BFE5CE4DFD3C45B435C4E32AC284C4AC91E046BF161D98FD7AC0490ED9D398E3"
+    },
+    {
+        "path":  "simulator/plant.py",
+        "sha256":  "4EFAF1AB5757C980E2953136370B78B622179D0183BE01CC566F4325EDF2F49A"
+    },
+    {
+        "path":  "simulator/plant.yaml",
+        "sha256":  "72D171E6C905A003CA3EC88683AAAAE6B0E30300863C9C0062C0FD3D4194FA1E"
+    },
+    {
+        "path":  "simulator/requirements.txt",
+        "sha256":  "B892A3C2C76D363175003539E945D4D82E3798390BA5B16035AD1ACFCB9BC621"
+    },
+    {
+        "path":  "simulator/sim.py",
+        "sha256":  "DEA574841A7C442E990DD14D5BB3444880B244687F0E4F65946931BF32592C9F"
+    },
+    {
+        "path":  "telegraf/alert-republish.conf",
+        "sha256":  "2577ED63BD5CE2AA54AB18D527C54C2FCDC9F389A835A4592164C7BCB16CE35C"
+    },
+    {
+        "path":  "telegraf/bridge-edgex.conf",
+        "sha256":  "907B37A756EC2B01731447B0C9213184647C642B01208ECBFB90AA81D091B57D"
+    },
+    {
+        "path":  "telegraf/bridge-lite.conf",
+        "sha256":  "BC72E4810429509C2FFAD51087434E8C2DFAED1DA6B5CFC74E12B403063A6B36"
+    },
+    {
+        "path":  "telegraf/sink.conf",
+        "sha256":  "A02BA5C9AD084F395988BE8F6F2B9CE812BCC94DB69540D3970F983D1E9F8486"
+    }
+]

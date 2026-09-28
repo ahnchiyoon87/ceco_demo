@@ -1,0 +1,16 @@
+{
+  "run_id": "34434356-2cae-4d8c-ad93-a4e3900261ba",
+  "outcome": "awaiting_review with inspect_only; rejected during cleanup",
+  "latest_age_seconds_at_model_tool": 23.41,
+  "observed_quality": "GOOD",
+  "interpretation": "Too old for the 10-second stop requirement despite high current/vibration values",
+  "action_field_present": true,
+  "no_auto_field_repair": true,
+  "equipment_commands": 0,
+  "tests": {
+    "passed": 5,
+    "seconds": 2.18
+  },
+  "real_history_restored": true,
+  "prior_failures_preserved": true
+}

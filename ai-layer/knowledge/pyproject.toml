@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ontology-studio-backend"
+version = "0.1.0"
+description = "Backend service for Ontology Studio."
+requires-python = ">=3.12"
+dependencies = [
+    "deepagents",
+    "fastapi",
+    "langchain-core",
+    "langchain-openai",
+    "neo4j",
+    "openai",
+    "pdfplumber",
+    "pypdf",
+    "pyyaml",
+    "python-dotenv",
+    "python-multipart",
+    "tiktoken",
+    "uvicorn",
+    "langgraph-checkpoint-sqlite>=3.0.3",
+    "mcp>=1.2.0",
+    "langgraph-checkpoint-postgres>=2.0",
+    "psycopg[binary]>=3.2",
+    "psycopg-pool>=3.2",
+    "langchain-mcp-adapters>=0.1",
+    "confluent-kafka>=2.6",
+    "pymodbus==3.8.3",
+]
+
+[project.scripts]
+ontology-studio-backend = "backend.src.host.main:main"
+ontology-studio-mcp = "backend.src.modules.ontology_mcp.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["backend*"]

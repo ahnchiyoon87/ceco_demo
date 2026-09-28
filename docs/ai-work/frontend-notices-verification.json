@@ -1,0 +1,8 @@
+﻿{
+    "verified_at":  "2026-09-21T15:00:50.2068047+09:00",
+    "matches_generated_bytes":  true,
+    "packages":  25,
+    "sha256":  "658B540C79964FF0D6FE15CF250357E1FF2791F6F1FCC4B48C1C5AE8EB7D38E7",
+    "scope":  "frontend installed production dependencies only",
+    "note":  "Compared raw bytes; PowerShell response string decoding differed"
+}

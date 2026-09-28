@@ -1,0 +1,24 @@
+﻿✔ asset filter retains incoming device and outgoing sensor/document context without expanding unrelated branches (3.5199ms)
+✔ missing class stays empty and incomplete input never leaves a dangling edge (0.7321ms)
+✔ clearing the class restores the original graph without mutating it (0.447ms)
+✔ transient polling failure retries reads without replaying an action (20.8323ms)
+✔ analysis follows incident state changes and does not submit for completed or unknown states (7.4475ms)
+✔ late old-incident failure cannot replace new incident error or release its request lock (4.4497ms)
+✔ late old recovery cannot clear new review note or publish updated event (4.1617ms)
+✔ dashboard clears loading when incidents disappear and ignores the late response (18.121ms)
+✔ dashboard distinguishes unavailable analysis from an empty successful result (3.543ms)
+✔ SCADA marks repeated scans stale, keeps values on disconnect and bounds samples (6.2468ms)
+✔ trace excludes late previous run and preserves paired call status (4.987ms)
+✔ no analysis does not pretend the agent started (2.0864ms)
+✔ rejection bypasses equipment execution (0.4868ms)
+✔ persisted approval is not a successful result (0.2974ms)
+✔ uncertain action is visibly different from verified stop (0.3336ms)
+✔ insufficient evidence does not enter approval (0.7738ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 868.1343

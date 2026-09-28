@@ -44,6 +44,7 @@ class ReactorPlant:
         self.p_pump = ph["pump"]
         self.p_valve = ph["valve"]
         self.p_heater = ph["heater"]
+        self.p_cooler = ph.get("cooler", {"max_power_kw": 0.0, "kp": 0.0})
         self.p_agit = ph["agitator"]
         self.p_ilk = ph["interlock"]
         self.p_rxn = ph["reaction"]
@@ -71,6 +72,8 @@ class ReactorPlant:
         self.cmd_pump = True
         self.cmd_agitator = True
         self.cmd_heater = True
+        self.cmd_cooler = False
+        self.thermal = {"heater_kw": 0.0, "cooler_kw": 0.0}
         self.sp_pump_speed = 60.0
         self.sp_valve_open = 45.0
         self.sp_temp_c = 72.0
@@ -199,12 +202,24 @@ class ReactorPlant:
             duty = min(max(self.p_heater["kp"] * err / 100.0, 0.0), 1.0)
         else:
             duty = 0.0
+        # A stuck heater is a physical fault: turning its command off does not
+        # remove the heat. Clearing the fault represents a separate repair.
+        if "heater_stuck" in self.faults:
+            duty = 1.0
         q_heat = self.p_heater["max_power_kw"] * duty
-        self.jacket_c += ((self.temp_c + duty * 38.0 + 2.0) - self.jacket_c) * min(1.0, dt_s / 8.0)
+        cooling_duty = 0.0
+        if self.cmd_cooler and "cooling_loss" not in self.faults:
+            cooling_duty = min(max(self.p_cooler["kp"] * (self.temp_c - self.sp_temp_c) / 100.0, 0.0), 1.0)
+        q_cool = self.p_cooler["max_power_kw"] * cooling_duty
+        # Do not remove more energy than the contents hold above ambient in a
+        # scan. This is an educational heat-exchanger model, not a real plant rating.
+        q_cool = min(q_cool, max(0.0, (self.temp_c - ambient) * mass * cp / max(dt_s, 1e-9)))
+        self.thermal = {"heater_kw": q_heat, "cooler_kw": q_cool}
+        self.jacket_c += ((self.temp_c + duty * 38.0 - cooling_duty * 20.0 + 2.0) - self.jacket_c) * min(1.0, dt_s / 8.0)
 
         q_loss = self.p_rx["heat_loss_kw_per_k"] * (self.temp_c - ambient)
         q_feed = (q_in / 3600.0) * rho * cp * (ambient - self.temp_c)
-        self.temp_c += (q_heat - q_loss + q_feed) / (mass * cp) * dt_s
+        self.temp_c += (q_heat - q_cool - q_loss + q_feed) / (mass * cp) * dt_s
         self.temp_c = min(max(self.temp_c, ambient), 140.0)
 
         # ── 베어링 열화 (bearing_wear 고장 주입 시 누적) ──

@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "allNodes": 35,
+  "assetContextNodes": 11,
+  "assetContextEdges": 17,
+  "classes": [
+    "Sensor",
+    "Device",
+    "Asset",
+    "Document"
+  ]
+}

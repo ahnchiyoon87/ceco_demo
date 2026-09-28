@@ -1,0 +1,7 @@
+# Fault injection for the isolated ar100-verification project only.
+# Port 9 is deliberately unavailable inside this container; no credentials leave it.
+# Restore by recreating knowledge with compose.verification.yml alone.
+services:
+  knowledge:
+    environment:
+      OPENAI_BASE_URL: http://127.0.0.1:9/v1

@@ -1,0 +1,13 @@
+{
+  "baseline_checked": 85,
+  "baseline_changed": [],
+  "graph_nodes": 35,
+  "graph_relationships": 41,
+  "documents": {
+    "AR100-ASSET-CONTEXT": 1,
+    "AR100-EVIDENCE-POLICY": 3,
+    "AR100-MIXER-RESPONSE": 2
+  },
+  "original_stream_route_registered": false,
+  "plant_status": "available"
+}

@@ -1,0 +1,10 @@
+{
+  "result": {
+    "status": "published",
+    "sha256": "939242462fafa0b51e62c06850f931930a5f4628add8c056fe729bc8443a8e8f",
+    "duplicate": false,
+    "nodes": 34,
+    "relationships": 35
+  },
+  "review_note": "강사 시연 지식 검토: 실제 루나 후보의 M-101을 기존 site/device/name 식별자에 맞췄고, 데이터 장치 소속은 물리 설치가 아닌 EXPOSES_ASSET으로 정정했습니다. IT-102/VT-101 소속 및 문서 3종 적용 관계의 원문 인용을 확인했습니다. 기존 문서 본문·버전·센서 속성은 유지하며, 실제 배선·고장 확정·현업 승인으로 해석하지 않습니다. 원본 후보와 수정 내역을 별도 보존합니다."
+}

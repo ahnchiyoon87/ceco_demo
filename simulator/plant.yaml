@@ -28,6 +28,7 @@ commands:
     pump_run:      { addr: 0,  desc: "P-101 공급펌프 기동" }
     agitator_run:  { addr: 1,  desc: "M-101 교반기 기동" }
     heater_enable: { addr: 2,  desc: "HX-101 재킷히터 Enable" }
+    cooler_enable: { addr: 3,  desc: "HX-102 가상 냉각기 Enable" }
     alarm_ack:     { addr: 10, desc: "알람 Acknowledge" }
     interlock:     { addr: 20, desc: "고압 인터록 발동 (읽기전용)", readonly: true }
   holding:
@@ -61,6 +62,10 @@ physics:
   heater:
     max_power_kw: 700.0
     kp: 45.0                 # 재킷 온도 P 제어 게인 (P-only 이므로 소폭 droop 존재)
+  cooler:
+    # 교육용 열 제거 모델. 실제 공장 설계 용량이나 안전 기준이 아니다.
+    max_power_kw: 900.0
+    kp: 45.0
   agitator:
     rated_current_a: 8.0
     base_vibration_mms: 2.1
@@ -106,6 +111,14 @@ noise:
 # ── 고장 주입 시나리오 ────────────────────────────────────────
 # POST /fault {"scenario":"<key>", "duration_s":30}
 faults:
+  heater_stuck:
+    desc: "히터 출력 고착: 정지 명령과 무관하게 열 공급 지속 (실제 모형 온도 변화)"
+    default_duration_s: 1200
+    target: [TT-101, TT-102]
+  cooling_loss:
+    desc: "냉각 능력 상실: 냉각 명령이 켜져도 열 제거 없음"
+    default_duration_s: 600
+    target: [TT-101, TT-102]
   dropout:
     desc: "TT-101 발행 중단 → Flink 결측치 보간(LOCF/선형) 검증"
     default_duration_s: 15

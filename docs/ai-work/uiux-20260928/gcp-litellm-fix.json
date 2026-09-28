@@ -1,0 +1,12 @@
+{
+  "alias": "coding",
+  "model": "openai/gpt-6-luna",
+  "model_id": "974a08db-dfd2-4d8a-8bdc-2e8267304542",
+  "previous_extra_body": null,
+  "extra_body": {
+    "reasoning_effort": "none"
+  },
+  "client_reasoning_effort": "medium",
+  "status": "FUNCTION_CALL_VERIFIED",
+  "tool_name": "check_status"
+}

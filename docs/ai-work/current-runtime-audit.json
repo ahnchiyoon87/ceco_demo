@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-09-21T03:43:33.156040+00:00",
+  "baseline_file_count": 85,
+  "changed_since_baseline": [],
+  "services": {
+    "/healthz": {
+      "http": 200,
+      "status": "available",
+      "configured": null,
+      "items": 0
+    },
+    "/api/operations/model-status": {
+      "http": 200,
+      "status": "not_configured",
+      "configured": false,
+      "items": 0
+    },
+    "/api/operations/plant": {
+      "http": 200,
+      "status": "available",
+      "configured": null,
+      "items": 0
+    },
+    "/api/knowledge/published": {
+      "http": 200,
+      "status": null,
+      "configured": null,
+      "items": 2
+    }
+  }
+}

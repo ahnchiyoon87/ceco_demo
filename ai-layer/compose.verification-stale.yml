@@ -1,0 +1,8 @@
+# Overlay after compose.verification.yml and compose.verification-bad-quality.yml.
+services:
+  observation-fixture:
+    environment:
+      OBSERVATION_FIXTURE_MODE: stale
+  knowledge:
+    environment:
+      INFLUX_BUCKET: synthetic-stale-good-quality

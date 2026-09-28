@@ -1,0 +1,10 @@
+{
+  "id": "b3bcaeef-12ca-4934-9e27-1df4baabab5a",
+  "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+  "status": "running",
+  "model": "openai:coding",
+  "result": null,
+  "error": null,
+  "created_at": "2026-09-21T04:46:09.768719+00:00",
+  "updated_at": "2026-09-21T04:46:09.768719+00:00"
+}

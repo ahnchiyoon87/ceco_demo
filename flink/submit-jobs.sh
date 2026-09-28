@@ -32,8 +32,12 @@ echo "  가용 슬롯: ${slots:-0}"
 # ── 이미 제출된 잡이 있으면 중복 제출하지 않는다 (재기동 멱등성) ──
 running=$(curl -sf "http://${JM}/jobs/overview" | grep -o '"state":"RUNNING"' | wc -l | tr -d ' ')
 if [ "${running:-0}" -gt 0 ]; then
-  echo "✓ 이미 ${running}개 잡이 실행 중 — 제출을 건너뜁니다."
-  exit 0
+  if [ "${running}" -eq 4 ]; then
+    echo "✓ 이미 4개 잡이 실행 중 — 제출을 건너뜁니다."
+    exit 0
+  fi
+  echo "✗ RUNNING ${running}/4 — 일부 작업만 실행 중입니다. 중복 제출하지 않았습니다. Flink UI에서 실패 작업을 확인하세요."
+  exit 1
 fi
 
 # ── 1) Tier-1: 선언형 SQL ──

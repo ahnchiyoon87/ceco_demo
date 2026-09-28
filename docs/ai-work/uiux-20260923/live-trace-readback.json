@@ -1,0 +1,14 @@
+[
+  {
+    "incident": "63887a98-1500-41b5-809d-e31af903b72e",
+    "run": "11cfcfd5-a4b3-43f2-ac5f-8058a8f858af",
+    "status": "finished",
+    "trace_count": 4,
+    "truncated": false,
+    "tools": [
+      "observations",
+      "alarm",
+      "documents"
+    ]
+  }
+]

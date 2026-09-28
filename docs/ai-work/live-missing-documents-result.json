@@ -1,0 +1,591 @@
+{
+  "run": {
+    "id": "43962b9f-9b55-4029-9059-23cb4b9c75d8",
+    "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+    "status": "failed",
+    "model": "openai:coding",
+    "result": null,
+    "error": "분석/검토 실행 실패 (ValueError). 도구 기록을 확인하세요.",
+    "created_at": "2026-09-21T04:42:23.117944+00:00",
+    "updated_at": "2026-09-21T04:42:51.976058+00:00"
+  },
+  "incident": {
+    "incident": {
+      "id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+      "alarm_key": "802602d182f4daecac16a0d8b7450cc06bc849ac13f531dbc3ab08fa3148f11b",
+      "site": "AR-100",
+      "device": "reactor-line-01",
+      "status": "received",
+      "revision": 1,
+      "alarm": {
+        "ts": 1789965743062436600,
+        "tag": "VT-101",
+        "site": "AR-100",
+        "value": 8.2,
+        "detail": "격리 검증용 가상 알람. 실제 고장 발생이나 현업 판단이 아님. 적용 문서 누락 시 동작 확인.",
+        "device": "reactor-line-01",
+        "detector": "VERIFICATION_SYNTHETIC",
+        "severity": "CRITICAL",
+        "alert_type": "THRESHOLD_USL"
+      },
+      "created_at": "2026-09-21T04:42:23.087835+00:00",
+      "correlation_key": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]",
+      "first_ts": 1789965743062436600,
+      "last_ts": 1789965743062436600,
+      "alarm_count": 1,
+      "review_revision": 1
+    },
+    "events": [
+      {
+        "id": 1,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "alarm_received",
+        "payload": {
+          "ts": 1789965743062436600,
+          "tag": "VT-101",
+          "site": "AR-100",
+          "value": 8.2,
+          "detail": "격리 검증용 가상 알람. 실제 고장 발생이나 현업 판단이 아님. 적용 문서 누락 시 동작 확인.",
+          "device": "reactor-line-01",
+          "detector": "VERIFICATION_SYNTHETIC",
+          "severity": "CRITICAL",
+          "alert_type": "THRESHOLD_USL"
+        },
+        "created_at": "2026-09-21T04:42:23.087835+00:00"
+      },
+      {
+        "id": 2,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "agent_tool_result",
+        "payload": {
+          "tool": "alarm",
+          "result": {
+            "revision": 1,
+            "first_alarm": {
+              "ts": 1789965743062436600,
+              "tag": "VT-101",
+              "site": "AR-100",
+              "value": 8.2,
+              "detail": "격리 검증용 가상 알람. 실제 고장 발생이나 현업 판단이 아님. 적용 문서 누락 시 동작 확인.",
+              "device": "reactor-line-01",
+              "detector": "VERIFICATION_SYNTHETIC",
+              "severity": "CRITICAL",
+              "alert_type": "THRESHOLD_USL"
+            },
+            "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+            "snapshot_at": "2026-09-21T04:42:26.091744+00:00",
+            "correlated_alarms": {
+              "groups": [
+                {
+                  "tag": "VT-101",
+                  "count": 1,
+                  "last_ts": 1789965743062436600,
+                  "detector": "VERIFICATION_SYNTHETIC",
+                  "first_ts": 1789965743062436600,
+                  "severity": "CRITICAL",
+                  "max_value": 8.2,
+                  "min_value": 8.2,
+                  "alert_type": "THRESHOLD_USL"
+                }
+              ],
+              "method": "All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.",
+              "original_count": 1
+            },
+            "observation_revision": 1
+          },
+          "run_id": "43962b9f-9b55-4029-9059-23cb4b9c75d8"
+        },
+        "created_at": "2026-09-21T04:42:26.104619+00:00"
+      },
+      {
+        "id": 3,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "agent_tool_result",
+        "payload": {
+          "tool": "documents",
+          "result": {
+            "assets": [
+              {
+                "name": "M-101",
+                "source_id": "AR-100/reactor-line-01/asset/M-101",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              }
+            ],
+            "status": "available",
+            "sensors": [
+              {
+                "tag": "PT-101",
+                "unit": "barg",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              },
+              {
+                "tag": "TT-101",
+                "unit": "degC",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              },
+              {
+                "tag": "LT-102",
+                "unit": "%",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              },
+              {
+                "tag": "VT-101",
+                "unit": "mm/s",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              },
+              {
+                "tag": "IT-102",
+                "unit": "A",
+                "_element_id": "4:1ff2bfd4-b544-4331-997f-6e0adf828688:24"
+              }
+            ],
+            "documents": []
+          },
+          "run_id": "43962b9f-9b55-4029-9059-23cb4b9c75d8"
+        },
+        "created_at": "2026-09-21T04:42:26.104424+00:00"
+      },
+      {
+        "id": 4,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "agent_tool_result",
+        "payload": {
+          "tool": "observations",
+          "result": {
+            "plant_state": {
+              "seq": 9579,
+              "site": "AR-100",
+              "device": "reactor-line-01",
+              "status": "available",
+              "commands": {
+                "pump_run": true,
+                "temp_sp_c": 71.8,
+                "agitator_run": true,
+                "heater_enable": true,
+                "pump_speed_sp": 60.3,
+                "valve_open_sp": 45.3
+              },
+              "readings": {
+                "CT-101": 3.3849,
+                "FT-101": 6.232,
+                "FT-102": 6.2756,
+                "IT-101": 6.3134,
+                "IT-102": 6.4047,
+                "LT-101": 100.0109,
+                "LT-102": 53.8504,
+                "PT-101": 3.1783,
+                "TT-101": 70.6742,
+                "TT-102": 91.7852,
+                "VT-101": 2.1023,
+                "pH-101": 7.4107
+              },
+              "interlock": false,
+              "retrieved_at": "2026-09-21T04:42:26.103764+00:00",
+              "timestamp_note": "조회 시각이며 센서 측정 시각은 아닙니다."
+            },
+            "current_window": {
+              "limit": 2000,
+              "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+              "source": "InfluxDB/process_raw",
+              "status": "available",
+              "stop_ns": "1789965743863934712",
+              "start_ns": "1789965713863934712",
+              "truncated": false,
+              "statistics": [
+                {
+                  "max": 54.01132,
+                  "min": 53.716587,
+                  "tag": "LT-102",
+                  "last": {
+                    "tag": "LT-102",
+                    "time": "2026-09-21T04:42:21.1542477Z",
+                    "value": 54.01132,
+                    "quality": "GOOD"
+                  },
+                  "mean": 53.82416835714286,
+                  "count": 28,
+                  "first": {
+                    "tag": "LT-102",
+                    "time": "2026-09-21T04:41:54.1591332Z",
+                    "value": 53.75719,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 28
+                  }
+                },
+                {
+                  "max": 70.73484,
+                  "min": 70.512665,
+                  "tag": "TT-101",
+                  "last": {
+                    "tag": "TT-101",
+                    "time": "2026-09-21T04:42:21.1545994Z",
+                    "value": 70.66103,
+                    "quality": "GOOD"
+                  },
+                  "mean": 70.63058614285714,
+                  "count": 28,
+                  "first": {
+                    "tag": "TT-101",
+                    "time": "2026-09-21T04:41:54.1595123Z",
+                    "value": 70.73484,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 28
+                  }
+                },
+                {
+                  "max": 3.2048936,
+                  "min": 3.1460617,
+                  "tag": "PT-101",
+                  "last": {
+                    "tag": "PT-101",
+                    "time": "2026-09-21T04:42:21.1550257Z",
+                    "value": 3.168739,
+                    "quality": "GOOD"
+                  },
+                  "mean": 3.1704088464285713,
+                  "count": 28,
+                  "first": {
+                    "tag": "PT-101",
+                    "time": "2026-09-21T04:41:54.1602872Z",
+                    "value": 3.1763701,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 28
+                  }
+                },
+                {
+                  "max": 6.430102,
+                  "min": 6.3134737,
+                  "tag": "IT-102",
+                  "last": {
+                    "tag": "IT-102",
+                    "time": "2026-09-21T04:42:21.155998Z",
+                    "value": 6.3905,
+                    "quality": "GOOD"
+                  },
+                  "mean": 6.373481135714286,
+                  "count": 28,
+                  "first": {
+                    "tag": "IT-102",
+                    "time": "2026-09-21T04:41:54.161838Z",
+                    "value": 6.378695,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 28
+                  }
+                },
+                {
+                  "max": 2.1637418,
+                  "min": 1.9433286,
+                  "tag": "VT-101",
+                  "last": {
+                    "tag": "VT-101",
+                    "time": "2026-09-21T04:42:21.1561974Z",
+                    "value": 2.1620781,
+                    "quality": "GOOD"
+                  },
+                  "mean": 2.060464585714286,
+                  "count": 28,
+                  "first": {
+                    "tag": "VT-101",
+                    "time": "2026-09-21T04:41:54.162196Z",
+                    "value": 1.9956079,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 28
+                  }
+                }
+              ]
+            },
+            "incident_window": {
+              "limit": 2000,
+              "method": "All retrieved rows aggregated per tag; original rows retained in proposal evidence.",
+              "source": "InfluxDB/process_raw",
+              "status": "available",
+              "stop_ns": "1789965758062436600",
+              "start_ns": "1789965713062436600",
+              "truncated": false,
+              "statistics": [
+                {
+                  "max": 54.01132,
+                  "min": 53.716587,
+                  "tag": "LT-102",
+                  "last": {
+                    "tag": "LT-102",
+                    "time": "2026-09-21T04:42:21.1542477Z",
+                    "value": 54.01132,
+                    "quality": "GOOD"
+                  },
+                  "mean": 53.82468586206897,
+                  "count": 29,
+                  "first": {
+                    "tag": "LT-102",
+                    "time": "2026-09-21T04:41:53.1572626Z",
+                    "value": 53.839176,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 29
+                  }
+                },
+                {
+                  "max": 70.73484,
+                  "min": 70.512665,
+                  "tag": "TT-101",
+                  "last": {
+                    "tag": "TT-101",
+                    "time": "2026-09-21T04:42:21.1545994Z",
+                    "value": 70.66103,
+                    "quality": "GOOD"
+                  },
+                  "mean": 70.63293179310345,
+                  "count": 29,
+                  "first": {
+                    "tag": "TT-101",
+                    "time": "2026-09-21T04:41:53.1576036Z",
+                    "value": 70.69861,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 29
+                  }
+                },
+                {
+                  "max": 3.2048936,
+                  "min": 3.1460617,
+                  "tag": "PT-101",
+                  "last": {
+                    "tag": "PT-101",
+                    "time": "2026-09-21T04:42:21.1550257Z",
+                    "value": 3.168739,
+                    "quality": "GOOD"
+                  },
+                  "mean": 3.1709852482758625,
+                  "count": 29,
+                  "first": {
+                    "tag": "PT-101",
+                    "time": "2026-09-21T04:41:53.1582188Z",
+                    "value": 3.1871245,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 29
+                  }
+                },
+                {
+                  "max": 6.430102,
+                  "min": 6.3134737,
+                  "tag": "IT-102",
+                  "last": {
+                    "tag": "IT-102",
+                    "time": "2026-09-21T04:42:21.155998Z",
+                    "value": 6.3905,
+                    "quality": "GOOD"
+                  },
+                  "mean": 6.373982706896552,
+                  "count": 29,
+                  "first": {
+                    "tag": "IT-102",
+                    "time": "2026-09-21T04:41:53.1592842Z",
+                    "value": 6.3880267,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 29
+                  }
+                },
+                {
+                  "max": 2.1637418,
+                  "min": 1.9433286,
+                  "tag": "VT-101",
+                  "last": {
+                    "tag": "VT-101",
+                    "time": "2026-09-21T04:42:21.1561974Z",
+                    "value": 2.1620781,
+                    "quality": "GOOD"
+                  },
+                  "mean": 2.062911151724138,
+                  "count": 29,
+                  "first": {
+                    "tag": "VT-101",
+                    "time": "2026-09-21T04:41:53.1595748Z",
+                    "value": 2.131415,
+                    "quality": "GOOD"
+                  },
+                  "quality_counts": {
+                    "GOOD": 29
+                  }
+                }
+              ]
+            },
+            "incident_window_capped": false
+          },
+          "run_id": "43962b9f-9b55-4029-9059-23cb4b9c75d8"
+        },
+        "created_at": "2026-09-21T04:42:26.114176+00:00"
+      },
+      {
+        "id": 5,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "agent_model_output",
+        "payload": {
+          "run_id": "43962b9f-9b55-4029-9059-23cb4b9c75d8",
+          "messages": [
+            {
+              "id": "b76b7531-55f4-43c0-97cf-f4a255ae7f0d",
+              "name": null,
+              "type": "human",
+              "content": "사건 1b810f8d-ca20-4b8f-bb31-6b525a983afd의 근거를 조회하고 검토 가능한 제조 대응안을 작성하세요.",
+              "additional_kwargs": {},
+              "response_metadata": {}
+            },
+            {
+              "id": "lc_run--01a0c245-b71b-7d13-b2af-e7e88b294b1b-0",
+              "name": null,
+              "type": "ai",
+              "content": "",
+              "tool_calls": [
+                {
+                  "id": "call_Xmx4HK1HnXt2nF9jvcMWSMaB",
+                  "args": {},
+                  "name": "get_incident_alarm",
+                  "type": "tool_call"
+                },
+                {
+                  "id": "call_w2jqbWFBy35Izh6Ko6MPF48o",
+                  "args": {},
+                  "name": "get_asset_documents",
+                  "type": "tool_call"
+                },
+                {
+                  "id": "call_50yp0awcGk7U3W2LNFYKvz2C",
+                  "args": {},
+                  "name": "get_sensor_observations",
+                  "type": "tool_call"
+                }
+              ],
+              "usage_metadata": {
+                "input_tokens": 651,
+                "total_tokens": 726,
+                "output_tokens": 75,
+                "input_token_details": {
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "reasoning": 13
+                }
+              },
+              "additional_kwargs": {
+                "refusal": null
+              },
+              "response_metadata": {
+                "id": "chatcmpl-2fd7b655-0897-41d5-8d9d-54d919b2463a",
+                "logprobs": null,
+                "model_name": "coding",
+                "token_usage": {
+                  "total_tokens": 726,
+                  "prompt_tokens": 651,
+                  "completion_tokens": 75,
+                  "prompt_tokens_details": {
+                    "audio_tokens": null,
+                    "cached_tokens": 0
+                  },
+                  "completion_tokens_details": {
+                    "audio_tokens": null,
+                    "reasoning_tokens": 13,
+                    "accepted_prediction_tokens": null,
+                    "rejected_prediction_tokens": null
+                  }
+                },
+                "finish_reason": "tool_calls",
+                "model_provider": "openai",
+                "system_fingerprint": null
+              },
+              "invalid_tool_calls": []
+            },
+            {
+              "id": "b508f26b-1efe-46ef-b5f1-aea4d82002ca",
+              "name": "get_incident_alarm",
+              "type": "tool",
+              "status": "success",
+              "content": "{\"incident_id\": \"1b810f8d-ca20-4b8f-bb31-6b525a983afd\", \"revision\": 1, \"observation_revision\": 1, \"snapshot_at\": \"2026-09-21T04:42:26.091744+00:00\", \"first_alarm\": {\"ts\": 1789965743062436600, \"tag\": \"VT-101\", \"site\": \"AR-100\", \"value\": 8.2, \"detail\": \"격리 검증용 가상 알람. 실제 고장 발생이나 현업 판단이 아님. 적용 문서 누락 시 동작 확인.\", \"device\": \"reactor-line-01\", \"detector\": \"VERIFICATION_SYNTHETIC\", \"severity\": \"CRITICAL\", \"alert_type\": \"THRESHOLD_USL\"}, \"correlated_alarms\": {\"groups\": [{\"tag\": \"VT-101\", \"alert_type\": \"THRESHOLD_USL\", \"detector\": \"VERIFICATION_SYNTHETIC\", \"severity\": \"CRITICAL\", \"count\": 1, \"min_value\": 8.2, \"max_value\": 8.2, \"first_ts\": 1789965743062436600, \"last_ts\": 1789965743062436600}], \"original_count\": 1, \"method\": \"All stored alarm events aggregated by tag, detector, type and severity; originals remain in incident history.\"}}",
+              "artifact": null,
+              "tool_call_id": "call_Xmx4HK1HnXt2nF9jvcMWSMaB",
+              "additional_kwargs": {},
+              "response_metadata": {}
+            },
+            {
+              "id": "aa4079db-e818-4522-8bef-1ebca17552ff",
+              "name": "get_asset_documents",
+              "type": "tool",
+              "status": "success",
+              "content": "{\"status\": \"available\", \"assets\": [{\"name\": \"M-101\", \"source_id\": \"AR-100/reactor-line-01/asset/M-101\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}], \"documents\": [], \"sensors\": [{\"tag\": \"PT-101\", \"unit\": \"barg\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}, {\"tag\": \"TT-101\", \"unit\": \"degC\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}, {\"tag\": \"LT-102\", \"unit\": \"%\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}, {\"tag\": \"VT-101\", \"unit\": \"mm/s\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}, {\"tag\": \"IT-102\", \"unit\": \"A\", \"_element_id\": \"4:1ff2bfd4-b544-4331-997f-6e0adf828688:24\"}]}",
+              "artifact": null,
+              "tool_call_id": "call_w2jqbWFBy35Izh6Ko6MPF48o",
+              "additional_kwargs": {},
+              "response_metadata": {}
+            },
+            {
+              "id": "ffe6c767-64fc-4d72-93b6-2f5a74b29213",
+              "name": "get_sensor_observations",
+              "type": "tool",
+              "status": "success",
+              "content": "{\"incident_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1789965713062436600\", \"stop_ns\": \"1789965758062436600\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 29, \"min\": 53.716587, \"max\": 54.01132, \"mean\": 53.82468586206897, \"first\": {\"time\": \"2026-09-21T04:41:53.1572626Z\", \"tag\": \"LT-102\", \"value\": 53.839176, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1542477Z\", \"tag\": \"LT-102\", \"value\": 54.01132, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 29}}, {\"tag\": \"TT-101\", \"count\": 29, \"min\": 70.512665, \"max\": 70.73484, \"mean\": 70.63293179310345, \"first\": {\"time\": \"2026-09-21T04:41:53.1576036Z\", \"tag\": \"TT-101\", \"value\": 70.69861, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1545994Z\", \"tag\": \"TT-101\", \"value\": 70.66103, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 29}}, {\"tag\": \"PT-101\", \"count\": 29, \"min\": 3.1460617, \"max\": 3.2048936, \"mean\": 3.1709852482758625, \"first\": {\"time\": \"2026-09-21T04:41:53.1582188Z\", \"tag\": \"PT-101\", \"value\": 3.1871245, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1550257Z\", \"tag\": \"PT-101\", \"value\": 3.168739, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 29}}, {\"tag\": \"IT-102\", \"count\": 29, \"min\": 6.3134737, \"max\": 6.430102, \"mean\": 6.373982706896552, \"first\": {\"time\": \"2026-09-21T04:41:53.1592842Z\", \"tag\": \"IT-102\", \"value\": 6.3880267, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.155998Z\", \"tag\": \"IT-102\", \"value\": 6.3905, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 29}}, {\"tag\": \"VT-101\", \"count\": 29, \"min\": 1.9433286, \"max\": 2.1637418, \"mean\": 2.062911151724138, \"first\": {\"time\": \"2026-09-21T04:41:53.1595748Z\", \"tag\": \"VT-101\", \"value\": 2.131415, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1561974Z\", \"tag\": \"VT-101\", \"value\": 2.1620781, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 29}}], \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"current_window\": {\"status\": \"available\", \"truncated\": false, \"start_ns\": \"1789965713863934712\", \"stop_ns\": \"1789965743863934712\", \"source\": \"InfluxDB/process_raw\", \"limit\": 2000, \"statistics\": [{\"tag\": \"LT-102\", \"count\": 28, \"min\": 53.716587, \"max\": 54.01132, \"mean\": 53.82416835714286, \"first\": {\"time\": \"2026-09-21T04:41:54.1591332Z\", \"tag\": \"LT-102\", \"value\": 53.75719, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1542477Z\", \"tag\": \"LT-102\", \"value\": 54.01132, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 28}}, {\"tag\": \"TT-101\", \"count\": 28, \"min\": 70.512665, \"max\": 70.73484, \"mean\": 70.63058614285714, \"first\": {\"time\": \"2026-09-21T04:41:54.1595123Z\", \"tag\": \"TT-101\", \"value\": 70.73484, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1545994Z\", \"tag\": \"TT-101\", \"value\": 70.66103, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 28}}, {\"tag\": \"PT-101\", \"count\": 28, \"min\": 3.1460617, \"max\": 3.2048936, \"mean\": 3.1704088464285713, \"first\": {\"time\": \"2026-09-21T04:41:54.1602872Z\", \"tag\": \"PT-101\", \"value\": 3.1763701, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1550257Z\", \"tag\": \"PT-101\", \"value\": 3.168739, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 28}}, {\"tag\": \"IT-102\", \"count\": 28, \"min\": 6.3134737, \"max\": 6.430102, \"mean\": 6.373481135714286, \"first\": {\"time\": \"2026-09-21T04:41:54.161838Z\", \"tag\": \"IT-102\", \"value\": 6.378695, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.155998Z\", \"tag\": \"IT-102\", \"value\": 6.3905, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 28}}, {\"tag\": \"VT-101\", \"count\": 28, \"min\": 1.9433286, \"max\": 2.1637418, \"mean\": 2.060464585714286, \"first\": {\"time\": \"2026-09-21T04:41:54.162196Z\", \"tag\": \"VT-101\", \"value\": 1.9956079, \"quality\": \"GOOD\"}, \"last\": {\"time\": \"2026-09-21T04:42:21.1561974Z\", \"tag\": \"VT-101\", \"value\": 2.1620781, \"quality\": \"GOOD\"}, \"quality_counts\": {\"GOOD\": 28}}], \"method\": \"All retrieved rows aggregated per tag; original rows retained in proposal evidence.\"}, \"plant_state\": {\"status\": \"available\", \"retrieved_at\": \"2026-09-21T04:42:26.103764+00:00\", \"site\": \"AR-100\", \"device\": \"reactor-line-01\", \"seq\": 9579, \"readings\": {\"LT-101\": 100.0109, \"LT-102\": 53.8504, \"TT-101\": 70.6742, \"TT-102\": 91.7852, \"PT-101\": 3.1783, \"FT-101\": 6.232, \"FT-102\": 6.2756, \"IT-101\": 6.3134, \"IT-102\": 6.4047, \"VT-101\": 2.1023, \"pH-101\": 7.4107, \"CT-101\": 3.3849}, \"commands\": {\"pump_run\": true, \"agitator_run\": true, \"heater_enable\": true, \"pump_speed_sp\": 60.3, \"valve_open_sp\": 45.3, \"temp_sp_c\": 71.8}, \"interlock\": false, \"timestamp_note\": \"조회 시각이며 센서 측정 시각은 아닙니다.\"}, \"incident_window_capped\": false}",
+              "artifact": null,
+              "tool_call_id": "call_50yp0awcGk7U3W2LNFYKvz2C",
+              "additional_kwargs": {},
+              "response_metadata": {}
+            },
+            {
+              "id": "lc_run--01a0c245-bfcb-79f3-aec5-0be7cd62ef97-0",
+              "name": null,
+              "type": "ai",
+              "content": "조회된 문서가 없어 정식 대응안 등록 도구에는 제출하지 않았습니다. 해당 도구는 실제 `document_id` 인용을 최소 1개 요구하므로, 근거 없는 인용을 만들어 형식을 맞출 수 없습니다.",
+              "tool_calls": [],
+              "usage_metadata": {
+                "input_tokens": 3327,
+                "total_tokens": 6092,
+                "output_tokens": 2765,
+                "input_token_details": {
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "reasoning": 1877
+                }
+              },
+              "additional_kwargs": {
+                "refusal": null
+              },
+              "response_metadata": {
+                "logprobs": null,
+                "finish_reason": "stop"
+              },
+              "invalid_tool_calls": []
+            }
+          ]
+        },
+        "created_at": "2026-09-21T04:42:51.966044+00:00"
+      },
+      {
+        "id": 6,
+        "incident_id": "1b810f8d-ca20-4b8f-bb31-6b525a983afd",
+        "kind": "agent_run_failed",
+        "payload": {
+          "error": "분석/검토 실행 실패 (ValueError). 도구 기록을 확인하세요.",
+          "run_id": "43962b9f-9b55-4029-9059-23cb4b9c75d8"
+        },
+        "created_at": "2026-09-21T04:42:51.976058+00:00"
+      }
+    ]
+  },
+  "proposals": {
+    "items": []
+  }
+}

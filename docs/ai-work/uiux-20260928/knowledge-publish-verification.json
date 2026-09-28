@@ -1,0 +1,19 @@
+{
+  "previous_nodes": 36,
+  "current_nodes": 37,
+  "previous_edges": 45,
+  "current_edges": 47,
+  "existing_edges_retained": true,
+  "added": [
+    {
+      "from": "AR-100/reactor-line-01/asset/P-101",
+      "to": "AR-100/reactor-line-01/sensor/FT-101",
+      "type": "HAS_SENSOR"
+    },
+    {
+      "from": "AR-100/reactor-line-01/asset/P-101",
+      "to": "AR-100/reactor-line-01/sensor/IT-101",
+      "type": "HAS_SENSOR"
+    }
+  ]
+}

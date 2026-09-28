@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "nodes": [
+    {
+      "id": "AR-100/reactor-line-01",
+      "class": "Device",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "reactor-line-01",
+        "site": "AR-100",
+        "scan_interval_ms": 1000
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/LT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "LT-101",
+        "description": "원료탱크 레벨",
+        "unit": "%",
+        "register": 0,
+        "lsl": 10.0,
+        "usl": 95.0,
+        "source_locator": "tags[name=LT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/LT-102",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "LT-102",
+        "description": "반응기 레벨",
+        "unit": "%",
+        "register": 2,
+        "lsl": 15.0,
+        "usl": 90.0,
+        "source_locator": "tags[name=LT-102]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/TT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "TT-101",
+        "description": "반응기 온도",
+        "unit": "degC",
+        "register": 4,
+        "lsl": 40.0,
+        "usl": 95.0,
+        "source_locator": "tags[name=TT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/TT-102",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "TT-102",
+        "description": "재킷 온도",
+        "unit": "degC",
+        "register": 6,
+        "lsl": null,
+        "usl": 125.0,
+        "source_locator": "tags[name=TT-102]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/PT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "PT-101",
+        "description": "반응기 압력",
+        "unit": "barg",
+        "register": 8,
+        "lsl": null,
+        "usl": 6.0,
+        "source_locator": "tags[name=PT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/FT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "FT-101",
+        "description": "공급 유량",
+        "unit": "m3/h",
+        "register": 10,
+        "lsl": null,
+        "usl": null,
+        "source_locator": "tags[name=FT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/FT-102",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "FT-102",
+        "description": "배출 유량",
+        "unit": "m3/h",
+        "register": 12,
+        "lsl": null,
+        "usl": null,
+        "source_locator": "tags[name=FT-102]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/IT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "IT-101",
+        "description": "펌프 전류",
+        "unit": "A",
+        "register": 14,
+        "lsl": null,
+        "usl": 14.0,
+        "source_locator": "tags[name=IT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/IT-102",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "IT-102",
+        "description": "교반기 전류",
+        "unit": "A",
+        "register": 16,
+        "lsl": null,
+        "usl": 9.6,
+        "source_locator": "tags[name=IT-102]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/VT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "VT-101",
+        "description": "교반기 진동",
+        "unit": "mm/s",
+        "register": 18,
+        "lsl": null,
+        "usl": 7.1,
+        "source_locator": "tags[name=VT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/pH-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "pH-101",
+        "description": "반응기 pH",
+        "unit": "pH",
+        "register": 20,
+        "lsl": 6.2,
+        "usl": 8.4,
+        "source_locator": "tags[name=pH-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/sensor/CT-101",
+      "class": "Sensor",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "CT-101",
+        "description": "전도도",
+        "unit": "mS/cm",
+        "register": 22,
+        "lsl": null,
+        "usl": null,
+        "source_locator": "tags[name=CT-101]"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/coils/pump_run",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "pump_run",
+        "description": "P-101 공급펌프 기동",
+        "address_space": "coils",
+        "address": 0,
+        "readonly": false,
+        "source_locator": "commands.coils.pump_run"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/coils/agitator_run",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "agitator_run",
+        "description": "M-101 교반기 기동",
+        "address_space": "coils",
+        "address": 1,
+        "readonly": false,
+        "source_locator": "commands.coils.agitator_run"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/coils/heater_enable",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "heater_enable",
+        "description": "HX-101 재킷히터 Enable",
+        "address_space": "coils",
+        "address": 2,
+        "readonly": false,
+        "source_locator": "commands.coils.heater_enable"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/coils/alarm_ack",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "alarm_ack",
+        "description": "알람 Acknowledge",
+        "address_space": "coils",
+        "address": 10,
+        "readonly": false,
+        "source_locator": "commands.coils.alarm_ack"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/coils/interlock",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "interlock",
+        "description": "고압 인터록 발동 (읽기전용)",
+        "address_space": "coils",
+        "address": 20,
+        "readonly": true,
+        "source_locator": "commands.coils.interlock"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/holding/pump_speed_sp",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "pump_speed_sp",
+        "description": "P-101 속도 SP [%]",
+        "address_space": "holding",
+        "address": 100,
+        "readonly": false,
+        "source_locator": "commands.holding.pump_speed_sp"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/holding/valve_open_sp",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "valve_open_sp",
+        "description": "CV-101 밸브 개도 SP [%]",
+        "address_space": "holding",
+        "address": 101,
+        "readonly": false,
+        "source_locator": "commands.holding.valve_open_sp"
+      }
+    },
+    {
+      "id": "AR-100/reactor-line-01/point/holding/temp_sp_x10",
+      "class": "ControlPoint",
+      "properties": {
+        "source_path": "simulator/plant.yaml",
+        "source_sha256": "72d171e6c905a003ca3ec88683aaaae6b0e30300863c9c0062c0fd3d4194fa1e",
+        "review_status": "candidate",
+        "environment": "simulation",
+        "name": "temp_sp_x10",
+        "description": "반응기 온도 SP [degC*10]",
+        "address_space": "holding",
+        "address": 102,
+        "readonly": false,
+        "source_locator": "commands.holding.temp_sp_x10"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/LT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/LT-102",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/TT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/TT-102",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/PT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/FT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/FT-102",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/IT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/IT-102",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/VT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/pH-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/sensor/CT-101",
+      "type": "EXPOSES_SENSOR"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/coils/pump_run",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/coils/agitator_run",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/coils/heater_enable",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/coils/alarm_ack",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/coils/interlock",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/holding/pump_speed_sp",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/holding/valve_open_sp",
+      "type": "EXPOSES_POINT"
+    },
+    {
+      "from_id": "AR-100/reactor-line-01",
+      "to_id": "AR-100/reactor-line-01/point/holding/temp_sp_x10",
+      "type": "EXPOSES_POINT"
+    }
+  ],
+  "unresolved": [
+    "Explicit asset-to-sensor membership requires review.",
+    "A writable control point does not grant AI execution permission.",
+    "Alarm logic is in Flink SQL; tag limits alone are not the alarm contract."
+  ]
+}

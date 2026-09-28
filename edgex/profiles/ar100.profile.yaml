@@ -164,6 +164,15 @@ deviceResources:
   properties:
     valueType: Bool
     readWrite: RW
+- name: CoolerEnable
+  isHidden: true
+  description: HX-102 가상 냉각기 Enable
+  attributes:
+    primaryTable: COILS
+    startingAddress: 3
+  properties:
+    valueType: Bool
+    readWrite: RW
 - name: AlarmAck
   isHidden: true
   description: 알람 Acknowledge
@@ -240,6 +249,7 @@ deviceCommands:
   - deviceResource: PumpRun
   - deviceResource: AgitatorRun
   - deviceResource: HeaterEnable
+  - deviceResource: CoolerEnable
   - deviceResource: AlarmAck
   - deviceResource: PumpSpeedSp
   - deviceResource: ValveOpenSp

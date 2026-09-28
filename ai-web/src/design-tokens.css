@@ -1,0 +1,57 @@
+/* Shared product rules. Dark SCADA is a surface variant, not a separate UI system. */
+:root {
+  --ui-font-caption: 13px;
+  --ui-font-body: 14px;
+  --ui-font-input: 15px;
+  --ui-font-heading: 18px;
+  --ui-line-height: 1.7;
+  --ui-radius-control: 8px;
+  --ui-radius-card: 12px;
+  --ui-control-height: 44px;
+  --ui-space-xs: 4px;
+  --ui-space-sm: 8px;
+  --ui-space-md: 12px;
+  --ui-space-lg: 16px;
+  --ui-space-panel: 20px;
+  --ui-focus: #147e70;
+  --ui-focus-on-dark: #ffe195;
+  --ui-surface: #ffffff;
+  --ui-surface-muted: #f8fafc;
+  --ui-border: #dce5ec;
+  --ui-text: #223b4e;
+  --ui-text-muted: #526a79;
+  --ui-selected-surface: #edf7f3;
+  --ui-selected-border: #64b6a2;
+  --ui-selected-accent: #258773;
+}
+
+/* Shared interaction geometry across native product panels. Graph/SVG nodes
+   retain their own geometry; they are inspected separately for legibility. */
+.mfg-app :is(.mfg-nav,.mfg-top,.evidence-jumps) button,
+.mfg-app .case-filters :is(input,select) {
+  min-height: var(--ui-control-height);
+}
+.mfg-app :is(.scada-live,.dashboard-activity,.knowledge-coverage) small {
+  font-size: var(--ui-font-caption);
+}
+.mfg-app :is(.simulation-controls,.review-section,.execution-trace,.knowledge-review,.plant-controls,.knowledge-coverage,.dashboard-activity,.pipeline-status,.scada-live) button {
+  min-height: var(--ui-control-height);
+}
+.mfg-app :is(.simulation-controls,.review-section,.execution-trace,.knowledge-review,.plant-controls,.knowledge-coverage,.dashboard-activity,.pipeline-status,.scada-live) :is(button,input,textarea,select,summary,a):focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 3px;
+}
+.mfg-app :is(.plant-controls,.scada-live,.pipeline-status) :is(button,input,textarea,select,summary,a):focus-visible {
+  outline-color: var(--ui-focus-on-dark);
+}
+.mfg-app :is(.review-section,.execution-trace,.knowledge-review) textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mfg-app *, .mfg-app *::before, .mfg-app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
