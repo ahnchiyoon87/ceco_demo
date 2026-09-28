@@ -6,7 +6,8 @@
 
 ## 0. 30초 브리핑
 V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 중복·빙빙 도는 경로가 있고, 낡은 스택이 섞여 있다. 여러 회전(V1→V2→…, 횟수는 정하지 않음)으로 **전부 검증된 최선 버전**을 만들어 대표님께 실측 근거로 보고한다.
-세션 2 진행: §9-1 상태 확인 ✓ · §9-2 딥리서치 ✓(`CANDIDATES.md` 결과 전 재고정 #69, 직접 시험 약 121) · §9-3 AI 병행 **진행 중**(프로토콜 #68, V2 코드·그래프 게시·검색 r1 #70). 문헌상 **강제 교체 대상이 여럿**(EMQX·Kafka 3.9·InfluxDB 2.7·Telegraf 1.33·Prometheus 3.1, [미확인] Flink 1.20·EdgeX 4.0). 층별 직접 시험(§9-4)은 아직 0건.
+세션 2 진행(09-29): §9-1 ✓ · §9-2 딥리서치 ✓(`CANDIDATES.md` #69·개정 #74) · §9-3 AI **LLM 비교 거의 끝**(A·B·C 팔, 남은 것 C-SC2 3회 → 채점·CQ15) · §9-4 층별 벤치 **준비만 완료**(f83197f·fe5c9e6, 실행 0건 — 격리 스택 내린 뒤 한 번에 하나씩, `harness/*bench/STAGE2.md`) · E2 V1 값 ✓. 강제 교체 확정: EMQX·Kafka 3.9·InfluxDB 2.7·Telegraf 1.33·Prometheus 3.1·EdgeX 4.0·Grafana 11.4·Alertmanager 0.28·cAdvisor 0.49(#69·#74).
+시간 교훈: SC2(히터 고착)는 실시간 가열로 회차당 약 35분 — 다음 회귀에서는 모든 팔에 같은 예열 조건(시작 온도 약 90 °C)을 적용해 단축.
 
 ## 1. 배경
 - 의뢰: 대표님. "사전 스펙이 아니라 빠르게 구현해 모듈별로 실측·비교, 최신 트렌드, 기술선정·온톨로지·시나리오가 개선된 궤적을 가져와라."
@@ -66,12 +67,12 @@ V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 �
 | 폐기: AI 규칙 엔진(`candidates/ai-ontology/`, 순환 평가), 급진안 C 본안, ML 알람을 규칙 비교에 포함, S13 순차 창 방식 | 되살리지 않는다 |
 
 ## 6. 현재 실행 상태
-- **실행 중(세션 2):** `rot-ai` 의 graph·work-db·knowledge(**v2-ai 이미지**)·embed. SCADA(`rot-iiot`) 정지. 확인: `docker ps`.
-- **그래프 스냅샷 볼륨(팔 전환용):** `rot-ai_graph-snap-A`(원본 V1 그래프 복사 = 팔 A), `rot-ai_graph-snap-B`(A + 고장 지식 문서), 현재 `rot-ai_graph-data` = C(B + 온톨로지 + 절 색인). `rot-ai_graph-data-bak-v1` = 세션 2 시작 시 빈 그래프 백업. 팔 전환 = graph 정지 → 스냅샷을 `rot-ai_graph-data` 로 `cp -a` → 기동. 원본 `ar100-ai_graph-data` 는 읽기 전용 마운트로 복사만 했다.
-- **팔 A·B 는 V1 이미지**(`rot-ai-knowledge` = latest 태그, 이전 세션 빌드)로, 팔 C 는 `-f ai-layer/compose.v2.yml` 추가로 기동.
-- **격리 V1 SCADA 재기동:** `docker compose --env-file .env --env-file .env.rotation up -d --no-build`. AI: `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml [-f ai-layer/compose.v2.yml] --profile knowledge up -d --no-build`. 이미지는 같은 이름으로 재빌드하지 않는다. 원본 볼륨 `iiot_*`·`ar100-ai_*` 는 건드리지 않는다.
-- **측정 도구:** `harness/e2e/e1.py`, `harness/sample_stats.sh`, `harness/aibench/{publish.py,retrieval_eval.py}`. Git Bash 에서 컨테이너 경로 인자는 `MSYS_NO_PATHCONV=1` 필요.
-- **미사용 부분 데이터:** `experiments/EXP-000/raw/e3_v1_stats.csv`(무효 #58), `e3b_v1_stats.csv`(30분 미달).
+- **실행 중:** 격리 V1 SCADA(`rot-iiot`, 단 grafana·edgex-ui·cadvisor·prometheus·alertmanager·kafka-exporter 는 #81 로 정지) + `rot-ai`(C팔 = v2-ai 이미지 + 그래프 C3 복사본) + EXP-AI 배치 `batch3.log`(C-SC2 4~6, 회차당 약 35분, 분리 프로세스 — `Get-CimInstance Win32_Process` 에서 run_batch/run_scenario 로 찾음).
+- **배치 끝나면:** `python harness/aibench/score.py` → CQ15(`harness/aibench/cq_eval.py A|C`, 그래프를 snap-A / snap-C3 로 바꿔 각각) → 격리 스택 기준 전체 측정(E1·E3~E12, R01~R11) → 스택 내림 → 층별 ② 실행.
+- **그래프 스냅샷 볼륨:** `rot-ai_graph-snap-A`(원본 V1 복사) · `-snap-B`(A+고장 지식 문서) · `-snap-C`(B+온톨로지) · `-snap-C3`(C+SC3 과압 데이터). 팔 전환은 `harness/aibench/run_batch.sh` 의 switch_arm 참고.
+- **재기동 명령:** SCADA `docker compose --env-file .env --env-file .env.rotation up -d --no-build`(재기동 후 Flink 잡 0개 → `docker start -a rot-flink-job-submitter`). AI `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml [-f ai-layer/compose.v2.yml] --profile knowledge up -d --no-build`.
+- **환경 주의:** 호스트 RAM 15.7 GB, Docker VM 7.6 GB. 전체 스택+AI 로 호스트 여유 0.5 GB 까지 떨어져 엔진 500 오류(#81). Docker Desktop 경로 `C:\Users\roede\AppData\Local\Programs\DockerDesktop\Docker Desktop.exe`. 분리 실행은 `D:\dev\Git\bin\bash.exe`(system32 bash 는 WSL). Git Bash 컨테이너 경로 인자 `MSYS_NO_PATHCONV=1`.
+- **이미지:** 벤치용 약 60 GB 추가(C: 여유 78 GB). 층 시험 끝날 때마다 해당 벤치 이미지·볼륨 정리.
 
 ## 7. 미결정 — 무엇을 보고 정하나
 - 이상탐지 버전(1.20 vs 2.2.1)과 HA: Flink HA로 JobManager kill 3시점(`harness/s09*.sh` 방식) 유실 실측 → V1(11~12) 대비.
