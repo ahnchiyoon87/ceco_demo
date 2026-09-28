@@ -5,9 +5,11 @@ services:
     profiles: [knowledge]
     build:
       context: ../ai-web
+      args:
+        VITE_FUXA_URL: http://127.0.0.1:${PORT_FUXA:-27018}/
     restart: unless-stopped
     ports:
-      - "127.0.0.1:28180:8080"
+      - "127.0.0.1:${AI_PORT_WEB:-28180}:8080"
     depends_on:
       knowledge:
         condition: service_healthy
@@ -25,7 +27,7 @@ services:
       POSTGRES_USER: ar100
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run bootstrap.ps1 first}
     ports:
-      - "127.0.0.1:27532:5432"
+      - "127.0.0.1:${AI_PORT_DB:-27532}:5432"
     volumes:
       - work-data:/var/lib/postgresql/data
     healthcheck:
@@ -54,6 +56,13 @@ services:
       INFLUX_ORG: ${INFLUX_ORG:-}
       INFLUX_BUCKET: ${INFLUX_BUCKET:-}
       SIMULATOR_ACTIONS_ENABLED: "true"
+      # 설비 접속 주소. 기본값 = 원본 V1 호스트 포트. 실험 스택은 .env.rotation 으로 바꾼다.
+      SIMULATOR_MODBUS_HOST: ${SIMULATOR_MODBUS_HOST:-host.docker.internal}
+      SIMULATOR_MODBUS_PORT: ${PORT_SIM_MODBUS:-27002}
+      SIMULATOR_API_URL: http://host.docker.internal:${PORT_SIM_API:-27080}
+      SCADA_STATE_URL: http://host.docker.internal:${PORT_SIM_API:-27080}/state
+      INFLUX_URL: http://host.docker.internal:${PORT_INFLUXDB:-27086}
+      SCADA_FLINK_URL: http://host.docker.internal:${PORT_FLINK_UI:-27081}
       DB_HOST: work-db
       DB_PORT: "5432"
       DB_NAME: ar100_work
@@ -64,7 +73,7 @@ services:
       SANDBOX_WORKDIR: /workspace
       OLLAMA_BASE_URL: http://host.docker.internal:11434
     ports:
-      - "127.0.0.1:28000:8000"
+      - "127.0.0.1:${AI_PORT_KNOWLEDGE:-28000}:8000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -92,8 +101,8 @@ services:
       NEO4J_server_memory_heap_max__size: 2G
       NEO4J_server_memory_pagecache_size: 1G
     ports:
-      - "127.0.0.1:27474:7474"
-      - "127.0.0.1:27687:7687"
+      - "127.0.0.1:${AI_PORT_GRAPH_HTTP:-27474}:7474"
+      - "127.0.0.1:${AI_PORT_GRAPH_BOLT:-27687}:7687"
     volumes:
       - graph-data:/data
       - graph-logs:/logs

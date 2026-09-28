@@ -229,7 +229,8 @@ def _reviewed_binary_action(before, action):
     from pymodbus.client import ModbusTcpClient
     if os.environ.get("SIMULATOR_ACTIONS_ENABLED") != "true":
         return {"status": "not_executed", "reason": "시뮬레이터 조치가 활성화되지 않았습니다."}
-    client = ModbusTcpClient("host.docker.internal", port=27002, timeout=3, retries=0)
+    client = ModbusTcpClient(os.environ.get("SIMULATOR_MODBUS_HOST", "host.docker.internal"),
+                              port=int(os.environ.get("SIMULATOR_MODBUS_PORT", "27002")), timeout=3, retries=0)
     attempted = False
     try:
         action_progress("action_connecting", {"protocol": "Modbus TCP", "reason": "허용된 가상 설비에 연결 중"})

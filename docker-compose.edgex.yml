@@ -39,7 +39,7 @@ services:
     profiles: [edgex]
     security_opt: [ "no-new-privileges:true" ]
     image: postgres:16.3-alpine3.20
-    container_name: edgex-postgres
+    container_name: ${CN_PREFIX:-}edgex-postgres
     hostname: edgex-postgres
     environment:
       POSTGRES_DB: edgex_db
@@ -56,7 +56,7 @@ services:
   edgex-mqtt-broker:
     <<: *edgex-common
     image: eclipse-mosquitto:2.0.21
-    container_name: edgex-mqtt-broker
+    container_name: ${CN_PREFIX:-}edgex-mqtt-broker
     hostname: edgex-mqtt-broker
     command: ["/usr/sbin/mosquitto", "-c", "/mosquitto-no-auth.conf"]
 
@@ -64,7 +64,7 @@ services:
   edgex-core-keeper:
     <<: *edgex-common
     image: edgexfoundry/core-keeper:${EDGEX_VERSION}
-    container_name: edgex-core-keeper
+    container_name: ${CN_PREFIX:-}edgex-core-keeper
     hostname: edgex-core-keeper
     depends_on:
       edgex-postgres: { condition: service_healthy }
@@ -84,7 +84,7 @@ services:
   edgex-common-config:
     <<: *edgex-common
     image: edgexfoundry/core-common-config-bootstrapper:${EDGEX_VERSION}
-    container_name: edgex-common-config
+    container_name: ${CN_PREFIX:-}edgex-common-config
     hostname: edgex-common-config
     restart: "no"
     command: ["/core-common-config-bootstrapper", "--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
@@ -106,7 +106,7 @@ services:
   edgex-core-metadata:
     <<: *edgex-common
     image: edgexfoundry/core-metadata:${EDGEX_VERSION}
-    container_name: edgex-core-metadata
+    container_name: ${CN_PREFIX:-}edgex-core-metadata
     hostname: edgex-core-metadata
     command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
     depends_on:
@@ -118,7 +118,7 @@ services:
   edgex-core-data:
     <<: *edgex-common
     image: edgexfoundry/core-data:${EDGEX_VERSION}
-    container_name: edgex-core-data
+    container_name: ${CN_PREFIX:-}edgex-core-data
     hostname: edgex-core-data
     command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
     depends_on:
@@ -132,7 +132,7 @@ services:
   edgex-core-command:
     <<: *edgex-common
     image: edgexfoundry/core-command:${EDGEX_VERSION}
-    container_name: edgex-core-command
+    container_name: ${CN_PREFIX:-}edgex-core-command
     hostname: edgex-core-command
     command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
     depends_on:
@@ -148,7 +148,7 @@ services:
   edgex-device-modbus:
     <<: *edgex-common
     image: edgexfoundry/device-modbus:${EDGEX_VERSION}
-    container_name: edgex-device-modbus
+    container_name: ${CN_PREFIX:-}edgex-device-modbus
     hostname: edgex-device-modbus
     command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
     depends_on:
@@ -171,7 +171,7 @@ services:
   edgex-app-mqtt-export:
     <<: *edgex-common
     image: edgexfoundry/app-service-configurable:${EDGEX_VERSION}
-    container_name: edgex-app-mqtt-export
+    container_name: ${CN_PREFIX:-}edgex-app-mqtt-export
     hostname: edgex-app-mqtt-export
     command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
     depends_on:
@@ -202,7 +202,7 @@ services:
   edgex-ui:
     <<: *edgex-common
     image: edgexfoundry/edgex-ui:${EDGEX_VERSION}
-    container_name: edgex-ui
+    container_name: ${CN_PREFIX:-}edgex-ui
     hostname: edgex-ui
     depends_on:
       edgex-core-metadata: { condition: service_started }

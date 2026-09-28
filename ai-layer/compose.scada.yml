@@ -21,4 +21,4 @@ services:
 networks:
   scada:
     external: true
-    name: iiot
+    name: ${SCADA_NETWORK:-iiot}

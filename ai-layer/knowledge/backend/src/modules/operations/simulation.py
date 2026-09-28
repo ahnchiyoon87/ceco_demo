@@ -12,7 +12,7 @@ from .api import connection
 
 router = APIRouter(prefix="/api/operations/simulation", tags=["training"])
 # Deliberately fixed to the existing local training simulator, not an arbitrary URL.
-BASE = "http://host.docker.internal:27080"
+BASE = os.environ.get("SIMULATOR_API_URL", "http://host.docker.internal:27080")
 
 
 def enabled():
@@ -108,7 +108,8 @@ def control_history():
 def write_operator_command(command, before):
     from pymodbus.client import ModbusTcpClient
     kind, address, _, _, scale = CONTROL_MAP[command.target]
-    client = ModbusTcpClient("host.docker.internal", port=27002, timeout=3, retries=0)
+    client = ModbusTcpClient(os.environ.get("SIMULATOR_MODBUS_HOST", "host.docker.internal"),
+                             port=int(os.environ.get("SIMULATOR_MODBUS_PORT", "27002")), timeout=3, retries=0)
     attempted = False
     try:
         if not client.connect():
