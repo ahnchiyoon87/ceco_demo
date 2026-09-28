@@ -1,0 +1,85 @@
+{
+ "flink-jobmanager": {
+  "series": 56,
+  "throughput": [],
+  "latency_lag": [],
+  "restart": [
+   "flink_jobmanager_job_fullRestarts",
+   "flink_jobmanager_job_numRestarts",
+   "flink_jobmanager_job_restartingTime"
+  ]
+ },
+ "flink-taskmanager": {
+  "series": 310,
+  "throughput": [
+   "flink_taskmanager_job_task_numRecordsIn",
+   "flink_taskmanager_job_task_numRecordsInPerSecond",
+   "flink_taskmanager_job_task_operator_numRecordsIn"
+  ],
+  "latency_lag": [
+   "flink_taskmanager_job_task_currentInputWatermark",
+   "flink_taskmanager_job_task_mailboxLatencyMs",
+   "flink_taskmanager_job_task_mailboxLatencyMs_count"
+  ],
+  "restart": []
+ },
+ "flink22-jobmanager": {
+  "series": 61,
+  "throughput": [],
+  "latency_lag": [],
+  "restart": [
+   "flink_jobmanager_job_numRestarts",
+   "flink_jobmanager_job_restartingTime"
+  ]
+ },
+ "flink22-taskmanager": {
+  "series": 303,
+  "throughput": [
+   "flink_taskmanager_job_task_numRecordsIn",
+   "flink_taskmanager_job_task_numRecordsInPerSecond",
+   "flink_taskmanager_job_task_operator_numRecordsIn"
+  ],
+  "latency_lag": [
+   "flink_taskmanager_job_task_currentInputWatermark",
+   "flink_taskmanager_job_task_mailboxLatencyMs",
+   "flink_taskmanager_job_task_mailboxLatencyMs_count"
+  ],
+  "restart": []
+ },
+ "flinkcep-jobmanager": {
+  "series": 61,
+  "throughput": [],
+  "latency_lag": [],
+  "restart": [
+   "flink_jobmanager_job_numRestarts",
+   "flink_jobmanager_job_restartingTime"
+  ]
+ },
+ "flinkcep-taskmanager": {
+  "series": 303,
+  "throughput": [
+   "flink_taskmanager_job_task_numRecordsIn",
+   "flink_taskmanager_job_task_numRecordsInPerSecond",
+   "flink_taskmanager_job_task_operator_numRecordsIn"
+  ],
+  "latency_lag": [
+   "flink_taskmanager_job_task_currentInputWatermark",
+   "flink_taskmanager_job_task_mailboxLatencyMs",
+   "flink_taskmanager_job_task_mailboxLatencyMs_count"
+  ],
+  "restart": []
+ },
+ "l4-python": {
+  "series": 27,
+  "throughput": [
+   "l4_records_in_created",
+   "l4_records_in_total"
+  ],
+  "latency_lag": [
+   "l4_watermark_lag_seconds"
+  ],
+  "restart": [
+   "l4_restarts_total"
+  ]
+ }
+}

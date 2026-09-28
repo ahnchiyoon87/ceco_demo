@@ -1,0 +1,85 @@
+{
+ "mode": "steady",
+ "run": "s13_3",
+ "token": "b17d39",
+ "windows": 100,
+ "emit_s": 0.129,
+ "tol": 1e-06,
+ "threshold": 0.035075388848781586,
+ "ref_anomalies": 50,
+ "labels": {
+  "normal": 25,
+  "heater_stuck": 25,
+  "bearing_wear": 25,
+  "drift": 25
+ },
+ "gap_sent": 685,
+ "cands": {
+  "flinksql": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 0.0,
+   "within_tol": 100,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 785,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "verdict": "PASS"
+  },
+  "flink22": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 0.0,
+   "within_tol": 100,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 1500,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": true,
+   "clean_diff_count": 0,
+   "verdict": "PASS"
+  },
+  "cep": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 0.0,
+   "within_tol": 100,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 1750,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": true,
+   "clean_diff_count": 0,
+   "verdict": "PASS"
+  },
+  "python": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 1.1368683772161603e-13,
+   "within_tol": 100,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 1963,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": true,
+   "clean_diff_count": 0,
+   "verdict": "PASS"
+  }
+ }
+}

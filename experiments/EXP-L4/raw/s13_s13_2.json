@@ -1,0 +1,80 @@
+{
+ "run": "s13_2",
+ "token": "8e6bf6",
+ "windows": 100,
+ "emit_s": 10.672,
+ "tol": 1e-06,
+ "threshold": 0.035075388848781586,
+ "ref_anomalies": 50,
+ "labels": {
+  "normal": 25,
+  "bearing_wear": 25,
+  "heater_stuck": 25,
+  "drift": 25
+ },
+ "gap_sent": 685,
+ "cands": {
+  "flinksql": {
+   "scored": 4,
+   "missing": 96,
+   "max_abs_diff": 0.006912157500583069,
+   "within_tol": 0,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 32,
+   "clean_records": 0,
+   "clean_quality": {},
+   "verdict": "FAIL"
+  },
+  "flink22": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 0.8436064729738888,
+   "within_tol": 0,
+   "anomaly_flag_mismatch": 1,
+   "ml_alerts_total": 654,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": false,
+   "clean_diff_count": 715,
+   "verdict": "FAIL"
+  },
+  "cep": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 1.0598953205992245,
+   "within_tol": 0,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 829,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": false,
+   "clean_diff_count": 715,
+   "verdict": "FAIL"
+  },
+  "python": {
+   "scored": 101,
+   "missing": 0,
+   "max_abs_diff": 2.5627759826654426,
+   "within_tol": 0,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 995,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "clean_equal_to_flinksql": false,
+   "clean_diff_count": 715,
+   "verdict": "FAIL"
+  }
+ }
+}

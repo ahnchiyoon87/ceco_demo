@@ -1,101 +1,105 @@
 # HANDOFF — V1 IoT·SCADA·AI 현업 스택 다듬기 (scada-rotation)
 
-최종 갱신 2026-09-29 · 작성 Claude Code(이 세션) · 전면 재작성
+최종 갱신 2026-09-29 · 작성 Claude Code(이전 세션, 채팅 오염으로 새 세션에 넘김)
 **재개용 기록이다. 현재 사용자 지시·실제 파일·실행 상태와 대조하고, 다르면 실제가 우선이며 이 파일을 고친다.**
+**판정 기준의 정본은 `QUESTIONS.md` §1 하나다. 이 파일은 기준을 복제하지 않는다.**
 
 ## 0. 30초 브리핑
-V1은 현업 수준 시스템이지만 **약간 비효율적이고, 쓸데없는 중복·돌아가는 경로가 있고, 낡은 스택이 섞여 있다.** 몇 번의 회전(V1→V2→V3)으로 **전부 검증된 최선 버전**을 만들어 대표님께 실측 근거로 보고한다.
-방법은 §2의 여섯 축. 지금은 축 1(V1 기준 측정)을 격리 스택에서 진행 중이고, 축 2의 브로커만 판정(Mosquitto 조건부)됐다. 나머지 층은 **미시험**이다(유지 확정 아님).
-판정은 사용자에게 묻지 않고 사전 확정 규칙(§3)으로 스스로 내리고 `reports/decision-log.md`에 남긴다.
+V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 중복·빙빙 도는 경로가 있고, 낡은 스택이 섞여 있다. 몇 번의 회전(V1→V2→V3)으로 **전부 검증된 최선 버전**을 만들어 대표님께 실측 근거로 보고한다.
+방법은 §2 여섯 축. 지금까지 확정된 것은 브로커(EMQX → Mosquitto, 조건부) 하나뿐이고, 이상탐지는 Flink 버전 비교가 정확도까지만 끝났다. 나머지 층·구조·AI는 **미시험**이다(유지 확정 아님).
+**현재 모든 실행은 멈춰 있다**(§6). 다음 세션은 §9 순서 1번부터 시작한다.
 
 ## 1. 배경
 - 의뢰: 대표님. "사전 스펙이 아니라 빠르게 구현해 모듈별로 실측·비교, 최신 트렌드, 기술선정·온톨로지·시나리오가 개선된 궤적을 가져와라."
-- 기준 문서(원문 보관): `docs/research/AGENT_BRIEF_FINAL.md`(작업 지시 정본: OSI·0원·G0~G9·S01~S25·CQ15·회전 절차), `docs/research/ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석, 구조안 A~D, 검증 실험 E1~E12). compass 4종은 근거 조사. **사용자 지시가 문서보다 우선.**
-- 이 작업은 프로토타입 확정과 궤적까지. 실라버스·강의는 다른 곳에서 한다. 시킨 것만 한다.
-- 사용자 /goal DoD: ① L4 후보 실측(정확도·지연·자원·재시작) ② L4 판정 ③ 브로커 EMQX 대체 ④ AI: 그래프 DB 온톨로지(증상→고장모드→원인→점검/절차), CQ15 V1 대비, 베어링·히터 고착 2시나리오 사전 정답 채점, 새 고장 코드 0줄 ⑤ V2 회귀 S01–S25·G0–G10 → 태그 `v2` ⑥ 모든 실행 decision-log, 보고 수치는 증거에서 재계산 ⑦ REPORT.md(엑셀처럼 점수·약점·판정), 원본 V1 무수정.
+- 근거 문서(원문 보관 `docs/research/`): `AGENT_BRIEF_FINAL.md`(절차: OSI·0원·G0~G9·S01~S25·CQ15·회전), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석, 구조안 A~D, 검증 실험 E1~E12), compass 4종(근거 조사). **사용자 지시가 문서보다 우선.**
+- 범위: 프로토타입 확정과 궤적 보고까지. 실라버스·강의는 다른 곳에서 한다. 시킨 것만 한다.
+- 사용자 /goal DoD(요약)와 이후 사용자 지시로 바뀐 점:
+  | DoD | 내용 | 조정 |
+  |---|---|---|
+  | 1·2 | L4 후보 실측(정확도·지연·자원·재시작 3시점) → 규칙 판정 | 후보 중 직접 짠 Python은 탈락(직접 제작 금지). Flink 1.20 / 2.2.1 SQL / 2.2.1 CEP / Flink HA로 진행 |
+  | 3 | 브로커 EMQX 대체 | Mosquitto 조건부 채택(비정상 상황 추가 시험 남음) |
+  | 4 | AI: 그래프 DB 온톨로지(증상→고장모드→원인→점검/절차), CQ15 V1 대비, 베어링·히터 고착 2시나리오 사전 정답 채점, 새 고장 코드 0줄 | 그대로 |
+  | 5 | V2 회귀 S01–S25·G0–G10 → 태그 `v2` | 그대로 |
+  | 6 | 모든 실행 decision-log, 보고 수치 재계산 | 그대로 |
+  | 7 | REPORT.md(V1 대 후보, 점수·약점·판정), 원본 V1 무수정 | "원본 미커밋 76건 그대로"는 원본이 다른 작업으로 계속 바뀌어 판정 불가 → "이 작업이 원본에 쓰지 않았음"으로 판정 |
 
-## 2. 여섯 축 — 무엇을 어떻게 하는가 (과제 지도, 재개 시 가장 먼저 읽어라)
-| # | 축 | 무엇을 | 어떻게 | 상태 |
-|---|---|---|---|---|
-| 1 | **V1 기준 측정** | 나아졌음을 증명할 기준 | 격리 V1 전체 스택(§6)에서 E1~E12(`harness/situations/STRUCTURE.md`) + 비정상 R01~R11(`ROBUSTNESS.md`) | **진행 중**: 스택 가동, E3(정상 30분 자원) 측정 중 |
-| 2 | **대안 조사·직접 시험(부품)** | 층마다 현업 OSI 대안 | 후보표 `harness/situations/CANDIDATES.md`. 문헌 제외는 **라이선스·약관만**, 나머지는 직접 띄워 ① 기동·기능 → ② 정상 성능 → ③ 비정상 순으로 시험, 앞 단계 탈락 시 생략. **2026 기준 추가 리서치로 후보 확장**(미착수) | 브로커 완료, 이상탐지 일부, 나머지 6층 미시험 |
-| 3 | **레이어 재조립(구조)** | 중복·우회 제거로 더 효율적인 흐름 | 알람 되돌림 8 hop, 중계 5중(EMQX·Telegraf×3·Kafka), EdgeX+FUXA 이중 폴링, 쓰기 경로 3개, 저장소 3개를 줄인 조립안을 실제 스택으로 조립해 축 1과 같은 측정. 검토서 A(보수적)부터. **C(Kafka·Flink 제거+직접 짠 탐지기)는 안정성 기준 미달로 본안 제외** | 미착수 |
-| 4 | **교체 없는 보강·빈 기능** | 부품을 안 바꾸고 약점 해소 | Flink HA(JobManager 재시작 시 잡 소멸 해소 — V1 최대 약점), FUXA 1.3.4, 이미지 버전 고정, 알람 수명주기(ISA-18.2), 설비 쓰기를 Pilot 관문으로 일원화 | Flink HA 벤치 구성만 작성(미커밋, §6) |
-| 5 | **회전마다 합쳐 전체 회귀 → 버전 확정** | 이긴 부품·구조·보강을 모은 V2 | 조립 → S01~S25 + G0~G10 + 축 1 측정 전부 → 통과 시 태그 `v2`, 약해진 수정은 되돌림. 다음 회전은 V2에서 V3로 | 미착수 |
-| 6 | **AI 온톨로지·시나리오 진화 + 궤적 보고** | 기술만이 아니라 AI가 답할 수 있는 질문과 시험 상황도 개선 | V1 에이전트(LLM+LangGraph+가드레일) 유지 + 온톨로지 그래프 원인분석 도구 + 매뉴얼 의미검색(임베딩+그래프). CQ 응답 수 V1 대비, 회전 실패 유형을 시나리오로 추가. 점수표 → `reports/REPORT.md` | 미착수(V1 모듈 조사 결과 미수령) |
-
-## 3. 판정 기준 (정본 `QUESTIONS.md` Q2-S, 결과 보기 전 고정)
-| 순서 | 묶음 | 항목 | 비중 |
+## 2. 여섯 축 — 무엇을 어떻게 (재개 시 가장 먼저 읽어라)
+| # | 축 | 어떻게 | 상태 |
 |---|---|---|---|
-| ① | 쓸 수 있는가 | 비용 0원 · 상용화 문제(조건부 무료 금지, GPL·AGPL 제품화 주의) · 도커 가상화 · 보안 패치 지원 중 · 안전 G0~G8 | 관문 — 하나라도 안 되면 탈락 |
-| ② | 성능·안정성 | V1이 하던 일 전부 · 정확도 · 속도 · 복구(유실·중복) · 비정상(과부하·장시간·늦은 데이터·저장소 다운). 해피패스만 가능 = 무너짐 | 핵심 — V1보다 나빠지면 탈락 |
-| ③ | 효율 | 메모리·CPU · 용량 · **복잡도 = 아키텍처가 빙빙 도는 정도**(경유 단계·컨테이너·되돌림 경로) · 중복 | ② 통과 후보끼리 우열 |
-| ④ | 운영·유지보수 | 지표 노출 · 설정만으로 규칙 변경 · 떠안는 코드량 | 참고(동점일 때만) |
-①로 거르고 ②로 탈락시키고 ③으로 고르고 ④는 참고. 엔진급 기능을 직접 짠 코드로 대체하는 후보는 ①~②에서 탈락(Q2-0b). 점수표는 Q2-a(실측값 + 5점 + 약점 + 판정 열, 엑셀처럼).
+| 1 | **V1 기준 측정** | 격리 V1 전체 스택(§6)에서 정상 E1~E12(`harness/situations/STRUCTURE.md` §3) + 비정상 R01~R11(`ROBUSTNESS.md`). 나아졌음을 증명할 기준값 | 스택 기동 검증까지 완료. **측정값 없음**(E3 30분이 중간에 멈춤, 부분 데이터는 사용하지 않음) |
+| 2 | **대안 조사·직접 시험(부품)** | 후보표 `harness/situations/CANDIDATES.md`. 2026 기준 딥리서치로 후보 확장(§9-3 방법) → 문헌 제외는 ① 관문(라이선스·약관·EOL·컨테이너)뿐 → 나머지는 층 벤치에서 V1 부품과 함께 직접 ① 기동·기능 → ② 정상 성능 → ③ 비정상, 앞 단계 탈락 시 생략 | 브로커 완료, 이상탐지 일부. 수집·파이프·백본·저장·알람·감시 **미시험** |
+| 3 | **레이어 재조립(구조)** | V1의 빙빙 도는 경로·중복(알람 되돌림 약 8단계, 중계 5중 EMQX·Telegraf×3·Kafka, EdgeX·FUXA 이중 폴링, 설비 쓰기 경로 3개, 저장소 3개)을 줄인 조립안을 실제 전체 스택으로 조립해 축 1과 같은 측정. 검토서 A(보수적)부터, 축 2 승자로 조립 | 미착수. 검토서 C(Kafka·Flink 제거 + 직접 짠 탐지기)는 직접 제작 금지로 본안 제외(#57) |
+| 4 | **교체 없는 보강·빈 기능** | Flink HA(JobManager 재시작 시 잡 소멸 = V1 최대 약점), FUXA 1.3.4, 이미지 버전 고정, 알람 수명주기(ISA-18.2), 설비 쓰기를 Pilot 관문으로 일원화 | Flink HA 벤치 구성만 커밋(`harness/l4bench` profile `flinkha`), 미실행 |
+| 5 | **회전마다 합쳐 전체 회귀 → 버전 확정** | 축 2~4 승자 조립 → S01~S25 + G0~G10 + 축 1 측정 전부 → 통과 시 태그 `v2`, 약해진 수정은 되돌림. 다음 회전 V2→V3 | 미착수 |
+| 6 | **AI 온톨로지·시나리오 진화 + 궤적 보고** | V1 에이전트(LLM+LangGraph+가드레일) 유지 + 온톨로지 그래프 원인분석 도구 + 매뉴얼 의미검색(임베딩+그래프). CQ 응답 수 V1 대비, 회전 실패 유형을 시나리오로 추가. 점수표 → `reports/REPORT.md` | 미착수. 먼저 V1 `ai-layer/knowledge/backend/src/modules/{operations,ontology,ontology_mcp}` 구조 확인 필요(이전 조사 결과 없음) |
+
+## 3. 판정 기준 → `QUESTIONS.md` §1 (유일한 정본)
+한 줄 요약: ① 쓸 수 있는가(비용 0·상용화 문제 없음·도커·보안 패치·안전)로 거르고, ② 성능·안정성(V1이 하던 일 전부·정확도·속도·복구·비정상 상황, V1보다 나빠지면 탈락, 해피패스만 가능 = 무너짐)으로 탈락시키고, ③ 효율(메모리·CPU·용량·복잡도 = 아키텍처가 빙빙 도는 정도·중복)로 고르고, ④ 운영·유지보수는 참고. 직접 짠 코드로 엔진급 기능 대체 금지. 대안은 추론 말고 직접 시험. 판정은 스스로 내리고 기록(사용자 위임).
 
 ## 4. 확정 사실 — 다시 조사하지 마라
-- **V1 구성:** 34서비스(SCADA 20 + EdgeX 10 + AI 4). Flink 1.20.1, Kafka 3.9.0(KRaft), EMQX 5.8.6(2026-02-28 EOL), InfluxDB 2.7, FUXA 1.3.x, Neo4j 5.26 → `harness/V1_FACTS.md`, `V1_INVENTORY.md`, `SCHEMA.md`. 흐름: 설비 → EdgeX → EMQX → Telegraf#1 → Kafka → Flink(규칙 SQL 3 + ONNX 잡) → Kafka → Telegraf#2 → InfluxDB / Telegraf#3 → EMQX → FUXA, 알람 워커 → PostgreSQL.
-- **V1 약점(실측):** JobManager 재시작 시 잡 소멸 → 유실 11~12(EXP-S09). HA 없는 세션 클러스터 + latest-offset.
-- **브로커(EXP-130, b·c 2회):** Mosquitto 2.1.2 — 정상 p95 1.7ms(EMQX 2.3~2.6), 재시작 유실 0(EMQX 4·69), 재시작 넘어 큐·retained 보존(EMQX ✗), 메모리 약 5MiB(EMQX 약 250MiB), $SYS 지표(HTTP 없음). **조건부 채택**: 네트워크 단절·과부하·느린 구독자·장시간 미검증(#56). NanoMQ 탈락(구독자 오프라인 600건 수신 0, #45·46), HiveMQ CE 탈락(재시작 유실 527·569, p95 20배, 지표 없음).
-- **이상탐지(EXP-L4):** Flink 1.20 / 2.2.1 SQL / 2.2.1 DataStream CEP 규칙 알람 V1과 동일(4회 70/70), ONNX 점수 동일(S13 정상상태, 차 0), 지표 노출(L4-11). 버전 1.20 vs 2.2.1 **미판정**. 직접 짠 Python 서비스는 **탈락**(#53, 원칙 위반).
-- **V1 ONNX 잡:** Interpolator 키가 tag(장치 구분 없음) — 다중 장치에서 섞이는 V1 잠재 결함(보고서 기록 대상).
-- **환경:** Docker VM 7.6GB, 무거운 벤치는 하나씩. 원본 폴더는 다른 작업이 수정 중 → "이 세션이 원본 무수정"으로 판정. 이 작업 폴더는 체크아웃 때 CRLF로 바뀌어 컨테이너 셸 스크립트가 깨졌음 → 작업 폴더만 LF로 되돌림(git 내용 변경 없음, #58).
-- **측정 함정:** EMQX는 기본 ACL로 `#` 구독을 거부 → 확인 구독은 토픽을 명시하고 SUBACK 코드를 본다(#58).
+- **V1 구성:** 34서비스(SCADA 20 + EdgeX 10 + AI 4). Flink 1.20.1, Kafka 3.9.0(KRaft), EMQX 5.8.6(2026-02-28 EOL), InfluxDB 2.7, FUXA 1.3.x, Neo4j 5.26, Prometheus+Alertmanager → `harness/V1_FACTS.md`, `V1_INVENTORY.md`, `SCHEMA.md`. 흐름: 설비 → EdgeX → EMQX → Telegraf#1 → Kafka → Flink(규칙 SQL 3 + ONNX 잡) → Kafka → Telegraf#2 → InfluxDB / Telegraf#3 → EMQX → FUXA, 알람 워커 → PostgreSQL. 격리 기동 시 텔레메트리 `edgex/telemetry` 약 1.1건/s 정상 확인.
+- **V1 약점(실측):** JobManager 재시작 시 잡 소멸 → 유실 11~12(`experiments/EXP-S09`). HA 없는 세션 클러스터 + latest-offset.
+- **브로커(`experiments/EXP-130`, 2회):** Mosquitto 2.1.2 정상 p95 1.7ms(EMQX 2.3~2.6), 재시작 유실 0(EMQX 4·69), 재시작 넘어 큐·retained 보존(EMQX ✗), 메모리 약 5MiB(EMQX 약 250MiB), 이미지 13MB(105MB), 설정 9줄(45), 지표는 $SYS(HTTP 없음). **조건부**: 네트워크 단절·과부하·느린 구독자·장시간 미검증. NanoMQ 탈락(구독자 오프라인 600건 수신 0, 재구독해도 0), HiveMQ CE 탈락(재시작 유실 527·569, p95 약 47ms, 지표 없음).
+- **이상탐지(`experiments/EXP-L4`):** Flink 1.20 / 2.2.1 SQL / 2.2.1 DataStream CEP 규칙 알람 V1과 동일(4회 70/70), ONNX 점수 동일(S13 정상상태 방식, 차 0), 운영 지표 노출. TaskManager kill 시 중복 3이 가끔(1.20 3회 중 1, 2.2 3회 중 2). 버전 판정 **미정**. 직접 짠 Python은 탈락(#53).
+- **V1 ONNX 잡 잠재 결함:** Interpolator 키가 tag(장치 구분 없음) — 다중 장치에서 섞임(보고서 기록 대상).
+- **환경:** Docker VM 7.6GB → 무거운 측정은 하나씩. 이 작업 폴더는 체크아웃 때 CRLF로 바뀌어 컨테이너 셸 스크립트가 깨졌음 → 작업 폴더 텍스트 파일을 저장소와 같은 LF로 되돌림(git 내용 변경 없음. `flink/sql/tag_limits.csv`는 저장소 원본도 CRLF라 그대로).
+- **측정 함정:** EMQX는 기본 ACL로 `#` 구독을 거부 → 확인 구독은 토픽을 명시하고 SUBACK 코드를 본다. Flink 잡 목록은 CANCELED 이력이 남는다(사전 점검은 취소·완료 제외). ONNX 점수는 처리시각 타이머라 순차 창 비교는 V1 자신도 비결정적(정상상태 방식 사용).
 
-## 5. 이 세션의 실수와 교정 — 되풀이하지 마라
+## 5. 이전 세션의 실수와 교정 — 되풀이하지 마라
 | 실수 | 교정 |
 |---|---|
-| 요약 뒤 레이어 재조립 축을 잃고 부품 세부 시험에 매달림 | §2 여섯 축을 재개 시 먼저 읽는다 |
-| 목표를 "가볍게"로 착각, 직접 짠 Python을 밀고 기준이 이를 자동 채택하게 설계 | 목표는 "현업 수준 다듬기". Q2-0b 엄격 기준(#53·54) |
-| 시험 안 한 층을 "유지"로 씀, 성능 추정으로 후보 제외 | 미시험은 미시험. 문헌 제외는 라이선스만(#59·60) |
-| 서둘러 측정 실수 반복(CRLF, ACL 오판으로 E3 중단·재기동, 사전 점검 오판, S13 방법 결함) | 도구·경로를 먼저 한 번 확인하고 본측정. 무효도 기록 |
-| 질문에 답보다 작업을 앞세움, HANDOFF 조각 덧댐 | 질문엔 먼저 답. HANDOFF는 §10 규칙으로만 갱신 |
+| 요약 뒤 레이어 재조립 축을 잃고 부품 세부 시험에 매달림 | §2 여섯 축부터 읽는다 |
+| 목표를 "가볍게"로 착각, 직접 짠 Python을 밀고 기준이 이를 자동 채택하게 설계 | 목표는 현업 수준 다듬기. 직접 제작 금지 |
+| 시험 안 한 층을 "유지"로 씀, 성능 추정으로 후보 제외 | 미시험은 미시험. 문헌 제외는 ① 관문만 |
+| 서둘러 측정 실수 반복(CRLF, ACL 오판으로 측정 중단·재기동, 사전 점검 오판, S13 방법 결함, compose에 제어문자 삽입) | 도구·경로를 먼저 한 번 확인하고 본측정. 셸 인용이 복잡하면 스크립트 파일로. 무효도 기록 |
+| 질문에 답보다 작업을 앞세움, HANDOFF·기준을 조각으로 덧대 모순 발생 | 질문엔 먼저 답. 기준은 QUESTIONS §1 한 곳, HANDOFF는 §10 규칙으로 절 단위 교체 |
 | 폐기: AI 규칙 엔진(`candidates/ai-ontology/`, 순환 평가), 급진안 C 본안, ML 알람을 규칙 비교에 포함, S13 순차 창 방식 | 되살리지 않는다 |
 
-## 6. 현재 실행 상태 (재개 시 확인)
-- **격리 V1 가동 중:** `rot-iiot`(SCADA 29, 컨테이너 `rot-*`, 포트 37xxx) + `rot-ai`(5). 기동: `docker compose --env-file .env --env-file .env.rotation up -d --no-build` / AI: `docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge up -d --no-build`. 원본 볼륨 `iiot_*` 9개는 건드리지 않음. 이미지는 재빌드하지 않고 기존 V1 이미지 사용(ID 기록 `experiments/EXP-000/raw/images.txt`).
-- **E3 측정 중:** `experiments/EXP-000/raw/e3b_v1_stats.csv`(30분, 시작 `e3b_start.txt`). 끝나면 E1(`harness/e2e/e1.py`, 이미지 `e2e-client:1.0`, 네트워크 `rot-iiot`) 실행 — E3 도중 고장 주입 금지.
-- **Flink HA 후보 구성 커밋됨(4e0269a):** `harness/l4bench/prepare.py`·`compose.yml` profile `flinkha`(ZooKeeper 3.9.3, 공유 체크포인트). 아직 실행 안 함.
-- L4·브로커 벤치는 내려가 있음. 조사 에이전트(V1 온톨로지 모듈)는 결과 미수령 → 필요하면 다시 조사.
+## 6. 현재 실행 상태
+- **실행 중인 컨테이너 없음.** 조사 에이전트·샘플러 모두 중지.
+- **격리 V1(정지, 볼륨 보존):** 프로젝트 `rot-iiot`(SCADA, 컨테이너 `rot-*`, 호스트 포트 37xxx) + `rot-ai`(AI 5개). 재기동:
+  - SCADA: `docker compose --env-file .env --env-file .env.rotation up -d --no-build`
+  - AI: `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge up -d --no-build`
+  - 이미지는 재빌드하지 않는다(같은 이름의 원본 이미지를 덮어씀). 사용 이미지 ID `experiments/EXP-000/raw/images.txt`. 원본 볼륨 `iiot_*` 9개는 건드리지 않는다.
+- **측정 도구 준비됨:** `harness/e2e/e1.py`(알람→화면 지연, 이미지 `e2e-client:1.0`, 네트워크 `rot-iiot`), `harness/sample_stats.sh`(자원). E1은 E3(정상 자원) 뒤에 — 정상 측정 중 고장 주입 금지.
+- **미사용 부분 데이터:** `experiments/EXP-000/raw/e3_v1_stats.csv`(1차, 오판 중단 — 무효 #58), `e3b_v1_stats.csv`(2차, 세션 종료로 중단 — 30분 미달, 재측정).
+- 커밋 안 된 증거 파일이 있을 수 있음 → 시작 시 `git status`로 확인하고 `experiments/`는 커밋.
 
 ## 7. 미결정 — 무엇을 보고 정하나
-- 이상탐지 버전(1.20 vs 2.2.1)과 HA: Flink HA 후보로 JobManager kill 3시점(`harness/s09*.sh` 방식) 유실 실측 → V1(11~12) 대비.
-- 각 층 대안(CANDIDATES.md 미시험 6층) — 축 2 절차.
-- 구조안(축 3) — 축 1 기준값이 나와야 비교 가능.
-- AI(축 6) — V1 에이전트·온톨로지 모듈 구조 확인 후 설계, 정답은 주입 고장 사실만, V1 대 V2 시나리오당 3회.
+- 이상탐지 버전(1.20 vs 2.2.1)과 HA: Flink HA로 JobManager kill 3시점(`harness/s09*.sh` 방식) 유실 실측 → V1(11~12) 대비.
+- 층별 대안: 딥리서치로 넓힌 후보를 축 2 절차로 직접 시험.
+- 구조안: 축 1 기준값 + 축 2 승자가 나와야 조립·비교 가능.
+- AI: V1 모듈 구조 확인 → 온톨로지·도구 설계 → 정답(주입 고장 사실만) 먼저 고정 → V1 대 V2 시나리오당 3회.
+- 외부 대기(사람 답): `QUESTIONS.md` §3(LiteLLM 버전, 원본 Flink 잡, Docker Desktop 유료 조건, 기준선 재동결).
 
-## 8. 외부 대기
-- V1 기준선을 최신 원본으로 다시 뜰지(원본이 다른 작업으로 계속 바뀜).
-- LiteLLM 프록시 버전, Docker Desktop 유료 조건 — `QUESTIONS.md` Q4·Q6.
+## 8. 절대 규칙
+- 원본 `D:\work\study\lecture-iiot-scada` 수정 금지, 원본 컨테이너·볼륨·이미지 삭제·덮어쓰기 금지. push 금지.
+- 측정 안 한 수치 금지, 벤더 수치를 실측처럼 쓰지 않음. 기준·정답은 결과 전 고정, 순환 평가 금지.
+- 무효·실패도 `reports/decision-log.md`에 추가(추가만). 실행 ID 재사용 금지. 출력 숨기기 금지.
+- `latest` 태그·BSL·SSPL·TSL·RCL·체험판·상용 금지. 시뮬레이터 `active_faults`·`thermal_model`을 AI에 넘기지 않음. `ai-layer/.env.local` 커밋·출력 금지.
+- 무거운 측정은 한 번에 하나. 쓰지 않는 벤치·스택은 바로 정리(벤치 볼륨만 삭제).
 
-## 9. 절대 규칙
-- 원본 `D:\work\study\lecture-iiot-scada` 수정 금지, 원본 컨테이너·볼륨·이미지 삭제·덮어쓰기 금지(같은 이름 이미지 재빌드 금지). push 금지.
-- 측정 안 한 수치 금지, 벤더 수치를 실측처럼 쓰지 않음. 기준·정답은 결과 전 고정. 순환 평가 금지.
-- 무효·실패도 decision-log에 추가(추가만). 실행 ID 재사용 금지. 출력 숨기기 금지.
-- `latest` 태그·BSL·TSL·RCL·체험판·상용 금지. 시뮬레이터 `active_faults`·`thermal_model`을 AI에 넘기지 않음. `ai-layer/.env.local` 커밋·출력 금지.
-- 무거운 측정은 한 번에 하나. 쓰지 않는 벤치는 바로 정리.
+## 9. 다음 행동 — 순서대로
+1. **상태 확인:** `git status`, `docker ps`(비어 있어야 함). 완료 판정: 실행 중 컨테이너 0, 미커밋 증거 커밋.
+2. **축 1 V1 기준 측정:** 격리 V1 재기동 → E3 정상 30분(`harness/sample_stats.sh experiments/EXP-000/raw/e3c_v1_stats.csv 1800 "^rot-"`) → E1 100회(`e1.py`: `--sim http://plant-simulator:8080 --mqtt emqx --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics scada/alerts/PT-101,scada/hmi/latest-alert --match THRESHOLD_USL`) → E2(경유 단계·컨테이너·설정 파일 수, compose 분석) → R01~R11 중 가능한 것. 완료 판정: STRUCTURE.md §3·ROBUSTNESS.md 각 행에 V1 값.
+3. **축 2 딥리서치(그물망 넓게):** 층을 4묶음(수집·브로커·파이프 / 백본·스트림 처리·HA / 저장·감시·HMI·알람 / AI 그래프·GraphRAG·임베딩·에이전트)으로 병렬 조사. 후보 이름을 미리 주지 말고 **목록 밖에서 찾게 한다**: Apache 프로젝트 목록·CNCF 랜드스케이프·LF Edge·Eclipse IoT·Awesome 목록·GitHub 토픽·2025~2026 업계 자료·UNS 커뮤니티 채택 사례, 한·영 질의와 "alternative/vs/migration from/replaced" 변형. 제품뿐 아니라 경로를 줄이는 구조 패턴도. 각 후보는 ① 관문(버전·날짜·라이선스·가둬진 기능·공식 이미지·EOL)을 1차 출처+날짜로. 결과로 CANDIDATES.md 확장 후 결과 보기 전 커밋. 완료 판정: 층마다 직접 시험 후보와 ① 관문 제외(사실+출처) 목록.
+4. **축 4 Flink HA 시험**(V1 최대 약점) → **축 2 층별 직접 시험**(수집 → 파이프·알람 경로 → 백본 → 저장 → 감시) → **축 3 조립안**.
+5. **축 5** V2 조립·전체 회귀·태그 → **축 6** AI → 점수표(`harness/tools/scorecard.py`) → `reports/REPORT.md`.
 
 ## 10. 자산 지도
 | 위치 | 역할 | 언제 |
 |---|---|---|
-| `D:\work\study\scada-rotation`(브랜치 `exp/stack-rotation-202609`) | 작업 폴더 | 항상 |
-| `QUESTIONS.md` | 판정 기준 정본(Q2·Q2-0·Q2-0b·Q2-1·Q2-a) | 판정 전 |
-| `reports/decision-log.md` | 모든 실행·판정(#1~#60, 추가만) | 실행 후 |
+| `D:\work\study\scada-rotation`(브랜치 `exp/stack-rotation-202609`, 기준 태그 `v1-original`) | 작업 폴더 | 항상 |
+| `QUESTIONS.md` §1 | 판정 기준 유일 정본 | 판정 전 |
+| `reports/decision-log.md` | 모든 실행·판정 기록(#1~#62, 추가만) | 실행 후 |
 | `harness/situations/` STRUCTURE·ROBUSTNESS·CANDIDATES·L4·BROKER | 결과 전 고정한 시험 목록 | 시험 설계·판정 |
-| `harness/e2e/`, `harness/l4bench/`, `harness/brokerbench/`, `harness/tools/` | 측정 도구(솔루션 부품 아님) | 측정 |
-| `candidates/` | 후보 구현(`ai-ontology`는 폐기, `l4-python`은 탈락 기록용) | 참고 |
+| `harness/e2e/`, `l4bench/`, `brokerbench/`, `tools/`, `s09*.sh`, `run_l4_multi.sh`, `l4_10.sh` | 측정 도구(솔루션 부품 아님) | 측정 |
+| `candidates/` | 후보 구현(`ai-ontology` 폐기, `l4-python` 탈락 기록용, `l4-flink22-onnx`·`l4-flink-cep`는 jar 빌드 필요 시 `maven:3.9-eclipse-temurin-17`) | 참고·벤치 |
 | `experiments/EXP-000`(V1 기준) · `EXP-L4` · `EXP-S09` · `EXP-130` | 증거 원본 | 수치 재계산 |
 | `docs/research/` | 원문 8종 | 근거 확인 |
 | `scenarios/catalog.yaml` | S01~S25 | 회귀 |
-| 원본 `D:\work\study\lecture-iiot-scada`, `_references/` | 읽기만 / 열지 마라 | — |
+| 원본 `D:\work\study\lecture-iiot-scada` / `_references/` | 읽기만 / 열지 마라 | — |
 
-## 11. 다음 행동 — 순서대로
-1. E3 완료 → 자원 요약 decision-log. 완료 판정: 서비스별 메모리·CPU 평균·최대, 합계.
-2. E1 V1 100회(`e1.py`, 관측: Kafka `sensor.alerts`, MQTT `scada/alerts/PT-101`·`scada/hmi/latest-alert`) → 이어서 R01~R11 중 V1에 바로 가능한 것(브로커 정지, 수집기 단절, Kafka 재시작, 시계열 DB 다운, 과부하, 장시간). 완료 판정: ROBUSTNESS.md 각 행 V1 값.
-3. 2026 기준 추가 대안 리서치(층별, 라이선스·버전·컨테이너·추세·출처) → CANDIDATES.md 확장(결과 전 고정).
-4. 축 4 Flink HA 시험 → 축 2 층별 시험(수집 → 파이프·알람 경로 → 백본 → 저장 → 감시) → 축 3 조립안.
-5. 축 5 V2 조립·전체 회귀·태그. 축 6 AI. 점수표·REPORT.
-
-## 12. 갱신 규칙
-- 측정·조사 완료 → §4, §2 상태 칸. 방향 결정 → §2·§3(+이유). 틀린 것 → §5. 사용자 답 → §8에서 §3·§4로. 실행 상태 변화 → §6.
-- §1·§9 변경은 전제가 흔들린 것이므로 사용자에게 먼저 보고. 조각 덧댐 금지 — 모순이 생기면 해당 절을 통째로 고친다.
+## 11. 갱신 규칙
+- 측정·조사 완료 → §4와 §2 상태 칸. 방향 결정 → §2(+이유), 기준 변경은 `QUESTIONS.md` §1에서만. 틀린 것 → §5. 실행 상태 변화 → §6. 순서 변화 → §9.
+- §1·§8 변경은 전제가 흔들린 것이므로 사용자에게 먼저 보고. 조각 덧댐 금지 — 모순이 생기면 해당 절을 통째로 교체.

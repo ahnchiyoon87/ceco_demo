@@ -218,7 +218,7 @@ services:
     command:
       - |
         cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
-        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
 
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:

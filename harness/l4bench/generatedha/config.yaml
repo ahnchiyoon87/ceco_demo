@@ -1,0 +1,88 @@
+# ═══════════════════════════════════════════════════════════════
+# Flink 1.20 — 설정 (Flink 1.19+ 신규 config.yaml 포맷)
+# ═══════════════════════════════════════════════════════════════
+# ── 장애 복구 ──
+# 기본값(NoRestartBackoffTimeStrategy)은 한 번 실패하면 잡이 그대로 죽는다.
+# TaskManager 하트비트 타임아웃 같은 일시적 장애에서 자동 복구되도록 한다.
+# 체크포인트가 있으므로 복구 시 정확히 한 번 의미가 유지된다 (PDF p.6).
+restart-strategy:
+  type: exponential-delay
+  exponential-delay:
+    initial-backoff: 5s
+    max-backoff: 2min
+    backoff-multiplier: 2.0
+    reset-backoff-threshold: 10min
+    jitter-factor: 0.1
+
+heartbeat:
+  timeout: 120000
+  interval: 10000
+
+jobmanager:
+  rpc:
+    address: flinkha-jobmanager
+    port: 6123
+  memory:
+    process:
+      size: 800m
+  execution:
+    failover-strategy: region
+  bind-host: 0.0.0.0
+
+# Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 덮어쓰면 이 값이 사라져
+# 잡 제출 시 InaccessibleObjectException 이 발생하므로 반드시 함께 유지한다.
+env:
+  java:
+    opts:
+      all: --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+
+taskmanager:
+  bind-host: 0.0.0.0
+  host: flinkha-taskmanager
+  numberOfTaskSlots: 8
+  memory:
+    process:
+      size: 1600m
+
+parallelism:
+  default: 2
+
+rest:
+  address: 0.0.0.0
+  bind-address: 0.0.0.0
+
+execution:
+  checkpointing:
+    interval: 10s
+    mode: EXACTLY_ONCE
+    timeout: 60s
+    min-pause: 5s
+    externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
+
+state:
+  backend:
+    type: rocksdb                 # PDF p.6 — RocksDB 기반 분산 상태 저장소
+    incremental: true
+  checkpoints:
+    dir: file:///opt/flink/checkpoints
+  savepoints:
+    dir: file:///opt/flink/savepoints
+
+# ── Prometheus 노출: 체크포인트 소요·실패, 백프레셔 등 인프라 지표 ──
+#    (센서 데이터는 InfluxDB 로. PDF p.7 역할 분리 원칙)
+metrics:
+  reporter:
+    prom:
+      factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      port: 9249
+  reporters: prom
+
+# ── 자동 복구 후보: Flink 고가용성(ZooKeeper) ──
+high-availability:
+  type: zookeeper
+  storageDir: file:///opt/flink/ha
+  cluster-id: /l4bench-flinkha
+  zookeeper:
+    quorum: zookeeper:2181
+    path:
+      root: /flink
