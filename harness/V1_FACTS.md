@@ -24,6 +24,11 @@
 | §8.6 결과값 FAILED / UNCONFIRMED | V1 상태값: `not_executed` / `uncertain` / `stop_verified` / `cooling_command_verified` / `verified`(C2) / `inspection_requested` | 게이트는 "SUCCESS류(`*_verified`)가 아닌지"로 판정 |
 | §8.7 G5 `UNIQUE(approval_id)` 권장 | 제약 대신 행 잠금 + 상태머신: `decide()`가 `FOR UPDATE` 후 `status='executing'` 선점, 재요청은 `replayed`. C2는 `request_id` PK + advisory lock | 방식은 달라도 G5 의도 충족 구조. 실측으로 판정 |
 | §8.7 G3 승인 만료 | 대응안 `expires_at = now()+5분`. 승인 시 사건 revision, 명령·인터록 fingerprint, 지식 fingerprint, 현재 이상 재확인. IO 직전에 한 번 더 확인 | 구현됨. 실측으로 판정 |
+| FINAL §11.3 EMQX는 5.9+ BSL 또는 5.8.x EOL | V1은 **EMQX 5.8.6** (Apache-2.0, 2026-02-28 EOL 라인) | **G9 위반(보안 패치 종료 버전 고정 금지, FINAL §2.4)** → 회전 1 EXP-130대 브로커 교체 필수 |
+| FINAL §11.1 "V1이 1.x면 버전만 올린 변형도 기록" | V1 Flink **1.20.1** (`.env` `FLINK_VERSION`, 이미지 `iiot/flink-onnx:1.0` 로컬 빌드) | EXP-112a(1.20.1 그대로)와 EXP-112(2.2.1) 둘 다 기록 |
+| FINAL §12.5 "V1이 3.x/ZooKeeper면 4.x 자체가 최신화" | V1 Kafka **3.9.0은 이미 KRaft 단일 노드**(ZooKeeper 없음, `KAFKA_PROCESS_ROLES: broker,controller`) | EXP-251의 "ZooKeeper 제거" 효과 없음. 4.2.1 업그레이드 이득은 share groups·버그 수정만 |
+| FINAL §7.2 FUXA 1.3.4로 업그레이드 | V1 FUXA는 이미 1.3.4-2898(2026-09-09 `latest`). digest로 고정 완료 | 업그레이드 불필요 |
+| FINAL §7.2 InfluxDB 명시 고정 | V1은 `influxdb:2.7` (마이너 태그, 패치 부동) | digest 고정 필요(위생 조치 보완) |
 | (브리프 없음) | EdgeX를 우회하는 경량 경로 `make lite`: 시뮬레이터 → EMQX(`iiot/+/+/+`) → `bridge-lite.conf` | 게이트웨이 후보 비교 시 참고 |
 | (브리프 없음) | `plant.yaml` 주석은 EdgeX Store-and-Forward가 "Redis에 적재"라고 하나, EdgeX 4.0은 PostgreSQL 사용(`edgex-postgres`) | 주석이 낡음 |
 

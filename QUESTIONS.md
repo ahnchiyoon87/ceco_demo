@@ -1,36 +1,40 @@
 # 사람 확인이 필요한 사항
 
-작업 기준: AGENT_BRIEF v2. 각 항목에 막히는 작업과 막히지 않는 작업을 함께 적는다.
+작업 기준: **AGENT_BRIEF_FINAL (2026-09-28)** 단일 문서. 이전 브리프(v1·v2)는 폐기. 각 항목에 막히는 작업을 함께 적는다.
 
-## 입력값 (§2)
+## 입력값 (FINAL §6)
 
-| # | 항목 | 상태 | 제안 | 막히는 작업 |
+| # | 항목 | 상태 | 값 / 제안 | 막히는 작업 |
 |---|---|---|---|---|
-| I1 | V1 저장소·실행 | 확정 | `D:\work\study\lecture-iiot-scada`, `make up` + `ai-layer` compose. 실험은 `D:\work\study\scada-rotation` (브랜치 `exp/stack-rotation-202609`) | — |
+| I1 | V1 저장소·실행 | 확정 | 원본 `D:\work\study\lecture-iiot-scada` (`make up` + `ai-layer/start-service.ps1`). 실험 `D:\work\study\scada-rotation` (브랜치 `exp/stack-rotation-202609`) | — |
 | I2~I4 | 패턴 창·판정 기준·워터마크 | 코드에서 확정 | N=10초, IT-102>9.6A, VT-101>7.1mm/s, 워터마크 5초 (`harness/V1_FACTS.md` §1) | — |
-| I5 | 후보 공통 리소스 제한 | 미정 | 하니스 측정 전까지 제안값을 내겠음(머신 사양 확인 후) | 측정(M5) |
+| I5 | 후보 공통 리소스 제한 | 미정 | Docker 할당 7.6GB 중 원본 V1이 약 4.9GB 사용. 제안: 비교 대상 모듈 컨테이너마다 `mem_limit` 1.5g·`cpus` 2 동일 적용 | M5 비교 |
 | I6 | 유실·중복 허용치 | 미정 | 기본 0 | G8 판정 |
-| I7 | §9 판정 규칙 서명 | 미정 | 아래 Q2 참고 | 후보 채택 결정 |
-| I8 | LLM 모델/키 | 부분 확정 | 현재 V1 설정 그대로(LiteLLM Cloud Run, 모델 별칭 `coding`) | — |
-| I9 | BSL 제품 사내 PoC 허용 | 미정 | EMQX는 V1이 5.8.6(Apache)이라 해당 없음. Redpanda(EXP-212)·Neuron 상용판만 해당 | EXP-212 |
+| I7 | §10 판정 규칙 서명 | 미정 | 아래 Q2 | 후보 채택 결정 |
+| I8 | LLM 모델/키 | 확정(V1 설정) | LiteLLM Cloud Run `knu-litellm`, 모델 별칭 `coding` (`ai-layer/.env.local`) | — |
 
 ## 결정 요청
 
-**Q1. L4 실험 구성 재배치 (§11.4)**
-V1 패턴 탐지는 이미 Flink SQL `MATCH_RECOGNIZE`다(DataStream CEP 아님). 제안: EXP-141 = V1 그대로(SQL MATCH_RECOGNIZE, Flink 버전만 기록), EXP-142 = Flink DataStream CEP(`followedBy().within()`), EXP-143 = Python 상태머신. "CEP 논쟁" 질문은 그대로 유지된다.
+**Q1. L4 기준선 표기 (§11.1)**
+V1은 Flink **1.20.1**에서 SQL `MATCH_RECOGNIZE`(filler 패턴 `OVERCURRENT OTHER*? VIB`)를 이미 쓴다. §11.1에 따라 다음으로 기록한다.
+- EXP-112a = V1 그대로(Flink 1.20.1 SQL) — 기준선
+- EXP-112 = 같은 SQL을 Flink 2.2.1로 올린 것
+- EXP-111 = Flink 2.2.1 DataStream CEP(`followedBy().within()`)
+- EXP-113 = Python 상태머신
+이견 없으면 이대로 진행.
 
-**Q2. §9-4(a) 트렌드 우위 조항**
-EdgeX가 '정체'로 판정돼 있어, 대체 후보는 Gate와 비열등만 통과하면 (a)로 자동 채택된다. 의도라면 그대로 서명, 아니면 (a)에 "트렌드 판정 근거가 1차 출처(릴리스 기록)일 것" 같은 조건 추가.
+**Q2. §10-5(a) 트렌드 우위 조항**
+트렌드 판정만으로 (a)가 성립해 비열등 후보가 자동 채택될 수 있다. 의도라면 그대로 서명, 아니면 "트렌드 근거는 독립 신호(릴리스·커밋·재단) 2개 이상" 조건 추가 제안.
 
-**Q3. 클린시트 C안 (§13.1)**
-Kafka 제거 시 CAP-16(replay) 대체 경로가 없으면 G0 실패로 결과가 미리 정해진다. 보고용 구조 비교로만 쓸지, 대체 경로(예: PostgreSQL 이벤트 로그 테이블 재생)를 설계해 판정할지.
+**Q3. 클린시트 EXP-320 (§13.2)**
+FINAL은 CAP-16을 NATS JetStream으로 대체하도록 정했다. 추가 결정 없음. 메모리 여유상 원본 V1과 동시 기동 가능(컨테이너 4~6개 예상).
 
-**Q4. LiteLLM 프록시 버전**
-Cloud Run `knu-litellm` 버전을 로컬에서 확인할 수 없다(2026-09-28 `/health/readiness` 무응답, 배포 소스 로컬에 없음). 배포 이미지 태그를 알려주시거나 GCP 콘솔 확인 필요. 막히는 작업: §6.2 LiteLLM 항목 판정. 나머지는 진행.
+**Q4. LiteLLM 프록시 버전 (§7.2)**
+Cloud Run `knu-litellm`의 LiteLLM 버전을 로컬에서 확인할 수 없다(2026-09-28 `/health/readiness` 30초 무응답, 배포 소스 로컬에 없음). 배포 이미지 태그를 알려주시거나 GCP 콘솔 확인 필요. 1.82.7/1.82.8 설치 이력이 있으면 즉시 보고 대상.
 
-**Q5. 브리프·참고 자료 파일 위치**
-AGENT_BRIEF v2와 참고 자료 3종(`system-description.html`, `trend-survey-2026.md`, `rotation-guide.md`)이 대화로만 전달되어 디스크에 없다. 원본 파일을 `docs/research/`에 두어 주시면 재개·인용에 쓴다.
+**Q5. 원본 V1 Flink 잡 중단 (V1_FACTS §5)**
+원본 V1은 2026-09-28 11:52 Kafka·Flink 재시작 이후 이상탐지 잡 0개 상태다. `make jobs`로 재제출할지. 원본 조작이라 결정 대기.
 
-## 측정 시간 확보
+## 원본 V1 영향 구간
 
-실험 스택과 원본 V1을 동시에 띄우면 같은 머신 자원을 나눠 써서 M1·M5 측정이 오염된다. 측정 구간에는 원본 V1 스택을 잠시 내려야 한다. 원본을 내리는 시점은 미리 알려 드리고 진행한다.
+장애 시험(S09~S12, S22)과 제어 시험(S14~S21)은 원본 V1을 멈추거나 설비 상태를 바꾼다. 이 구간은 원본을 쓰지 않는 시간에 몰아서 하고, 시작 전에 알린다. 나머지 비교는 원본 옆에 바꾸는 모듈만 붙이는 방식(원본 무영향)으로 한다.
