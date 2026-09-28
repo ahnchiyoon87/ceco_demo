@@ -65,6 +65,10 @@ public class CepJob {
 
     public static void main(String[] args) throws Exception {
         String boot = System.getenv().getOrDefault("BOOTSTRAP", "kafka:9092");
+        // 규칙 값은 제출 시 환경변수로 받는다(L4-10: 코드·재빌드 없이 규칙 변경). 기본값 = V1 04_tier1_cep.sql
+        final double itLimit = Double.parseDouble(System.getenv().getOrDefault("IT102_LIMIT", "9.6"));
+        final double vtLimit = Double.parseDouble(System.getenv().getOrDefault("VT101_LIMIT", "7.1"));
+        final long windowS = Long.parseLong(System.getenv().getOrDefault("PATTERN_WINDOW_S", "10"));
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.enableCheckpointing(10_000);
 
@@ -89,10 +93,10 @@ public class CepJob {
                 .filter(r -> r != null && ("IT-102".equals(r.tag) || "VT-101".equals(r.tag)));
 
         Pattern<Reading, ?> pattern = Pattern.<Reading>begin("oc", AfterMatchSkipStrategy.skipPastLastEvent())
-                .where(SimpleCondition.of(r -> "IT-102".equals(r.tag) && r.value > 9.6))
+                .where(SimpleCondition.of(r -> "IT-102".equals(r.tag) && r.value > itLimit))
                 .followedBy("vib")
-                .where(SimpleCondition.of(r -> "VT-101".equals(r.tag) && r.value > 7.1))
-                .within(Duration.ofSeconds(10));
+                .where(SimpleCondition.of(r -> "VT-101".equals(r.tag) && r.value > vtLimit))
+                .within(Duration.ofSeconds(windowS));
 
         OutputTag<Reading> late = new OutputTag<Reading>("late") {};
         PatternStream<Reading> ps = CEP.pattern(readings.keyBy(r -> r.device), pattern).sideOutputLateData(late);

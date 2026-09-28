@@ -36,6 +36,12 @@ WITHIN_NS = int(float(os.environ.get("PATTERN_WINDOW_S", "10")) * 1e9)
 IT_LIMIT = float(os.environ.get("IT102_LIMIT", "9.6"))
 VT_LIMIT = float(os.environ.get("VT101_LIMIT", "7.1"))
 LIMITS_CSV = os.environ.get("TAG_LIMITS", "/app/tag_limits.csv")
+# Z-Score 규칙 값(V1 03_tier1_zscore.sql 과 같은 기본값). L4-10: 코드 수정 없이 환경변수로 변경
+Z_WIN = int(os.environ.get("ZSCORE_WINDOW", "60"))
+Z_MIN = int(os.environ.get("ZSCORE_MIN_N", "30"))
+Z_LIMIT = float(os.environ.get("ZSCORE_LIMIT", "3.5"))
+Z_RUN_WIN = int(os.environ.get("ZSCORE_RUN_WINDOW", "5"))
+Z_RUN_MIN = int(os.environ.get("ZSCORE_RUN_MIN", "3"))
 SNAP = os.environ.get("SNAPSHOT", "/state/snapshot.json")
 SNAP_EVERY_S = float(os.environ.get("SNAPSHOT_EVERY_S", "1"))
 ML_ON = os.environ.get("ML", "1") == "1"
@@ -73,10 +79,10 @@ class Rules:
         self.emit = emit
         self.limits = load_limits(LIMITS_CSV)
         state = state or {}
-        self.win = collections.defaultdict(lambda: collections.deque(maxlen=60),
-                                           {k: collections.deque(v, maxlen=60) for k, v in state.get("win", {}).items()})
-        self.viol = collections.defaultdict(lambda: collections.deque(maxlen=5),
-                                            {k: collections.deque(v, maxlen=5) for k, v in state.get("viol", {}).items()})
+        self.win = collections.defaultdict(lambda: collections.deque(maxlen=Z_WIN),
+                                           {k: collections.deque(v, maxlen=Z_WIN) for k, v in state.get("win", {}).items()})
+        self.viol = collections.defaultdict(lambda: collections.deque(maxlen=Z_RUN_WIN),
+                                            {k: collections.deque(v, maxlen=Z_RUN_WIN) for k, v in state.get("viol", {}).items()})
         self.pending = collections.defaultdict(list, state.get("pending", {}))
 
     def state(self):
@@ -108,14 +114,14 @@ class Rules:
         w = self.win[r["tag"]]
         w.append(r["value"])
         n = len(w)
-        if n < 30:
+        if n < Z_MIN:
             return
         mu = sum(w) / n
         sd = math.sqrt(sum((x - mu) ** 2 for x in w) / (n - 1))   # STDDEV_SAMP
         z = abs(r["value"] - mu) / sd if sd > 1e-9 else 0.0
         vq = self.viol[r["tag"]]
-        vq.append(1 if z > 3.5 else 0)
-        if sum(vq) >= 3:
+        vq.append(1 if z > Z_LIMIT else 0)
+        if sum(vq) >= Z_RUN_MIN:
             self.emit(r, "ZSCORE", "WARNING", "TIER1_ZSCORE",
                       f"{r['tag']} z={round(z, 2)} (μ={round(mu, 3)}, σ={round(sd, 4)}, 최근5중 {sum(vq)}회 위반)")
 

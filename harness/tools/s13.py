@@ -72,20 +72,26 @@ def reference(windows, meta):
     return out
 
 
-def read_topic(topic, prefix, idle_s=6):
+def read_topic(topic, prefix, timeout_s=120):
+    """호출 시점의 파티션 끝 오프셋까지만 읽는다(점수는 매초 계속 나오므로 '유휴 시 종료'는 끝나지 않는다 — s13_1 무효 원인)."""
     c = Consumer({"bootstrap.servers": BOOT, "group.id": f"s13-{uuid.uuid4()}", "enable.auto.commit": False})
     parts = c.list_topics(topic, timeout=10).topics[topic].partitions
+    end = {p: c.get_watermark_offsets(TopicPartition(topic, p), timeout=10)[1] for p in parts}
+    todo = {p for p, e in end.items() if e > 0}
     c.assign([TopicPartition(topic, p, 0) for p in parts])
-    out, last = [], time.time()
-    while time.time() - last < idle_s:
+    out, t0 = [], time.time()
+    while todo and time.time() - t0 < timeout_s:
         m = c.poll(0.5)
         if m is None or m.error():
             continue
-        last = time.time()
+        if m.offset() + 1 >= end[m.partition()]:
+            todo.discard(m.partition())
         r = json.loads(m.value())
         if str(r.get("device", "")).startswith(prefix):
             out.append((m.timestamp()[1], r))
     c.close()
+    if todo:
+        raise SystemExit(f"{topic}: {timeout_s}s 안에 끝 오프셋까지 못 읽음 {sorted(todo)}")
     return out
 
 
@@ -95,7 +101,9 @@ def main():
     ap.add_argument("--run", required=True)
     ap.add_argument("--cands", default="flinksql,flink22,cep,python")
     ap.add_argument("--seed", type=int, default=13)
-    ap.add_argument("--wait-s", type=float, default=8.0)
+    ap.add_argument("--wait-s", type=float, default=30.0)
+    ap.add_argument("--mode", choices=["steady", "sequence"], default="steady",
+                    help="steady(기본, #50): 장치당 1행 → 창=같은 벡터×10 정상상태 점수 비교. sequence: 순차 창(방법 결함으로 무효 처리됨)")
     a = ap.parse_args()
     raw = pathlib.Path(f"/experiments/{a.exp}/raw")
     raw.mkdir(parents=True, exist_ok=True)
@@ -116,6 +124,8 @@ def main():
             s = 20 + k * 4                                           # 고장 전개 구간을 고르게
             windows.append(rows[s:s + 10])
             labels.append(sc or "normal")
+    if a.mode == "steady":
+        windows = [[w[9]] * 10 for w in windows]                  # 창 = 같은 벡터 ×10 (처리시각 표본과 무관하게 결정적)
     ref = reference(windows, meta)
     devs = [f"{prefix}w{k:03d}" for k in range(len(windows))]
 
@@ -126,7 +136,7 @@ def main():
         prod.produce(RAW, partition=0, value=json.dumps({"ts": ts, "site": "EXP", "device": dev, "tag": tag, "value": v}))
 
     t0 = time.time()
-    for j in range(10):
+    for j in range(1 if a.mode == "steady" else 10):
         if j:
             while time.time() < t0 + j + 0.5:
                 time.sleep(0.01)
@@ -154,7 +164,7 @@ def main():
     prod.flush(10)
     time.sleep(a.wait_s)
 
-    result = {"run": a.run, "token": token, "windows": len(windows), "emit_s": emit_s, "tol": 1e-6,
+    result = {"mode": a.mode, "run": a.run, "token": token, "windows": len(windows), "emit_s": emit_s, "tol": 1e-6,
               "threshold": meta["threshold"], "ref_anomalies": sum(x > meta["threshold"] for x in ref),
               "labels": {l: labels.count(l) for l in set(labels)}, "gap_sent": gsent, "cands": {}}
     clean_base = None
@@ -162,7 +172,10 @@ def main():
         scores = sorted(read_topic(f"exp.l4.score.{c}", prefix), key=lambda x: (x[1]["device"], x[1]["ts"]))
         first = {}
         for _, s in scores:
-            first.setdefault(s["device"], s)
+            if a.mode == "steady":
+                first[s["device"]] = s                                # 정상상태: 마지막 점수(정렬 끝)
+            else:
+                first.setdefault(s["device"], s)
         diffs, anom_mismatch, missing = [], 0, 0
         for k, dev in enumerate(devs):
             s = first.get(dev)

@@ -148,6 +148,8 @@ services:
   submit-flinkcep:
     image: l4bench-flink22:2.2.1
     profiles: [flinkcep]
+    environment:
+      PATTERN_WINDOW_S: ${PATTERN_WINDOW_S:-10}   # L4-10: DS CEP 규칙 값은 제출 시 환경변수
     depends_on:
       flinkcep-jobmanager: {condition: service_healthy}
     volumes:
@@ -172,6 +174,7 @@ services:
     environment:
       BOOTSTRAP: kafka:9092
       TAG_LIMITS: /app/tag_limits.csv
+      PATTERN_WINDOW_S: ${PATTERN_WINDOW_S:-10}   # L4-10 규칙 변경 시험용(기본 = V1)
     volumes:
       - ../../flink/sql/tag_limits.csv:/app/tag_limits.csv:ro   # V1 과 같은 규격 파일
       - l4py-state:/state                                       # EXP-113b 재시작 스냅샷
