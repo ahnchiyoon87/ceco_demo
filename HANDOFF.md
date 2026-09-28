@@ -77,7 +77,7 @@
 | `_references/`(원본 폴더, 868MB) | 무관 참고자료 | 열지 마라 |
 
 ## 9. 다음 행동
-1. (y 행렬 10회 완료, 수치는 §4) decision-log에 y1~y10 행 추가 + 이 세션의 미커밋 변경을 커밋(`git add -A HANDOFF.md QUESTIONS.md candidates harness ontology experiments reports`). 완료 판정: decision-log에 #27 이후 y 행렬 행, `git status` 깨끗.
+1. (y 행렬 10회 완료·커밋 4111940, 수치는 §4) decision-log에 y1~y10 행(#27~) 추가. 완료 판정: 10행이 `g8_y*.json` 수치와 일치.
 2. §7 수치 경계를 사용자에게 받는다(막히면 3·4를 먼저).
 3. `harness/situations/L4.md` 작성(V1 Flink 상황 목록, 결과 보기 전 커밋) → 후보별 처리 여부 시험 설계. 완료 판정: 목록의 각 상황에 후보별 통과/실패/미검증 칸이 있음.
 4. EXP-111 빌드(`docker run maven:3.9-eclipse-temurin-17 ... mvn package` in `candidates/l4-flink-cep`) → `flinkcep` 프로파일 기동 → `CANDIDATES="flinksql flink22 cep python" harness/run_l4_multi.sh EXP-L4 m3|m4 --repeat 10 --jitter --seed 3003|4004`. 완료 판정: summary_m3·m4에 4후보.
