@@ -3,6 +3,15 @@
 판정 규칙은 `QUESTIONS.md` §1 하나뿐이다. 이 표는 그 규칙을 층별 후보에 적용한 **시험 목록**이며, 결과를 본 뒤 후보를 넣거나 빼지 않는다(#59·#60·#65 개정분을 이 판으로 대체).
 출처: 딥리서치 4편 `docs/research/deep-2026-09-29/` — R01 `01-ingest-broker-pipe.md` · R02 `02-backbone-stream-ha.md` · R03 `03-storage-monitor-hmi-alarm.md` · R04 `04-ai-graph-rag-agent.md`(모든 사실 확인일 2026-09-29), V1 버전은 `harness/V1_INVENTORY.md`·`harness/V1_FACTS.md`. 이미 잰 결과는 `reports/decision-log.md` #18·#48·#53·#56.
 
+## 개정 #74 (2026-09-29, 결과 보기 전 — 관문 사실 재확인 `docs/research/deep-2026-09-29/05-gate-verification.md`)
+아래가 본문 표보다 우선한다.
+- **강제 교체 확정:** EdgeX 4.0.0(4.0 LTS 2027-03 종료, 4.0.2도 같은 LTS → EdgeX 4.0.2·EdgeX 슬림화 행은 ① 관문 제외), Grafana 11.4(2025-09-05 종료), Alertmanager 0.28(마지막 패치 0.28.1 2025-03-07, 18개월+ 무패치), cAdvisor v0.49.1(현행 v0.60.6, `ghcr.io/google/cadvisor`).
+- **Flink 1.20.1: 강제 교체 아님(정정).** "명목 종료 ≈2026-08(이미 경과)"는 틀림 — 1.20은 LTS 표기 유지, 2026-09-26에도 백포트 진행. 종료일 [미확인]. 같은 제품 최신판(2.x)이 첫 후보인 것은 그대로.
+- **직접 시험 → ① 관문 제외:** Siddhi(런너 이미지 2019 마지막), M3(v1.6.0 이미지 없음), PyScada(공식 이미지 없음), alerta-ng(자체 이미지 없음), Hazelcast(재시작 복구·Jet 무손실 복구 Enterprise 전용), Amlen(릴리스 고정 태그 없음).
+- **① 관문 제외/미확인 → 직접 시험:** Tansu, RobustMQ, ActiveMQ Classic(`apache/activemq:6.3.2`), comqtt(MIT, ghcr 2.6.5), fast-graphrag(MIT). Artemis 이미지 = `apache/artemis:2.57.0`.
+- **Grafana 는 롤링 지원 제품으로 분류**(월간 마이너, 계열 지원 지속 → §12-0 원칙 동일, 조건 "마이너 추종"). 13.2 는 2027-05-18 종료지만 계열이 지원 중.
+- 유지: Mosquitto 지원 정책 [미확인], Flink Kafka 커넥터 2.3 공식 미지원(②에서 비공식 조합 확인), `neo4j:2026.09-community` 존재.
+
 ## 0. 읽는 법
 
 **분류(세 가지만)**
