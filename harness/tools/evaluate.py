@@ -37,6 +37,7 @@ def main():
     ap.add_argument("--run", required=True)
     ap.add_argument("--alerts", required=True)
     ap.add_argument("--dropped")
+    ap.add_argument("--only-cases", help="쉼표 구분. 지정하면 이 케이스만 판정(예: CEP 만 내는 후보는 S02 제외)")
     a = ap.parse_args()
     raw = pathlib.Path(f"/experiments/{a.exp}/raw")
     man = json.loads((raw / f"replay_{a.run}_manifest.json").read_text(encoding="utf-8"))
@@ -61,7 +62,10 @@ def main():
             first_cep_ms.setdefault(r["device"], ts)
 
     rows, lat = [], []
+    only = set(a.only_cases.split(",")) if a.only_cases else None
     for device, e in sorted(man["expected"].items()):
+        if only and e["case"] not in only:
+            continue
         cep = by[device]["CEP_BEARING"]
         exp = e["expected_cep"]
         if e["case"] == "S02":

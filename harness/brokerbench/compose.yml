@@ -1,0 +1,40 @@
+# 브로커 비교 벤치 (EXP-130대). 원본 V1·다른 벤치와 네트워크·포트 비공유(호스트 포트 없음).
+# 기준선 EMQX 는 V1 설정 파일을 그대로 쓴다. 후보는 각 제품 기본값 + 필요한 최소 설정(영속성·WebSocket)만.
+name: brokerbench
+
+services:
+  emqx:
+    image: emqx/emqx:5.8.6
+    hostname: emqx
+    volumes:
+      - ../../emqx/emqx.conf:/opt/emqx/etc/emqx.conf:ro   # V1 과 같은 설정
+    healthcheck: {test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"], interval: 5s, timeout: 10s, retries: 30}
+
+  mosquitto:
+    image: eclipse-mosquitto:2.1.2-alpine
+    hostname: mosquitto
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosq-data:/mosquitto/data
+
+  nanomq:
+    image: emqx/nanomq:0.25.6
+    hostname: nanomq
+
+  hivemq:
+    image: hivemq/hivemq-ce:2026.5
+    hostname: hivemq
+    volumes:
+      - ./hivemq-config.xml:/opt/hivemq/conf/config.xml:ro
+      - hivemq-data:/opt/hivemq/data
+
+  client:
+    build: .
+    profiles: [tools]
+    volumes:
+      - ../..:/repo:ro
+      - ../../experiments:/experiments
+
+volumes:
+  mosq-data:
+  hivemq-data:

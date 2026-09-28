@@ -46,7 +46,7 @@ services:
     # V1 과 같은 파티션 수: raw 6, alerts 3
     command:
       - |
-        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1; do
+        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1 exp.l4.dropped.cep:1; do
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
             --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1
         done
@@ -109,6 +109,51 @@ services:
       - |
         cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
         /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+
+  # EXP-111 후보: Flink 2.2.1 전용 클러스터 = V1 SQL 임계치·Z-Score + DataStream CEP 잡 (profile flinkcep)
+  flinkcep-jobmanager:
+    image: l4bench-flink22:2.2.1
+    profiles: [flinkcep]
+    hostname: flinkcep-jobmanager
+    command: jobmanager
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flinkcep-jobmanager"
+    volumes:
+      - ./generatedcep/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedcep/sql:/opt/flink/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  flinkcep-taskmanager:
+    image: l4bench-flink22:2.2.1
+    profiles: [flinkcep]
+    hostname: flinkcep-taskmanager
+    command: taskmanager
+    depends_on: {flinkcep-jobmanager: {condition: service_healthy}}
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flinkcep-jobmanager"
+    volumes:
+      - ./generatedcep/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedcep/sql:/opt/flink/sql:ro
+
+  submit-flinkcep:
+    image: l4bench-flink22:2.2.1
+    profiles: [flinkcep]
+    depends_on:
+      flinkcep-jobmanager: {condition: service_healthy}
+    volumes:
+      - ./generatedcep/client-config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedcep/sql:/opt/flink/sql:ro
+      - ../../candidates/l4-flink-cep/target/cep-job-1.0.jar:/opt/flink/usrlib/cep-job.jar:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql > /tmp/p.sql
+        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+        /opt/flink/bin/flink run -d -c exp.CepJob /opt/flink/usrlib/cep-job.jar 2>&1 | grep -E "JobID|Job has been submitted|ERROR|Exception" | head -20
 
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:

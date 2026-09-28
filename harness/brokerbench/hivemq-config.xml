@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- EXP-133 HiveMQ CE 2026.5: 기본 TCP 리스너 + WebSocket 리스너만 추가. 영속성은 제품 기본(디스크). -->
+<hivemq>
+  <listeners>
+    <tcp-listener>
+      <port>1883</port>
+      <bind-address>0.0.0.0</bind-address>
+    </tcp-listener>
+    <websocket-listener>
+      <port>8083</port>
+      <bind-address>0.0.0.0</bind-address>
+      <path>/mqtt</path>
+      <name>ws</name>
+      <subprotocols>
+        <subprotocol>mqttv3.1</subprotocol>
+        <subprotocol>mqtt</subprotocol>
+      </subprotocols>
+      <allow-extensions>true</allow-extensions>
+    </websocket-listener>
+  </listeners>
+  <anonymous-usage-statistics>
+    <enabled>false</enabled>
+  </anonymous-usage-statistics>
+</hivemq>

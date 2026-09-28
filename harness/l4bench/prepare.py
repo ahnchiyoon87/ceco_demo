@@ -15,6 +15,8 @@ HERE = pathlib.Path(__file__).resolve().parent
 VARIANTS = {
     "generated": {"alerts": "exp.l4.alerts.flinksql", "host": "flink", "group": "flink-tier1"},
     "generated22": {"alerts": "exp.l4.alerts.flink22", "host": "flink22", "group": "flink22-tier1"},
+    # EXP-111: 전용 2.2.1 클러스터에 01~03 SQL(임계치·Z-Score) + DataStream CEP 잡. 04(SQL CEP)는 제출하지 않는다.
+    "generatedcep": {"alerts": "exp.l4.alerts.cep", "host": "flinkcep", "group": "flinkcep-tier1"},
 }
 
 
