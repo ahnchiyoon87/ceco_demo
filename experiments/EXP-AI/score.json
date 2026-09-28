@@ -73,6 +73,148 @@
    "error": null
   },
   {
+   "run_id": "A-SC2-1",
+   "arm": "A",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "documents",
+    "alarm"
+   ],
+   "analysis_s": 57.4,
+   "alarm_wait_s": 1657.1,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC2-2",
+   "arm": "A",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 63.5,
+   "alarm_wait_s": 1562.1,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC2-3",
+   "arm": "A",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "observations",
+    "alarm"
+   ],
+   "analysis_s": 57.4,
+   "alarm_wait_s": 1549.2,
+   "confirm_review": [
+    "원인은 확정할 수 없고, 실행 직전 최신 온도·명령·인터록·사건 및 문서 관계를 재확인해야 합니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC2x-1",
+   "arm": "A",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "observations"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 31.4,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "A-SC2x-2",
+   "arm": "A",
+   "outcome": "inspect_only",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": false,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "documents",
+    "alarm"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 28.2,
+   "confirm_review": [
+    "알람·통계는 조회 당시 스냅샷이며 원인이나 정비 완료를 확정하지 않습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "A-SC2x-3",
+   "arm": "A",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "alarm",
+    "observations"
+   ],
+   "analysis_s": 6.1,
+   "alarm_wait_s": 22.0,
+   "confirm_review": [],
+   "error": null
+  },
+  {
    "run_id": "A-SC3-1",
    "arm": "A",
    "outcome": "inspect_only",
@@ -296,6 +438,159 @@
    "error": null
   },
   {
+   "run_id": "B-SC2-1",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "observations"
+   ],
+   "analysis_s": 60.4,
+   "alarm_wait_s": 1428.1,
+   "confirm_review": [
+    "원인은 확정할 수 없다: 히터 명령은 꺼져 있으나 재킷 TT-102 관측이 제공되지 않아 히터 출력 고착 여부를 평가할 수 없고, 냉각 능력 상태도 명령 반영 및 후속 온도 이력으로 확인해야 한다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "B-SC2-2",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 60.5,
+   "alarm_wait_s": 1131.1,
+   "confirm_review": [
+    "원인은 확정되지 않았습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "B-SC2-3",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "documents"
+   ],
+   "analysis_s": 57.3,
+   "alarm_wait_s": 1068.7,
+   "confirm_review": [
+    "가능한 해석으로는 냉각 대응이 검토 대상이나, 히터 출력 고착 등 원인은 확정할 수 없습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "B-SC2x-1",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "alarm",
+    "documents"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 34.5,
+   "confirm_review": [
+    "온도 초과 원인은 확정할 수 없습니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "B-SC2x-2",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "observations",
+    "documents",
+    "alarm"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 28.3,
+   "confirm_review": [
+    "온도 초과의 원인은 이 자료로 확정할 수 없으며, 교육용 상한은 제조사 안전 기준이 아닙니다"
+   ],
+   "error": null
+  },
+  {
+   "run_id": "B-SC2x-3",
+   "arm": "B",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": null,
+   "cause_detail": null,
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "documents",
+    "observations",
+    "alarm"
+   ],
+   "analysis_s": 9.1,
+   "alarm_wait_s": 25.2,
+   "confirm_review": [
+    "원인은 확정할 수 없습니다"
+   ],
+   "error": null
+  },
+  {
    "run_id": "C-SC1-1",
    "arm": "C",
    "outcome": "stop_mixer",
@@ -449,6 +744,131 @@
    "tools": [],
    "analysis_s": null,
    "alarm_wait_s": 1201.8,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC2x-1",
+   "arm": "C",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": [
+    3,
+    3
+   ],
+   "cause_detail": {
+    "FM-HEATER-STUCK-ON": [
+     "supported",
+     "supported"
+    ],
+    "FM-COOLING-LOSS": [
+     "not_applicable",
+     "not_applicable"
+    ],
+    "FM-SETPOINT-TOO-HIGH": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "documents",
+    "ontology",
+    "observations",
+    "manual_search"
+   ],
+   "analysis_s": 21.3,
+   "alarm_wait_s": 31.4,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC2x-2",
+   "arm": "C",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": [
+    3,
+    3
+   ],
+   "cause_detail": {
+    "FM-HEATER-STUCK-ON": [
+     "supported",
+     "supported"
+    ],
+    "FM-COOLING-LOSS": [
+     "not_applicable",
+     "not_applicable"
+    ],
+    "FM-SETPOINT-TOO-HIGH": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-ASSET-CONTEXT",
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "manual_search",
+    "documents",
+    "observations",
+    "ontology",
+    "alarm"
+   ],
+   "analysis_s": 12.1,
+   "alarm_wait_s": 34.6,
+   "confirm_review": [],
+   "error": null
+  },
+  {
+   "run_id": "C-SC2x-3",
+   "arm": "C",
+   "outcome": "enable_cooling",
+   "scenario": "SC2_heater_stuck@60배속",
+   "action_match": true,
+   "cause_score": [
+    3,
+    3
+   ],
+   "cause_detail": {
+    "FM-HEATER-STUCK-ON": [
+     "supported",
+     "supported"
+    ],
+    "FM-COOLING-LOSS": [
+     "not_applicable",
+     "not_applicable"
+    ],
+    "FM-SETPOINT-TOO-HIGH": [
+     "refuted",
+     "refuted"
+    ]
+   },
+   "forbidden_cited": [],
+   "citations": [
+    "AR100-FAILURE-MODES",
+    "AR100-THERMAL-RESPONSE"
+   ],
+   "tools": [
+    "alarm",
+    "observations",
+    "manual_search",
+    "documents",
+    "ontology"
+   ],
+   "analysis_s": 12.1,
+   "alarm_wait_s": 22.0,
    "confirm_review": [],
    "error": null
   },
@@ -721,6 +1141,32 @@
     12.2
    ]
   },
+  "A|SC2_heater_stuck": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    57.4,
+    63.5,
+    57.4
+   ]
+  },
+  "A|SC2_heater_stuck@60배속": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 2,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    9.1,
+    9.1,
+    6.1
+   ]
+  },
   "A|SC3_overpressure": {
    "runs": 3,
    "valid": 3,
@@ -760,6 +1206,32 @@
     9.2
    ]
   },
+  "B|SC2_heater_stuck": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    60.4,
+    60.5,
+    57.3
+   ]
+  },
+  "B|SC2_heater_stuck@60배속": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 0,
+   "cause_n": 0,
+   "forbidden": 0,
+   "analysis_s": [
+    9.1,
+    9.1,
+    9.1
+   ]
+  },
   "C|SC1_bearing": {
    "runs": 3,
    "valid": 3,
@@ -781,6 +1253,19 @@
    "cause_n": 0,
    "forbidden": 0,
    "analysis_s": []
+  },
+  "C|SC2_heater_stuck@60배속": {
+   "runs": 3,
+   "valid": 3,
+   "action_ok": 3,
+   "cause_ok": 9,
+   "cause_n": 9,
+   "forbidden": 0,
+   "analysis_s": [
+    21.3,
+    12.1,
+    12.1
+   ]
   },
   "C|SC3_overpressure": {
    "runs": 3,
