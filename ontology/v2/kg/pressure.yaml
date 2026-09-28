@@ -1,0 +1,37 @@
+# 새 고장 유형(SC3 확장 시험): 반응기 과압. 데이터와 문서만 추가한다(코드 0줄).
+symptoms:
+  - id: SYM-REACTOR-OVERPRESSURE
+    name: 반응기 압력 상한 초과
+    observed_on: R-101
+    signatures: [{alert_type: THRESHOLD_USL, tag: PT-101}]
+    section: AR100-PRESSURE-RESPONSE#2
+    investigation: [AR100-PRESSURE-RESPONSE#1, AR100-PRESSURE-RESPONSE#2]
+
+failure_modes:
+  - id: FM-PRESSURE-OVERHEAT
+    name: 온도 상승에 따른 압력 상승
+    manifests_as: [SYM-REACTOR-OVERPRESSURE]
+    affects: R-101
+    causes: [열 공급 과다, 냉각 부족]
+    checks:
+      - {text: TT-101 이 상한을 넘거나 크게 오른 상태면 근거. 상한 미만이고 평소 범위면 이 고장모드로 과압을 설명할 수 없다., observable: true, tags: [TT-101, PT-101]}
+    section: AR100-PRESSURE-RESPONSE#2
+  - id: FM-PRESSURE-OUTLET-BLOCKED
+    name: 배출 막힘
+    manifests_as: [SYM-REACTOR-OVERPRESSURE]
+    affects: R-101
+    causes: [배출밸브 고착, 배관 막힘]
+    checks:
+      - {text: 배출밸브 개도 설정이 0보다 큰데 FT-102 가 0 근처이고 LT-102 가 계속 오르면 근거. FT-102 가 0 근처가 아니면 막힘으로 설명할 수 없다., observable: true, tags: [FT-102, LT-102], commands: [valve_open_sp]}
+    section: AR100-PRESSURE-RESPONSE#2
+  - id: FM-PRESSURE-TRANSIENT
+    name: 순간 과압
+    manifests_as: [SYM-REACTOR-OVERPRESSURE]
+    affects: R-101
+    causes: [순간 압력 변동, 계측 순간값]
+    checks:
+      - {text: PT-101 상한 초과가 짧게(약 15초 이하) 나타난 뒤 상한 아래로 돌아왔으면 근거. 상한 초과가 계속되면 순간 과압이 아니다., observable: true, tags: [PT-101]}
+    section: AR100-PRESSURE-RESPONSE#2
+
+actions:
+  - {id: inspect_only, mitigates: [SYM-REACTOR-OVERPRESSURE], procedure: [AR100-PRESSURE-RESPONSE#3]}
