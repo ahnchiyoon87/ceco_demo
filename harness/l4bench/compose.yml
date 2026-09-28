@@ -47,7 +47,7 @@ services:
     # V1 과 같은 파티션 수: raw 6, alerts 3
     command:
       - |
-        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.clean.flinksql:6 exp.l4.clean.flink22:6 exp.l4.clean.cep:6 exp.l4.clean.python:6 exp.l4.score.flinksql:3 exp.l4.score.flink22:3 exp.l4.score.cep:3 exp.l4.score.python:3 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1 exp.l4.dropped.cep:1; do
+        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.clean.flinksql:6 exp.l4.clean.flink22:6 exp.l4.clean.cep:6 exp.l4.clean.python:6 exp.l4.score.flinksql:3 exp.l4.score.flink22:3 exp.l4.score.cep:3 exp.l4.score.python:3 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.alerts.flinkha:3 exp.l4.dropped.python:1 exp.l4.dropped.cep:1; do
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
             --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1             --config message.timestamp.type=LogAppendTime   # 지연 측정 기준을 브로커 수신 시각으로 통일(Flink DataStream 싱크는 이벤트 시각을 찍음)
         done
@@ -166,6 +166,60 @@ services:
         /opt/flink/bin/flink run -d -c exp.CepJob /opt/flink/usrlib/cep-job.jar 2>&1 | grep -E "JobID|Job has been submitted|ERROR|Exception" | head -20
         /opt/flink/bin/flink run -d -c org.uengine.iiot.AnomalyJob /opt/flink/usrlib/anomaly-job.jar /opt/flink/job/job.properties 2>&1 | grep -E "JobID|ERROR|Exception" | head -20
 
+  # 자동 복구 후보: Flink 2.2.1 + HA(ZooKeeper) + 공유 체크포인트 (profile flinkha)
+  zookeeper:
+    image: zookeeper:3.9.3
+    profiles: [flinkha]
+    hostname: zookeeper
+
+  flinkha-jobmanager:
+    image: ${FLINKHA_IMAGE:-l4bench-flink22:2.2.1}
+    profiles: [flinkha]
+    hostname: flinkha-jobmanager
+    command: jobmanager
+    depends_on: [zookeeper]
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flinkha-jobmanager"
+    volumes:
+      - ./generatedha/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedha/sql:/opt/flink/sql:ro
+      - ./models:/opt/models:ro
+      - flinkha-ha:/opt/flink/ha
+      - flinkha-ckpt:/opt/flink/checkpoints
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  flinkha-taskmanager:
+    image: ${FLINKHA_IMAGE:-l4bench-flink22:2.2.1}
+    profiles: [flinkha]
+    hostname: flinkha-taskmanager
+    command: taskmanager
+    depends_on: {flinkha-jobmanager: {condition: service_healthy}}
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flinkha-jobmanager"
+    volumes:
+      - ./generatedha/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedha/sql:/opt/flink/sql:ro
+      - ./models:/opt/models:ro
+      - flinkha-ckpt:/opt/flink/checkpoints
+
+  submit-flinkha:
+    image: ${FLINKHA_IMAGE:-l4bench-flink22:2.2.1}
+    profiles: [flinkha]
+    depends_on:
+      flinkha-jobmanager: {condition: service_healthy}
+    volumes:
+      - ./generatedha/client-config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generatedha/sql:/opt/flink/sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
+        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
+
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:
     build: ../../candidates/l4-python
@@ -211,3 +265,5 @@ services:
 
 volumes:
   l4py-state:
+  flinkha-ha:
+  flinkha-ckpt:

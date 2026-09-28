@@ -14,11 +14,27 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 HERE = pathlib.Path(__file__).resolve().parent
 
+# 자동 복구 후보에 덧붙이는 설정: Flink 고가용성(ZooKeeper). JobManager 재시작 시 잡을 마지막 체크포인트에서 복구
+HA_EXTRA = """
+# ── 자동 복구 후보: Flink 고가용성(ZooKeeper) ──
+high-availability:
+  type: zookeeper
+  storageDir: file:///opt/flink/ha
+  cluster-id: /l4bench-flinkha
+  zookeeper:
+    quorum: zookeeper:2181
+    path:
+      root: /flink
+"""
+
 VARIANTS = {
     "generated": {"alerts": "exp.l4.alerts.flinksql", "host": "flink", "group": "flink-tier1"},
     "generated22": {"alerts": "exp.l4.alerts.flink22", "host": "flink22", "group": "flink22-tier1"},
     # EXP-111: 전용 2.2.1 클러스터에 01~03 SQL(임계치·Z-Score) + DataStream CEP 잡. 04(SQL CEP)는 제출하지 않는다.
     "generatedcep": {"alerts": "exp.l4.alerts.cep", "host": "flinkcep", "group": "flinkcep-tier1"},
+    # 이상탐지 자동 복구 후보: 같은 V1 SQL + 현업 표준 Flink HA(ZooKeeper) + JM·TM 공유 체크포인트 저장소
+    "generatedha": {"alerts": "exp.l4.alerts.flinkha", "host": "flinkha", "group": "flinkha-tier1",
+                    "extra": HA_EXTRA},
 }
 
 
@@ -44,7 +60,7 @@ def build(outdir, v):
     config, n_tm = re.subn(r"(taskmanager:\n(?:.*\n)*?\s+process:\n\s+size:) \S+", r"\1 1600m", config, count=1)
     n_slots = config.count("numberOfTaskSlots: 8")
     assert (n_jm, n_tm, n_slots) == (1, 1, 1), (n_jm, n_tm, n_slots)
-    (out / "config.yaml").write_text(rehost(config), encoding="utf-8")
+    (out / "config.yaml").write_text(rehost(config) + v.get("extra", ""), encoding="utf-8")
     (out / "client-config.yaml").write_text(
         rehost((ROOT / "flink" / "conf" / "client-config.yaml").read_text(encoding="utf-8")), encoding="utf-8")
 
