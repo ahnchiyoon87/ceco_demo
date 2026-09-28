@@ -54,7 +54,7 @@ V1은 현업 수준 시스템이지만 **약간 비효율적이고, 쓸데없는
 ## 6. 현재 실행 상태 (재개 시 확인)
 - **격리 V1 가동 중:** `rot-iiot`(SCADA 29, 컨테이너 `rot-*`, 포트 37xxx) + `rot-ai`(5). 기동: `docker compose --env-file .env --env-file .env.rotation up -d --no-build` / AI: `docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge up -d --no-build`. 원본 볼륨 `iiot_*` 9개는 건드리지 않음. 이미지는 재빌드하지 않고 기존 V1 이미지 사용(ID 기록 `experiments/EXP-000/raw/images.txt`).
 - **E3 측정 중:** `experiments/EXP-000/raw/e3b_v1_stats.csv`(30분, 시작 `e3b_start.txt`). 끝나면 E1(`harness/e2e/e1.py`, 이미지 `e2e-client:1.0`, 네트워크 `rot-iiot`) 실행 — E3 도중 고장 주입 금지.
-- **미커밋:** `harness/l4bench/prepare.py`·`compose.yml`의 Flink HA 후보(profile `flinkha`, ZooKeeper 3.9.3, 공유 체크포인트) — 사용자가 커밋 명령을 한 번 멈춤. 내용 확인 후 커밋.
+- **Flink HA 후보 구성 커밋됨(4e0269a):** `harness/l4bench/prepare.py`·`compose.yml` profile `flinkha`(ZooKeeper 3.9.3, 공유 체크포인트). 아직 실행 안 함.
 - L4·브로커 벤치는 내려가 있음. 조사 에이전트(V1 온톨로지 모듈)는 결과 미수령 → 필요하면 다시 조사.
 
 ## 7. 미결정 — 무엇을 보고 정하나
