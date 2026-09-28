@@ -6,8 +6,10 @@ exp=$1; run=$2; targets=$3; shift 3
 export MSYS_NO_PATHCONV=1
 B="docker compose -f harness/l4bench/compose.yml"
 man="experiments/$exp/raw/replay_${run}_manifest.json"
-rm -f "$man"
-$B --profile tools run --rm -T tools python /repo/harness/tools/replay.py --exp "$exp" --run "$run" --cases S09 "$@" \
+# 실행 ID 재사용 금지: 옛 manifest 의 t0 로 kill 시점을 잡으면 시험이 무효가 된다
+[ -e "$man" ] && { echo "실행 ID $run 은 $exp 에서 이미 쓰였다 — 새 ID 로 실행"; exit 1; }
+mkdir -p "experiments/$exp/raw"
+$B --profile tools run --rm -T -e FLINK_REST="${FLINK_REST:-http://flink-jobmanager:8081}" tools python /repo/harness/tools/replay.py --exp "$exp" --run "$run" --cases S09 "$@" \
   > "experiments/$exp/raw/replay_${run}.out" 2>&1 &
 rp=$!
 for i in $(seq 1 120); do [ -s "$man" ] && break; sleep 0.5; done

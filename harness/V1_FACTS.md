@@ -54,7 +54,7 @@
 | 시각(KST) | 관측 | 근거 | 관련 |
 |---|---|---|---|
 | 2026-09-28 11:00 | `flink-job-submitter`가 4개 잡(CEP·ZScore·Threshold·ONNX) 제출, 모두 RUNNING | 제출기 로그 | — |
-| 2026-09-28 11:52 | kafka·flink-jobmanager·flink-taskmanager 동시 재시작(RestartCount 0 → 수동 재기동으로 보임) | `docker inspect` StartedAt 02:52Z | — |
+| 2026-09-28 11:52 | kafka·flink-jobmanager·flink-taskmanager 동시 재시작. **정정: 수동 재기동이 아니라 Docker Desktop 자체 재시작(프로세스 시작 11:51:56)으로 컨테이너가 다시 뜬 것.** 원인(메모리 부족 추정) 미확인 | `docker inspect` StartedAt 02:52Z, Get-Process(Docker Desktop StartTime) | decision-log #21 |
 | 2026-09-28 조사 시점 | Flink 잡 0개(`/jobs/overview` = `[]`). `sensor.telemetry.clean` 오프셋 10초간 증가 0. raw는 계속 유입 | REST·`kafka-get-offsets` | **CAP-06·07·08 중단**, CAP-18 |
 
 해석: Flink가 HA 없는 세션 클러스터라 JobManager 재시작 시 잡이 사라지고, 제출기는 1회성 컨테이너라 재제출하지 않는다. 탐지·알람이 조용히 멈추고 화면에는 "알람 없음"으로만 보인다. 재제출해도 소스가 `latest-offset`이라 중단 구간은 탐지되지 않는다. → S09·S11 기준선의 실측 약점. 후보 비교 항목 "재시작 후 자동 복구 여부"로 쓴다.

@@ -43,12 +43,15 @@ def main():
     emitted = [json.loads(l) for l in open(raw / f"replay_{a.run}_emitted.jsonl", encoding="utf-8")]
     vib_emit = {r["device"]: r["emit_ns"] for r in emitted if r["kind"] == "inject" and r["tag"] == "VT-101"}
 
-    alerts = [(ts, r) for ts, r in read_all(a.alerts) if r.get("device", "").startswith(f"{a.run}-")]
+    # manifest 에 적힌 장치 + 리플레이 시작 이후 기록된 알람만 센다 (이전 실행과 섞이지 않게)
+    devices = set(man["expected"])
+    since = man.get("t0_wall_ms", 0)
+    alerts = [(ts, r) for ts, r in read_all(a.alerts) if r.get("device") in devices and ts >= since]
     (raw / f"alerts_{a.run}.jsonl").write_text("".join(json.dumps({"kafka_ts_ms": ts, **r}, ensure_ascii=False) + "\n"
                                                     for ts, r in alerts), encoding="utf-8")
     dropped = []
     if a.dropped:
-        dropped = [r for _, r in read_all(a.dropped) if r.get("device", "").startswith(f"{a.run}-")]
+        dropped = [r for ts, r in read_all(a.dropped) if r.get("device") in devices and ts >= since]
 
     by = collections.defaultdict(collections.Counter)
     first_cep_ms = {}

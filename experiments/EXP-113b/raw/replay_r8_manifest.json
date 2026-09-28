@@ -1,0 +1,129 @@
+{
+ "exp": "EXP-113b",
+ "run": "r8",
+ "topic": "exp.l4.raw",
+ "seed": 20260928,
+ "repeat": 3,
+ "background": "synthetic (plant.yaml 규격·노이즈 기반, 실측 아님)",
+ "normal": {
+  "IT-102": [
+   7.0,
+   0.025
+  ],
+  "VT-101": [
+   2.1,
+   0.06
+  ],
+  "TT-101": [
+   72.0,
+   0.06
+  ]
+ },
+ "high": {
+  "IT-102": 9.9,
+  "VT-101": 7.5,
+  "TT-101": 96.0
+ },
+ "window_s": 10,
+ "watermark_s": 5,
+ "t0_event_ns": 1790588901619516928,
+ "records": 2898,
+ "expected": {
+  "r8-S02-1": {
+   "case": "S02",
+   "expected_cep": null
+  },
+  "r8-S02-2": {
+   "case": "S02",
+   "expected_cep": null
+  },
+  "r8-S02-3": {
+   "case": "S02",
+   "expected_cep": null
+  },
+  "r8-S04-1": {
+   "case": "S04",
+   "expected_cep": 1
+  },
+  "r8-S04-2": {
+   "case": "S04",
+   "expected_cep": 1
+  },
+  "r8-S04-3": {
+   "case": "S04",
+   "expected_cep": 1
+  },
+  "r8-S05-1": {
+   "case": "S05",
+   "expected_cep": 0
+  },
+  "r8-S05-2": {
+   "case": "S05",
+   "expected_cep": 0
+  },
+  "r8-S05-3": {
+   "case": "S05",
+   "expected_cep": 0
+  },
+  "r8-S06a-1": {
+   "case": "S06a",
+   "expected_cep": 1
+  },
+  "r8-S06a-2": {
+   "case": "S06a",
+   "expected_cep": 1
+  },
+  "r8-S06a-3": {
+   "case": "S06a",
+   "expected_cep": 1
+  },
+  "r8-S06b-1": {
+   "case": "S06b",
+   "expected_cep": 0
+  },
+  "r8-S06b-2": {
+   "case": "S06b",
+   "expected_cep": 0
+  },
+  "r8-S06b-3": {
+   "case": "S06b",
+   "expected_cep": 0
+  },
+  "r8-S07-1": {
+   "case": "S07",
+   "expected_cep": "policy"
+  },
+  "r8-S07-2": {
+   "case": "S07",
+   "expected_cep": "policy"
+  },
+  "r8-S07-3": {
+   "case": "S07",
+   "expected_cep": "policy"
+  },
+  "r8-S08a-1": {
+   "case": "S08a",
+   "expected_cep": 1
+  },
+  "r8-S08a-2": {
+   "case": "S08a",
+   "expected_cep": 1
+  },
+  "r8-S08a-3": {
+   "case": "S08a",
+   "expected_cep": 1
+  },
+  "r8-S08b-1": {
+   "case": "S08b",
+   "expected_cep": 1
+  },
+  "r8-S08b-2": {
+   "case": "S08b",
+   "expected_cep": 1
+  },
+  "r8-S08b-3": {
+   "case": "S08b",
+   "expected_cep": 1
+  }
+ }
+}

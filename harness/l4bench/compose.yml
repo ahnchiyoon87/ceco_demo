@@ -46,7 +46,7 @@ services:
     # V1 과 같은 파티션 수: raw 6, alerts 3
     command:
       - |
-        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1; do
+        for spec in exp.l4.raw:6 exp.l4.clean:6 exp.l4.alerts.flinksql:3 exp.l4.alerts.flink22:3 exp.l4.alerts.python:3 exp.l4.alerts.cep:3 exp.l4.dropped.python:1; do
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists \
             --topic "$${spec%%:*}" --partitions "$${spec##*:}" --replication-factor 1
         done
@@ -66,6 +66,49 @@ services:
     hostname: flink-taskmanager
     command: taskmanager
     depends_on: {flink-jobmanager: {condition: service_healthy}}
+
+  # EXP-112 후보: 같은 V1 SQL 을 Flink 2.2.1 에서 (profile flink22)
+  flink22-jobmanager:
+    image: l4bench-flink22:2.2.1          # candidates/l4-flink22/Dockerfile
+    profiles: [flink22]
+    hostname: flink22-jobmanager
+    command: jobmanager
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink22-jobmanager"
+    volumes:
+      - ./generated22/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generated22/sql:/opt/flink/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  flink22-taskmanager:
+    image: l4bench-flink22:2.2.1
+    profiles: [flink22]
+    hostname: flink22-taskmanager
+    command: taskmanager
+    depends_on: {flink22-jobmanager: {condition: service_healthy}}
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink22-jobmanager"
+    volumes:
+      - ./generated22/config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generated22/sql:/opt/flink/sql:ro
+
+  submit-flink22:
+    image: l4bench-flink22:2.2.1
+    profiles: [flink22]
+    depends_on:
+      flink22-jobmanager: {condition: service_healthy}
+    volumes:
+      - ./generated22/client-config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./generated22/sql:/opt/flink/sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        cat /opt/flink/sql/01_sources.sql /opt/flink/sql/02_tier1_rules.sql /opt/flink/sql/03_tier1_zscore.sql /opt/flink/sql/04_tier1_cep.sql > /tmp/p.sql
+        /opt/flink/bin/sql-client.sh -f /tmp/p.sql 2>&1 | sed -E 's/\x1b\[[0-9;]*m//g' | grep -E "Job ID|ERROR|Exception" | head -20
 
   # EXP-113 후보: Python 스트림 서비스 (profile python)
   l4-python:

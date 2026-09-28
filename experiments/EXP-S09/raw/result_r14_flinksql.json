@@ -1,0 +1,53 @@
+{
+ "exp": "EXP-S09",
+ "run": "r14",
+ "alerts_topic": "exp.l4.alerts.flinksql",
+ "pass": 3,
+ "fail": 0,
+ "record": [],
+ "cep_latency_ms": {
+  "n": 0,
+  "p50": null,
+  "p95": null,
+  "max": null,
+  "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+ },
+ "rows": [
+  {
+   "device": "r14.8fea6-S09-1",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "CEP_BEARING": 1,
+    "THRESHOLD_USL": 3,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "r14.8fea6-S09-2",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "CEP_BEARING": 1,
+    "THRESHOLD_USL": 3,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  },
+  {
+   "device": "r14.8fea6-S09-3",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 1,
+   "types": {
+    "CEP_BEARING": 1,
+    "THRESHOLD_USL": 3,
+    "ZSCORE": 2
+   },
+   "verdict": "PASS"
+  }
+ ]
+}
