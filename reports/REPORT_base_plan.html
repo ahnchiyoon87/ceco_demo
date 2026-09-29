@@ -84,26 +84,69 @@ footer{font-size:13px;color:var(--muted)}
 .steps b{display:inline-block;min-width:30px;text-align:center;border-radius:9px;color:var(--f-nt);font-size:11px;padding:1px 5px;margin-right:6px}
 .steps.d b{background:var(--f-data)} .steps.c b{background:var(--f-cmd)} .steps.a b{background:var(--f-alm)}
 td.diff{color:var(--warn);font-weight:600}
+
+.story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.story li{border:1px solid var(--line);border-radius:8px;padding:10px 12px 10px 44px;position:relative;font-size:14px}
+.story li b{display:block}
+.story li span{position:absolute;left:10px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--panel);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.timeline{list-style:none;margin:6px 0 14px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.timeline li{border-top:4px solid var(--accent);background:var(--code);border-radius:4px;padding:8px 10px;font-size:13px}
+.timeline li b{display:block;font-size:14px}
+.timeline li span{display:block;color:var(--muted);margin-top:4px}
+.timeline li.now{border-top-color:var(--warn)}
+.ladder{list-style:none;margin:6px 0 10px;padding:0;display:flex;flex-direction:column;gap:8px}
+.ladder li{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.ladder li span{font-size:20px;font-weight:800;color:var(--accent);line-height:1.2}
+.ladder li b{display:block}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.conf div{border-radius:8px;padding:10px 12px;font-size:14px;border:1px solid var(--line)}
+.conf b{display:block;margin-bottom:4px}
+.conf .c-ok{border-left:6px solid var(--ok)} .conf .c-mid{border-left:6px solid var(--dmz)} .conf .c-own{border-left:6px solid var(--it)}
+.note{background:var(--code);border-left:4px solid var(--warn);padding:10px 12px;border-radius:4px;max-width:none;font-size:14px}
+@media (max-width:760px){.story,.timeline,.vs,.conf{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
 <header>
   <div class="kicker">경남대 제조 AI 과정 · IIoT·SCADA 실습 시스템 · 2026-09-29</div>
-  <h1>SCADA 베이스 설계 — 현업 조사로 정한 구조와 스택</h1>
-  <p class="lead">학생이 배우는 시스템을 <b>2026년 제조 현업에서 주로 쓰는 구조와 스택</b>에 맞춘다. 현업 조사 네 건(구조·세부·스택·무료 대체품)으로 무엇을 왜 쓰는지 정했고, 조립과 검증은 다음 단계에서 한 번에 한다. 이 문서는 <b>계획과 근거</b>다. 새 베이스의 실측 결과는 아직 없다.</p>
+  <h1>SCADA 베이스 설계 — 2026 현업 조사에서 우리 아키텍처까지</h1>
+  <p class="lead">프로토타입 시스템 아키텍처가 <b>2026년 제조 현업</b>과 맞는지 보려고 현업을 조사했다. 현업이 쓰는 구조·흐름·스택을 확인하고, 비용·라이선스·도커·현업 사용 근거·용도를 기준으로 칸마다 제품을 골라 우리 아키텍처를 정했다. 이 문서는 <b>계획과 근거</b>다. 새 베이스의 실측 결과는 아직 없다.</p>
 </header>
 
 <section>
-  <h2>한눈에</h2>
+  <h2>한눈에 — 이 문서의 이야기</h2>
+  <ol class="story">
+    <li><span>1</span><b>왜 조사했나</b>프로토타입 아키텍처를 2026 현업 기준으로 점검한다</li>
+    <li><span>2</span><b>현업은 이렇다</b>OT·DMZ·IT 세 구역, PLC가 최종 판단, 데이터는 공장이 밀어낸다</li>
+    <li><span>3</span><b>우리 기준</b>현업 주류 → 비용 0·라이선스·도커·계열 유지 → 경량화</li>
+    <li><span>4</span><b>칸마다 선택</b>현업과 같은 제품 7칸, 현업이 상용이라 무료로 대신 5칸, 맞는 무료 제품이 없어 자체 1칸(등록부·승인·알람)</li>
+    <li><span>5</span><b>우리 아키텍처</b>설비부터 업무·승인까지 10개 층 한 장</li>
+    <li><span>6</span><b>확정 범위</b>L1~L4는 표준 근거 강함, 외부 연결은 원칙만 표준, 방법은 조사 중</li>
+  </ol>
+  <p class="muted">원본 폴더 <code>lecture-iiot-scada</code>는 고치지 않는다. 복사본에서 원본 V1 코드를 출발점으로 바꾸며 원본 기능은 잃지 않는다. 순서는 베이스 → 설비 확장(다수·OPC UA) → 시나리오·온톨로지이고, 이후 피지컬 AI에 쓴다.</p>
+</section>
+
+<section>
+  <h2>1. 왜 조사했나 — 무엇을, 어떻게</h2>
+  <p>학생이 배우는 프로토타입(원본 V1)이 <b>2026년 제조 현업의 구조와 스택</b>에 맞는지 보고, 맞지 않는 곳을 현업 기준으로 고치기 위해서다. 우리 구조를 정답으로 두지 않고 "우리는 이렇다, 현업은 어떤가"로 물었다. 비교 대상으로 참조 설계서 v3(다른 팀이 실제 구축·실행)와 우리 구조도 PDF를 함께 보냈다.</p>
+  <ol class="timeline">
+    <li><b>구조</b><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12번</a><span>층·길·망·확장·AI 연결. 표준 원문 중심(출처 39)</span></li>
+    <li><b>세부</b><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13번</a><span>토픽·명령·알람·저장·확장 결정 29줄(출처 90, 62곳은 검색 요약)</span></li>
+    <li><b>스택</b><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14번</a><span>칸마다 현업 주류 제품·버전·라이선스·도커 이미지</span></li>
+    <li><b>무료 대체품</b><a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15번</a><span>현업이 상용인 PLC·엣지·화면의 무료 후보 비교</span></li>
+    <li class="now"><b>외부 연결</b>16번 · 조사 중<span>밖으로 보내기·설비 쪽으로 보내기 방법과 사용 정도</span></li>
+  </ol>
   <div class="grid3">
-    <div class="card"><b>기준</b>① 현업에서 주로 쓰는 것 ② 비용 0·라이선스·도커·제품 계열 유지 ③ 경량화(현업 수준은 유지). 학생 PC 한 대(도커 7.6 GB)에서 돈다.</div>
-    <div class="card"><b>원본은 그대로</b>원본 폴더 <code>lecture-iiot-scada</code>는 고치지 않는다. 복사본에서 원본 V1 코드를 출발점으로 바꾸며, 원본 기능은 잃지 않는 것이 기준이다.</div>
-    <div class="card"><b>순서</b>베이스(구조·스택 확정 완료 → 조립 → 검증) → 설비 확장(다수·OPC UA) → 시나리오·온톨로지. 이후 피지컬 AI에 쓴다.</div>
+    <div class="card"><b>근거 규칙</b>근거마다 표준·독립 분석·벤더·사례·재단을 표시했다. 벤더 한 곳의 말로 "현업 주류"라고 쓰지 않았다.</div>
+    <div class="card"><b>원문 여부</b>원문을 읽었는지, 검색 요약만 봤는지 구분했다. 못 찾은 것은 "찾지 못함"으로 남겼다.</div>
+    <div class="card"><b>조사 범위의 한계</b>한국 법규는 조사하지 않았다. 유료 표준 본문(IEC 62443, ISA-112)은 목차·해설만 봤다. 채택률 수치는 공개 자료에 없다.</div>
   </div>
 </section>
 
 <section>
-  <h2>1. 현업은 어떤 구조인가</h2>
+  <h2>2. 현업은 이렇게 한다 — 구조·흐름·스택</h2>
+
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
   <p>공공 표준 원문(NIST SP 800-82r3, CISA 망 분리 권고 2016, CISA 등 9개 기관 AI-OT 지침 2025, NAMUR NE 178, Sparkplug 3.0)으로 확인한 공통 모양이다.</p>
   <div class="grid3">
@@ -164,10 +207,9 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>IEC 61131-3</td><td>국제 표준(PLC 프로그래밍 언어)</td><td>PLC 프로그램 언어(ST 등)</td><td>OpenPLC 프로그램을 ST로</td><td>14번 언급</td><td><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14</a></td></tr>
     <tr><td>21 CFR Part 11</td><td>미국 연방 규정(FDA 전자 기록 규정) — 법령</td><td>시각이 찍힌 감사 추적, 대상 기록과 같은 기간 보존(§11.10(e)(f))</td><td>명령·승인·감사 기록은 지우지 않는다</td><td>규정 조항 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
   </table></div>
-</section>
 
-<section>
-  <h2>2. 현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h2>
+  <h3>현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h3>
+
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
   <div class="tbl"><table>
     <tr><th>항목</th><th>현업</th><th>참조 v3</th><th>우리 원본 V1</th></tr>
@@ -183,10 +225,32 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>실시간 이상 탐지 위치</td><td>ML은 주로 OT 가까이(L1~L3), LLM·에이전트는 OT 밖</td><td>IT(Flink)</td><td>Flink(망 구분 없음)</td></tr>
   </table></div>
   <p class="muted" style="margin-top:10px">v3와 우리 구조도는 비교 대상이고, 판단은 현업 조사로 했다. 원본 V1의 뼈대(엣지 → MQTT → Kafka → Flink)는 현업과 맞다. 고칠 곳은 망·PLC·명령 길·등록부다.</p>
+
 </section>
 
 <section>
-  <h2>3. 칸별 스택 — 현업은 주로 무엇, 우리는 무엇, 왜</h2>
+  <h2>3. 우리가 고르는 기준</h2>
+  <p>현업을 그대로 옮길 수는 없다. 학생마다 PC 한 대(도커 7.6 GB)에서 비용 없이 돌려야 한다. 그래서 칸마다 아래 순서로 걸렀다.</p>
+  <ol class="ladder">
+    <li><span>①</span><div><b>현업에서 주로 쓰는 것</b>독립 분석·설문·표준에 나온 주류 제품. 무료 본체가 있으면 그대로 쓴다.</div></li>
+    <li><span>②</span><div><b>통과해야 하는 관문</b>비용 0 · 금지 라이선스 아님(BSL·SSPL·TSL·RCL·체험판·상용 기능) · 공식 도커 이미지 · 제품 계열이 계속 개발됨. 판마다 있는 지원 종료일은 제외 이유가 아니다(학기마다 같은 계열 최신 판으로 올림).</div></li>
+    <li><span>③</span><div><b>경량화</b>현업 수준을 유지한 채 가벼운 판·설정·선택 기능·중복 합치기로 줄인다. 층을 빼지 않고, 원본보다 나빠지면 쓰지 않는다.</div></li>
+  </ol>
+  <h3>현업 주류를 그대로 못 쓴 이유(관문 ②)</h3>
+  <div class="grid3">
+    <div class="card"><b>CODESYS(PLC)</b>라이선스 없이 2시간 데모</div>
+    <div class="card"><b>Ignition(화면·엣지)</b>무료판은 비상업·개인 교육용만</div>
+    <div class="card"><b>HiveMQ Edge</b>설비 쓰기 기능이 유료</div>
+    <div class="card"><b>EMQX(MQTT)</b>5.9부터 BSL 라이선스</div>
+    <div class="card"><b>ThingsBoard</b>4.4부터 BUSL 라이선스</div>
+    <div class="card"><b>TimescaleDB</b>압축·연속 집계가 TSL</div>
+  </div>
+  <p class="muted">무료 대체품끼리는 점유율 설문이 없어서 논문 수·대학 수업·재단 소속·개발 활동·공식 도커 이미지로 비교했다(<a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15번</a>).</p>
+</section>
+
+<section>
+  <h2>4. 그래서 칸마다 이렇게 골랐다</h2>
+
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
   <div class="tbl"><table>
     <tr><th>칸</th><th>현업에서 주로</th><th>우리</th><th>왜</th></tr>
@@ -205,12 +269,22 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>설비 등록부·승인·알람 관리</td><td>상용 플랫폼(AAS 기반, Camunda, 알람 관리 제품)</td><td class="swap">자체 + PostgreSQL</td><td>맞는 무료 제품이 없다(Camunda 8 운영 유료, BaSyx 정식판 없음). 속성 이름은 AAS·ISA-95·ISA-18.2를 따른다</td></tr>
   </table></div>
   <p class="muted" style="margin-top:10px">초록 = 현업과 같은 제품. 주황 = 현업 주류가 상용이라 무료 제품으로 대신한 칸(학생에게 "현업은 보통 상용"이라고 설명).</p>
+
+  <h3>대표 사례 — 엣지: 공장용인가, 범용인가</h3>
+  <div class="vs">
+    <div class="card"><b>EdgeX 4.0.2 · 공장용 엣지 플랫폼</b>장치 등록부·명령 창구·끊김 시 저장을 기본 제공. 도입 기업 사례(Eaton·Wipro 등). 산업 논문 33편. 컨테이너 약 10개.</div>
+    <div class="card"><b>Node-RED 5.0.x · 범용 연결 도구</b>무료 중 현업 사용 근거가 더 많다(산업 논문 486편, OpenJS 재단, Opto 22 산업 제어기 기본 탑재). 가볍다. 장치 등록부·명령 API·끊김 저장은 없어 등록부 생성 흐름으로 채운다.</div>
+  </div>
+  <p><b>결정:</b> 조립 때 둘을 같은 가상설비·PLC에 붙여 나란히 잰다. 합격 조건은 12태그 누락 0, 화면 명령이 PLC까지 가고 응답이 돌아옴, 10초 단절 뒤 복구·유실이 원본(7.3초·120 태그·초)보다 나쁘지 않음, 등록부에서 설비 한 대를 자동 추가함이다. 둘 다 합격이면 Node-RED, 하나만이면 그쪽. 메모리는 비교값으로만 쓴다.</p>
+  <p class="muted">이 시스템은 이후 피지컬 AI에 쓸 계획이다. 다만 피지컬 AI는 조사하지 않았으므로 어느 칸의 선택 근거로도 쓰지 않았다. 확장의 받침은 승인 → 검증 통로 → PLC 최종 판단 길과 설비 등록부다.</p>
+
 </section>
 
 <section id="arch">
-  <h2>4. 시스템 아키텍처 — 우리가 만들 베이스</h2>
+  <h2>5. 그래서 우리 시스템 아키텍처는 이렇다</h2>
+
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a>(층 B0~B13·길 목록) · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부) · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a>(제품·버전)</p>
-  <p>1절의 현업 구조·흐름과 3절의 칸별 스택을 한 장에 합쳤다. 아래 L1 설비에서 위 L10 업무·승인까지 10개 층이고, 색 띠가 망 구역(OT·DMZ·IT)이다. 번호 순서대로 따라가면 흐름이 된다.</p>
+  <p>2장의 현업 구조·흐름과 4장의 칸별 선택을 한 장에 합친 그림이다. 아래 L1 설비에서 위 L10 업무·승인까지 10개 층이고, 색 띠가 망 구역(OT·DMZ·IT)이다. 번호 순서대로 따라가면 흐름이 된다.</p>
   <p><b>구역 뜻:</b> OT(운영 기술)는 공장에서 기계를 실제로 움직이는 쪽(설비·PLC·SCADA 화면)이다. 멈추면 기계가 서므로 안전과 계속 도는 것이 먼저다. IT(정보 기술)는 사무실 쪽(저장·분석·AI·업무)이다. DMZ는 둘 사이 완충지대다. 데이터는 OT가 밀어서 내보내고, IT에서 기계로 바로 가는 명령 길은 없으며, IT가 멈춰도 공장은 돈다.</p>
   <div class="legend">
     <span><i class="sw d"></i>데이터가 올라가는 길(D)</span>
@@ -495,7 +569,17 @@ td.diff{color:var(--warn);font-weight:600}
   </div>
   <p class="muted">설비 추가: 층은 그대로다. 설비 등록부(<b style="color:var(--f-read)">G</b>)에 한 줄 더하면 엣지 설정·토픽·Kafka 키·Flink 적용 범위·Neo4j 노드가 배포 전에 함께 만들어진다. 플랫폼 감시(Prometheus + Alertmanager·cAdvisor·kafka-exporter)는 전 구역 지표를 모아 인프라 담당에게만 보낸다.</p>
 
-  <h3>층별 — 어디까지가 현업 근거이고 어디부터 우리 설계인가</h3>
+  
+</section>
+
+<section>
+  <h2>6. 어디까지 확정이고, 어디부터 원칙만 있나</h2>
+  <div class="conf">
+    <div class="c-ok"><b>L1~L4 · OT(설비·PLC·엣지·허브·화면)</b>구조 확정. 구역·층 구조는 표준 근거 강함(Purdue·NIST·CISA). 단 UNS 허브는 업계 트렌드(채택 통계 없음)이고, 엣지 제품은 조립 때 실측으로 정한다.</div>
+    <div class="c-mid"><b>L5 · DMZ</b>원칙은 표준 권고, 법은 아님(외부 접근은 DMZ에서 끝나고 OT가 밀어낸다, 쓰기 요청은 검증 통로 하나 → PLC 최종 판단). 방법은 표준이 하나로 정하지 않았다.</div>
+    <div class="c-own"><b>L6~L10 · IT(장부·탐지·저장·AI·업무)</b>제품은 현업 1위 오픈소스. 배치와 연결 방식은 업계 동향과 우리 설계(조사 12번 제안)다.</div>
+  </div>
+<h3>층별 근거</h3>
   <p>"IoT-SCADA"는 표준의 층 이름이 아니다. 현업 표준 층은 Purdue 모델(L0 현장 장치, L1 PLC, L2 SCADA·HMI, L3 히스토리언·MES, L3.5 DMZ, L4~5 기업망)이다.</p>
   <div class="tbl"><table>
     <tr><th>우리 층</th><th>Purdue</th><th>현업 근거(종류)</th><th>우리가 맞춰 정한 것</th></tr>
@@ -519,22 +603,18 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>③ IIoT(우리)</td><td>엣지 → MQTT 허브(UNS) → DMZ 복제 → Kafka·히스토리언</td><td>현업 추세: 독립 분석 기관 IoT Analytics(2026-01)가 "UNS가 Kafka·NATS 같은 백엔드를 쓰는 쪽으로 성숙"이라고 적음. HiveMQ·Kafka 쪽 저자 등 벤더도 같은 역할 분담. 사용 비율 통계 없음, 이름 있는 제조사 공장 구조 공개 자료 없음</td></tr>
   </table></div>
   <p class="muted">공통 원칙은 "OT가 밖으로 밀어내고, IT에서 OT로 직접 들어오는 길은 없다"(표준, 근거 강함)이다. "UNS는 히스토리언을 대체하지 않는다"(IT/OT Insider). 우리는 규칙을 지키고 방법은 ③을 쓴다(원본 V1 뼈대가 ③이고, 규칙을 지키면 현업과 맞다는 조사 12번 판단, 무료로 구성 가능). ③은 "현업 추세"이지 "주류"로 확인된 것은 아니며, 수업에서 ①이 표준 기본 배치임을 함께 설명한다.</p>
-</section>
 
-
-<section>
-  <h2>5. 주요 결정과 이유</h2>
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
+  <h3>외부에서 설비 쪽으로 보내는 흐름</h3>
   <div class="grid2">
-    <div class="card"><b>엣지는 실측으로 정한다</b>Node-RED와 EdgeX를 같은 설비에 붙여 12태그 누락, 명령→PLC→응답, 10초 단절 복구·유실, 설비 자동 추가를 합격 조건으로 잰다(메모리는 비교값). 둘 다 합격이면 Node-RED(가볍고 더 많이 쓰임), 하나만이면 그쪽.</div>
-    <div class="card"><b>버전 규칙</b>제품을 빼는 경우는 개발이 멈췄거나 라이선스가 유료·제한형으로 바뀐 경우뿐이다. 판마다 있는 지원 종료일은 이유가 아니다. 학기마다 같은 메이저 안 최신 부 버전으로 올린다.</div>
-    <div class="card"><b>경량화의 뜻</b>현업 수준을 유지한 채 가벼운 판·설정 조정·선택 기능 프로필·중복 합치기로 줄인다. 층을 빼지 않는다. 성능·안정성이 원본보다 나빠지면 쓰지 않는다.</div>
-    <div class="card"><b>피지컬 AI</b>이 시스템은 이후 피지컬 AI(AI가 설비·로봇을 보고 움직이게 함)에 쓴다. 베이스에서 따로 더하지 않는다. 승인 → 검증 → PLC 최종 판단 길과 설비 등록부가 받침이다.</div>
+    <div class="card"><b>표준이 정한 것</b>바깥(업무 시스템·AI·최적화)의 쓰기 요청은 검증 통로 하나를 거치고, 받을지는 제어기가 최종 판단한다(NAMUR NE 178). IT에서 OT로 바로 가는 길은 없다(CISA). 사람 없는 AI 제어는 제한한다(CISA 2025).</div>
+    <div class="card"><b>우리 설계(표준이 정하지 않은 부분)</b>사람 승인 → Kafka 명령 요청 → DMZ 게이트웨이 검사 → 허브 cmd → 엣지 → PLC 최종 검사(5장 C1~C7). "명령을 Kafka로" 보내는 현업 근거는 아직 찾지 못했다. 게이트웨이 오픈소스 제품도 없어 자체 코드다.</div>
   </div>
+  <p class="note">법으로 "반드시 사본"을 요구하는 것은 아니다. 조사에서 찾은 문서 중 법령은 21 CFR Part 11(감사 기록) 하나이고, 나머지는 표준·지침·권고다. 조사한 범위 안에서는 "사이트 히스토리언을 OT에 꼭 둬야 한다"는 요구 문장도 없었다(13번). 한국 법규와 유료 표준 본문은 조사 범위 밖이다. 외부 연결 방법의 비교·사용 정도와 설비 쪽으로 보내는 방법은 조사 16번(의뢰서 §9) 결과로 이 장을 채운다.</p>
 </section>
 
 <section>
-  <h2>6. 원본에서 바뀌는 것 · 그대로인 것</h2>
+  <h2>7. 원본에서 바뀌는 것 · 그대로인 것</h2>
+
   <div class="grid2">
     <div class="card"><b>바뀌는 것</b><ul>
       <li>망 3구역(ot·dmz·it)</li>
@@ -558,7 +638,8 @@ td.diff{color:var(--warn);font-weight:600}
 </section>
 
 <section>
-  <h2>7. 검증 계획 — 원본(V1) 기준값과 비교</h2>
+  <h2>8. 검증 계획 — 원본(V1) 기준값과 비교</h2>
+
   <div class="tbl"><table>
     <tr><th>항목</th><th>원본 V1 실측(배속 600)</th><th>새 베이스 합격선</th></tr>
     <tr><td>탐지 정확도</td><td>판정 70/70</td><td>같음(조금도 나빠지면 안 됨)</td></tr>
@@ -580,7 +661,8 @@ td.diff{color:var(--warn);font-weight:600}
 </section>
 
 <section>
-  <h2>8. 근거가 약한 곳 · 확인 못 한 것</h2>
+  <h2>9. 근거가 약한 곳 · 확인 못 한 것</h2>
+
   <ul>
     <li>"현업 주류"의 근거는 표준·독립 분석·설문이다. 이름 있는 공장의 내부 구성과 채택률 수치는 공개 자료에 없다.</li>
     <li>무료 제품끼리의 점유율 설문은 없다. 논문 수·대학 수업·재단·개발 활동으로 비교했다.</li>
@@ -588,15 +670,18 @@ td.diff{color:var(--warn);font-weight:600}
     <li>새 베이스의 메모리 합계는 재지 않았다. 잰 칸만 약 4,960 MiB, 미측정 5칸(PLC·엣지·게이트웨이·AI 백엔드·승인).</li>
     <li>Node-RED는 읽기 경로만 전에 쟀다(1,356/1,356). 쓰기·단절 복구·등록부 생성은 엣지 실측으로 확인한다.</li>
     <li>원본에 안정화 수정 5가지를 얹어 확인했을 때 결측 주입 관련 검사 3개가 실패했다. 원인 미확인, 조립 때 처리.</li>
+      <li>외부 시스템 연결 방법의 비교·사용 정도, 외부에서 설비 쪽으로 보내는 방법, "명령을 Kafka로"의 현업 근거는 조사 16번에서 확인 중이다.</li>
+    <li>한국 법규와 유료 표준 본문(IEC 62443, ISA-112)은 조사 범위 밖이다.</li>
   </ul>
 </section>
 
 <section>
-  <h2>9. 다음 단계</h2>
+  <h2>10. 다음 단계</h2>
   <div class="flow">
-    <div><b>1</b> 조립: 엣지 나란히 실측 → 선택 → 전체 조립, 기능 대응표 작성</div>
-    <div><b>2</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
-    <div><b>3</b> 결과 보고서(이 틀에 실측 결과를 채움) → 설비 확장 → 시나리오·온톨로지</div>
+    <div><b>1</b> 조사 16번(외부 연결) 결과를 6장에 반영</div>
+    <div><b>2</b> 조립: 엣지 나란히 실측 → 선택 → 전체 조립, 기능 대응표 작성</div>
+    <div><b>3</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
+    <div><b>4</b> 결과 보고서(이 틀에 실측 결과를 채움) → 설비 확장 → 시나리오·온톨로지</div>
   </div>
 </section>
 
