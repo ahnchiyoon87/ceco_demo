@@ -7,9 +7,12 @@ cd "$(dirname "$0")/.." || exit 1
 export MSYS_NO_PATHCONV=1 PYTHONUTF8=1
 SUM=experiments/STAGE2_RUNS.log
 LIM=${LIM:-2400}   # 프로필당 제한(초)
-run(){ layer=$1; shift; t0=$(date +%s); echo "[$(date +%H:%M:%S)] $layer $* 시작" | tee -a $SUM
-  timeout $LIM "$@" > experiments/_stage2_last.out 2>&1; rc=$?
-  echo "[$(date +%H:%M:%S)] $layer $* 끝 rc=$rc $(( $(date +%s) - t0 ))s | $(tail -2 experiments/_stage2_last.out | tr '\n' ' ' | cut -c1-240)" | tee -a $SUM
+MEMCAP=${MEMCAP:-4500}   # 두 줄 동시 실행 시: 다른 줄이 쓰는 메모리가 이 값(MiB) 아래일 때만 새 후보 시작
+memtotal(){ docker stats --no-stream --format '{{.MemUsage}}' | awk '{v=$1; if (v ~ /GiB/) {sub("GiB","",v); t+=v*1024} else if (v ~ /MiB/) {sub("MiB","",v); t+=v}} END {printf "%d", t}'; }
+run(){ layer=$1; shift; w=0; while [ "$(memtotal)" -gt "$MEMCAP" ] && [ $w -lt 300 ]; do sleep 5; w=$((w+5)); done
+  t0=$(date +%s); echo "[$(date +%H:%M:%S)] $layer $* 시작(대기 ${w}s)" | tee -a $SUM
+  out=experiments/_stage2_${layer}.out; timeout $LIM "$@" > $out 2>&1; rc=$?
+  echo "[$(date +%H:%M:%S)] $layer $* 끝 rc=$rc $(( $(date +%s) - t0 ))s | $(tail -2 $out | tr '\n' ' ' | cut -c1-240)" | tee -a $SUM
   docker ps -q --filter "name=rot-" | grep -q . && { echo "경고: rot-* 떠 있음" | tee -a $SUM; }
 }
 layers=${*:-"l4 ingest broker pipe alw backbone ts mon alarm hmi"}
