@@ -8,7 +8,6 @@ EXP=$1; NAME=$2
 STRUCT=${STRUCT:-V1}
 BROKER_C=rot-emqx; BROKER_H=emqx; UPLINK_C=rot-edgex-app-mqtt-export; KAFKA_C=rot-kafka; TS_C=rot-influxdb
 SINK_C=rot-telegraf-sink; FIX_C="rot-telegraf-bridge rot-telegraf-sink"; SUBMIT_C=rot-flink-job-submitter
-[ -f harness/e2e/struct_${STRUCT}.sh ] && . harness/e2e/struct_${STRUCT}.sh   # V1 이외 구조의 이름표
 export MSYS_NO_PATHCONV=1 COMPOSE_PATH_SEPARATOR=:
 R=experiments/$EXP/raw; mkdir -p $R
 LOG=experiments/$EXP/baseline_$NAME.log
@@ -16,6 +15,8 @@ REPO="D:/work/study/scada-rotation"
 CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.0"   # e1.py 는 /experiments/<EXP>/raw 에 씀(#103 전엔 미연결 → 로그 요약 줄만 남음)
 SCADA="docker compose --env-file .env --env-file .env.rotation"
 AI="docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge"
+# 구조 이름표는 기본값(SCADA·AI 포함) 뒤에 읽는다 — 앞에서 읽으면 V2 의 SCADA 가 V1 기본값으로 덮여 "V2 기동"이 V1 을 띄움(#125 실제 발생)
+[ -f harness/e2e/struct_${STRUCT}.sh ] && . harness/e2e/struct_${STRUCT}.sh   # V1 이외 구조의 이름표
 say(){ echo "[$(date +%H:%M:%S)] $*" | tee -a $LOG; }
 ms(){ echo $(( $(date +%s) * 1000 )); }
 complete(){ $CLIENT python harness/e2e/completeness.py --start-ms $1 --end-ms $2 --out /repo/$R/$3.json 2>&1 | tail -1 | tee -a $LOG; }
@@ -59,7 +60,7 @@ phase2(){
   say "P2 E1 알람→화면 10회 × 3"
   for k in 1 2 3; do
     $CLIENT python harness/e2e/e1.py --exp $EXP --run e1_${NAME}_$k --reps 10 --quiet-s 3 --sim http://plant-simulator:8080 \
-      --mqtt $BROKER_H --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics scada/alerts/PT-101,scada/hmi/latest-alert \
+      --mqtt $BROKER_H --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics ${E1_TOPICS:-scada/alerts/PT-101,scada/hmi/latest-alert} \
       --match THRESHOLD_USL --fault-duration 2 --incident-api http://host.docker.internal:38000/api/operations/incidents 2>&1 | tail -1 | tee -a $LOG
   done
 }
@@ -94,7 +95,7 @@ phase3(){
   $CLIENT python harness/e2e/loadgen.py --mqtt $BROKER_H ${LOAD_KAFKA:+--kafka $LOAD_KAFKA} --devices 10 --seconds 60 >>$LOG 2>&1 &
   LPID=$!; sleep 10
   $CLIENT python harness/e2e/e1.py --exp $EXP --run e1_${NAME}_r08 --reps 5 --quiet-s 3 --sim http://plant-simulator:8080 \
-      --mqtt $BROKER_H --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics scada/alerts/PT-101,scada/hmi/latest-alert \
+      --mqtt $BROKER_H --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics ${E1_TOPICS:-scada/alerts/PT-101,scada/hmi/latest-alert} \
       --match THRESHOLD_USL --fault-duration 2 2>&1 | tail -1 | tee -a $LOG
   wait $LPID; wf=$(wait_flow); say "r08 끝, 흐름 $wf"
   complete $T0 $(ms) r08_${NAME}_${RUN:-}1

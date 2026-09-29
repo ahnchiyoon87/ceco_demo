@@ -20,14 +20,22 @@ ROOT = Path(__file__).resolve().parent.parent
 FUXA = None  # main() 에서 설정
 ENV = dict(
     line.split("=", 1)
-    for line in (ROOT / ".env").read_text().splitlines()
+    for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines()
     if "=" in line and not line.strip().startswith("#")
 )
+# 격리 스택 포트 덮어쓰기(예: VERIFY_ENV_FILE=.env.rotation — 호스트 포트 37xxx). 없으면 원래 .env 그대로
+if os.environ.get("VERIFY_ENV_FILE"):
+    ENV.update(dict(line.split("=", 1) for line in (ROOT / os.environ["VERIFY_ENV_FILE"]).read_text(encoding="utf-8").splitlines()
+                    if "=" in line and not line.strip().startswith("#")))
 SIM = f"http://localhost:{ENV['PORT_SIM_API']}"
 FLINK = f"http://localhost:{ENV['PORT_FLINK_UI']}"
 INFLUX = f"http://localhost:{ENV['PORT_INFLUXDB']}"
 PROM = f"http://localhost:{ENV['PORT_PROMETHEUS']}"
 FUXA = f"http://localhost:{ENV['PORT_FUXA']}"
+# 격리 스택(예: scada-rotation 의 rot-iiot)에서도 같은 검증을 하도록 컨테이너 이름 앞말·망 이름을 환경변수로 받는다.
+# 기본값은 원래 스택(접두어 없음, 망 iiot)과 같다.
+CN = os.environ.get("VERIFY_CN_PREFIX", "")
+NET = os.environ.get("VERIFY_NETWORK", "iiot")
 
 OK, FAIL, SKIP = "  \033[32m✓\033[0m", "  \033[31m✗\033[0m", "  \033[33m–\033[0m"
 results: list[tuple[str, bool, str]] = []
@@ -48,7 +56,7 @@ def post(url: str, payload=None, timeout: int = 10):
 
 def kafka(*args: str, timeout: int = 60) -> str:
     return subprocess.run(
-        ["docker", "exec", "kafka", *args],
+        ["docker", "exec", f"{CN}kafka", *args],
         capture_output=True, text=True, timeout=timeout).stdout
 
 
@@ -60,7 +68,7 @@ def consume(topic: str, ms: int) -> list[dict]:
     벽시계 기준으로 직접 창을 끊어야 한다.
     """
     proc = subprocess.Popen(
-        ["docker", "exec", "kafka", "/opt/kafka/bin/kafka-console-consumer.sh",
+        ["docker", "exec", f"{CN}kafka", "/opt/kafka/bin/kafka-console-consumer.sh",
          "--bootstrap-server", "localhost:9092", "--topic", topic,
          "--timeout-ms", str(ms)],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -91,7 +99,7 @@ def consume_async(topic: str, ms: int) -> subprocess.Popen:
     console-consumer 는 JVM 기동에 10초 안팎이 걸리므로 주입 전 대기가 필요하다.
     """
     return subprocess.Popen(
-        ["docker", "exec", "kafka", "/opt/kafka/bin/kafka-console-consumer.sh",
+        ["docker", "exec", f"{CN}kafka", "/opt/kafka/bin/kafka-console-consumer.sh",
          "--bootstrap-server", "localhost:9092", "--topic", topic,
          "--timeout-ms", str(ms)],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -133,25 +141,35 @@ def t1_edge() -> None:
     # EdgeX 가 Modbus 를 읽어 JSON 으로 정규화하는가
     try:
         cnt = subprocess.run(
-            ["docker", "run", "--rm", "--network", "iiot", "curlimages/curl:latest", "-s",
+            ["docker", "run", "--rm", "--network", NET, "curlimages/curl:latest", "-s",
              "http://edgex-core-data:59880/api/v3/event/count"],
             capture_output=True, text=True, timeout=30).stdout
         n0 = json.loads(cnt)["count"]
         time.sleep(10)
         cnt = subprocess.run(
-            ["docker", "run", "--rm", "--network", "iiot", "curlimages/curl:latest", "-s",
+            ["docker", "run", "--rm", "--network", NET, "curlimages/curl:latest", "-s",
              "http://edgex-core-data:59880/api/v3/event/count"],
             capture_output=True, text=True, timeout=30).stdout
         n1 = json.loads(cnt)["count"]
         check("EdgeX 프로토콜 정규화 (Modbus → JSON)", n1 > n0,
               f"10초간 이벤트 +{n1 - n0}건")
     except Exception as e:
-        results.append(("EdgeX 정규화", True, "lite 프로파일 — 건너뜀"))
-        print(f"{SKIP} EdgeX 정규화 — lite 프로파일로 판단, 건너뜀 ({e})")
+        # EdgeX 가 없는 구성(V2: 수집기 Telegraf 가 Modbus 를 읽어 같은 EdgeX 이벤트 모양으로 edgex/telemetry 에 발행)
+        try:
+            out = subprocess.run(
+                ["docker", "exec", f"{CN}mqtt", "mosquitto_sub", "-t", "edgex/telemetry", "-C", "1", "-W", "15"],
+                capture_output=True, text=True, timeout=30).stdout
+            ev = json.loads(out.strip().splitlines()[0])
+            names = {r["resourceName"] for r in ev.get("readings", [])}
+            check("수집기 프로토콜 정규화 (Modbus → EdgeX 이벤트 JSON, edgex/telemetry)", len(names) >= 12,
+                  f"이벤트 1건에 계측 {len(names)}종")
+        except Exception as e2:
+            results.append(("EdgeX 정규화", True, "lite 프로파일 — 건너뜀"))
+            print(f"{SKIP} EdgeX 정규화 — lite 프로파일로 판단, 건너뜀 ({e}; 수집기 확인도 실패: {e2})")
 
     # Southbound: 펌프 정지 → 유량/전류가 실제로 0 이 되는가
     before = get(f"{SIM}/state")["readings"]
-    subprocess.run(["docker", "exec", "plant-simulator", "python", "-c", """
+    subprocess.run(["docker", "exec", f"{CN}plant-simulator", "python", "-c", """
 import socket, struct
 s = socket.create_connection(('127.0.0.1', 502), timeout=5)
 # Modbus/TCP Write Single Coil: coil 0 = OFF
@@ -163,7 +181,7 @@ s.sendall(struct.pack('>HHHBBHH', 1, 0, 6, 1, 5, 0, 0x0000)); s.recv(256); s.clo
     check("Southbound 제어 (Modbus 코일 쓰기 → 물리 반응)", stopped,
           f"FT-101 {before['FT-101']:.2f} → {after['FT-101']:.2f} m3/h, "
           f"IT-101 {before['IT-101']:.2f} → {after['IT-101']:.2f} A")
-    subprocess.run(["docker", "exec", "plant-simulator", "python", "-c", """
+    subprocess.run(["docker", "exec", f"{CN}plant-simulator", "python", "-c", """
 import socket, struct
 s = socket.create_connection(('127.0.0.1', 502), timeout=5)
 s.sendall(struct.pack('>HHHBBHH', 1, 0, 6, 1, 5, 0, 0xFF00)); s.recv(256); s.close()

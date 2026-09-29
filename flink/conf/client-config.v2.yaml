@@ -1,0 +1,33 @@
+# ═══════════════════════════════════════════════════════════════
+# Flink 클라이언트 전용 설정 (flink-job-submitter 컨테이너)
+#
+# sql-client 는 이 설정으로 JobManager 를 찾는다. 서버용 config.yaml 의
+# rest.address 는 0.0.0.0(바인드 주소)이라 클라이언트가 쓸 수 없으므로
+# 별도 파일로 분리한다.
+# ═══════════════════════════════════════════════════════════════
+jobmanager:
+  rpc:
+    address: flink-jobmanager
+    port: 6123
+
+# Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 덮어쓰면 이 값이 사라져
+# 잡 제출 시 InaccessibleObjectException 이 발생하므로 반드시 함께 유지한다.
+env:
+  java:
+    opts:
+      all: --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+
+rest:
+  address: flink-jobmanager
+  port: 8081
+
+execution:
+  target: remote
+  # (V2) ONNX 잡(flink run)도 체크포인트를 켠다. V1 은 SQL 잡만 SQL 의 SET 으로 켜고 ONNX 잡은 꺼진 채였다
+  # (잡 설정 조회 interval=Long.MAX, 대장 S17) → 재시작 복구(HA) 때 ONNX 잡 상태·읽은 위치를 복원 못 함. SQL 잡과 같은 값.
+  checkpointing:
+    interval: 10s
+    mode: EXACTLY_ONCE
+
+parallelism:
+  default: 2

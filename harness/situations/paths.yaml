@@ -25,8 +25,8 @@ V2:
     - {hop: kafka, via: "sensor.telemetry.raw", evidence: "v2/telegraf/ingest.conf topic"}
     - {hop: flink, via: "SQL 규칙·CEP·ONNX(V1 SQL 그대로, Flink 2.2.1+HA)", evidence: "flink/sql/*.sql, flink/conf/config.v2.yaml high-availability"}
     - {hop: kafka, via: "sensor.alerts", evidence: "flink/sql/02~04"}
-    - {hop: relay, via: "Vector kafka 소스 sensor.alerts → mqtt 싱크", evidence: "v2/vector/vector.yaml mqtt_alerts·mqtt_hmi"}
-    - {hop: mqtt, via: "Mosquitto scada/alerts/<tag>, scada/hmi/latest-alert", evidence: "v2/mosquitto/mosquitto.conf, v2/telegraf/alert-republish.conf servers"}
+    - {hop: relay, via: "Vector kafka 소스 sensor.alerts → mqtt 싱크", evidence: "v2/vector/vector.yaml kafka_alerts_in·mqtt_hmi"}
+    - {hop: mqtt, via: "Mosquitto scada/hmi/latest-alert(표시 전용 브로커)", evidence: "v2/mosquitto/mosquitto.conf, v2/vector/vector.yaml mqtt_hmi"}
     - {hop: fuxa, via: "MQTT 구독 scada/hmi/latest-alert. 계측은 Modbus 직접 폴링(plant-simulator:502)", evidence: "fuxa/provision.py MQTT_URL=mqtt://mqtt:1883"}
   duplicates:
     brokers: [mqtt]

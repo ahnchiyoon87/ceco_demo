@@ -14,3 +14,4 @@ phase0_V2(){
   ensure_jobs
 }
 LOAD_KAFKA=kafka:9092     # R08: V2 원시 입구는 Kafka(수집기가 바로 씀)
+E1_TOPICS=scada/hmi/latest-alert   # V2 는 화면이 구독하는 최근알람 토픽 하나만 낸다(태그별 토픽은 구독처 없음, #124). V1 비교값 = '최근알람'

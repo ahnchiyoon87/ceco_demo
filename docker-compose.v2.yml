@@ -25,6 +25,7 @@ volumes:
   kafka-data-v2:
   flink-checkpoints-v2:
   influx-data-v2:
+  influx-config-v2:   # /etc/influxdb2(CLI 접속 설정). 이름 없는 볼륨이면 같은 이름 컨테이너 재생성 때 V1 설정이 넘어와 초기 설정이 'config name "default" already exists' 로 실패(#124)
   grafana-data-v2:
   prometheus-data-v2:
   fuxa-appdata-v2:
@@ -68,6 +69,7 @@ services:
     depends_on:
       plant-simulator: { condition: service_healthy }
       kafka: { condition: service_healthy }
+      mqtt: { condition: service_healthy }   # outputs.mqtt 는 기동 때 브로커 연결 실패를 재시도하지 않고 종료(리서치 08, 대장 S7 성격)
     volumes:
       - ./v2/telegraf/ingest.conf:/etc/telegraf/telegraf.conf:ro
 
@@ -204,7 +206,7 @@ services:
     volumes:
       - ./flink/sql:/opt/flink/sql:ro
       - ./flink/submit-jobs.sh:/submit-jobs.sh:ro
-      - ./flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro
+      - ./flink/conf/client-config.v2.yaml:/opt/flink/conf/config.yaml:ro   # ONNX 잡 체크포인트(대장 S17)
       - model-store-v2:/opt/models:ro
     entrypoint: ["/bin/bash", "/submit-jobs.sh"]
 
@@ -226,6 +228,7 @@ services:
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN}
     volumes:
       - influx-data-v2:/var/lib/influxdb2
+      - influx-config-v2:/etc/influxdb2
     healthcheck:
       test: ["CMD", "influx", "ping"]
       interval: 10s
@@ -246,6 +249,8 @@ services:
       influxdb: { condition: service_healthy }
       mqtt: { condition: service_healthy }
     environment:
+      # Vector 0.58 은 설정 파일의 ${VAR} 치환이 기본 꺼짐(--help 원문, #124) — 꺼 두면 토큰이 글자 그대로 가서 InfluxDB 401·저장 유실
+      VECTOR_DANGEROUSLY_ALLOW_ENV_VAR_INTERPOLATION: "true"
       INFLUX_TOKEN: ${INFLUX_TOKEN}
       INFLUX_ORG: ${INFLUX_ORG}
       INFLUX_BUCKET: ${INFLUX_BUCKET}
@@ -301,7 +306,7 @@ services:
       INFLUX_BUCKET: ${INFLUX_BUCKET}
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./v2/grafana/dashboards:/var/lib/grafana/dashboards:ro   # V1 대시보드 복사본 + 04 운영 패널의 EMQX 접속 수 → 브로커 상태(#126)
       - grafana-data-v2:/var/lib/grafana
     depends_on:
       influxdb: { condition: service_healthy }

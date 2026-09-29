@@ -40,3 +40,27 @@ groups:
         labels: { severity: critical }
         annotations:
           summary: "{{ $labels.job }} 스크랩 실패 — 서비스 다운 의심"
+
+      # ── (V2) V1 EMQXDisconnectSpike 대체: 브로커 정지·연결 오류 (#126) ──
+      - alert: MQTTBrokerDown
+        expr: absent(container_last_seen{name=~".*mqtt"})
+        for: 30s
+        labels: { severity: critical, tier: "2" }
+        annotations:
+          summary: "MQTT 브로커 컨테이너 없음 — 화면 알람·계측 사본 중단"
+
+      - alert: MQTTPublishErrors
+        expr: (sum(increase(internal_write_errors{output="mqtt"}[2m])) or vector(0)) + (sum(increase(vector_component_errors_total{component_id="mqtt_hmi"}[2m])) or vector(0)) > 0
+        for: 1m
+        labels: { severity: warning, tier: "2" }
+        annotations:
+          summary: "브로커 쓰기 오류 — 수집기·중계기의 MQTT 연결 단절 의심"
+
+      # ── (V2) 탐지 잡 정지(JobManager 는 살아 있음) — V1 E11 미탐 수정 (#126) ──
+      - alert: FlinkJobsNotRunning
+        expr: flink_jobmanager_numRunningJobs < 4
+        for: 30s
+        labels: { severity: critical, tier: "3" }
+        annotations:
+          summary: "탐지 잡 {{ $value }}개만 실행 중(기대 4) — 알람이 멈춤"
+
