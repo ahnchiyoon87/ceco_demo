@@ -4,7 +4,7 @@
 # R04·R05 = EXP-S09 재사용(+#81 실제 재현), R10 = EXP-L4 재사용, E2 = e2_complexity.py, E6·E9·E10 = 별도.
 set -u
 EXP=$1; NAME=$2
-# 구조별 대상 컨테이너(같은 시험을 같은 방법으로, 이름만 다름). V1 기본값. V2 는 STRUCT=V2 로 부르며 아래 case 에서 채운다.
+# 구조별 대상 컨테이너(같은 시험을 같은 방법으로, 이름만 다름). V1 기본값. 새 구조는 STRUCT=<이름> 으로 부르고 harness/e2e/struct_<이름>.sh 에 이름표를 둔다(옛 V2 예시는 git bdced23 의 struct_V2.sh).
 STRUCT=${STRUCT:-V1}
 BROKER_C=rot-emqx; BROKER_H=emqx; UPLINK_C=rot-edgex-app-mqtt-export; KAFKA_C=rot-kafka; TS_C=rot-influxdb
 SINK_C=rot-telegraf-sink; FIX_C="rot-telegraf-bridge rot-telegraf-sink"; SUBMIT_C=rot-flink-job-submitter

@@ -1,3 +1,0 @@
-ekuiper
-risingwave
-streampipes

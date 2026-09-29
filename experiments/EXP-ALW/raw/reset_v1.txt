@@ -1,4 +1,0 @@
-
-Error: Assignments can only be reset if the group 'ar100-ai-incidents-v1' is inactive, but the current state is Stable.
-
-GROUP                          TOPIC                          PARTITION  NEW-OFFSET     

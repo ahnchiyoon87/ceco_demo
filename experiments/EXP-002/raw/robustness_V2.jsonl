@@ -1,9 +1,0 @@
-{"test":"r01","run":"r2_","k":1,"flow":{"recover_s": 1.6, "flaps": 0, "waited_s": 122.1}}
-{"test":"r01","run":"r2_","k":2,"flow":{"recover_s": 0.9, "flaps": 0, "waited_s": 121.3}}
-{"test":"r01","run":"r2_","k":3,"flow":{"recover_s": 1.5, "flaps": 0, "waited_s": 121.9}}
-{"test":"r02","run":"r2_","k":1,"flow":{"recover_s": 22.9, "flaps": 0, "waited_s": 143.3}}
-{"test":"r02","run":"r2_","k":2,"flow":{"recover_s": 4.8, "flaps": 0, "waited_s": 125.2}}
-{"test":"r02","run":"r2_","k":3,"flow":{"recover_s": 5.0, "flaps": 0, "waited_s": 125.4}}
-{"test":"r03","run":"r2_","k":1,"flow":{"recover_s": 17.1, "flaps": 1, "waited_s": 137.5}}
-{"test":"r03","run":"r2_","k":2,"flow":{"recover_s": 15.6, "flaps": 2, "waited_s": 136.0}}
-{"test":"r03","run":"r2_","k":3,"flow":{"recover_s": 4.8, "flaps": 0, "waited_s": 125.3}}

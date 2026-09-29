@@ -1,6 +1,0 @@
-telegraf
-hivemq-edge
-neuron
-tbgw
-openremote
-streampipes

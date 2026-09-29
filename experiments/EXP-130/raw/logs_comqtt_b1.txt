@@ -1,4 +1,0 @@
-comqtt-1  | time=2026-09-29T04:00:57.358Z level=WARN msg="caught signal, stopping..."
-comqtt-1  | time=2026-09-29T04:00:57.359Z level=WARN msg="" listener=tcp error="read tcp 172.26.0.2:1883->172.26.0.3:49221: use of closed network connection"
-comqtt-1  | time=2026-09-29T04:00:57.361Z level=WARN msg="" listener=tcp error="read tcp 172.26.0.2:1883->172.26.0.3:56971: use of closed network connection"
-comqtt-1  | time=2026-09-29T04:01:49.641Z level=WARN msg="caught signal, stopping..."

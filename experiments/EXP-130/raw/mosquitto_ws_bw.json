@@ -1,9 +1,0 @@
-{
- "ws_connected": true,
- "roundtrip": 20,
- "broker": "mosquitto",
- "mode": "ws",
- "run": "bw",
- "rate": 120,
- "duration": 60
-}

@@ -1,8 +1,0 @@
-# V1 알람 워커 대역 이미지: V1 코드(ai-layer/knowledge/backend)를 읽기 전용으로 마운트해 V1 과 같은 모듈을 그대로 실행한다.
-# V1 이미지(ar100-ai-alarm-worker, latest 태그·LibreOffice 포함 1GB+)를 쓰지 않는 이유: latest 금지 + 워커와 무관한 무게 제외.
-# 라이브러리 버전은 ai-layer/knowledge/uv.lock 의 고정값(confluent-kafka 2.15.1, psycopg 3.3.6, pydantic 2.13.1, fastapi 0.135.3).
-# 약점 기록: 자원(메모리) 비교는 "워커 프로세스" 기준 — V1 실운영 이미지보다 작게 나온다.
-FROM python:3.12.8-slim
-RUN pip install --no-cache-dir confluent-kafka==2.15.1 "psycopg[binary]==3.3.6" pydantic==2.13.1 fastapi==0.135.3
-WORKDIR /app
-CMD ["python", "-m", "backend.src.modules.operations.consumer"]

@@ -1,3 +1,0 @@
-# HELP bench_victim_up 벤치 E11 훅 대상
-# TYPE bench_victim_up gauge
-bench_victim_up 1

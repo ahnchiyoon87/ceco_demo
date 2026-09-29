@@ -1,4 +1,4 @@
-"""점수표(스코어카드) 생성: 측정 파일만 읽어 QUESTIONS.md Q2 / Q2-a 규칙으로 점수·약점·판정을 계산한다.
+"""점수표(스코어카드) 생성: 측정 파일만 읽어 HANDOFF.md Q2 / Q2-a 규칙으로 점수·약점·판정을 계산한다.
 
     python /repo/harness/tools/scorecard.py            # → reports/scorecard.md, reports/scorecard.xlsx
 
@@ -228,7 +228,7 @@ def xlsx(sheets, path):
 
 def main():
     rows, runs = build_l4()
-    md = "# 점수표 (자동 생성 — harness/tools/scorecard.py)\n\n규칙: QUESTIONS.md Q2·Q2-a. 합계는 읽기 편의용, 판정은 Q2 규칙.\n\n## L4 이상탐지\n\n" + md_l4(rows, runs)
+    md = "# 점수표 (자동 생성 — harness/tools/scorecard.py)\n\n규칙: HANDOFF.md Q2·Q2-a. 합계는 읽기 편의용, 판정은 Q2 규칙.\n\n## L4 이상탐지\n\n" + md_l4(rows, runs)
     os.makedirs(OUTDIR, exist_ok=True)
     open(f"{OUTDIR}/scorecard.md", "w", encoding="utf-8").write(md)
     header = ["후보", "정확도", "V1 대비 알람 차이", "정확도 점수", "지연 p95(ms)", "속도 점수", "복구(유실+중복)", "복구 상세", "복구 점수",

@@ -1,5 +1,0 @@
-
-GROUP            TOPIC           PARTITION  NEW-OFFSET
-connect-alw-jdbc sensor.alerts   0          0
-connect-alw-jdbc sensor.alerts   1          0
-connect-alw-jdbc sensor.alerts   2          0

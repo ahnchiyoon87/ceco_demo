@@ -1,4 +1,0 @@
-robustmq-1  | 
-robustmq-1  | thread 'main' (1) panicked at src/common/config/src/broker.rs:34:17:
-robustmq-1  | Permission denied (os error 13)
-robustmq-1  | note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

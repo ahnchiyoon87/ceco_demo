@@ -13,12 +13,13 @@ PHASES="0 1 2 3" TESTS="r01 r02 r03 r06 r07 r08 r11 e11" RUN=$RUN sh harness/e2e
 say "전체 측정 끝"
 S25=1 sh harness/e2e/regression.sh $EXP $NAME >> $L 2>&1
 say "회귀 끝"
-case "$STRUCT" in V2) OB="--broker mqtt --mqtt-topic scada/hmi/latest-alert";; *) OB="";; esac
+[ -f harness/e2e/struct_${STRUCT}.sh ] && . harness/e2e/struct_${STRUCT}.sh   # 새 구조는 struct_<이름>.sh 에 ONSET_ARGS·COMPOSE_EXTRA 와 컨테이너 이름표를 둔다
+OB=${ONSET_ARGS:-}
 docker run --rm --network rot-iiot --env-file .env -v D:/work/study/scada-rotation:/repo -w /repo e2e-client:1.0 \
   python harness/e2e/fault_onset.py --reps 3 $OB --out experiments/$EXP/raw/onset_${NAME}_${RUN}600.json >> $L 2>&1
 say "고장→알람 끝"
 sh harness/tools/internal_errors.sh $T0 experiments/$EXP/internal_errors_${NAME}_${RUN}.json >> $L 2>&1
-case "$STRUCT" in V2) CF="-f docker-compose.v2.yml";; *) CF="";; esac
+CF=${COMPOSE_EXTRA:-}
 docker compose --env-file .env --env-file .env.rotation $CF config --format json > $R/compose_${NAME}.json 2>>$L
 python harness/tools/e2_complexity.py $NAME $R/compose_${NAME}.json > experiments/$EXP/e2_${NAME}.json 2>>$L
 say "묶음 끝"

@@ -1,8 +1,0 @@
-# Storm 3.1.0 벤치 설정(공식 이미지 /conf/storm.yaml). 단일 슈퍼바이저·슬롯 1개.
-storm.zookeeper.servers: ["zookeeper"]
-nimbus.seeds: ["storm-nimbus"]
-storm.local.dir: "/data"
-storm.log.dir: "/logs"
-supervisor.slots.ports: [6700]
-worker.childopts: "-Xmx768m"
-topology.message.timeout.secs: 120

@@ -1,5 +1,5 @@
 # 시나리오 S01~S25 (AGENT_BRIEF v2 §8.6)
-# 후보 구현 중 수정 금지. 틀려 보이면 QUESTIONS.md 에 적고 해당 항목만 멈춘다.
+# 후보 구현 중 수정 금지. 틀려 보이면 HANDOFF.md 에 적고 해당 항목만 멈춘다.
 # 기대결과는 브리프 원문을 V1 실제 인터페이스(harness/SCHEMA.md)에 맞춰 판정 가능한 형태로 옮긴 것이다.
 # 공통 상수(V1 코드 확정값, harness/V1_FACTS.md §1)
 constants:
