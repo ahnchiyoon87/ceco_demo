@@ -3,6 +3,13 @@
 판정 규칙은 `QUESTIONS.md` §1 하나뿐이다. 이 표는 그 규칙을 층별 후보에 적용한 **시험 목록**이며, 결과를 본 뒤 후보를 넣거나 빼지 않는다(#59·#60·#65 개정분을 이 판으로 대체).
 출처: 딥리서치 4편 `docs/research/deep-2026-09-29/` — R01 `01-ingest-broker-pipe.md` · R02 `02-backbone-stream-ha.md` · R03 `03-storage-monitor-hmi-alarm.md` · R04 `04-ai-graph-rag-agent.md`(모든 사실 확인일 2026-09-29), V1 버전은 `harness/V1_INVENTORY.md`·`harness/V1_FACTS.md`. 이미 잰 결과는 `reports/decision-log.md` #18·#48·#53·#56.
 
+## 개정 #92 (2026-09-29, 사용자 지시 "제품이 똑같으면 최신·더 좋은 판으로 고정, A 제품·B 제품처럼 아예 다른 것만 후보", 결과 보기 전) — #90 보다 우선
+**후보 = 다른 제품만.** 같은 제품은 판·설정 방식 모두 후보가 아니다.
+- **같은 제품 → 가장 좋은 지원 판으로 고정**: Flink 2.2.x(공식 Kafka 커넥터 지원 최신), Kafka 최신 지원판, Telegraf 최신, InfluxDB **2.9**(Flux·기존 질의 유지·지원 중. 3 Core 는 Flux 없음·조회 한도라 더 좋은 판이 아님), Prometheus·Alertmanager·Grafana·cAdvisor 최신, FUXA 1.3.4, Neo4j 5.26 LTS, Mosquitto(브로커 결정분) 최신.
+- **같은 제품 안의 설정 개선 → 보강(HANDOFF §2 축 4)**: Flink HA(ZooKeeper HA 표준 방식, V1 최대 약점 → 적용 확정, R05 로 회귀 확인), 감시 "탐지기 정지" 규칙, 인증·접근 제어 켜기. 후보 비교 없이 표준 방식으로 적용하고 버전 확정 회귀에서 확인.
+- **구조 변경 → 구조 재조립(축 3)**: Telegraf 3→1 통합, FUXA 브로커 직접 구독(UNS), 브로커 Kafka 브리지 등 §11.
+- 후보에서 빠지는 것: Flink HA-A~D·DataStream CEP 방식, InfluxDB 3, Telegraf 1개 통합 프로필, FUXA UNS 프로필, 감시 규칙 추가 프로필(Prometheus·VM 판).
+
 ## 개정 #90 (2026-09-29, 사용자 지시 "버전만 바뀐 것은 의미 없다", 결과 보기 전)
 **같은 제품의 판만 다른 항목은 직접 시험 후보가 아니다.** 모든 제품은 지원되는 최신판을 명시 번호로 고정해 쓰고(`latest` 태그 금지), 그 판이 V1 기능을 깨는지는 회전 확정의 전체 회귀(S01~S25·G0~G10·E·R)에서 한 번에 확인한다.
 - 후보에서 빠지는 판 항목(최신판 고정으로 흡수): Flink 2.2·2.3 단독, Flink DataStream CEP 2.3, Kafka 4.1·4.2·4.3, InfluxDB 2.9, Prometheus 3.13·3.15, Telegraf 1.40 ×3, FUXA 1.3.4(V1 이 이미 1.3.4), EMQX 6.x(어차피 BSL 제외).
