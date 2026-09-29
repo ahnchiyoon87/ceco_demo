@@ -1,0 +1,17 @@
+[07:19:44] == baseline V1 시작
+[07:19:44] P0 순수 기준 버전 복구
+/rot-plant-simulator iiot/plant-simulator:1.0
+/rot-ai-knowledge-1 rot-ai-knowledge
+[07:20:30] Flink RUNNING 4
+[07:20:30] P1 정상 60분(E3·R09·E7·E12)
+{"mqtt_emqx_anonymous": true, "mqtt_edgex_internal_anonymous": true, "kafka_plaintext_no_auth": true, "influxdb_query_no_token": false, "fuxa_project_no_login": true, "grafana_no_login": true, "flink_rest_no_auth": true, "edgex_command_no_auth": true, "prometheus_no_auth": true, "alertmanager_no_auth": true, "simulator_api_no_auth": true, "open_count": 10, "probed": 11}
+{"pairs": 720, "within_tolerance": 717, "rate": 0.9958}
+{"kafka_raw": {"expected": 42492, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.02}, "influx_process_raw": {"expected": 42492, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.02}}
+[08:20:39] P1 끝
+[08:20:39] P2 E1 알람→화면 100회 × 3
+8 {"kafka:sensor.alerts": 2065.4, "mqtt:scada/alerts/PT-101": 2932.5, "mqtt:scada/hmi/latest-alert": 3026.9, "incident": 5858.7}
+[08:28:04] == baseline V1 시작
+[08:28:04] P2 E1 알람→화면 100회 × 3
+{"kafka:sensor.alerts": {"n": 100, "missing": 0, "p50": 961.9, "p95": 1707.5, "max": 1954.8, "mean": 963.8}, "mqtt:scada/alerts/PT-101": {"n": 100, "missing": 0, "p50": 1841.0, "p95": 2444.5, "max": 2915.8, "mean": 1694.1}, "mqtt:scada/hmi/latest-alert": {"n": 100, "missing": 0, "p50": 1088.8, "p95": 1990.3, "max": 2493.2, "mean": 1196.2}, "incident": {"n": 100, "missing": 0, "p50": 1148.5, "p95": 6762.8, "max": 10883.0, "mean": 1993.7}}
+{"kafka:sensor.alerts": {"n": 100, "missing": 0, "p50": 1216.6, "p95": 1945.8, "max": 2153.8, "mean": 1150.2}, "mqtt:scada/alerts/PT-101": {"n": 100, "missing": 0, "p50": 1820.1, "p95": 2794.2, "max": 3140.2, "mean": 1716.9}, "mqtt:scada/hmi/latest-alert": {"n": 100, "missing": 0, "p50": 1297.6, "p95": 2018.1, "max": 2462.1, "mean": 1230.0}, "incident": {"n": 100, "missing": 0, "p50": 1448.7, "p95": 6197.8, "max": 9332.0, "mean": 2005.6}}
+29 {"kafka:sensor.alerts": 1663.8, "mqtt:scada/hmi/latest-alert": 1781.0, "incident": 1877.2, "mqtt:scada/alerts/PT-101": 2654.5}

@@ -1,0 +1,44 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "bearing_wear": {
+   "reps": [
+    {
+     "kafka": 10.42,
+     "mqtt": 11.35
+    },
+    {
+     "kafka": 9.04,
+     "mqtt": 9.95
+    },
+    {
+     "kafka": 9.99,
+     "mqtt": 10.95
+    }
+   ],
+   "kafka_max_s": 10.42,
+   "mqtt_max_s": 11.35,
+   "missing": 0,
+   "within_10s": false
+  },
+  "dropout": {
+   "reps": [
+    {
+     "kafka": 15.84
+    },
+    {
+     "kafka": 15.76
+    },
+    {
+     "kafka": 15.78
+    }
+   ],
+   "kafka_max_s": 15.84,
+   "mqtt_max_s": null,
+   "missing": 0,
+   "within_10s": false
+  }
+ },
+ "all_within_10s": false,
+ "physics_time_scale": 600.0
+}

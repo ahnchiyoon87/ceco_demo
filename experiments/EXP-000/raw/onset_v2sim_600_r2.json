@@ -1,0 +1,102 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "spike": {
+   "reps": [
+    {
+     "kafka": 1.55,
+     "mqtt": 1.64
+    },
+    {
+     "kafka": 1.85,
+     "mqtt": 1.93
+    },
+    {
+     "kafka": 1.84,
+     "mqtt": 1.92
+    }
+   ],
+   "kafka_max_s": 1.85,
+   "mqtt_max_s": 1.93,
+   "missing": 0,
+   "within_10s": true
+  },
+  "heater_stuck": {
+   "reps": [
+    {
+     "kafka": 5.74,
+     "mqtt": 5.9
+    },
+    {
+     "kafka": 4.87,
+     "mqtt": 4.92
+    },
+    {
+     "kafka": 4.79,
+     "mqtt": 4.94
+    }
+   ],
+   "kafka_max_s": 5.74,
+   "mqtt_max_s": 5.9,
+   "missing": 0,
+   "within_10s": true
+  },
+  "bearing_wear": {
+   "reps": [
+    {},
+    {},
+    {
+     "kafka": 11.94
+    }
+   ],
+   "kafka_max_s": 11.94,
+   "mqtt_max_s": null,
+   "missing": 2,
+   "within_10s": false
+  },
+  "noise": {
+   "reps": [
+    {},
+    {},
+    {}
+   ],
+   "kafka_max_s": null,
+   "mqtt_max_s": null,
+   "missing": 3,
+   "within_10s": false
+  },
+  "dropout": {
+   "reps": [
+    {},
+    {},
+    {}
+   ],
+   "kafka_max_s": null,
+   "mqtt_max_s": null,
+   "missing": 3,
+   "within_10s": false
+  },
+  "drift": {
+   "reps": [
+    {
+     "kafka": 2.6,
+     "mqtt": 2.83
+    },
+    {
+     "kafka": 0.71,
+     "mqtt": 0.94
+    },
+    {
+     "kafka": 0.69,
+     "mqtt": 0.92
+    }
+   ],
+   "kafka_max_s": 2.6,
+   "mqtt_max_s": 2.83,
+   "missing": 0,
+   "within_10s": true
+  }
+ },
+ "all_within_10s": false,
+ "physics_time_scale": 600.0
+}

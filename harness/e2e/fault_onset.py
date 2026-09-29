@@ -12,7 +12,7 @@ EXPECT = {
     "heater_stuck": lambda a: a["tag"] == "TT-101" and a["alert_type"] == "THRESHOLD_USL",
     "bearing_wear": lambda a: a["tag"] == "VT-101" and a["alert_type"] == "CEP_BEARING",
     "noise":        lambda a: a["tag"] == "TT-101" and a["alert_type"] == "ZSCORE",
-    "dropout":      lambda a: a["tag"] == "TT-101",           # 결측 → 보간·ML 등 어떤 TT-101 신호든(아래 note)
+    "dropout":      lambda a: a["tag"] == "TT-101" and a.get("quality") not in (None, "GOOD"),  # V1 은 결측에 알람 대신 보간 → clean 토픽의 비-GOOD 레코드
     "drift":        lambda a: a["alert_type"] == "ML_AUTOENCODER",
 }
 SIM = "http://plant-simulator:8080"
@@ -25,10 +25,11 @@ def http(url, body=None):
 
 
 ap = argparse.ArgumentParser(); ap.add_argument("--reps", type=int, default=3); ap.add_argument("--out", required=True)
-ap.add_argument("--limit-s", type=float, default=20.0); a = ap.parse_args()
+ap.add_argument("--limit-s", type=float, default=12.0)
+ap.add_argument("--faults", default=",".join(EXPECT)); a = ap.parse_args()
 lock, events = threading.Lock(), []
 kc = Consumer({"bootstrap.servers": "kafka:9092", "group.id": f"onset-{uuid.uuid4().hex[:6]}", "auto.offset.reset": "latest"})
-kc.subscribe(["sensor.alerts"])
+kc.subscribe(["sensor.alerts", "sensor.telemetry.clean"])
 
 
 def kloop():
@@ -37,6 +38,8 @@ def kloop():
         if m is not None and not m.error():
             try:
                 al = json.loads(m.value())
+                if m.topic() == "sensor.telemetry.clean" and al.get("quality") == "GOOD":
+                    continue
                 with lock:
                     events.append(("kafka", time.time(), al))
             except ValueError:
@@ -44,20 +47,30 @@ def kloop():
 threading.Thread(target=kloop, daemon=True).start()
 mc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"onset-{uuid.uuid4().hex[:6]}")
 mc.on_connect = lambda c, u, f, rc, p=None: c.subscribe("scada/alerts/#", 1)
-mc.on_message = lambda c, u, msg: events.append(("mqtt", time.time(), json.loads(msg.payload)))
+def on_mqtt(c, u, msg):
+    try:
+        d = json.loads(msg.payload)                       # Telegraf JSON: {"tags": {...}, "fields": {...}, "timestamp": ns}
+        al = {**d.get("tags", {}), **d.get("fields", {}), "ts": d.get("timestamp")}
+        with lock:
+            events.append(("mqtt", time.time(), al))
+    except ValueError:
+        pass
+mc.on_message = on_mqtt
 mc.connect("emqx", 1883); mc.loop_start(); time.sleep(5)
 
 results = {}
-for fault, match in EXPECT.items():
+for fault, match in [(f, EXPECT[f]) for f in a.faults.split(",")]:
     lat = []
+    limit = a.limit_s
     for i in range(a.reps):
-        http(SIM + "/fault/clear", {}); time.sleep(2)
+        http(SIM + "/fault/clear", {}); time.sleep(3)
         t0 = time.time(); http(SIM + "/fault", {"scenario": fault})
         got = {}
-        while time.time() - t0 < a.limit_s and len(got) < 2:
+        while time.time() - t0 < limit and len(got) < 2:
             with lock:
                 for src, ts, al in events:
-                    if ts >= t0 and src not in got and isinstance(al, dict) and "tag" in al and match(al):
+                    ev_s = (al.get("ts") or 0) / 1e9 if isinstance(al, dict) else 0
+                    if ts >= t0 and ev_s >= t0 - 1.0 and src not in got and isinstance(al, dict) and "tag" in al and match(al):
                         got[src] = round(ts - t0, 2)
             time.sleep(0.05)
         lat.append(got)
@@ -65,7 +78,8 @@ for fault, match in EXPECT.items():
     http(SIM + "/fault/clear", {})
     k = [g["kafka"] for g in lat if "kafka" in g]; m = [g["mqtt"] for g in lat if "mqtt" in g]
     results[fault] = {"reps": lat, "kafka_max_s": max(k) if k else None, "mqtt_max_s": max(m) if m else None,
-                      "missing": sum(1 for g in lat if "kafka" not in g), "within_10s": bool(k) and len(k) == a.reps and max(k + m) <= 10}
+                      "missing": sum(1 for g in lat if "kafka" not in g),
+                      "within_10s": bool(k) and len(k) == a.reps and max(k) <= 10 and (fault == "dropout" or (len(m) == a.reps and max(m) <= 10))}
     time.sleep(1)
 out = {"limit_s": a.limit_s, "results": results, "all_within_10s": all(r["within_10s"] for r in results.values()),
        "physics_time_scale": http(SIM + "/state").get("physics_time_scale")}

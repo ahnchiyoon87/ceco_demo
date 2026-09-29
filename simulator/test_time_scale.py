@@ -69,6 +69,15 @@ class TimeScaleTest(unittest.TestCase):
             m.step(1)
         self.assertNotIn("spike", m.faults)
 
+    def test_feed_tank_level_held_over_long_plant_time(self):
+        m = model()
+        levels = []
+        for _ in range(300):                 # 기본 배속에서 설비 약 50시간
+            m.step(1)
+            levels.append(m.feed_vol / (m.p_feed["area_m2"] * m.p_feed["height_m"]) * 100)
+        self.assertLess(max(levels[-100:]), 95, "원료탱크가 넘쳐 LT-101 상한 알람이 상시 나면 안 된다")
+        self.assertGreater(min(levels[-100:]), 10)
+
     def test_large_scale_temperature_control_stays_bounded(self):
         m = model(physics_time_scale=300)
         temps = []

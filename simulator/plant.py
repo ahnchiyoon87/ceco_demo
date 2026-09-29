@@ -196,7 +196,14 @@ class ReactorPlant:
         q_out = self.p_valve["cv"] * (self.sp_valve_open / 100.0) * math.sqrt(max(rx_level_m, 0.0))
 
         # ── 질량수지 ──
-        self.feed_vol += (self.p_feed["refill_m3h"] - q_in) * dt_s / 3600.0
+        # 원료 보충: level_sp_pct 가 있으면 실제 설비처럼 액위 제어(보충량 = 소비량 + P 보정, 0~refill_m3h),
+        # 없으면 V1 과 같은 고정 보충. 고정 보충은 소비보다 많아 설비 시간 몇 시간 뒤 탱크가 넘친다.
+        if "level_sp_pct" in self.p_feed:
+            err = self.p_feed["level_sp_pct"] - feed_level_frac * 100.0
+            refill = min(max(q_in + self.p_feed.get("level_kp", 0.5) * err, 0.0), self.p_feed["refill_m3h"])
+        else:
+            refill = self.p_feed["refill_m3h"]
+        self.feed_vol += (refill - q_in) * dt_s / 3600.0
         self.feed_vol = min(max(self.feed_vol, 0.0), fd_area * fd_h)
 
         self.rx_vol += (q_in - q_out) * dt_s / 3600.0

@@ -1,0 +1,53 @@
+{
+ "mqtt_emqx_anonymous": {
+  "connack": "Success",
+  "publish_ok": true,
+  "open": true
+ },
+ "mqtt_edgex_internal_anonymous": {
+  "connack": "Success",
+  "publish_ok": true,
+  "open": true
+ },
+ "kafka_plaintext_no_auth": {
+  "open": true,
+  "topics": 5
+ },
+ "influxdb_query_no_token": {
+  "status": 401,
+  "open": false
+ },
+ "fuxa_project_no_login": {
+  "status": 200,
+  "open": true
+ },
+ "grafana_no_login": {
+  "status": null,
+  "open": false,
+  "error": "URLError"
+ },
+ "flink_rest_no_auth": {
+  "status": 200,
+  "open": true
+ },
+ "edgex_command_no_auth": {
+  "status": 200,
+  "open": true
+ },
+ "prometheus_no_auth": {
+  "status": null,
+  "open": false,
+  "error": "URLError"
+ },
+ "alertmanager_no_auth": {
+  "status": null,
+  "open": false,
+  "error": "URLError"
+ },
+ "simulator_api_no_auth": {
+  "status": 200,
+  "open": true
+ },
+ "open_count": 7,
+ "probed": 11
+}

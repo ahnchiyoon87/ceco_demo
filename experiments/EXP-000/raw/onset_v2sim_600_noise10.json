@@ -1,0 +1,28 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "noise": {
+   "reps": [
+    {
+     "kafka": 10.8,
+     "mqtt": 10.81
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+   ],
+   "kafka_max_s": 10.8,
+   "mqtt_max_s": 10.81,
+   "missing": 9,
+   "within_10s": false
+  }
+ },
+ "all_within_10s": false,
+ "physics_time_scale": 600.0
+}

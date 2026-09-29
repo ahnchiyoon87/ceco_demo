@@ -1,0 +1,223 @@
+{
+ "pairs": 36,
+ "within_tolerance": 36,
+ "rate": 1.0,
+ "samples": [
+  {
+   "tag": "LT-101",
+   "screen": 100.1052,
+   "history": 100.10516,
+   "ok": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 49.3969,
+   "history": 49.39685,
+   "ok": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 68.236,
+   "history": 68.23597,
+   "ok": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 71.4821,
+   "history": 71.48211,
+   "ok": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 2.7621,
+   "history": 2.762097,
+   "ok": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 7.2123,
+   "history": 7.2123423,
+   "ok": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 4.7056,
+   "history": 4.705572,
+   "ok": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.7254,
+   "history": 6.725407,
+   "ok": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.2753,
+   "history": 6.2753,
+   "ok": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.057,
+   "history": 2.0570433,
+   "ok": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4613,
+   "history": 7.461275,
+   "ok": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3218,
+   "history": 3.3217885,
+   "ok": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 99.9721,
+   "history": 99.97211,
+   "ok": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 49.0516,
+   "history": 49.051594,
+   "ok": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 64.0171,
+   "history": 64.01711,
+   "ok": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 86.1834,
+   "history": 86.18344,
+   "ok": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 2.6552,
+   "history": 2.65524,
+   "ok": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 6.9773,
+   "history": 6.977349,
+   "ok": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 6.4421,
+   "history": 6.4421163,
+   "ok": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.5888,
+   "history": 6.588754,
+   "ok": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.3971,
+   "history": 6.397149,
+   "ok": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0106,
+   "history": 2.0105968,
+   "ok": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4874,
+   "history": 7.4873533,
+   "ok": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.2961,
+   "history": 3.296118,
+   "ok": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 100.0076,
+   "history": 100.00764,
+   "ok": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 50.0469,
+   "history": 50.046947,
+   "ok": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 66.7946,
+   "history": 66.79456,
+   "ok": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 88.2358,
+   "history": 88.23576,
+   "ok": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 2.7928,
+   "history": 2.7928042,
+   "ok": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 6.7124,
+   "history": 6.7124324,
+   "ok": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.5803,
+   "history": 5.580273,
+   "ok": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.4122,
+   "history": 6.4121723,
+   "ok": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.3306,
+   "history": 6.330605,
+   "ok": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.1134,
+   "history": 2.1133754,
+   "ok": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4705,
+   "history": 7.470454,
+   "ok": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3166,
+   "history": 3.3165624,
+   "ok": true
+  }
+ ]
+}
