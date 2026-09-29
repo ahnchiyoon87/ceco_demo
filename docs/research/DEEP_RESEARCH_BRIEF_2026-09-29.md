@@ -213,16 +213,3 @@ UNS 채택 통계, 명령 만료·중복 방지를 요구하는 표준, ISA-112 
 **후보(찾으면 추가):** soft-PLC — OpenPLC Runtime v4, Eclipse 4diac FORTE, Beremiz / 엣지 — EdgeX Foundry, Node-RED(+modbus·opcua 노드), Apache PLC4X, Eclipse Kura, Telegraf, Eclipse Milo 기반 게이트웨이 / HMI — FUXA, Scada-LTS, OpenRemote, Node-RED Dashboard 2(라이선스 확인 후 Rapid SCADA 등).
 **후보마다 적을 것:** 라이선스, GitHub 별·기여자·최근 12개월 릴리스·마지막 릴리스일, 재단 소속, 학술 사용(논문 수·예), 대학·교육 사용 사례, 이름 있는 산업 사례, 표준 지원(soft-PLC: IEC 61131-3 언어·PLCopen / 엣지: Modbus 읽기·쓰기, OPC UA 클라이언트, 끊김 시 저장, 장치 등록·명령 API, MQTT / HMI: MQTT 구독, OPC UA 클라이언트, ISA-18.2 알람 상태(ack·셸빙), 사용자 역할), 도커 이미지와 유지 상태.
 **결과:** `docs/research/deep-2026-09-29/15-free-options-compare.md` — 칸마다 비교표, "결론: 이 근거로 무엇을 쓴다", "현업 상용과의 차이(학생에게 설명할 것)", 마지막에 확인 못 한 것. 근거 규칙은 §5.
-
----
-
-## 9. 피지컬 AI 조사 — 질문 초안 (사용자에게 보여 준 뒤 띄운다)
-
-**먼저 읽을 것:** 이 문서 §1, 결과 12·13·14번 파일, `HANDOFF.md` §1·§2.
-**배경:** 이 시스템은 이후 피지컬 AI(AI가 현실 설비·로봇을 보고 판단해 움직이게 하는 것)에 쓰인다. 무엇이 필요한지는 아직 정하지 않았다.
-1. 2026년 제조업에서 "피지컬 AI"는 구체적으로 무엇을 뜻하나? 로봇, AI 공정 제어, 비전, 디지털 트윈 중 무엇이 주류인가(근거 종류 표시)?
-2. 제조 피지컬 AI의 현업 참조 구조: 층, 데이터·명령 흐름, 안전 경계(사람 승인, 제어기 최종 판단, 인터록)는 어떻게 되어 있나?
-3. 그 구조에서 엣지·로봇 칸에 무엇을 주로 쓰나? EdgeX, Node-RED, ROS 2, Eclipse Zenoh, OPC UA 로봇 표준(OPC UA for Robotics) 등을 비교하고, 무료 대안과 도커 판을 적는다.
-4. 우리 베이스(설비 → PLC → 엣지 → MQTT → Kafka → Flink → AI, 승인 → 게이트웨이 → PLC)에 무엇을 더해야 피지컬 AI로 확장되나? 지금 정한 구조와 부딪히는 곳이 있나?
-5. 학생 PC 한 대(도커 7.6 GB, GPU 없음)에서 가능한 범위와 불가능한 범위는? GPU가 필요한 것(NVIDIA Isaac 등)은 무엇으로 대신하거나 설명으로 두나?
-**결과:** `docs/research/deep-2026-09-29/16-physical-ai.md`. 맨 앞에 "우리 베이스에 주는 결정" 표. 근거 규칙은 §5, 관문은 §1.

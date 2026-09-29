@@ -56,6 +56,8 @@ ul{margin:0;padding-left:20px} li{margin:3px 0}
 .flow div{padding:8px 10px;border-left:4px solid var(--accent);background:var(--code);border-radius:4px}
 .tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--muted);margin-left:4px}
 footer{font-size:13px;color:var(--muted)}
+.src{font-size:.85em;color:var(--muted);margin:-.3em 0 .8em}
+.src a,footer a{color:var(--accent)}
 </style>
 
 <div class="wrap">
@@ -70,12 +72,13 @@ footer{font-size:13px;color:var(--muted)}
   <div class="grid3">
     <div class="card"><b>기준</b>① 현업에서 주로 쓰는 것 ② 비용 0·라이선스·도커·제품 계열 유지 ③ 경량화(현업 수준은 유지). 학생 PC 한 대(도커 7.6 GB)에서 돈다.</div>
     <div class="card"><b>원본은 그대로</b>원본 폴더 <code>lecture-iiot-scada</code>는 고치지 않는다. 복사본에서 원본 V1 코드를 출발점으로 바꾸며, 원본 기능은 잃지 않는 것이 기준이다.</div>
-    <div class="card"><b>순서</b>베이스(구조·스택 확정 → 조립 → 검증) → 설비 확장(다수·OPC UA) → 시나리오·온톨로지. 이후 피지컬 AI에 쓴다.</div>
+    <div class="card"><b>순서</b>베이스(구조·스택 확정 완료 → 조립 → 검증) → 설비 확장(다수·OPC UA) → 시나리오·온톨로지. 이후 피지컬 AI에 쓴다.</div>
   </div>
 </section>
 
 <section>
   <h2>1. 현업은 어떤 구조인가</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
   <p>공공 표준 원문(NIST SP 800-82r3, CISA 망 분리 권고 2016, CISA 등 9개 기관 AI-OT 지침 2025, NAMUR NE 178, Sparkplug 3.0)으로 확인한 공통 모양이다.</p>
   <div class="grid3">
     <div class="zone z-ot"><h4>OT · 공장</h4>
@@ -108,6 +111,7 @@ footer{font-size:13px;color:var(--muted)}
 
 <section>
   <h2>2. 현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
   <div class="tbl"><table>
     <tr><th>항목</th><th>현업</th><th>참조 v3</th><th>우리 원본 V1</th></tr>
     <tr><td>망 구분</td><td>OT·DMZ·IT</td><td>있음</td><td>없음(망 하나)</td></tr>
@@ -125,12 +129,13 @@ footer{font-size:13px;color:var(--muted)}
 
 <section>
   <h2>3. 우리가 만들 베이스</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a></p>
   <div class="grid3">
     <div class="zone z-ot"><h4>OT · ot-net</h4>
       <div class="box">가상설비 7대 · 배속 600<small>나중에 OPC UA 설비 추가</small></div>
       <div class="box">OpenPLC v4 <span class="tag">새로</span><small>설비에 붙는 것은 PLC 하나</small></div>
       <div class="box">엣지: Node-RED 또는 EdgeX<small>조립 때 실측으로 결정</small></div>
-      <div class="box">Mosquitto(OT 허브)<small>브로커 2개 → 1개. OT↔DMZ 연결 방향은 구조 확정 때 정함</small></div>
+      <div class="box">Mosquitto(OT 허브)<small>브로커 2개 → 1개. OT↔DMZ 연결 방향은 조립 때 정함</small></div>
       <div class="box">FUXA 화면<small>허브 구독 + cmd 발행</small></div>
     </div>
     <div class="zone z-dmz"><h4>DMZ · dmz-net</h4>
@@ -156,6 +161,7 @@ footer{font-size:13px;color:var(--muted)}
 
 <section>
   <h2>4. 칸별 스택 — 현업은 주로 무엇, 우리는 무엇, 왜</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
   <div class="tbl"><table>
     <tr><th>칸</th><th>현업에서 주로</th><th>우리</th><th>왜</th></tr>
     <tr><td>PLC</td><td>제조사 PLC, CODESYS 등(상용)</td><td class="swap">OpenPLC v4.2.4</td><td>상용은 유료·체험판(CODESYS 2시간 데모). 무료 중 공식 도커 이미지가 있는 유일한 후보, IEC 61131-3 다섯 언어, 논문 138편, 대학 PLC 과목</td></tr>
@@ -177,11 +183,12 @@ footer{font-size:13px;color:var(--muted)}
 
 <section>
   <h2>5. 주요 결정과 이유</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
   <div class="grid2">
     <div class="card"><b>엣지는 실측으로 정한다</b>Node-RED와 EdgeX를 같은 설비에 붙여 12태그 누락, 명령→PLC→응답, 10초 단절 복구·유실, 설비 자동 추가를 합격 조건으로 잰다(메모리는 비교값). 둘 다 합격이면 Node-RED(가볍고 더 많이 쓰임), 하나만이면 그쪽.</div>
     <div class="card"><b>버전 규칙</b>제품을 빼는 경우는 개발이 멈췄거나 라이선스가 유료·제한형으로 바뀐 경우뿐이다. 판마다 있는 지원 종료일은 이유가 아니다. 학기마다 같은 메이저 안 최신 부 버전으로 올린다.</div>
     <div class="card"><b>경량화의 뜻</b>현업 수준을 유지한 채 가벼운 판·설정 조정·선택 기능 프로필·중복 합치기로 줄인다. 층을 빼지 않는다. 성능·안정성이 원본보다 나빠지면 쓰지 않는다.</div>
-    <div class="card"><b>피지컬 AI</b>이 시스템은 이후 피지컬 AI(AI가 설비·로봇을 보고 움직이게 함)에 쓴다. 필요한 것(로봇 층, 카메라, AI의 설비 조작)은 다음 조사로 정한다. 승인 → 검증 → PLC 최종 판단 길과 설비 등록부가 받침이다.</div>
+    <div class="card"><b>피지컬 AI</b>이 시스템은 이후 피지컬 AI(AI가 설비·로봇을 보고 움직이게 함)에 쓴다. 베이스에서 따로 더하지 않는다. 승인 → 검증 → PLC 최종 판단 길과 설비 등록부가 받침이다.</div>
   </div>
 </section>
 
@@ -236,7 +243,7 @@ footer{font-size:13px;color:var(--muted)}
   <ul>
     <li>"현업 주류"의 근거는 표준·독립 분석·설문이다. 이름 있는 공장의 내부 구성과 채택률 수치는 공개 자료에 없다.</li>
     <li>무료 제품끼리의 점유율 설문은 없다. 논문 수·대학 수업·재단·개발 활동으로 비교했다.</li>
-    <li>세부 결정 조사는 출처 90개 중 62곳이 검색 요약만 본 것이다. 채택 전에 핵심 근거는 원문으로 확인한다.</li>
+    <li>세부 결정 조사는 출처 90개 중 62곳이 검색 요약만 본 것이다. 핵심 근거(EEMUA 191, ISO 14224 등)는 원문 미확인이다.</li>
     <li>새 베이스의 메모리 합계는 재지 않았다. 잰 칸만 약 4,960 MiB, 미측정 5칸(PLC·엣지·게이트웨이·AI 백엔드·승인).</li>
     <li>Node-RED는 읽기 경로만 전에 쟀다(1,356/1,356). 쓰기·단절 복구·등록부 생성은 엣지 실측으로 확인한다.</li>
     <li>원본에 안정화 수정 5가지를 얹어 확인했을 때 결측 주입 관련 검사 3개가 실패했다. 원인 미확인, 조립 때 처리.</li>
@@ -246,13 +253,11 @@ footer{font-size:13px;color:var(--muted)}
 <section>
   <h2>9. 다음 단계</h2>
   <div class="flow">
-    <div><b>1</b> 피지컬 AI 조사(질문 목록을 먼저 보여 드린 뒤)</div>
-    <div><b>2</b> 구조 확정 보고(한 장)</div>
-    <div><b>3</b> 조립: 엣지 나란히 실측 → 선택 → 전체 조립, 기능 대응표 작성</div>
-    <div><b>4</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
-    <div><b>5</b> 결과 보고서(이 틀에 실측 결과를 채움) → 설비 확장 → 시나리오·온톨로지</div>
+    <div><b>1</b> 조립: 엣지 나란히 실측 → 선택 → 전체 조립, 기능 대응표 작성</div>
+    <div><b>2</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
+    <div><b>3</b> 결과 보고서(이 틀에 실측 결과를 채움) → 설비 확장 → 시나리오·온톨로지</div>
   </div>
 </section>
 
-<footer>근거 원문: <code>scada-rotation/docs/research/deep-2026-09-29/12~15</code> · 기준·상태 정본: <code>HANDOFF.md</code> · 질문과 답: <code>reports/QA.md</code> · 결정 경위: <code>reports/decision-log.md</code></footer>
+<footer>근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a> · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a> · 기준·상태 정본: <code>HANDOFF.md</code> · 질문과 답: <code>reports/QA.md</code> · 결정 경위: <code>reports/decision-log.md</code></footer>
 </div>
