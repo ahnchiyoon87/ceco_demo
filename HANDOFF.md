@@ -191,10 +191,9 @@ V2 설정에만 있던 "같은 제품이면 어디서나 필요한 수정"을 �
 재설계 뒤 같은 제품(Kafka·Flink·InfluxDB)을 쓰면 이 수정을 그대로 가져간다.
 
 ## 6. 지금 상태 (2026-09-29 세션 4 종료)
-- **컨테이너:** 실행 중인 것은 없다. 안정화 V1(§5-1)을 확인한 뒤 멈췄다(`stop`, 컨테이너·볼륨 보존). AI 컨테이너 6개(`rot-ai-*`)도 정지 상태이고 볼륨은 보존했다.
-- **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`, 안정화 V1 데이터(`rot-iiot_*`: kafka·influx·zookeeper 등).
-- **원본 V1 이미지:** 확인을 위해 다시 받았다(kafka 3.9.0, emqx 5.8.6, telegraf 1.33, influxdb 2.7, grafana 11.4.0, prometheus v3.1.0, alertmanager v0.28.0, kafka-exporter, cadvisor v0.49.1, mosquitto 2.0.21).
-- **이미지(남긴 것):** apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, rot-flink-onnx:v2, rot-plant-simulator:v2-ts, iiot/model-trainer:1.0, e2e-client:1.0, l4bench-tools:1.0, python:3.12-slim, AI 이미지(rot-ai-*, neo4j, postgres:17, ollama).
+- **컨테이너:** SCADA 컨테이너는 없다(안정화 V1 확인 뒤 컨테이너·실행 데이터 볼륨까지 삭제 — 설정 `docker-compose.stable.yml`로 다시 띄울 수 있다). AI 컨테이너 6개(`rot-ai-*`)는 정지 상태이고 볼륨은 보존했다.
+- **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`만 남아 있다.
+- **이미지(남긴 것):** 직접 빌드한 것(rot-flink-onnx:v2, rot-plant-simulator:v2-ts, e2e-client:1.0, l4bench-tools:1.0), 원본에서 온 iiot/model-trainer:1.0, AI 이미지(rot-ai-*, neo4j, postgres:17, ollama), 새 베이스 후보로 쓸 수 있는 것(apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, python:3.12-slim). 원본 V1 전용 이미지(kafka 3.9.0, emqx 5.8.6, telegraf 1.33, influxdb 2.7 등)는 지웠다 — 안정화 V1을 다시 띄우려면 다시 받는다.
 - **코드:**
   - V1 원본 코드: `docker-compose.yml`, `docker-compose.edgex.yml`, edgex/·emqx/·telegraf/·kafka/·flink/·fuxa/·grafana/·prometheus/·ml/
   - 배속 600 가상설비: `simulator/`, 덧씌우기 `docker-compose.timescale.yml`
