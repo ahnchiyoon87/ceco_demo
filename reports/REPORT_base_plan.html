@@ -648,7 +648,7 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
     <tr><td>E12</td><td>IT 발송기 → DMZ 게이트웨이는 HTTP(S) POST. 게이트웨이의 즉시 응답이 첫 번째 "받음·거절 + 이유"</td><td>표준은 전송 방식을 정하지 않는다(IEC 62264-6). 2026 지침 p.19의 HTTP API 모양, CPwE 역프록시와 같은 모양</td></tr>
     <tr><td>E24</td><td>겹마다 검사 배분: 게이트웨이는 공장과 무관한 검사만, 수신기는 허용 범위·모드·만료 재검사, PLC는 물리 타당성</td><td>원칙(경계마다 검사, PLC 재검사)은 지침·Top 20 Secure PLC에 있고, 배분 표는 어디에도 없다</td></tr>
     <tr><td>E20</td><td>공장 안 수신기를 엣지 Node-RED의 전용 흐름·전용 계정으로. 결정과 명령 토픽 발행까지만</td><td>현업은 MES 서버·SCADA MES 모듈이 한다. 엣지에 합친 공개 사례는 없다</td></tr>
-    <tr><td>E18</td><td>요청 만료: 자동 경로 30초, 운전원 수락 대기 60초(벽시계)</td><td>제조 쪽 수치는 없다. 다른 분야(전력) SvK 30초·DNP3 10초</td></tr>
+    <tr><td>E18</td><td>요청 만료: 게이트웨이 발행부터 30초(요청서의 만료 시각), 운전원 수락 대기는 공장 수신기가 저장한 때부터 60초(벽시계)</td><td>제조 쪽 수치는 없다. 다른 분야(전력) SvK 30초·DNP3 10초</td></tr>
     <tr><td>E38</td><td>받음·거절 대기 5초(넘으면 "결과 모름", 다시 보내지 않음), 새 상태 확인 10초(넘으면 명령 불일치 경고)</td><td>벤더 기본값 Siemens PCS 7 3초·Geo SCADA 10초, ISA-TR18.2.3 목차의 명령 불일치 알람</td></tr>
     <tr><td>E37</td><td>승인 두 종류: 운전 범위 안 조정은 요청 길, 설정·허용 범위 변경은 변경 관리 기록</td><td>일반 제조에 승인 시스템을 정한 법규는 없다(변경 관리 의무는 PSM 대상만). AI-OT 지침 "사람 없이 AI가 제어하지 말 것"</td></tr>
     <tr><td>E13</td><td>요청·승인·감사의 정본은 PostgreSQL, Kafka는 통로·사본</td><td>Kafka를 요청 장부로 쓴 공개 사례가 없다. Job Control은 받는 쪽이 목록을 저장, Kafka 기본 보존 7일</td></tr>
@@ -716,7 +716,7 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
     <tr><td>수집기 10초 단절</td><td>복구 7.3초 · 유실 120</td><td>더 나쁘지 않음</td></tr>
     <tr><td>탐지기 재시작</td><td>잡 소멸 · 알람 유실</td><td>스스로 복구(HA)</td></tr>
     <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29(SCADA 24 + AI 5)</td><td>전체(SCADA + AI)가 도커 7.6 GB 안에서 오류 없이</td></tr>
-      <tr><td>연결 방향</td><td>망 하나(구분 없음)</td><td>라우터가 거꾸로 여는 새 연결(DMZ→공장, IT→공장, DMZ→IT)을 실제로 막는지 시도해 확인. DMZ·IT의 어떤 컨테이너도 공장으로 먼저 연결하지 않음</td></tr>
+      <tr><td>연결 방향</td><td>망 하나(구분 없음)</td><td>라우터가 거꾸로 여는 새 연결(DMZ→공장, IT→공장, DMZ→IT. 마지막은 규칙이 아니라 설계 선택)을 실제로 막는지 시도해 확인. DMZ·IT의 어떤 컨테이너도 공장으로 먼저 연결하지 않음</td></tr>
     <tr><td>격리</td><td>—</td><td>DMZ 브로커를 30초 넘게 멈춰도 감시·수동 조작·인터록·공장 안 기록 유지, 다시 이으면 만료 요청 폐기(MQTT 만료와 본문 만료 각각), 브리지 큐가 한도에 닿은 뒤에도 다시 이어 보냄</td></tr>
     <tr><td>AI 조치 요청</td><td>Modbus 직접 쓰기 후 상태 API 확인</td><td>요청마다 "받음·거절"과 결과가 돌아오고 같은 요청 ID로 기록, 정비 모드 중에는 거부, 5초 무응답은 "결과 모름", 10초 안에 새 상태가 없으면 명령 불일치 경고</td></tr>
     <tr><td>감사 기록</td><td>—</td><td>감사 표에 수정·삭제가 거부됨</td></tr>
@@ -734,7 +734,7 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
   </ul>
   <div class="flow">
     <div><b>1</b> 조립 첫 단계: 조립의 전제가 되는 확인(라우터·브리지·OpenPLC 등)을 먼저 돌려 본다(안 되면 정해 둔 조치)</div>
-    <div><b>2</b> 엣지 둘 다 해 보고 선택 → 전체 조립</div>
+    <div><b>2</b> 원본(안정화 V1)으로 정상 운전 오경보 기준을 잰다 → 엣지 둘 다 해 보고 선택 → 전체 조립</div>
     <div><b>3</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
     <div><b>4</b> 이 문서에 실측을 채운다 → 설비 확장 → 시나리오·온톨로지</div>
   </div>
