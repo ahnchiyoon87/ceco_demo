@@ -1,0 +1,546 @@
+# 13 · 2026 제조 현업 IIoT·SCADA 구조 — 2차 세부 조사 (의뢰서 §6 A~J)
+
+- 의뢰서: `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` 전문(부록 A, §6) 읽음. 1차 결과 `12-industry-structure.md` 전문(404줄) 읽음.
+- 범위: §6의 세부와 빈칸만. 1차에서 근거로 확정된 것은 다시 조사하지 않고 "1차 §x"로 가리킨다. 제품 순위·버전(§7)은 다루지 않는다.
+- 방식: 문헌 조사만. docker·컨테이너는 건드리지 않았다. 기존 파일은 고치지 않았다.
+- 확인일: 적힌 모든 출처 2026-09-29.
+- 근거 종류: [표준] 표준 문서 / [독립] 독립 조사·설문·학술 / [사례] 공개 사례(실제 기업·공장) / [재단] 재단·오픈소스 문서·저장소 / [벤더] 벤더 홍보.
+- 표기: `[미확인]` 확인 못 함. "(검색 발췌)" 검색 요약에서만 봄. "판단" = 우리 판단(근거 문장 아님). 추정은 쓰지 않는다.
+- **1차 결론과 다른 근거(따로 적음):** ① A6 — 1차는 v3의 "DMZ Kafka Connect가 OT 브로커를 구독"을 현업 권고(OT가 먼저 연결)와 다른 점으로 적었다. 이번에 보니 Kafka Connect MQTT Source(끌어감)와 브로커 안 Kafka 확장(밀어냄)이 **둘 다 흔한 현업 제품 방식**이다. 방향 원칙은 제품이 아니라 배치·방화벽 규칙으로 지킨다. ② B2·J — 1차는 "명령 만료·중복 방지의 표준 근거 [미확인]"이었다. 제조 표준에는 여전히 없지만 **전력 원격제어 표준·운영 지침(IEC 61850, DNP3, IEC 60870-5-104)에는 같은 장치가 있다.** ③ B3 — 1차는 "원격 권한 모드의 표준 [미확인]"이었다. MTP(VDI/VDE/NAMUR 2658)에 운전원/자동 출처를 가르는 모드 상태기계가 있다. 나머지는 1차 결론을 바꾸지 않고 세부를 더한 것이다.
+- 작성 순서: A~J와 "확인 못 한 것"을 절마다 이어 붙인 뒤, 마지막에 결정 표를 맨 앞으로 옮겼다.
+
+## 우리 베이스에 주는 결정
+
+- 읽는 법: "현업 방식"과 "근거"는 A~J 각 절의 요약이다. "결정"은 1차 권장 구조(B0~B13) 위에 얹는 **판단**이다. "축소"는 한 PC 교육용에서 줄여도 현업과 같은 구조로 남는지다(가능 / 부분 / 불가).
+- 근거 종류: [표준] [독립] [사례] [재단] [벤더]. 자세한 URL은 해당 절에 있다.
+
+| # | 주제 | 현업 방식 | 근거 종류·출처 | 우리 베이스에 적용할 결정 | 교육용 축소 가능 여부 |
+|---|---|---|---|---|---|
+| 1 | 수집 방식(A1) | 일정 주기로 샘플링하고 deadband·변화 시 보고로 걸러 올린다. 신호별 표준 주기는 없다. | [표준] OPC UA Part 4 DataChangeFilter / [재단] Sparkplug 3.0 RBE, EdgeX AutoEvent `onChange`·`onChangeThreshold` / [벤더] Ignition 기본 1 s | 샘플링 주기·deadband를 **설비 종류 모델의 속성**으로 둔다. EdgeX AutoEvent에 `onChange`+임계값을 쓴다. | 가능. 값은 교육용으로 정하되 "주기 + 변화 필터" 구조는 유지 |
+| 2 | 시각·품질(A2, H) | 출처(장치·엣지)가 시각을 찍고, 품질 3값(Good/Uncertain/Bad 또는 GOOD/BAD/STALE)이 값에 붙는다. 끊기면 값이 아니라 품질이 STALE이 된다. | [표준] OPC UA Part 4 §7.11, Part 8 §7.3.2 / [재단] Sparkplug §5.1·Quality Codes·NDEATH | 모든 값 메시지에 `ts`(출처 시각)와 `quality`(3값) 필수. 연결이 끊기면 마지막 값을 STALE로 표시한다. | 불가(작아도 지킨다) |
+| 3 | 메시지 모양·메타(A3) | 엣지~SCADA는 Sparkplug(묶음·protobuf), UNS·분석은 계층 토픽 + JSON이 흔하다. 단위·설명은 매 메시지가 아니라 BIRTH나 모델에 한 번 둔다. | [재단] Sparkplug §6.4, UMH payload(한 메시지 한 값) / [벤더] HiveMQ 해설 | UNS는 JSON `{ts, value, quality}` 태그당 메시지. 단위·범위·설명은 **자산 레지스트리 모델**에만 둔다. | 가능. Sparkplug는 설명만 해도 됨 |
+| 4 | 토픽 이름(A4) | "위치 / 계약·종류 / 이름"을 토픽의 다른 자리로 나눈다. 원시·정제는 별도 트리가 아니라 계약 자리(`_raw` 대 `_model_v1`)로 구분한다. | [재단] UMH topic convention·data modeling / [재단] Sparkplug 3단 한계 | `{site}/{area}/{line}/{asset}/{kind}/{tag}` 모양. `kind` = tag·wave·status·cmd·alert·state. 원시·정제·계산값은 `kind` 또는 계약 자리로 가른다. | 가능. site·area를 1개로 두되 **자리는 남긴다** |
+| 5 | 끊김 대비(A5) | 경계마다 버퍼가 있다(엣지, 브로커→장부 브리지, SCADA). 보관량 표준은 없고 제품마다 한도와 넘칠 때 규칙이 있다. | [재단] Sparkplug `is_historical`, EdgeX Store and Forward / [벤더] HiveMQ·EMQX 버퍼, Ignition S&F | 최소 한 곳(OT→DMZ 브리지 또는 EdgeX S&F)에 **버퍼 한도와 넘칠 때 규칙**을 적는다. 재전송 값은 과거값 표시로 현재값을 덮지 않게 한다. | 가능(한 곳만) |
+| 6 | MQTT→Kafka(A6) | 여러 MQTT 토픽을 적은 Kafka 토픽으로 합치고, 키는 MQTT 토픽(=자산 경로). 최소 1회 전달 + 소비자 쪽 멱등. 브리지는 브로커 안(밀어냄)과 Kafka Connect(끌어감) 둘 다 흔하다. | [벤더] HiveMQ Kafka 확장(키=토픽, acks 기본 ONE), EMQX Sink / [재단] UMH 병합·키 / [벤더 성향] Waehner | Kafka 토픽은 **데이터 종류별**, 키는 **자산 ID**. 소비자는 (자산, 출처 시각)으로 중복을 거른다. 브리지 방향은 G2 결정(OT 쪽이 밀어냄)을 따른다. | 가능(브리지 1개) |
+| 7 | 고속 파형(A7) | 엣지에서 특징을 뽑아 올리고 사건 때만 원시 스냅숏. 원시 상시 전송을 권하는 표준은 없다. | [표준] ISO 13374 블록, CISA "특징·요약을 밀어냄" | wave·tag 토픽 분리 유지. 특징 추출은 교육용으로 IT(Flink)에 두어도 되지만 "현업은 엣지"라고 적는다. | 가능 |
+| 8 | HMI 조작 길(B1) | 직결(동기 응답)과 브로커 경유(Sparkplug DCMD) 둘 다 있다. 브로커 경유는 ACK·재시도를 따로 만들어야 한다. OPC UA도 "쓰기 성공 ≠ 설비 반영"을 구분한다. | [표준] OPC UA Part 4 Write(`Good_CompletesAsynchronously`) / [벤더] Cirrus Link DCMD 흐름 / [독립·SI] Automation World 2023 | HMI → `cmd` 토픽 → 엣지 → soft-PLC. 확인은 **두 겹**: PLC의 명령 ACK(받음·거부 사유)와 바뀐 값의 재발행. HMI의 Modbus 직접 쓰기는 없앤다. | 불가(ACK 길은 필수) |
+| 9 | 원격 명령 검증(B2, J) | 제조 표준 문장은 없다. 전력 원격제어 표준·지침에는 만료(선택 시간 초과, 명령 시각 지연 검사 기본 30 s), 순번 대조, 단독 선택, 긍정/부정 확인(인터록 허용 포함), 실행 종료 보고가 있다. | [사례] Svenska kraftnät IEC 104 지침 / [재단] libIEC61850 / [독립] NettedAutomation / DNP3 (검색 발췌) | 게이트웨이와 PLC에 **만료(`expiresAt`)·`cmdId` 중복·모드·범위·인터록** 검사를 둔다. 거부는 사유와 함께 기록하고 늦은 명령 수를 센다. 근거 설명은 "원격제어 표준의 같은 장치"로 한다. | 부분. 게이트웨이 검사 일부를 PLC로 합쳐도 되나 **PLC 최종 검사는 유지** |
+| 10 | 운전 모드·권한(B3) | 제어기가 "지금 어느 출처의 명령을 받는가"를 상태로 든다(MTP: Offline/Operator/Automatic + 출처 채널, 충돌 요청은 버림). 권한은 역할(Observer/Operator/Engineer…)로 나눈다. | [벤더] Beckhoff MTP Runtime / [재단] Semodia(VDI/VDE/NAMUR 2658) / [표준] OPC UA Part 3 역할 | soft-PLC에 3상태 모드와 출처 채널을 둔다(v3의 LOCAL/REMOTE_MANUAL/REMOTE_AUTO와 대응표를 붙인다). 계정은 Observer·Operator·Engineer 역할로 나눈다. | 가능(역할 2~3개) |
+| 11 | soft-PLC 자리(B4) | 교육 랩은 시뮬레이터 = Modbus 서버(현장 I/O), soft-PLC = 마스터, HMI는 PLC에만 붙는다. 인터록 검사는 명령을 받는 현장 제어기가 한다. OpenPLC Runtime v3는 수명 종료. | [재단] GRFICS v2·v3, OpenPLC v3 README(EOL) / [사례] SvK "ACTCONpos = 인터록 허용" | 시뮬레이터에 붙는 것은 **soft-PLC 하나**. FUXA·EdgeX·AI는 PLC(또는 PLC가 내는 태그)에 붙는다. OpenPLC v3는 쓰지 않는다(제품 선택은 §7). | 불가 |
+| 12 | 분석 알람의 지위(C1) | ISA-18.2-2016이 alarm과 다른 **alert**(평가·조치 필요, 알람 기준 미충족)·prompt·notice를 정의했고, TR18.2.8-2023이 알람 아닌 알림을 안내한다. | [벤더·컨설팅] exida(표준 정의 인용) / [표준] ISA-TR18.2.8-2023 (검색 발췌) | Flink 결과는 **alert**로 다룬다. HMI에서 알람 목록과 **다른 영역**에 표시한다. 합리화(원인·결과·대응 시간)를 거친 것만 알람으로 올린다. | 가능(합리화 표는 몇 줄로) |
+| 13 | 알람 상태 저장(C2) | 알람 상태(활성·확인·셸빙·억제·서비스 중지)는 알람 서버(SCADA·HMI, OPC UA 서버)가 들고 이력은 DB에 남긴다. 오픈소스 Alerta가 ISA-18.2 상태기계를 구현했다. | [표준] OPC UA Part 9 AlarmConditionType(부록 E IEC 62682 대응) / [재단] Alerta `isa_18_2.py` / [재단] FUXA 문서 | 공정 알람 상태 = HMI(FUXA). 분석 alert·사건 상태 = IT 사건 저장소(B13). 두 목록을 섞지 않는다. FUXA의 ack·셸빙 지원 범위는 확인 뒤 정한다. | 부분. 셸빙·억제는 설명으로 줄여도 됨. **ack는 유지** |
+| 14 | 알람 폭주(C3) | 폭주 = 10분에 새 알람 10건 초과(EEMUA 191). 억제는 표준 상태(Shelved, Suppressed by Design, Out of Service)로 한다. | [독립·업계 지침] EEMUA 191 (검색 발췌) / [표준] ISA-18.2 상태, TR18.2.4 | 같은 설비·같은 원인 alert는 **사건 하나로 묶는다**(RAISE/CLEAR). 설비 정지 모드에서는 관련 alert를 **설계된 억제**로 막는다. 10분당 건수를 감시 지표로 둔다. | 가능 |
+| 15 | 플랫폼 경보 분리(C4, H) | 받는 역할이 다르면 운전원 알람이 아니다(TR18.2.8). 연결 끊김은 운전원에게는 품질(STALE)로, 원인은 인프라 담당 경보로 간다. | [표준] ISA-18.2-2016 alert 예, TR18.2.8 / [표준] NIST 800-82r3 | Prometheus 경보는 인프라 역할로만. 사건 저장소·운전원 알람 목록에 넣지 않는다. 신선도 지표는 플랫폼 감시가 계산하고 HMI에는 품질로 보인다. | 불가(분리 필수) |
+| 16 | 히스토리언 위치(D1, J) | 권장 배치는 OT L3 사이트 히스토리언 + DMZ 복제(요구 문장은 없음). ISA-112 초안 그림은 HMI·알람·히스토리언을 같은 OT 응용층(G)에 둔다. 교육 랩(GRFICS)은 DMZ. | [표준] CISA DiD 2016(1차) / [표준·초안] ISA112 모델 그림 2022 / [재단] GRFICS | 이력 정본은 IT 한 곳. OT에는 HMI의 현재값·짧은 추세만. "현업은 사이트 히스토리언이 OT·DMZ에 있다"는 설명을 붙인다. | 가능 |
+| 17 | 보존·감사(D2) | 보존 기간 표준 수치는 없다. 감사는 규제(21 CFR 11: 시각 찍힌 감사 추적, 대상 기록과 같은 기간)와 IEC 62443-3-3 SR 2.8~2.11이 요구한다. | [표준·규제] 21 CFR §11.10(e)(f) / [표준] IEC 62443-3-3 목차 | 데이터 종류별 **정본·보존 표**를 둔다(D2 표). 명령·승인·감사는 추가만 되는 로그로, 지우지 않는다. | 부분. 기간은 짧게 해도 됨. 감사 삭제는 불가 |
+| 18 | 설비 등록부(E1, E2) | 어떤 선택지(OPC UA 정보 모델, AAS, EdgeX Device Profile, UMH 모델)든 "종류를 한 번 정의 → 개체는 종류+위치+주소로 찍어 냄"이다. 모델은 고치지 않고 새 판을 만든다(UMH). EdgeX 프로파일은 시작 후 파일 수정이 안 먹는다. | [표준] IDTA AAS v3.1(RDF 포함) / [재단] EdgeX 4.1 Device Profiles, UMH data modeling, BaSyx | 레지스트리 = **설비 종류 모델 표 + 설비 개체 표**. 생성 스크립트가 EdgeX Device(API 등록)·PLC 태그 매핑·토픽·Kafka 키·Flink 적용 범위·온톨로지 노드를 만든다. 모델은 판(`_v1`, `_v2`)으로 관리한다. | 가능. AAS·BaSyx 컨테이너는 생략하고 파일 모양만 비슷하게 |
+| 19 | 온톨로지 용어(E1, F3) | 고장 지식의 공개 기준: ISO 14224(고장 모드·메커니즘·원인·정비 조치 구분), IOF-Maint(작업지시·절차·고장 모드 공통 개념, OWL). | [표준] ISO 14224:2016 (검색 발췌) / [독립·학술] IOF-Maint 2024 | 온톨로지의 고장 칸을 **모드 / 메커니즘 / 원인 / 조치**로 나눈다. 용어는 ISO 14224·IOF-Maint를 빌린다. | 가능 |
+| 20 | 통신 혼합(E3) | 프로토콜마다 엣지 서비스를 하나씩 붙이고 위로는 같은 형식으로 낸다. | [재단] EdgeX device-opc-ua·device-modbus 등, UMH benthos-umh, HiveMQ Edge·Kura 어댑터 | OPC UA 추가 때 **device-opc-ua 하나만** 더한다. 위 층 코드는 바꾸지 않는다. 시뮬레이터는 opc-plc(MIT, 품질·알람·DI 명판 내장) 또는 기존 Python 시뮬레이터 + opcua-asyncio 중 §7에서 고른다. | 가능 |
+| 21 | 탐지 위치·비중(F1) | 한계(임계치) 알람의 첫 주인은 PLC·HMI다. ML(예지정비)은 소수(벤더 설문 27%). EdgeX 기본 구성에 엣지 규칙 엔진(eKuiper)이 있다. | [벤더 설문] MaintainX 2025 / [재단] EdgeX 4.0 compose / [표준] CISA(1차) | PLC·HMI에 한계 알람을 둔다. Flink의 임계치·Z-Score·CEP·오토인코더는 **분석 alert** 층으로 설명한다. 엣지 탐지 시연(eKuiper)은 선택. | 가능 |
+| 22 | AI가 읽는 길(F2) | 공개 MCP 구현은 기본 읽기 전용이고, 쓰기는 허용 목록 + 별도 권한 + (권고) 사람 승인이다. | [재단] OPCUA-MCP `observe` 기본 / [독립·학술] IndustriConnect 2026 / [표준] CISA(1차) | 에이전트 도구는 읽기 전용(레지스트리·이력·지표·그래프). **AI 조치 코드의 Modbus 직접 쓰기를 없앤다.** | 불가 |
+| 23 | 승인 흐름(F2) | AI 권고는 기존 변경 관리·정비 절차로. ISA-95 Part 3 정비 활동(요청 → 작업지시 배정 → 실행 → 추적). | [표준] ISA-95 Part 3 (검색 발췌), CISA(1차) | AI 제안 → 정비 요청(사건) → 사람 승인 → 명령 요청(Kafka) → 게이트웨이 → PLC → ACK 대조 → 재관측 → 기록. | 가능(CMMS → 작업지시 표) |
+| 24 | 망 구분(G1) | 공개 교육 랩(GRFICSv3)은 구역마다 도커 망 하나 + 두 망에 붙는 라우터·방화벽 컨테이너 하나. 단 모든 컨테이너가 붙는 관리망이 있어 분리가 새는 구멍이 된다. 도커 bridge는 망이 다르면 공개 포트로만 통한다. | [재단] GRFICSv3 compose, Docker bridge 문서 | `ot-net`·`dmz-net`·`it-net` 3망. 두 망에 붙는 것은 DMZ 중계뿐. **모든 컨테이너가 붙는 공용 망을 두지 않는다.** Windows 한 PC이므로 bridge 드라이버. | 가능(방화벽 → 도커 망) |
+| 25 | 연결 방향(G1, A6) | "OT가 먼저 연다"를 컨테이너로 구현한 공개 예는 못 찾았다. 수단은 있다: OT 브로커의 브리지가 원격으로 `out` 연결을 연다(Mosquitto 기본 `out`), 브로커 안 Kafka 확장이 밀어낸다. | [재단] Mosquitto 설정 문서 / [벤더] HiveMQ·EMQX Kafka / [벤더] HiveMQ Edge 브리지 | 상향 복제는 **OT 브로커가 DMZ 쪽으로 밀어내는** 방식으로 둔다(OT 브로커 브리지 또는 브로커의 Kafka 싱크). OT 서비스는 DMZ로 포트를 열지 않는다. 방향 규칙은 문서에 적는다. | 가능 |
+| 26 | 최소 인증(G2) | 서비스마다 계정, ACL은 "자기 토픽만 발행, 자기 cmd만 구독", 명령을 막으려면 DCMD 구독 자체를 허용하지 않는다. TLS는 공용망·민감 데이터에서. | [재단] Sparkplug §7 ACL 예시 / [표준] IEC 62443-3-3 SR 1.1·2.1·5.1·5.2(목차) | 익명 금지. 서비스별 계정 + 토픽 ACL. `cmd` 발행은 HMI와 DMZ 게이트웨이 계정만. TLS는 생략하고 "현업은 켠다"고 적는다. | 부분. TLS만 축소 |
+| 27 | 연결 상태 감시(H) | 세션(Will/NDEATH, 즉시), 장치(연속 실패 수로 DOWN), 값(STALE·Bad) 세 층. | [재단] Sparkplug §2.3·NDEATH, EdgeX `AllowedFails`·`DeviceDownTimeout`(소스) / [표준] OPC UA Part 8 | 엣지·PLC·시뮬레이터마다 MQTT Will로 **연결 상태 토픽**(retain)을 둔다. v3의 `status`(모드·ACK)와 자리를 나눈다. | 불가(작게라도 둔다) |
+| 28 | 참조 구현과 교육 사례(I) | 오픈소스 참조는 엣지 게이트웨이 1~몇 컨테이너 + 브리지(UMH 4 GB RAM 최소, HiveMQ Edge, Kura). 교육 사례는 보안 랩(PLC·HMI·망)과 데이터 랩(수집·저장·대시보드)으로 갈리고, **둘을 합친 사례는 못 찾았다.** | [재단] UMH·EdgeX·Kura·OpenRemote·GRFICS 설정 파일 / [독립·교육] MING 튜토리얼 | 비교할 기성 교육 사례가 없음을 전제로 설계한다. EdgeX 기본 Mosquitto는 **엣지 내부 버스로만** 쓰고 UNS 브로커는 하나로 둔다(1차 B3 유지). | 해당 없음 |
+| 29 | ISA-112 층(J) | 공개 초안 그림: A 현장 장치 ~ K 외부망의 11층. 드라이버(F)와 응용(G: HMI·알람·히스토리언)이 OT L2, DMZ(I)는 OT 끝, 원격 앱 직결은 강하게 말림. | [표준·초안] ISA112 모델 그림 2022-01-26 / [표준] ANSI/ISA-112.00.01-2025 제목 | 우리 층 그림(B0~B13)에 **ISA-112 A~K 대응표**를 붙여 설명한다. | 가능 |
+
+
+---
+
+## A. 데이터가 올라가는 길
+
+1차에서 확정한 것(다시 조사 안 함): 엣지가 변화 시 보고(RBE)로 올린다(Sparkplug), OT가 밀어낸다(CISA), MQTT(현장) + Kafka(장부) 분담(1차 §1-F).
+
+### A1. 수집 방식 — 폴링 주기, 변화 시 보고, deadband
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| OPC UA 구독은 "샘플링 → 필터 → 큐" 순서다. 서버는 MonitoredItem을 샘플링할 때마다 필터로 평가하고, 통과한 것만 알림으로 큐에 넣는다. 큐가 차면 가장 오래된 것을 버리거나 마지막 것을 덮어쓴다(생성 때 고른다). | [표준] OPC UA Part 4 §5.13 MonitoredItem 모델 https://reference.opcfoundation.org/Core/Part4/v105/docs/5.13 (검색 발췌) |
+| OPC UA DataChangeFilter의 deadband 종류는 None(0)·Absolute(1)·Percent(2)다. Absolute는 "마지막 캐시값과 현재값 차이의 절댓값 > AbsoluteDeadband"일 때만 알림을 만든다. Percent는 Part 8에서 정의(범위 대비 %). | [표준] OPC UA Part 4 §7.22.2 https://reference.opcfoundation.org/Core/Part4/v105/docs/7.22.2 (원문 확인) |
+| Sparkplug: "Edge Node는 데이터를 주기적으로 발행하지 않아야 하고(SHOULD NOT) RBE로 발행해야 한다(SHOULD)." 예외적인 주기 보고는 허용한다. BIRTH에 모든 현재값을 싣고, 그 뒤로는 바뀐 값만 보낸다. | [재단] Sparkplug 3.0.0 §2.2 `tck-id-principles-rbe-recommended` https://sparkplug.eclipse.org/specification/version/3.0/documents/sparkplug-specification-3.0.0.pdf (PDF 본문 추출로 확인) |
+| EdgeX 4.0 AutoEvent: `interval`(읽기 간격, ms·s·m·h), `onChange`(true면 값이 바뀐 경우에만 새 이벤트), `onChangeThreshold`(숫자형만, 이 값을 넘는 변화에만 이벤트 = 절대 deadband). | [재단] https://docs.edgexfoundry.org/4.0/microservices/device/details/AutoEvents/ (원문 확인) |
+| Ignition(SCADA 제품): 기본 tag group은 Direct 모드 1,000 ms. 화면에 보일 때만 빠르게 읽는 Leased, 조건에 따라 바꾸는 Driven 모드가 있다. | [벤더] https://www.docs.inductiveautomation.com/docs/8.1/platform/tags/tag-groups (검색 발췌) |
+| AVEVA PI(히스토리언): 수집 단계 "exception"(ExcDev)과 저장 단계 "compression"(swinging door, CompDev) 두 단계로 거른다. ExcDevPercent 전형값은 Span의 1%, 예외 편차는 압축 편차보다 2배 이상 작게 두라는 안내가 있다. | [벤더] https://docs.aveva.com/bundle/pi-server-s-da-admin/page/1021927.html (페이지가 스크립트로 그려져 원문 못 읽음, (검색 발췌)) / 발표자료 https://cdn.osisoft.com/osi/presentations/2023-AVEVA-San-Francisco/UC23NA-3PGK04-AVEVA_Bregenzer_Brent-Exception-Compression-and-their-Impacts-On-PI-System-Performance.pdf (검색 발췌) |
+
+- **신호 종류별 "흔한 폴링 값"의 표준·독립 수치는 찾지 못했다 [미확인].** 확인된 것은 제품 기본값(Ignition 1 s)과 "주기 샘플링 + 변화 필터(deadband)"라는 공통 구조뿐이다.
+- 판단: 현업의 공통 모양은 **"엣지가 일정 주기로 샘플링 → deadband로 걸러 바뀐 것만 위로"** 다. 우리 가상 설비는 배속 600이므로, 샘플링 주기와 deadband를 설비 종류 모델(E절)의 속성으로 두는 편이 확장에 맞다.
+
+### A2. 시각과 품질
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| OPC UA DataValue는 시각이 둘이다. `sourceTimestamp` = 데이터 출처(장치)가 찍은 UTC, "값이나 statusCode가 마지막으로 바뀐 시각". 출처가 시각을 줄 수 없으면 null. `serverTimestamp` = 서버가 값을 받은 시각. 서버를 여러 번 거치면 서버마다 자기 serverTimestamp를 찍는다. | [표준] OPC UA Part 4 §7.11 https://reference.opcfoundation.org/Core/Part4/v105/docs/7.11 (원문 확인) |
+| OPC UA StatusCode는 Good / Uncertain / Bad 세 등급이다. 예: `Bad_DeviceFailure`(장치 고장), `Bad_SensorFailure`(센서 고장), `Bad_OutOfService`(출처가 동작 안 함), `Uncertain_LastUsableValue`("갱신하던 것이 멈춤"), `Uncertain_EngineeringUnitsExceeded`(범위 밖), `Good_LocalOverride`(수동 강제값). | [표준] OPC UA Part 8 §7.3.2 https://reference.opcfoundation.org/Core/Part8/v105/docs/7.3.2 (원문 확인) |
+| Sparkplug: 모든 metric에 timestamp가 **필수**(BIRTH·DATA 전부, epoch ms). 모든 시각은 UTC, 시계는 NTP 등으로 맞춘다. 품질은 선택 속성 `Quality`로 0=BAD, 192=GOOD, 500=STALE. GOOD이 아닐 때만 싣는다. 값이 없으면 `-1` 같은 가짜값 대신 `is_null=true`. | [재단] Sparkplug 3.0.0 §5.1, §6.4 metric 정의, Quality Codes (PDF 추출 확인) |
+| Sparkplug: Edge Node가 죽으면(NDEATH, MQTT Will) Host는 그 노드의 **모든 metric을 STALE로** 표시하고 그 시각을 적는다. 장치 단위는 DDEATH로 같은 처리를 한다. | [재단] Sparkplug 3.0.0 `tck-id-operational-behavior-edge-node-termination-host-action-ndeath-node-tags-stale` 외 (PDF 추출 확인) |
+
+- 판단: 시각은 **출처(PLC·엣지)가 찍고**, 품질은 **Good/Uncertain/Bad(또는 GOOD/BAD/STALE) 3값**으로 다니며, 끊김은 **"값 0"이 아니라 품질 STALE/Bad**로 표시하는 것이 두 표준의 공통 모양이다. 우리 Telegraf 공통 형식(`ts·site·device·tag·value·quality`, 1차 표2 ⑤)은 이미 이 칸을 갖고 있다. 품질값의 뜻(어떤 조건에서 무엇을 넣는지)을 정의하는 일이 남는다.
+- 1차 "확인 못 한 것" 15번(이벤트 시간의 표준 근거)에 대한 답: OPC UA `sourceTimestamp`와 Sparkplug metric timestamp가 "출처가 찍는 시각"을 표준으로 둔다. v3의 "이벤트 시간은 PLC·DAQ가 찍는다"와 같은 방향이다.
+
+### A3. 메시지 모양 — 태그당 메시지 대 묶음, JSON 대 Sparkplug B
+
+| 방식 | 내용 | 근거 종류·출처 |
+|---|---|---|
+| Sparkplug B | Protobuf. 한 메시지에 **여러 metric 묶음**(노드·장치 단위). BIRTH에 이름·데이터형·메타데이터를 싣고, 이후 DATA는 alias(숫자)만 보낼 수 있다. 단위·설명 같은 메타는 metric `properties`(PropertySet)에 둔다. `is_historical`(저장 후 전달된 과거값, 현재값을 갱신하지 말 것), `is_transient`(히스토리언에 저장하지 말 것) 플래그가 있다. | [재단] Sparkplug 3.0.0 §6.4 (PDF 추출 확인) |
+| UMH 시계열 | JSON `{"timestamp_ms": ..., "value": ...}`. **"한 메시지에 값 하나"**, 다른 키 금지, 최대 1 MiB. 이름·위치는 토픽이 담는다. | [재단] UMH Docs Payload Formats https://docs.umh.app/usage/unified-namespace/payload-formats (원문 확인) |
+| UMH 관계형 | 작업지시 같은 사건은 임의 JSON 객체. | [재단] 같은 곳 |
+| 섞어 쓰기 | "Sparkplug B는 '어느 정도 정리된 원시 데이터'로 보고, UNS 한 단계 전에 풀어 UNS 층은 일반 MQTT(계층 토픽 + JSON)로 쓴다"는 해설이 반복된다. | [벤더] HiveMQ https://www.hivemq.com/blog/implementing-unified-namespace-uns-mqtt-sparkplug/ (검색 발췌) / [벤더] neomatrix https://neomatrixinc.com/blog/sparkplug-b-or-not-to-b-unified-namespace-architecture-considerations/ (검색 발췌) |
+
+- 판단: 현업에는 **두 모양이 모두 있다.** 엣지↔SCADA 구간은 Sparkplug(묶음·protobuf·상태 관리), UNS·분석 구간은 계층 토픽 + JSON이 흔하다는 해설이 많다. 어느 쪽이 "주류"라는 독립 수치는 **[미확인]**.
+- 메타데이터(단위·설명·범위) 위치: Sparkplug는 BIRTH의 properties, UMH는 데이터 모델(`_pump_v1`) 정의. 즉 **"매 메시지가 아니라 한 번(탄생 메시지 또는 모델)에"** 둔다는 점이 공통이다.
+
+### A4. 토픽 이름 규칙 — ISA-95 실제 예, 원시·정제 구분
+
+| 예 | 모양 | 근거 종류·출처 |
+|---|---|---|
+| UMH(오픈소스 UNS) | `umh.v1.<enterprise>.<site>.<area>.<line>.<machine>.<data_contract>[.<virtual_path>].<name>`. 예: `umh.v1.enterprise.site.area.line._pump_v1.inlet_temperature`. enterprise만 필수, 나머지 생략 가능. 허용 문자 a-z A-Z 0-9 `-` `_`. | [재단] https://docs.umh.app/usage/unified-namespace/topic-convention , https://docs.umh.app/usage/unified-namespace (원문 확인) |
+| UMH 원시·정제 구분 | **데이터 계약(data contract) 자리**로 나눈다. `_raw` = 검증 없는 장치 원본, `_<devicemodel>_v1` = 설비 모델로 검증된 값, `_<businessmodel>_v1` = KPI 같은 업무 모델. "`_raw`는 데이터를 이해하는 동안 임시로 쓰고, 운영에서는 브리지에 장치 모델을 바로 적용하라." "데이터는 오직 브리지를 통해 UNS에 들고 난다." | [재단] https://docs.umh.app/usage/data-modeling (원문 확인) |
+| Sparkplug | `spBv1.0/<group_id>/<type>/<edge_node_id>/[<device_id>]` 3단 고정. ISA-95 계층을 다 담기 어렵다. group_id에 구분자로 계층을 넣는 "Parris method"가 쓰인다. | [재단] Sparkplug 3.0 §4 / [벤더] Cedalo·HiveMQ 해설 (검색 발췌) |
+| 부록 A v3 | `plant/{a}/tag/{name}`, `plant/{a}/wave/{sensor}`, `…/status`, `…/cmd/manual` 등 | 의뢰서 부록 A |
+
+- 판단: UMH가 보여 주는 요점은 **"위치(어디) / 계약·모델(무엇) / 이름(어느 값)"을 토픽의 서로 다른 자리로 나누는 것**이다. 원시와 정제를 별도 트리로 복제하지 않고 계약 자리로 구분한다. v3의 `plant/{a}/tag|wave|status|cmd`는 "데이터 종류" 자리가 있어 같은 발상이지만, 위치가 `{a}` 한 단이다. 설비가 늘면 `site/area/line/asset` 자리가 필요하다(1차 §4-2와 같은 결론).
+
+### A5. 끊김 대비 — store-and-forward 위치와 보관량
+
+| 위치 | 사실 | 근거 종류·출처 |
+|---|---|---|
+| 엣지 노드 | Sparkplug: Primary Host가 오프라인(STATE online=false)이면 엣지가 저장했다가, 다시 online이 되면 밀린 과거 데이터를 보낸다. 과거값은 `is_historical=true`로 표시해 현재값을 덮지 않게 한다. | [재단] Sparkplug 3.0.0 §1(Primary Host), metric `is_historical` (PDF 추출 확인) |
+| 엣지 플랫폼(EdgeX) | App Service의 Store and Forward: 내보내기가 실패하면 DB에 저장하고 `RetryInterval`(최소 1 s)마다 재시도, `MaxRetryCount=0`이면 무한 재시도. | [재단] https://docs.edgexfoundry.org/4.0/microservices/application/sdk/details/StoreAndForward/ (검색 발췌) |
+| 엣지 게이트웨이 안의 로그(UMH) | umh-core 컨테이너 안의 Redpanda가 "망이 깜빡일 때 데이터를 로컬에 버퍼링"한다. | [재단] https://github.com/united-manufacturing-hub/united-manufacturing-hub README (원문 확인) |
+| 브로커 → Kafka 브리지 | HiveMQ Kafka 확장: "Kafka 클러스터가 잠시 없을 때 MQTT 브로커에 버퍼링". EMQX Kafka Sink: 연결마다 버퍼 큐(용량 한도, 넘치면 FIFO로 버림), 디스크 캐시는 `data/kafka`. | [벤더] https://docs.hivemq.com/hivemq-kafka-extension/latest/index.html (원문 확인) / [벤더] https://docs.emqx.com/en/emqx/latest/data-integration/data-bridge-kafka.html (검색 발췌) |
+| SCADA(Ignition) | Store and Forward 엔진: 메모리 버퍼 → 로컬 디스크 캐시. 기본값 메모리 2,500건, 디스크 최대 25,000건(검색 결과 기준). | [벤더] https://www.docs.inductiveautomation.com/docs/8.1/platform/database-connections/store-and-forward/configuring-store-and-forward (검색 발췌) |
+
+- **보관량의 표준·현업 권장값은 찾지 못했다 [미확인].** 제품 기본값만 있다. 판단: 보관량은 "건수·용량 한도 + 넘칠 때 버리는 규칙"으로 정하는 것이 공통 모양이다.
+- 판단: 버퍼는 **경계마다 하나씩**(엣지, 브로커→장부 브리지) 있다. v3의 "DMZ Kafka Connect가 OT EMQX를 구독"하는 구성에서는 브리지가 끊기면 OT 쪽에 따로 쌓아 둘 곳이 없다(브로커 영속 세션 설정에 의존). 우리 베이스에서는 "브리지 쪽 버퍼 한도"를 정해 두면 된다.
+
+### A6. MQTT → Kafka
+
+| 항목 | 현업 방식 | 근거 종류·출처 |
+|---|---|---|
+| 브리지 위치 | 세 가지가 공존: ① **브로커 안 확장**(HiveMQ Kafka 확장, EMQX Kafka Sink — 브로커가 Kafka로 밀어냄), ② **별도 커넥터**(Kafka Connect MQTT Source — Kafka 쪽이 브로커를 구독), ③ **엣지 게이트웨이의 브리지**(UMH: "MQTT↔Kafka, Kafka↔DB 브리지를 스키마별 단방향으로"). | [벤더] HiveMQ 문서 / [벤더] EMQX 문서 / [재단] Lenses stream-reactor MQTT Source https://docs.lenses.io/latest/connectors/kafka-connectors/sources/mqtt (검색 발췌) / [재단] UMH Data Contracts https://umh.docs.umh.app/docs/datacontracts/ (원문 확인) |
+| 토픽 매핑 | **여러 MQTT 토픽 → 적은 Kafka 토픽(합치기)**가 기본 모양. HiveMQ: "여러 MQTT 토픽 필터를 원하는 수의 Kafka 토픽으로". UMH: 와일드카드로 구독해 "병합 지점"까지를 Kafka 토픽, **나머지 경로를 메시지 키**로. | [벤더] HiveMQ / [재단] UMH topic 패키지 https://pkg.go.dev/github.com/united-manufacturing-hub/benthos-umh/pkg/umh/topic (검색 발췌) |
+| 키 | HiveMQ 기본: **원래 MQTT 토픽을 Kafka 키로**, 키 해시로 파티션 → "Kafka 파티션과 MQTT 토픽 단위로 순서 보장". EMQX 기본 키: 클라이언트 ID(템플릿으로 변경 가능). | [벤더] HiveMQ 문서(원문 확인) / [벤더] EMQX 문서 (검색 발췌) |
+| 순서 | 같은 키 = 같은 파티션 = 순서 유지. 순서가 필요 없으면 균등 분배 전략도 있다(HiveMQ 4.35). | [벤더] https://www.hivemq.com/changelog/whats-new-in-hivemq-4-35/ (검색 발췌) |
+| 중복 | 브리지는 **최소 1회**가 기본(HiveMQ acks 기본 ONE, ALL 선택 가능). MQTT QoS 2는 한 구간(클라이언트↔브로커)만 정확히 1회다. "이기종 시스템 사이 end-to-end 정확히 1회는 공짜로 주어지지 않는다." UMH는 at-least-once에서 멱등성을 위해 시계열 메시지에 **timestamp + 키**를 요구한다. | [벤더] HiveMQ / [벤더 성향] Kai Waehner 2026-07-17 https://www.kai-waehner.de/blog/2026/07/17/when-to-use-amqp-jms-kafka-or-mqtt-trade-offs-not-a-winner/ (검색 발췌) / [재단] UMH Data Contracts (원문 확인) |
+
+- 판단: 현업 모양은 **"최소 1회 + 소비자 쪽 멱등(자산 키 + 출처 시각으로 중복 제거)"** 이다. 1차가 권한 "Kafka 키 = 자산 ID"는 HiveMQ 기본(키 = MQTT 토픽)과 같은 계열이다. 토픽 경로에 자산이 들어 있기 때문이다.
+- **1차와 다른 점(연결 방향의 세부):** 1차는 "OT가 먼저 연결을 연다(push)"를 원칙으로 들고 v3의 DMZ 구독 방식을 차이로 적었다. 이번에 보니 **브로커 안 확장(①)은 이 원칙과 맞는 구현 예**다(OT 브로커가 바깥 Kafka로 연결). Kafka Connect MQTT Source(②, v3 방식)는 Kafka 쪽이 OT 브로커로 연결을 연다. **둘 다 현업 제품에 흔히 있다.** 즉 v3 방식이 "틀렸다"가 아니라 "방향 원칙을 방화벽 규칙으로 따로 풀어야 하는 방식"이다. 교육용 권고는 G절.
+
+### A7. 고속 데이터(진동 파형)
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISO 13374-1(상태 감시 데이터 처리): 기능 블록을 Data Acquisition(값 + 시각·품질 메타) → Data Manipulation(신호 처리·특징 추출) → State Detection → Health Assessment → Prognostic Assessment → Advisory Generation으로 나눈다. 특징 추출이 "상태 판정 앞 단계"로 따로 있다. | [표준] ISO 13374-1:2003 https://www.iso.org/standard/21832.html (목차·해설 (검색 발췌)) |
+| CISA 외 AI-OT 지침: "필요한 특징값이나 요약을 OT 밖으로 옮기는 push 방식." | [표준] 1차 §1-B 3 (다시 조사 안 함) |
+| 10 kHz 진동 센서의 원시 16-bit 샘플은 초당 20 kB, 초당 RMS·peak·kurtosis 등 특징 1회는 수십 바이트라는 비교가 여러 해설에 나온다. | 블로그·[벤더] (검색 발췌) — 독립 수치 아님 |
+
+- 판단: 현업 모양은 **"엣지에서 특징 추출(1초 특징) + 사건 때만 짧은 원시 파형 스냅숏"** 이다. 원시 파형 전체를 상시 중앙으로 보내는 구성을 권하는 표준은 찾지 못했다. v3의 "파형 1초 배치(wave 토픽) → Flink에서 1초 특징"은 특징 추출 위치가 IT 쪽이다. 교육용 한 PC에서는 망 대역 문제가 없으니 줄여도 되지만, **"현업은 엣지에서 줄인다"는 설명과 wave/tag 토픽 분리는 남긴다**(판단).
+- 원시 파형의 "보관 여부·기간" 현업 수치는 **[미확인]**.
+
+---
+
+## B. 명령이 내려가는 길
+
+1차에서 확정한 것: 운전원 명령은 HMI → 제어기(OT 안), 바깥 요청은 검증 통로 하나(NAMUR NE 178), 브로커 명령 retain 금지(Sparkplug), AI 능동 제어 제한(CISA). 여기서는 세부만 본다.
+
+### B1. HMI 조작의 실제 길 — 직결인가, 브로커 경유인가
+
+| 방식 | 실제 모양 | 근거 종류·출처 |
+|---|---|---|
+| 직결(고전) | SCADA가 드라이버(OPC UA·Modbus 등)로 PLC를 읽고 쓴다. 쓰기는 **동기 응답**이 있다. OPC UA Write 서비스는 "장치 같은 데이터 출처에 값을 쓰거나 쓸 수 없다고 판단할 때까지 돌아오지 않는다." 쓰기마다 StatusCode 결과를 준다. 단, 중간 시스템에만 썼고 출처 갱신을 모르면 `Good_CompletesAsynchronously`로 알린다. 즉 표준도 **"쓰기 성공 ≠ 설비 반영"** 을 구분한다. | [표준] NIST SP 800-82r3 §2(1차) / [표준] OPC UA Part 4 §5.11.4 Write https://reference.opcfoundation.org/Core/Part4/v105/docs/5.11.4 (원문 확인) |
+| 브로커 경유(Sparkplug) | SCADA(Ignition MQTT Engine)가 태그에 쓰면 **DCMD/NCMD** 메시지가 브로커로 간다 → 엣지(MQTT Transmission)가 받아 **OPC UA 드라이버로 PLC에 쓴다** → 엣지가 바뀐 값을 **DDATA로 다시 발행** → SCADA 태그가 갱신된다(이것이 확인). 양쪽 모두 "명령 차단(Block commands)" 설정이 있고, 쓰려면 이를 꺼야 한다. | [벤더] Cirrus Link(Ignition MQTT 모듈) 문서 https://docs.chariot.io/display/CLD80/Sparkplug+NCMD+or+DCMD+workflow+using+MQTT+Modules (원문 확인) |
+| 브로커 경유의 비용 | "OT 프로토콜은 원래 동기식이라 쓰기에 예외가 없으면 PLC가 받았다고 확신할 수 있었다. UNS는 이 방식을 바꾼다. 이제 장치가 아니라 브로커에 발행하므로, **장치의 명령 확인(ACK)과 명령 발신자의 재시도를 위한 추가 코딩이 필요**하다." | [독립·SI] Automation World 2023-12-11, Sergey Koreshkov(Nukon, SAGE Group 소속 SI) https://www.automationworld.com/factory/iiot/article/33016191/unified-namespace-real-world-applications-and-challenges (원문 확인) |
+| 교육용 참조(GRFICSv3) | HMI(Scada-LTS)는 DMZ 망에, PLC는 ICS 망에 두고 **라우터·방화벽 컨테이너를 거쳐 Modbus로 직접** 읽고 쓴다. 브로커 없음. | [재단] https://github.com/Fortiphyd/GRFICSv3 `docker-compose.yml` (원문 확인, I절 참고) |
+
+- **"현업 HMI 조작의 주류가 직결인가 브로커 경유인가"를 수치로 보여 주는 독립 설문은 찾지 못했다 [미확인].** 확인된 것: 두 방식이 모두 실제 제품·표준에 있다(1차 §1-D 결론 유지). 브로커 경유는 ACK·재시도를 따로 만들어야 한다는 비용이 공개 문헌에 적혀 있다.
+- 판단: 브로커 경유 쓰기의 현업 구현(Cirrus Link)은 **"명령 → 엣지가 제어기에 씀 → 엣지가 바뀐 값을 데이터 토픽으로 다시 발행"** 이다. 이 "값 재발행이 곧 확인" 모양은 1차가 본 Azure OPC UA 커넥터와 같다. v3의 status/ACK 토픽은 이보다 한 단계 더 명시적(명령 ID로 대조)이다.
+
+### B2. 원격·자동 명령의 검증 위치, ACK와 되읽기
+
+제조 쪽 문서는 1차에서 본 NE 178(검증 통로, 최종 권한은 제어 영역)과 벤더 구현이 전부였다. 이번에 **전력 계통 원격제어 표준**에서 구체적인 명령 절차를 찾았다. 제조 표준은 아니지만 "원격 명령을 어떻게 검증·확인하는가"를 표준으로 굳힌 가장 가까운 예다.
+
+| 표준·사례 | 검증·ACK·되읽기 방식 | 근거 종류·출처 |
+|---|---|---|
+| IEC 61850-7-2 제어 모델 | 네 가지: direct/normal, SBO/normal, direct/enhanced, SBO/enhanced. SBO는 먼저 Select로 대상을 잠그고 `sboTimeout` 안에 Operate해야 한다. 시간이 지나면 다시 Select. 잠근 뒤에는 **Select한 클라이언트만** 상태를 바꿀 수 있다. "enhanced security"는 사이버 보안이 아니라 **CommandTermination(실행 결과 확인)** 을 보내는 방식이다. 인터록이 풀려 있어야 CommandTermination이 온다. | [재단] libIEC61850 https://libiec61850.com/iec-61850-control-services/ (원문 확인, 네 모델) / [독립] NettedAutomation(K. Schwarz) https://blog.nettedautomation.com/2015/04/what-is-control-with-enhanced-security.html (원문 확인) / sboTimeout·Select 후 단독 권한은 (검색 발췌) |
+| DNP3(IEEE 1815) | Select-Before-Operate: Operate는 **같은 점·같은 값의 Select 다음 순번(sequence+1)으로, 설정된 선택 시간 안에** 와야 한다. 순번이 다르면 선택을 끝내고 실행하지 않는다. | [표준] IEEE 1815-2012 §9.2 — 오픈소스 구현 이슈에 인용된 문장 https://github.com/craigpnnl/dnp3py/issues/48 (검색 발췌). 표준 원문은 유료 [미확인] |
+| Svenska kraftnät(스웨덴 송전 운영사) IEC 60870-5-104 기술 지침 TR02-04-04E rev 2(2022-10-25) | ① 시각 붙은 명령은 받는 쪽이 **항상 시각을 검사**해 너무 늦거나 미래 시각이면 **확인 응답 없이 실행하지 않는다.** 허용 지연 기본 30 s(1~60 s 설정). 늦은 명령 수를 세는 카운터 권장. ② Select 후 Execute가 20 s(1~30 s) 안에 오지 않으면 시간 초과. ③ 긍정 확인(ACTCONpos)은 "주소가 맞고, 제어 가능하게 설정돼 있고, **인터록이 허용한다**"는 뜻. ④ 실행이 끝나면 종료 메시지를 보내고, 설비의 새 상태는 **자발 데이터 메시지로** 따로 올라온다(되읽기). ⑤ 안전을 위해 "한 번에 한 점만 선택" — 진행 중인 select/execute가 끝나기 전에는 같은 종류의 새 명령을 처리하지 않는다. | [사례·기술 지침] https://www.svk.se/4ab5fb/siteassets/aktorsportalen/entreprenorer-i-elnatet/tekniska-riktlinjer/tr02/tr02-04-04e-2-2022-10-25.pdf §7.7.2–7.7.6 (PDF 원문 확인) |
+| MQTT 5 | 메시지 만료(Message Expiry Interval), 요청/응답 Correlation Data. | [표준] OASIS MQTT 5.0 (1차 확인) |
+
+- 판단: 전력 원격제어에는 **"만료(시각 검사·선택 시간 초과) + 순번 대조 + 단독 선택 + 긍정/부정 확인 + 실행 종료 + 새 상태 자발 보고"** 가 표준·운영 지침으로 있다. v3의 게이트웨이·PLC 검사(만료, cmdId 중복, 모드, ACK)는 이 모양과 거의 같다. 즉 v3의 만료·중복 검사는 **제조 표준 근거는 여전히 못 찾았지만, 원격제어 분야에는 같은 장치가 표준으로 있다**(1차 [미확인] 6번의 부분 답, J절).
+- 되읽기는 두 겹이다: **명령 확인(받았다/거부)** 과 **설비 새 상태(값 변화)**. 둘을 구분하는 것이 공통이다. 우리 B13 흐름의 "ACK 대조 → 재관측"과 같은 구분이다.
+
+### B3. 운전 모드·명령 권한 모델
+
+| 모델 | 내용 | 근거 종류·출처 |
+|---|---|---|
+| MTP(VDI/VDE/NAMUR 2658, 모듈형 공정 설비) | 서비스·장치 객체마다 **운전 모드 상태기계: Offline / Operator / Automatic**. Offline에서는 새 전환 요청을 처리하지 않는다. Operator 상태에서는 운전원 요청(`*Op`, 바깥에서 OPC UA로 씀)만, Automatic 상태에서는 자동 요청(`*Aut`)만 처리한다. `StateChannel`(PLC 내부 논리가 정함)이 어느 출처의 전환을 받을지 정한다. 동시에 충돌하는 요청은 버리고 현재 상태를 유지한다. 서비스는 "운전원·현장 패널·제어 시스템('external')" 또는 "모듈 자신('internal')"이 조종한다. | [벤더] Beckhoff TF8400 MTP Runtime 문서 https://infosys.beckhoff.com/content/1033/tf8400_tc3_mtp_runtime/14869060363.html (원문 확인, 이 쪽은 2658을 직접 인용하지 않음) / [재단] Semodia ControlEngine 문서(VDI/VDE/NAMUR 2658-1~5 목록, internal/external 조종) https://semodia-gmbh.github.io/cena-demo/00_general/about_mtp.html (원문 확인) |
+| OPC UA 역할(Part 3 well-known roles) | Observer = 읽기·구독만. **Operator = 여기에 "일부 실시간 데이터 쓰기와 일부 Method 호출" 허용.** Engineer = 설정 읽기·쓰기. Supervisor = 읽기 + Method 호출. ConfigureAdmin·SecurityAdmin = 설정·보안 설정 변경. | [표준] OPC UA Part 3 §4.9.2 Table 2 https://reference.opcfoundation.org/Core/Part3/v105/docs/4.9.2 (원문 확인) / Part 18 역할 목록 https://reference.opcfoundation.org/Core/Part18/v105/docs/4.3 (원문 확인) |
+| PackML | 모드(Producing·Maintenance·Manual 등)마다 허용 상태·명령이 다름 | [표준] 1차 확인 |
+| IEC 61850 | Select한 클라이언트만 상태를 바꿀 수 있음(단독 권한) | B2 |
+
+- **1차 [미확인] 7번(LOCAL/REMOTE 원격 권한 모드 이름의 표준)에 대한 답:** 공정 모듈 표준 MTP에 **"운전원(external) / 자동(internal) 출처를 가르는 운전 모드 상태기계"** 가 있다(Offline/Operator/Automatic). v3의 LOCAL / REMOTE_MANUAL / REMOTE_AUTO와 이름은 다르지만 **"지금 어느 출처의 명령을 받는가"를 제어기가 상태로 들고 있고, 다른 출처 요청은 버린다**는 발상이 같다. "LOCAL/REMOTE"라는 이름 자체의 표준 문장은 여전히 찾지 못했다 [미확인]. VDI 2658 원문은 유료라 문장 확인 못 함(벤더·오픈소스 구현 문서로만 확인).
+- 판단: 우리 soft-PLC의 모드는 **MTP식 3상태(정지/운전원/자동) + 출처 채널**로 설명하면 표준 근거가 붙는다. 권한은 OPC UA 역할(Observer/Operator/Engineer)을 빌려 "누가 쓰기를 할 수 있나"를 정하면 된다.
+
+### B4. 인터록·안전의 위치, 교육용 soft-PLC와 시뮬레이터 연결
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| 인터록은 제어기(PLC), 안전 기능은 SIS가 독립적으로. | [표준] 1차 확인 |
+| IEC 104 운영 지침: 긍정 확인 = "인터록이 허용"이라는 뜻. 즉 **인터록 검사는 명령을 받는 쪽(현장 제어기)** 이 한다. | [사례·기술 지침] SvK TR02-04-04E §7.7.3 (B2) |
+| OpenPLC Runtime v3는 **수명 종료(End of Life), 유지보수 중단**. 저장소가 2026년 보관(archived) 상태다. 후속은 **OpenPLC Runtime v4**(Autonomy-Logic/openplc-runtime, OpenPLC Editor v4 프로그램용). | [재단] https://github.com/thiagoralves/OpenPLC_v3 README "This project has reached End of Life" (원문 확인), GitHub API archived=true (확인 2026-09-29) / https://github.com/Autonomy-Logic/openplc-runtime (GitHub API archived=false, 최종 push 2026-09-25) |
+| OpenPLC는 "전체 소스를 공개한 유일한 제어기"라서 산업 보안 연구 틀로 많은 논문에 쓰였다고 스스로 적는다. | [재단] OpenPLC_v3 README (원문 확인) |
+| OpenPLC가 **Modbus 마스터**로 원격 I/O(Slave Devices)를 주기적으로 읽는다. 첫 장치의 디지털 입력은 `%IX100.0~%IX100.7`에 매핑. 설정 파일 `mbconfig.cfg`에 `Polling_Period`(ms, 예 500). | [재단] OpenPLC 문서 https://openplcproject.gitlab.io/runtime/modbus-io (검색 발췌) |
+| GRFICS 교육 랩: 화학 공정 **시뮬레이션이 Modbus 서버(원격 I/O 역할)**, **PLC(수정 OpenPLC)가 마스터**로 읽고 쓴다. HMI는 PLC에만 붙는다. | [재단] https://github.com/Fortiphyd/GRFICSv2 README (원문 확인), GRFICSv3 compose (원문 확인) |
+
+- 판단: 교육용 표준 모양은 **"시뮬레이터 = Modbus 서버(현장 I/O), soft-PLC = Modbus 마스터(제어 논리·인터록), HMI·엣지 = PLC에 붙음"** 이다. 우리 V1은 시뮬레이터가 Modbus 서버이고 FUXA·EdgeX·AI가 모두 그 서버에 직접 붙는다. soft-PLC를 끼우면 **시뮬레이터에 붙는 것은 PLC 하나**가 되고, 나머지는 PLC(또는 PLC가 내는 태그)에 붙는다. 1차 권고 B0·B1과 같은 결론이며, 공개 교육 랩(GRFICS)이 같은 모양을 쓴다.
+- soft-PLC 제품 선택(OpenPLC v4 등)은 §7 스택 조사 범위라 여기서 정하지 않는다. v3를 쓰면 안 된다는 사실만 넘긴다.
+
+---
+
+## C. 알람이 가는 길
+
+1차에서 확정한 것: 공정 알람은 제어기·SCADA가 만들고 운전원이 처리한다. ISA-18.2 알람 정의(대응이 필요한 것만)와 권장 부하. AI 경고는 HMI에 통합하되 오경보 관리(CISA). 플랫폼 경보는 따로.
+
+### C1. 공정 알람을 만드는 주체 — 분석 알람은 "참고 알림"인가
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISA-18.2-2016은 알람과 다른 **"alert"** 를 정의한다: "알람 기준을 충족하지 않지만 **평가나 조치가 필요한 비정상 상태의 알림**." 같은 판에서 **prompt**(정상 운전의 일부로 제때 대응이 필요한 알림, 예: 특정 승인 요청), **notice**(제때 대응이 필요 없는 알림)도 정의했다. 표준 본문은 정의만 두고 처리 방법은 두지 않았다. | [벤더·컨설팅] exida 블로그(ISA-18.2-2016 정의 인용) https://www.exida.com/Blog/when-is-an-alarm-not-an-alarm (원문 확인). 표준 원문은 유료 [미확인] |
+| 그 빈칸을 채우려고 **ISA-TR18.2.8-2023 "Guidelines for Non-alarm Notifications"** 가 나왔다. 운전원 외 역할(정비 등)로 가는 알림 종류와, 운전원에게 가는 alert·prompt·notice를 정의·안내한다. | [표준] ANSI 웹스토어 https://webstore.ansi.org/standards/isa/isatr182023 (검색 발췌) / GlobalSpec https://standards.globalspec.com/std/14656985/tr18-2-8 (검색 발췌) |
+| 알람 정의 자체(대응 필요), 알람 수명주기 | [표준] 1차 확인 |
+
+- 판단: 표준 쪽에는 이미 **"알람(운전원이 반드시 대응) ≠ alert(평가·조치 필요, 알람과 따로 표시) ≠ 알림을 받는 역할이 운전원이 아닐 수 있음"** 이라는 칸이 있다. 스트림 분석(Flink) 결과는 합리화(원인·결과·대응 시간 문서화)를 거치기 전까지 **alert로 다루는 것이 표준 용어에 맞다.** 합리화를 거쳐 운전원 대응이 정해진 것만 알람으로 올린다.
+- **"분석 알람을 알람으로 쓰는가, alert로 쓰는가"의 현업 비중 수치는 찾지 못했다 [미확인].**
+- 1차 표1 ③("IT에서 만든 alerts를 OT HMI로 내려보내는 것 — 금지도 주류도 근거 없음")에 대한 보강: 내려보내는 것 자체보다 **"알람 목록과 따로 표시되는 alert"로 내려보내면** 표준 용어와 맞는다.
+
+### C2. ISA-18.2 알람 상태를 저장하는 곳 — 오픈소스 구현
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISA-18.2 알람 상태 전이도: A Normal, B Unacknowledged, C Acknowledged, D Returned-to-Normal Unacknowledged, 그리고 Latched, Shelved(운전원이 임시로 숨김), Suppressed by Design(설계된 조건으로 억제), Out of Service. | [표준] ISA PAS 해설 https://www.isa.org/getmedia/55b4210e-6cb2-4de4-89f8-2b5b6b46d954/PAS-Understanding-ISA-18-2.pdf (검색 발췌) / ICONICS 문서 https://documentation.iconics.com/v10.97.3/Content/Alarming/Alarm%20Server/Alarm%20References/alarm-state-transition-diagram.htm (검색 발췌, [벤더]) |
+| OPC UA Part 9(Alarms & Conditions)의 AlarmConditionType은 ActiveState, SuppressedState(서버가 시스템 사유로 자동 억제), OutOfServiceState(정비 인원이 억제), ShelvingState(일시적으로 표시 막기), SilenceState(소리만 끔), LatchedState를 갖는다. 상태 전이는 **서버가** 관리한다. 부록 E에 **IEC 62682 대응표**가 있다. | [표준] OPC UA Part 9 §5.8.2 https://reference.opcfoundation.org/Core/Part9/v105/docs/5.8.2 (원문 확인, 부록 E 내용은 안 읽음) |
+| **Alerta**(오픈소스 알림 관리, Apache-2.0): 알람 모델로 `ANSI/ISA 18.2` 상태기계를 둔다. 상태 A NORM, B UNACK, C ACKED, D RTNUN, E SHLVD, F DSUPR, G OOSRV, 동작 ack·unack·shelve·unshelve. 상태는 Alerta의 DB에 저장된다. | [재단] https://github.com/alerta/alerta/blob/master/alerta/models/alarms/isa_18_2.py (소스 원문 확인), GitHub API: Apache-2.0, archived=false, 최종 push 2026-06-19 |
+| **FUXA**: 알람은 태그 하나에 묶이고, 4단계 조건(High High, High, Low, Message)을 둔다. 활성 알람과 이력을 화면에 띄울 수 있고, 알람마다 팝업·태그 값 쓰기 같은 동작을 건다. 확인(ack)할 때 값을 보내는 기능은 없다는 요청 글이 있다. | [재단] https://frangoteam.github.io/FUXA/HowTo-setup-Alarms/ (원문 확인) / GitHub 토론 #1851 (검색 발췌). ack 방식·셸빙 지원 여부는 문서에서 확인 못 함 [미확인] |
+
+- 판단: 현업 표준 모양은 **"알람 상태(활성·확인·셸빙·억제·서비스 중지)는 알람 서버(SCADA·HMI 또는 OPC UA 서버)가 들고, 이력(journal)은 DB에 남는다"** 이다. 즉 알람 상태의 주인은 OT의 HMI/SCADA 쪽이다.
+- 우리 적용: 공정 알람(PLC·HMI 한계 알람)의 상태는 HMI(FUXA)가, 분석 alert(B7)의 사건 상태는 IT 쪽 사건 저장소(B13)가 든다. 두 목록을 나눈다. FUXA가 ISA-18.2 상태를 얼마나 지원하는지는 **[미확인]** 이므로, 교육에서 셸빙·억제까지 보여 주려면 확인이 필요하다(스택 조사 §7로 넘김).
+
+### C3. 알람 폭주 억제, 분석 알람을 HMI에 표시하는 방식
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| EEMUA 191: 알람 폭주(flood)는 **10분 동안 새 알람이 10건 넘게** 오는 것으로 시작하고, 10분 동안 5건 미만이 될 때까지 이어진다고 본다. 정상 운전 중 평균은 10분에 1건 이하. | [독립·업계 지침] EEMUA 용어집 https://www.eemua.org/glossary/a/alarm-f-ao (403으로 원문 못 읽음, (검색 발췌)) / Emerson 해설 "Alarm Management by the numbers" (검색 발췌, [벤더]) |
+| 억제 수단은 표준 상태로 정의돼 있다: Shelved(운전원 수동, 관리 요건 필요), Suppressed by Design(설계 조건 — 예: 설비 정지 중 관련 알람 억제), Out of Service. ISA-TR18.2.4-2012 "Enhanced and Advanced Alarm Methods"가 상태 기반·동적 억제 같은 고급 방법을 다룬다. | [표준] ISA PAS 해설 (검색 발췌) / ISA InTech 2016 https://www.isa.org/intech-home/2016/may-june/departments/isa18-alarm-management-standard-updated (원문 확인, TR 목록) |
+| AI 알림은 기존 HMI 화면에 통합, 오경보가 인지 부하를 늘린다. | [표준] CISA AI-OT (1차 확인) |
+| 알림 종류(alert·prompt·notice) 표시 안내는 ISA-TR18.2.8-2023. | [표준] C1 |
+
+- 판단(우리 적용): ① 분석 alert는 **알람 목록과 다른 영역·다른 표시**로 HMI에 보인다(TR18.2.8 개념). ② 같은 설비의 같은 원인 alert는 **사건 하나로 묶는다**(RAISE/CLEAR 쌍, 사건 ID). ③ 설비 정지(모드 = 정지)일 때 그 설비의 분석 alert는 **설계된 억제**(Suppressed by Design)로 막는다. ④ 폭주 지표(10분당 건수)를 감시 지표로 두면 EEMUA 기준과 비교할 수 있다.
+
+### C4. 플랫폼 경보와 공정 알람의 분리
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISA-18.2-2016 alert의 예로 "운전원이 알아야 하지만 정비의 대응이 필요한 시스템 진단 알림"이 든다. ISA-TR18.2.8은 **운전원이 아닌 역할로 가는 알림**을 다룬다. | [독립] 해설 (검색 발췌) / [표준] TR18.2.8 소개 (검색 발췌) |
+| 플랫폼 경보는 보안·운영 담당의 중앙 로깅·감시 체계로. | [표준] NIST 800-82r3 (1차 확인) |
+
+- 판단: 분리의 표준 근거가 1차보다 하나 늘었다. **"받는 역할이 다르면 알람 목록이 아니다"** 가 ISA 쪽 문서(2016 정의 + TR18.2.8)에 있다. 플랫폼 경보(Prometheus → Alertmanager)는 인프라 담당 역할의 알림으로 두고, 운전원 알람 목록·사건 저장소에 넣지 않는다. 단 **"데이터가 안 들어온다(신선도)"** 는 운전원에게도 의미가 있다(값이 STALE이 됨). 이것은 H절처럼 품질 표시로 HMI에 보이고, 원인(컨테이너 다운)은 플랫폼 경보로 간다. 이 두 갈래가 겹치는 지점이다.
+
+---
+
+## D. 저장
+
+1차에서 확정한 것: 사이트 히스토리언은 OT L3, 기업용 복제본은 DMZ(CISA DiD 2016). UNS는 히스토리언을 대체하지 않는다. 제품 순위는 §7 범위라 여기서는 "종류"만 적는다.
+
+### D1. OT 쪽 사이트 히스토리언이 필요한가, 오픈소스 선택지
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| Sparkplug는 SCADA·히스토리언을 Host Application으로 두고, `is_transient`("히스토리언에 저장하지 말 것") 플래그를 둔다. 즉 **히스토리언이 UNS 옆의 한 구독자**라는 모양을 전제한다. | [재단] Sparkplug 3.0.0 §6.4 (PDF 추출 확인) |
+| UMH(오픈소스 UNS): 기본 히스토리언은 **TimescaleDB**. `_historian` 데이터 계약을 따르는 데이터만 저장. 표 3개: `asset`(enterprise·site·area·line·workcell·origin_id 조합에 ID 부여), `tag`(숫자, hypertable), `tag_string`(문자). 숫자와 문자를 나눠 "집계 쿼리가 깨지는 것을 막는다." | [재단] https://umh.docs.umh.app/docs/datacontracts/historian/ (원문 확인) |
+| UMH에서 이 히스토리언은 **엣지·사이트 인스턴스 안**(UNS와 같은 곳)에 있다. | [재단] 같은 곳 + README(단일 컨테이너 엣지 게이트웨이) — 배치 위치를 "OT"라고 쓴 문장은 없음 [미확인] |
+| GRFICS 교육 랩: "HMI & Historian(ScadaBR)"을 **DMZ**에 둔다(v2). v3는 HMI(Scada-LTS)를 DMZ 망에 둔다. | [재단] GRFICSv2 README (원문 확인) / GRFICSv3 compose (원문 확인) |
+
+- **"사이트 히스토리언을 OT에 꼭 둬야 한다"는 요구 문장은 찾지 못했다 [미확인].** 1차의 CISA DiD는 "L3 제조 구역에 히스토리언, DMZ에 복제"라는 **권장 배치**다. 교육 랩(GRFICS)은 DMZ에 둔다. 즉 위치는 공장마다 다르다.
+- 판단: 우리 한 PC 조건에서 OT에 두 번째 시계열 DB를 두는 것은 필수가 아니다. **"IT가 멈춰도 OT가 돈다"를 보여 주는 데 필요한 것은 HMI의 현재값·짧은 추세**이고, 이력 정본은 IT 한 곳으로 둔다(1차 5-C와 같음). 다만 **"현업은 사이트 히스토리언이 OT(L3)나 DMZ에 있다"** 는 설명은 남긴다.
+- 오픈소스 히스토리언 "종류": 시계열 DB(TimescaleDB·InfluxDB·QuestDB·Apache IoTDB 등), SCADA 내장 히스토리언. 순위·판 선택은 §7(14-industry-stack.md)로 넘긴다.
+
+### D2. 원시·집계 보존 정책, 공정값·알람·감사를 한 저장소에 두는가
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| 히스토리언 쪽 현업 방식은 **"수집 때 예외 필터 + 저장 때 압축(swinging door)"** 으로 원시값을 줄여 오래 둔다(AVEVA PI). | [벤더] A1 참고 (검색 발췌) |
+| 감사(audit)의 규제 예: 미국 21 CFR 11.10(e) — "운전원 입력과 조치의 날짜·시각을 독립적으로 기록하는 안전한, 컴퓨터가 만든, 시각이 찍힌 감사 추적". **감사 기록은 대상 전자 기록과 같은 기간 보존.** (f) "허용된 단계·사건 순서를 강제하는 운영 시스템 검사." | [표준·규제] 21 CFR §11.10 https://www.law.cornell.edu/cfr/text/21/11.10 (원문 확인). 제약·식품 등 FDA 규제 대상에만 적용 |
+| IEC 62443-3-3은 시스템 보안 요구로 SR 2.8 감사 대상 사건, SR 2.9 감사 저장 용량, SR 2.10 감사 처리 실패 대응, SR 2.11 시각을 둔다. | [표준] IEC 62443-3-3:2013 미리보기 목차 https://cdn.standards.iteh.ai/samples/19488/7c0b753be32e46fc986c23c32efbdbe8/IEC-62443-3-3-2013.pdf (목차만 확인, 본문 [미확인]) / 요지 (검색 발췌) |
+| UMH 히스토리언 문서는 시계열(`tag`)만 다룬다. 알람·사건 저장 위치는 그 문서에 없다. | [재단] D1 출처 |
+
+- **"원시 N일, 집계 M년" 같은 현업 표준 보존 기간은 찾지 못했다 [미확인].** 보존 기간은 규제(예: 21 CFR 11 — 대상 기록과 같게)와 공장 정책으로 정해진다.
+- **"공정값·알람·감사를 한 저장소에 두는가"를 정한 표준도 찾지 못했다 [미확인].** 확인된 것: 알람 상태는 알람 서버가 들고(C2), 감사는 별도 요구(IEC 62443 SR 2.x, 21 CFR 11)를 받는다.
+- 판단(우리 적용): 저장소 개수보다 **"종류별로 정본이 어디인지와 보존 기간을 표로 정한다"** 가 핵심이다. 권장 표(교육용):
+
+| 데이터 | 정본 | 보존(교육용 예시, 판단) | 이유 |
+|---|---|---|---|
+| 원시 태그 | 시계열 DB(IT) + Kafka 짧은 보관 | 짧게(예: 수일) | 재생·재처리용 |
+| 1초 특징·집계 | 시계열 DB | 길게 | 추세·학습 |
+| 공정 알람 상태 | HMI(OT) | HMI 이력 | 알람 서버가 주인(C2) |
+| 분석 alert·사건 | 사건 저장소(IT) | 길게 | 원인 분석·학습 |
+| 명령·승인·감사 | 추가만 되는 로그(Kafka audit + DB) | 가장 길게, 지우지 않음 | 21 CFR 11·IEC 62443 SR 2.x의 취지 |
+
+(보존 기간 숫자는 표준 근거가 없는 교육용 예시다.)
+
+---
+
+## E. 설비 모델과 확장
+
+1차에서 확정한 것: 층은 그대로 두고 설비 계층 이름 + 토픽 체계 + 설비 종류별 모델 + 엣지 노드 추가로 흡수한다. 통신 차이는 엣지에서 끝낸다(1차 §4-2).
+
+### E1. 설비 등록부를 무엇으로 두는가, 온톨로지와의 연결
+
+| 선택지 | 무엇을 담나 | 온톨로지·지식과의 연결 | 근거 종류·출처 |
+|---|---|---|---|
+| OPC UA 정보 모델 + Companion Spec | 장치 안의 변수·메서드·알람과 형식. 예: DI(Device Integration) 모델의 명판(ITagNameplate·IVendorNameplate, AssetId), DeviceHealth | 형식(ObjectType)이 곧 "설비 종류". 공개 시뮬레이터 opc-plc가 DI 기반 보일러를 제공 | [재단] https://github.com/Azure-Samples/iot-edge-opc-plc README (원문 확인) |
+| AAS(Asset Administration Shell) | 자산마다 하나의 "껍데기" + 서브모델(명판, 기술 데이터, 운영 데이터 등). IDTA-01001 Part 1 메타모델 v3.1(2025-05). **교환 형식에 XML·JSON과 함께 RDF** 가 있다. 요소마다 `semanticId`로 의미 사전(개념 설명)을 가리킨다 | RDF 직렬화와 semanticId가 온톨로지와 잇는 공식 자리 | [표준] IDTA 사양 https://industrialdigitaltwin.io/aas-specifications/IDTA-01001/v3.1.1/index.html (검색 발췌) / 메타모델 저장소 https://github.com/admin-shell-io/aas-specs-metamodel (검색 발췌). IEC 63278-1:2023은 1차 (검색 발췌) |
+| AAS 오픈소스 구현: Eclipse BaSyx | AAS 저장소·서브모델 저장소·개념 설명 저장소를 묶은 "AAS Environment", AAS Registry, Submodel Registry, Web UI가 도커 이미지로 제공. MIT, 활발(최종 push 2026-09-28) | — | [재단] https://github.com/eclipse-basyx/basyx-java-server-sdk (GitHub API 확인) / https://wiki.basyx.org (검색 발췌) |
+| ISA-95 설비 계층(B2MML) | Enterprise·Site·Area·Work center·Work unit 역할 계층과 L3–L4 교환 형식 | 계층 = 토픽·키의 뼈대 | [표준] 1차 확인 |
+| EdgeX 장치 등록부(core-metadata) | **Device Profile = "여러 장치가 다시 쓰는 종류 단위 정의"**(deviceResources: 이름·데이터형·읽기/쓰기·단위·scale/offset, deviceCommands: 함께 읽을 묶음). Device = 프로파일 + 주소 + AutoEvents. Provision Watcher = 자동 발견 규칙(차단 조건 포함) | 온톨로지 연결 자리는 없음(데이터 경로용) | [재단] https://docs.edgexfoundry.org/4.1/microservices/device/details/DeviceProfiles/ (원문 확인) / 3.1 Discovery 문서 (검색 발췌) |
+| UMH 데이터 모델 | 장치 모델(`_pump_v1`: 어떤 데이터 점이 있나) + 업무 모델. 모델을 만들면 같은 이름의 **데이터 계약이 자동 생성**되고 런타임에 검증. **모델은 고치지 않고 새 판(`_pump_v2`)을 만든다.** "사이트가 장치 모델을 소유하고, 각자 업무 모델로 본다." | 온톨로지 연결 자리는 없음 | [재단] https://docs.umh.app/usage/data-modeling (원문 확인) |
+| 고장·정비 지식 표준 | ISO 14224:2016(석유·가스·석유화학): 설비 분류(taxonomy), 설비 데이터·**고장 데이터(고장 원인·결과)**·정비 데이터(정비 조치·자원·정지 시간). 고장 모드(관측된 결과)·고장 메커니즘(물리 과정)·고장 원인(근본 조건)을 구분한다는 해설이 많다. | 온톨로지의 "설비·고장·원인·조치" 칸과 직접 겹침 | [표준] https://www.iso.org/standard/64076.html (403으로 원문 못 읽음, (검색 발췌)) |
+| IOF-Maint(산업 온톨로지 재단) | IOF Core(BFO 기반, BFO는 ISO/IEC 21838-2)에 맞춘 정비 온톨로지. 20개 클래스, 2개 관계. **작업지시·절차·고장 모드 데이터**를 다루는 여러 응용 온톨로지에서 공통 개념을 뽑았다. OWL DL 추론 지원, GitHub에서 유지 | 온톨로지 쪽 공개 기준점 | [독립·학술] Hodkiewicz 외 2024 https://arxiv.org/abs/2404.05224 (초록 원문 확인) / NIST IOF Core https://www.nist.gov/publications/industrial-ontologies-foundry-iof-core-ontology (검색 발췌) |
+
+- **어느 것이 "현업 주류 설비 등록부"인지 보여 주는 독립 설문은 찾지 못했다 [미확인].** 확인된 것: 모든 선택지가 **"종류(형식·프로파일·모델)를 한 번 정의하고, 개체(설비 한 대)는 종류 + 위치 + 주소로 찍어 낸다"** 는 같은 모양을 쓴다.
+- 판단(우리 적용, 1차 B11 구체화): 자산 레지스트리 정본은 **"설비 종류 모델(태그 목록·단위·범위·deadband·Modbus/OPC UA 주소 규칙) + 설비 개체(ID·ISA-95 위치·종류·통신 주소)"** 두 표면 된다. 여기서 생성하는 것: EdgeX Device Profile·Device, UNS 토픽, Kafka 키, Flink 규칙 적용 범위, 온톨로지 설비 노드. 온톨로지의 고장·원인·조치 칸은 **ISO 14224의 모드/메커니즘/원인 구분**과 **IOF-Maint** 용어를 빌리면 표준 근거가 붙는다. AAS·BaSyx는 현업 연결점이 분명하지만 한 PC 메모리에 컨테이너를 더 올려야 하므로 **"설명 + 레지스트리 파일을 AAS 모양과 비슷하게"** 가 교육용 축소안이다(판단).
+
+### E2. 설비 한 대를 추가할 때 바뀌는 층과 설정, 자동화 수준
+
+| 구현 | 한 대 추가 절차 | 자동화 | 근거 종류·출처 |
+|---|---|---|---|
+| Sparkplug | 새 Edge Node·Device가 NBIRTH/DBIRTH로 자기 metric 목록·형식·메타를 알리면 Host가 인식. Host는 `Node Control/Rebirth`로 다시 알리라고 요청 가능 | 높음(자기 소개) | [재단] Sparkplug 3.0.0 (PDF 추출 확인) |
+| EdgeX | 이미 있는 Device Profile을 가리키는 Device 하나를 등록(주소·AutoEvents). 발견을 지원하는 서비스는 Provision Watcher 규칙에 맞으면 자동 등록. **로컬 프로파일 파일을 서비스 시작 후 고쳐도 반영되지 않는다** — core-metadata에서 지우고 다시 시작해야 한다. | 중간 | [재단] EdgeX 4.1 Device Profiles (원문 확인) / 3.1 Discovery (검색 발췌) |
+| UMH | 브리지 설정에 위치(고정부)만 새로 주면, 이미 있는 장치 모델이 새 설비에 적용된다. | 중간 | [재단] UMH Data Modeling (원문 확인) |
+| Azure IoT Operations | 자산 자동 발견, 1,000개 데이터 점마다 구독 분리 | 높음 | [벤더] 1차 확인 |
+
+- 판단(우리 적용): 설비 한 대 추가 때 **바뀌어야 하는 곳은 레지스트리의 "설비 개체" 한 줄**이 이상적이다. 거기서 생성 스크립트가 EdgeX Device, soft-PLC 태그 매핑, 토픽, 온톨로지 노드를 만든다. 위 층(Flink 규칙·대시보드·AI)은 **설비 종류 단위**로 짜여 있으면 코드 변경이 없다. 새 **종류**를 추가할 때만 모델·규칙·온톨로지 종류 노드를 추가한다.
+- EdgeX의 "프로파일은 시작 후 파일 수정이 안 먹는다"는 사실은 생성 스크립트가 **API로 등록·교체**해야 한다는 뜻이다(판단).
+
+### E3. 통신이 섞일 때의 엣지 구성, 교육용 OPC UA 시뮬레이터
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| EdgeX는 **프로토콜마다 Device Service 하나**(device-modbus, device-opc-ua, device-s7, device-mqtt, device-bacnet 등 저장소가 있다). 모두 같은 이벤트 형식으로 같은 메시지 버스에 낸다. device-opc-ua: 변수 구독, 읽기·쓰기, 메서드 실행. 필요조건 예로 "OPCUA Server (Prosys Simulation Server 등)". | [재단] https://github.com/edgexfoundry/device-opc-ua README (원문 확인, Apache-2.0, 최종 push 2026-08-17) / edgexfoundry 조직 저장소 목록(GitHub API 확인) |
+| UMH: benthos-umh(Apache-2.0)의 프로토콜 변환기가 여러 산업 프로토콜을 UNS 토픽·페이로드로 바꾼다. | [재단] https://umh.docs.umh.app/docs/datacontracts/ (원문 확인), GitHub API(Apache-2.0) |
+
+**교육용 OPC UA 시뮬레이터 선택지(순위 아님, 사실만):**
+
+| 이름 | 성격 | 근거 |
+|---|---|---|
+| Microsoft opc-plc(Azure-Samples/iot-edge-opc-plc) | OPC UA 서버 시뮬레이터. MIT. 도커 권장(MCR 이미지). 느린·빠른 변화 노드 수·주기 설정, **Good/Bad/Uncertain 상태가 주기적으로 바뀌는 노드**, 이상값, JSON 파일로 사용자 노드 정의, **DI Companion Spec 기반 보일러**(AssetId·DeviceHealth), DeviceHealth가 정비 필요가 되면 `MaintenanceRequiredAlarmType` 이벤트 발생 | [재단·벤더 샘플] README 원문 확인, GitHub API(MIT, 최종 push 2026-09-29) |
+| open62541 | C 구현 OPC UA 라이브러리(MPL-2.0). 서버를 직접 만들 때 | GitHub API 확인 |
+| Eclipse Milo | Java 구현(EPL-2.0) | GitHub API 확인 |
+| opcua-asyncio(FreeOpcUa) | Python 구현(LGPL-3.0). 우리 Python 시뮬레이터에 OPC UA 서버를 붙일 때 후보 | GitHub API 확인 |
+| Prosys OPC UA Simulation Server | 무료 GUI 시뮬레이터(벤더 제품). EdgeX device-opc-ua README가 예로 듦 | [벤더] (EdgeX README에서 언급만 확인) |
+
+- 판단: 우리 확장 2단계(OPC UA 추가)의 현업 모양은 **"엣지에 device-opc-ua를 하나 더 붙이고, 위 층은 그대로"** 다. 시뮬레이터는 ① 기존 Python 시뮬레이터에 OPC UA 서버를 붙이거나(opcua-asyncio) ② opc-plc를 별도 설비로 두는 두 길이 있다. opc-plc는 품질 코드·알람·DI 명판을 이미 갖고 있어 A2·C절 설명에 쓰기 좋다. 선택은 §7 범위다.
+
+---
+
+## F. 분석과 AI 연결
+
+1차에서 확정한 것: ML은 L1–L3, LLM·에이전트는 OT 밖·읽기 전용, 사람 승인은 기존 변경 관리 절차로, AI 입출력 로그(CISA AI-OT 2025). 지식 그래프 RCA는 연구 증가·공정 산업 제품 단계(1차 §4-3).
+
+### F1. 탐지 위치, 규칙 알람과 ML 알람의 비중
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISO 13374는 상태 감시를 데이터 취득 → 특징 추출 → **상태 탐지(State Detection)** → 건강 평가 → 예측 → 권고 생성으로 나눈다. 규칙(임계치)이든 ML이든 "상태 탐지" 블록의 구현이다. | [표준] A7 참고 (검색 발췌) |
+| MaintainX 2025 State of Industrial Maintenance(북미 정비 인력 1,320명): 정비 전략 사용률은 예방정비 71%, 사후정비 38%, **예지정비 27%(2024년 30%)**, 상태기반정비 18%, RCM 16%. | [벤더 설문] https://www.getmaintainx.com/newsroom/state-of-industrial-maintenance-report-2025 (검색 발췌). CMMS 벤더가 한 설문 |
+| "ML이 임계치 방식보다 오경보를 50~80% 줄인다" 같은 수치가 돌지만 출처가 2차 모음 글이다. | (검색 발췌) — 근거로 쓰지 않음 |
+
+- **"규칙 알람 대 ML 알람의 비중"을 잰 독립 설문은 찾지 못했다 [미확인].** 벤더 설문에서도 예지정비(ML 포함)는 소수(27%)이고 예방·사후 정비가 다수다.
+- 판단: 현업 기본은 **제어기·HMI의 한계(임계치) 알람이 먼저 있고, ML은 그 위에 더해지는 소수의 층**이다. 우리 Flink의 "임계치·Z-Score·CEP 규칙 + ONNX 오토인코더"는 이 모양(규칙 여럿 + 모델 하나)과 맞는다. 다만 **"임계치 알람의 첫 주인은 PLC·HMI"** 라는 점(C1)을 구조에 반영해, Flink 임계치 규칙은 "HMI 알람의 복제"가 아니라 **분석 alert**로 설명해야 한다.
+
+### F2. AI 에이전트가 데이터를 읽는 길, 승인 흐름
+
+**읽는 길(MCP 등)의 공개 구현:**
+
+| 구현 | 안전 장치 | 근거 종류·출처 |
+|---|---|---|
+| OPCUA-MCP(MIT) | 프로필 3단: **`observe`(기본) = 읽기·탐색·이력·구독·이벤트, 쓰기·메서드 호출 없음** / `operator` = 허용 목록(`OPCUA_ALLOWED_WRITE_NODES`, `OPCUA_ALLOWED_METHODS`)에 있는 것만 쓰기 / `full`. 제어·알람 도구는 보안 채널과 서버 인증서 고정이 필요. 감사 로그 파일. "MCP 정책은 OPC UA 권한 부여를 대체하지 않는다." | [재단] https://github.com/IndustriAgents/OPCUA-MCP (원문 확인) |
+| IndustriConnect(학술, 2026-03) | Modbus·MQTT/Sparkplug B·OPC UA MCP 어댑터. 환경 변수로 **쓰기 차단**, 범위 검사, 거부 시 구조화된 오류. 870회 평가는 **모두 로컬 모의 환경(mock-first)**. 저자가 스스로 "사용자별 권한 없음, RBAC 없음"을 한계로 적고 **"안전에 중요한 쓰기에는 사람 승인(HITL)"** 을 권한다. | [독립·학술] https://arxiv.org/html/2603.24703v1 (원문 확인) |
+| AssetOpsBench(IBM 관련, 2025) | 산업 자산 운영·정비용 에이전트 벤치마크. 도메인 에이전트 4종, 실제 산업 시나리오 기반 질의 140여 개, CouchDB 기반 모의 IoT 환경. 제어 실행 여부는 초록에 없음 [미확인]. | [독립·학술] https://arxiv.org/abs/2506.03828 (초록 원문 확인) |
+
+**승인 흐름(작업지시·CMMS):**
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| ISA-95 Part 3은 제조 운영 관리를 생산·**정비**·품질·재고 네 영역으로 나누고, 영역마다 정의 관리·자원 관리·상세 일정·배정(dispatch)·실행·데이터 수집·추적·성과 분석의 같은 활동 모델을 둔다. 정비 요청 → 정비 작업지시 배정 → 실행 → 추적이 이 틀 안이다. | [표준] ISA-95 페이지 https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard (1차 확인) / Part 3 활동 모델 요지 (검색 발췌) |
+| AI 권고는 기존 변경 관리 절차로 사람 결정 | [표준] CISA AI-OT (1차 확인) |
+| 감사 추적: 운전원 입력·조치의 시각 기록(21 CFR 11.10(e)), 허용된 순서 강제(11.10(f)) | [표준·규제] D2 |
+
+- 판단(우리 적용): 현업 공개 구현이 모두 같은 모양이다. **에이전트 도구는 기본 읽기 전용, 쓰기는 허용 목록 + 별도 권한 + 사람 승인.** v3의 "mcp-kg·mcp-tsdb·mcp-prom 읽기 전용, 명령 권한 없음"은 OPCUA-MCP의 `observe` 기본값과 같은 설계다. 우리 AI 조치 코드의 Modbus 직접 쓰기는 이 모든 구현보다 권한이 넓다(1차 결론 강화).
+- 승인은 **"AI 제안 → 정비 요청(사건) → 사람 승인 → 작업지시·명령 요청"** 으로 ISA-95 Part 3 정비 활동 모델의 언어로 설명할 수 있다. CMMS 제품 자체는 교육용에서 "작업지시 표 하나"로 줄여도 된다(1차 5-C 유지).
+
+### F3. 온톨로지·지식 그래프를 운영에 쓰는 사례 (1차 보강)
+
+| 사례 | 내용 | 근거 종류·출처 |
+|---|---|---|
+| Bosch 용접 품질 감시(연구) | Bosch 연구진 참여 논문. ML 지식과 절차를 지식 그래프로 형식화해 **실행 가능한 스크립트로 바꾸는 "실행형 지식 그래프"** 를 용접 감시에 적용. 목적은 ML의 투명성·재사용. | [독립·학술(기업 연구)] ISWC 2022 https://link.springer.com/chapter/10.1007/978-3-031-19433-7_45 (검색 발췌) / CIKM 2022 https://dx.doi.org/10.1145/3511808.3557512 (검색 발췌). 공장 운영 배치 여부 [미확인] |
+| 고장 지식 표준 | ISO 14224(고장 모드·메커니즘·원인·정비 조치 데이터), IOF-Maint(작업지시·절차·고장 모드 데이터의 공통 개념, OWL) | E1 |
+
+- 판단: 1차 결론(연구 증가, 제품은 공정 산업 중심, 운영 비율 [미확인])을 바꿀 근거는 찾지 못했다. 추가로 확인된 것은 **온톨로지의 "설비·고장·원인·조치" 칸에 쓸 수 있는 공개 표준·기준 온톨로지(ISO 14224, IOF-Maint)가 있다**는 점이다. 우리 확장 3단계(고장 시나리오·온톨로지 풍부화)는 이 용어 체계를 따르면 "지어낸 분류"가 아니게 된다.
+
+---
+
+## G. 망 구분과 보안 (교육용 축소판)
+
+1차에서 확정한 것: OT/DMZ/IT 3구역, IT→OT 직접 경로 없음, OT 쪽이 먼저 연결을 연다(CISA DiD 2016), push 방식(CISA AI-OT), IEC 62443 zone·conduit.
+
+### G1. 도커 망으로 OT/DMZ/IT를 흉내 낸 공개 구현, "OT가 먼저 연다"의 컨테이너 구현
+
+| 구현 | 실제 구성(설정 파일에서 확인한 것) | 근거 종류·출처 |
+|---|---|---|
+| **GRFICSv3**(OT 보안 교육 랩, GPL-3.0, 최종 push 2026-09-18) | 도커 망 3개: `b-ics-net`(192.168.95.0/24, macvlan), `c-dmz-net`(192.168.90.0/24, macvlan), `a-grfics-admin`(bridge). ICS 망: simulation(화학 공정), plc, ews(엔지니어링 워크스테이션). DMZ 망: hmi(Scada-LTS), kali(공격자), caldera, wazuh(선택 프로필 `siem`). **router 컨테이너 하나만 ICS·DMZ 두 망에 붙고**(`ip_forward=1`, 방화벽 설정 UI, 설정 볼륨) 두 망 사이를 중계한다. 각 컨테이너의 DNS도 자기 구역의 router 주소를 쓴다. **단, 모든 컨테이너가 관리용 `a-grfics-admin` bridge에도 붙어 있다.** | [재단] https://github.com/Fortiphyd/GRFICSv3 `docker-compose.yml` (원문 전체 확인), GitHub API |
+| GRFICSv2(이전 판) | VirtualBox VM 5대, pfSense가 ICS(192.168.95.0/24)·DMZ(192.168.90.0/24) 사이 방화벽. HMI & Historian(ScadaBR)은 DMZ. 시뮬레이션이 Modbus 서버, PLC가 마스터. | [재단] https://github.com/Fortiphyd/GRFICSv2 README (원문 확인) |
+| Labshock(OT 보안 랩) | `l2_network`·`l3_network` 두 bridge 망과 둘 사이를 잇는 router(검색 결과 기준). 구성 요소로 OpenPLC(GPL-3.0)와 **FUXA(MIT)** 를 쓴다. 현재 저장소의 compose는 포털·런처 2개만 있고 실제 랩은 포털이 띄운다. **포털·오케스트레이션 파일은 독점 라이선스**("Labshock Software License 2.0 – 2026"). | [재단+독점] https://github.com/zakharb/labshock `docker-compose.yml`·`LICENSE` (원문 확인) / 망 구성은 (검색 발췌) |
+| Azure IoT Operations 계층망 자습서 | Purdue L2·L3·L4에 클러스터, 인접 층끼리만 통신 | [벤더] 1차 확인 |
+| 도커 bridge 기본 동작 | "서로 다른 bridge 망에 붙은 컨테이너는 **공개(publish)한 포트로만** 서로 통신할 수 있도록 호스트 규칙이 자동 설치된다." "사용자 정의 망에서는 그 망에 붙은 컨테이너끼리만 통신한다." | [재단] Docker 문서 https://docs.docker.com/engine/network/drivers/bridge/ (원문 확인) |
+| MQTT 브리지의 연결 방향 | Mosquitto 브리지는 **로컬 브로커가 원격 `address`로 클라이언트 연결을 연다.** `topic` 설정에 방향 `out`·`in`·`both`를 적어 정하고 기본은 `out`(로컬 → 원격 내보내기). | [재단] https://mosquitto.org/man/mosquitto-conf-5.html (원문 확인) |
+
+- 판단: 공개 교육 랩(GRFICSv3)의 모양은 **"구역마다 도커 망 하나 + 두 망에 붙는 중계(라우터·방화벽) 컨테이너 하나"** 다. v3·1차 권고(두 망에 붙는 것은 DMZ 컨테이너뿐)와 같은 발상이다. 다만 GRFICSv3의 관리 망처럼 **모든 컨테이너가 붙는 공용 망을 두면 구역 분리가 무너진다.** 우리 compose에서는 공용 망을 두지 않는다(판단).
+- **"OT가 먼저 연다"를 컨테이너로 구현한 공개 예는 찾지 못했다 [미확인].** 대신 구현 수단은 확인됐다: ① **OT 브로커의 브리지가 DMZ 쪽으로 `out` 연결을 연다**(Mosquitto 브리지·브로커 안 Kafka 확장, A6). ② DMZ 중계 컨테이너가 OT 망에 붙더라도, OT 쪽 서비스는 DMZ로 포트를 공개하지 않는다. 판단: 교육용에서 방향 원칙을 보여 주는 가장 작은 방법은 **①** 이다(OT 브로커 → DMZ로 밀어냄). v3의 "DMZ Kafka Connect가 OT EMQX를 구독"을 바꾸려면 OT 브로커 브리지(또는 브로커의 Kafka 싱크)로 바꾸면 된다.
+- macvlan(GRFICS)은 호스트 NIC 이름이 필요하다(compose 주석 "Replace with your actual host NIC"). Windows Docker Desktop 한 대 조건에서는 bridge 망이 현실적이다(판단, 실행 확인 안 함 [미확인]).
+
+### G2. 최소 인증 수준
+
+| 사실 | 근거 종류·출처 |
+|---|---|
+| Sparkplug 보안 절: 클라이언트는 고유 Client ID와 선택적 사용자명·암호를 쓴다. ACL은 MQTT 규격 필수는 아니지만 많은 서버가 지원한다. **ACL은 "도용된 자격으로 Edge Node를 사칭하거나, 다른 Edge Node 출력에 쓰거나, 모든 메시지를 보는 것"을 막는다.** 예시 ACL: Edge Node E1은 자기 `NBIRTH/NDATA/NDEATH/DBIRTH/DDATA/DDEATH`만 발행, 자기 `NCMD/DCMD`와 Primary Host `STATE`만 구독. **"DCMD를 쓸 수 없게 하려면 DCMD 구독 자체를 허용하지 않는다."** | [재단] Sparkplug 3.0.0 §7.2–7.4.3 (PDF 추출 확인) |
+| Sparkplug: 명령 권한은 브로커 ACL(누가 NCMD·DCMD를 발행하나), Host 앱의 권한, Edge Node의 명령 수용 설정 세 곳에서 걸 수 있다. 구현은 설계자 몫. | [재단] Sparkplug 3.0.0 §명령 절 (PDF 추출 확인) |
+| 공용망이나 민감 데이터면 TLS로 소켓 암호화. | [재단] Sparkplug 3.0.0 §7.4.2 |
+| IEC 62443-3-3 요구 목록: SR 1.1 사람 사용자 식별·인증, SR 2.1 권한 집행, SR 5.1 망 구획, SR 5.2 **zone 경계 보호**, SR 5.3 범용 사람 간 통신 제한. | [표준] IEC 62443-3-3:2013 미리보기 목차 (목차만 확인, 본문 [미확인]) |
+
+- 판단(교육용 최소선): ① 브로커 익명 접속 금지, **클라이언트(서비스)마다 계정 하나**. ② ACL은 Sparkplug 예시처럼 **"자기 토픽만 발행, 자기 cmd만 구독"**. 명령 토픽(`…/cmd/…`)은 HMI 계정과 DMZ 게이트웨이 계정만 발행 가능. ③ TLS는 한 PC 안이라 생략하고 "현업은 켠다"고 설명. ④ 망 구분(SR 5.1·5.2) = 도커 망 3개 + 중계 컨테이너. v3의 "EdgeX 토픽별 계정 ACL"과 같은 수준이다.
+
+---
+
+## H. 감시 — 설비·엣지 연결 상태, 데이터 신선도
+
+1차에서 확정한 것: 플랫폼 감시는 공정 알람과 분리. v3에는 Sparkplug BIRTH/DEATH 같은 세션 상태 개념이 없다(1차 표1 ④).
+
+| 층 | 현업 방식 | 근거 종류·출처 |
+|---|---|---|
+| 엣지 세션(MQTT) | Sparkplug는 MQTT **Will 메시지**로 NDEATH를 브로커에 맡겨 둔다. 엣지가 끊기면 브로커가 대신 발행하고, Host는 그 엣지의 모든 metric을 **STALE**로 바꾼다. NDEATH의 `bdSeq`로 어느 세션의 죽음인지 맞춘다. 명세의 뜻풀이: NDEATH는 "데이터가 한때는 정확했지만 세션을 잃었으니 **더 이상 최신으로 볼 수 없다**"는 뜻이다. STALE을 어떻게 표시할지는 Host 설계자 몫이다. 브로커가 Will로 대신 보내므로 NDEATH 시각은 **Host가 받은 시각**을 쓴다. | [재단] Sparkplug 3.0.0 §2.3 Continuous Session Awareness, NDEATH 규칙 (PDF 추출 확인) |
+| 소비자(Host) 상태 | Primary Host는 retain된 `STATE` 메시지(`online`, `timestamp`)를 발행. 엣지는 Host가 offline이면 BIRTH를 미루고 데이터를 쌓아 둔다. | [재단] Sparkplug 3.0.0 §5.3, STATE 규칙 (PDF 추출 확인) |
+| 장치(엣지 → 설비) | EdgeX Device SDK 설정 `AllowedFails`("장치를 down으로 표시하기 전 허용하는 실패 요청 수"), `DeviceDownTimeout`("down 표시된 장치에 다시 연결을 시도하는 초 간격"). 장치 운영 상태가 DOWN이면 AutoEvent가 돌지 않고 REST 접근은 423(Locked)로 거부된다는 설명이 있다(EdgeX 기반 상용판 문서). | [재단] device-sdk-go `internal/config/types.go` 주석 https://github.com/edgexfoundry/device-sdk-go (소스 원문 확인) / [벤더] IOTech Edge Xpert 문서 https://docs.iotechsys.com/edge-xpert23/device-services/operating-state.html (검색 발췌) |
+| 값 단위 | OPC UA StatusCode: `Bad_OutOfService`(출처 동작 안 함), `Uncertain_LastUsableValue`(갱신이 멈춤). 값 옆에 품질이 붙어 다닌다. | [표준] OPC UA Part 8 §7.3.2 (A2) |
+| 연습 시뮬레이터 | opc-plc는 Good/Bad/Uncertain 상태가 주기적으로 바뀌는 노드를 제공(느린 10 s, 빠른 1 s 기본) | [재단] opc-plc README (E3) |
+
+- **데이터 신선도(마지막 수신 후 경과 시간)의 표준 임계값은 찾지 못했다 [미확인].** 확인된 현업 모양은 세 층이다: ① **세션 상태**(브로커 Will/NDEATH — 즉시), ② **장치 상태**(엣지가 연속 실패를 세어 DOWN 표시), ③ **값 품질**(STALE/Bad/Uncertain).
+- 판단(우리 적용):
+  - 엣지·PLC·시뮬레이터마다 MQTT Will로 `…/status`(online/offline, retain)를 둔다. v3의 `status`(운전 모드·ACK)와 같은 토픽을 쓰면 뜻이 섞이므로 **연결 상태는 별도 자리**(예: `…/state/connection`)로 둔다.
+  - 장치 DOWN·값 STALE은 **HMI에는 품질 표시**(값 회색·STALE)로, **원인(컨테이너·엣지 서비스 다운)은 플랫폼 감시(Prometheus)** 로 간다. 이 둘은 C4의 "겹치는 지점"이다.
+  - 신선도 지표(자산별 마지막 수신 시각)는 플랫폼 감시 쪽에서 계산하고 경보는 인프라 담당으로 보낸다. 운전원 화면에는 알람이 아니라 품질로 보인다.
+
+---
+
+## I. 따라 할 수 있는 실제 구현
+
+제품 순위가 아니라 **"층을 어떻게 나눴나"** 를 보려고 설정 파일을 읽었다. 이미지 판·라이선스 판단은 §7로 넘긴다. 메모리는 문서에 적힌 값만 옮겼다(실측 아님).
+
+### I1. 공개 오픈소스 참조 구현의 실제 구성
+
+| 구현 | 층 구성(설정·문서에서 확인) | 이미지·메모리(문서 값) | 근거 종류·출처 |
+|---|---|---|---|
+| **UMH Core**(United Manufacturing Hub, Apache-2.0) | **컨테이너 하나**에 Agent(설정 `/data/config.yaml`을 읽는 Go 제어 루프) + Benthos-UMH(스트림 엔진, 파이프라인 = Data Flow Component) + Redpanda(Kafka 호환, 망이 깜빡일 때 로컬 버퍼). 데이터는 "브리지"로만 UNS에 들고 나며 토픽 = `umh.v1.<위치>.<계약>.<이름>`. 히스토리언은 TimescaleDB(`_historian` 계약). 설치 명령은 관리 콘솔(management.umh.app)이 만들어 준다. 이전의 Kubernetes/Helm 판도 있다. | 최소 2 vCPU, **4 GB RAM**, 40 GB SSD. Raspberry Pi 불가(Redpanda 제약) | [재단] README https://github.com/united-manufacturing-hub/united-manufacturing-hub (원문 확인) / https://docs.umh.app/getting-started (원문 확인) |
+| **EdgeX 4.0 기본 compose**(`edgex-compose` odessa 브랜치, no-secty) | core-command, core-data, core-metadata, core-keeper, core-common-config-bootstrapper, support-notifications, support-scheduler, device-rest, device-virtual, app-rules-engine(app-service-configurable), **rules-engine = LF Edge eKuiper 2.3.1**(엣지 스트림 규칙), **mqtt-broker = eclipse-mosquitto 2.0.22**(내부 메시지 버스), database = postgres 16.3-alpine, ui. EdgeX 이미지 판 4.0.1. | 메모리 값은 compose에 없음 [미확인] | [재단] https://raw.githubusercontent.com/edgexfoundry/edgex-compose/odessa/docker-compose-no-secty.yml (원문 확인) |
+| **Eclipse Tahu** | Sparkplug의 **클라이언트 라이브러리와 참조 구현**(여러 언어). compose 파일은 없다(저장소 루트 docker-compose.yml 404). | 해당 없음 | [재단] https://github.com/eclipse-tahu/tahu README (원문 확인) |
+| **HiveMQ Edge**(Apache-2.0) | "OT 장치와 IT 시스템의 상호운용을 위한 MQTT 게이트웨이". 프로토콜 어댑터: OPC UA, Modbus, Siemens S7, Beckhoff ADS, EtherNet/IP, HTTP, 파일. **MQTT 브리지로 기업 브로커에 데이터를 올린다(backhaul).** 도커로 띄우면 상용 기능 미리보기가 포함된다. | `hivemq/hivemq-edge` 단일 컨테이너. 메모리 [미확인] | [벤더·오픈소스] https://github.com/hivemq/hivemq-edge (원문 확인) |
+| **Eclipse Kura** | 자바 기반 IoT 엣지 게이트웨이. 필드 드라이버(OPC UA, S7comm, Modbus, GPIO 등), 클라우드 커넥터, Wires(시각적 흐름), 내장 MQTT 브로커·REST. | `eclipse/kura` 단일 컨테이너. RAM 1 GB 미만이면 힙을 256 MB로 잡는 설치기 규칙(검색 결과) | [재단] https://eclipse-kura.github.io/kura/docs-release-5.6/getting-started/docker-quick-start/ (원문 확인) / 힙 규칙 (검색 발췌) |
+| **OpenRemote** | compose 서비스 4개: proxy(HAProxy·인증서), postgresql, keycloak(인증), manager(자산·규칙·화면). 이미지 태그 기본값이 `latest`. | 메모리 [미확인] | [재단] https://raw.githubusercontent.com/openremote/openremote/master/docker-compose.yml (원문 확인) |
+| **Eclipse BaSyx**(AAS, MIT) | AAS Environment(AAS·서브모델·개념 설명 저장소), AAS Registry, Submodel Registry, Web UI를 도커 이미지로. | [미확인] | [재단] E1 |
+| **opc-plc**(MIT) | OPC UA 서버 시뮬레이터(E3) | MCR 이미지 | [재단] E3 |
+
+- 판단: 오픈소스 참조 구현은 **엣지 게이트웨이를 컨테이너 하나(또는 몇 개)로 묶고, 위로는 브리지·브로커로 잇는** 모양이 공통이다(UMH·HiveMQ Edge·Kura). EdgeX는 엣지 안을 여러 마이크로서비스로 나누고 **내부 버스(Mosquitto)와 엣지 규칙 엔진(eKuiper)** 을 기본으로 둔다. 우리 V1의 "EdgeX 전용 Mosquitto + EMQX" 두 브로커는 EdgeX 기본 구성에서 온 것이다(1차 표2 "제품 사정" 판단과 같음). EdgeX 기본 compose에 eKuiper가 있다는 것은 **엣지 쪽 탐지(F1, CISA의 L1–L3 ML)를 교육에서 보여 줄 수단이 이미 스택 안에 있다**는 뜻이다(판단, 사용 여부는 §7).
+- 층 전체(엣지 → UNS → 장부 → 히스토리언 → HMI → AI)를 한 compose에 담은 오픈소스 참조 구현은 **찾지 못했다 [미확인]**. UMH가 가장 가깝지만 HMI·AI·망 분리는 없다.
+
+### I2. 대학·교육용 IIoT 실습 환경 — 한 PC에서 무엇을 줄였나
+
+| 사례 | 담은 것 | 줄인 것(설정·문서에서 확인) | 근거 |
+|---|---|---|---|
+| **GRFICSv3**(Fortiphyd, OT 보안 교육) | 3D 공정 시뮬레이션, soft-PLC(OpenPLC 기반), 엔지니어링 워크스테이션, HMI(Scada-LTS), 라우터·방화벽, 공격 도구, 선택 SIEM | 브로커·장부·히스토리언·AI 없음. 망은 2구역(ICS·DMZ) + 공용 관리망. macvlan이라 호스트 NIC 지정 필요 | [재단] GRFICSv3 compose (원문 확인) |
+| **Labshock**(OT 보안 랩) | OpenPLC, FUXA, 두 L2/L3 망과 라우터(검색 결과), IDS·SIEM 연동 | 포털이 랩을 띄움. 포털은 독점 라이선스. 권장 사양 최소 CPU 2·RAM 2 GB, 최대 CPU 4·RAM 8 GB(검색 결과) | [재단+독점] 저장소 원문 확인 / 사양·망 (검색 발췌) |
+| **MING stack 튜토리얼**(SBESC 2024, 브라질 학술대회, 학부·대학원생 대상) | Mosquitto, InfluxDB, Node-RED(OPC UA 노드 포함), Grafana — compose 한 벌 | PLC·망 구분·장부·알람 관리·명령 경로 없음. "실제 사례(CERTI 재단 Labfaber)"를 함께 소개 | [독립·교육] https://github.com/ArthurKretzer/tutorial-ming-stack README (원문 확인) |
+
+- 판단: 공개 교육 사례는 **둘로 갈린다.** ① 보안 랩(GRFICS·Labshock): **PLC·HMI·망 구분**은 충실하지만 데이터 파이프라인이 없다. ② 데이터 랩(MING): **수집·저장·대시보드**는 있지만 PLC·망·명령 경로가 없다. **두 쪽을 한 PC에 합친 교육 사례는 찾지 못했다 [미확인].** 우리 베이스(1차 B0~B13)는 이 둘을 합친 모양이라, 비교 대상이 없다는 점을 알고 설계해야 한다(판단).
+- 교육 사례들이 **공통으로 줄인 것**: 이중화, TLS, 실제 방화벽 장비(→ 라우터 컨테이너 또는 생략), 사이트 여러 개. **공통으로 남긴 것**(보안 랩): PLC를 사이에 두는 것, HMI가 PLC에 붙는 것, 구역 망.
+
+---
+
+## J. 1차에서 확인하지 못한 것 — 이번 결과
+
+| 1차 빈칸 | 이번 결과 | 판정 | 근거 |
+|---|---|---|---|
+| **UNS 채택 통계** | Deloitte 2025 외에 UNS를 직접 물은 독립 설문을 찾지 못했다. 보이는 수치는 시장 규모 보고서(FMI 등, 방법 미확인)와 벤더 글뿐이다. | **찾지 못함(확정)** | (검색 발췌) https://www.futuremarketinsights.com/reports/unified-namespace-market — 방법 미확인이라 근거로 쓰지 않음 |
+| **명령 만료·중복 방지를 요구하는 표준** | 제조(ISA·IEC 62264·PackML·NAMUR) 표준에서는 찾지 못했다. **전력 원격제어 쪽에는 있다:** IEC 61850 SBO(`sboTimeout`, Select한 클라이언트만 조작, CommandTermination), DNP3 SBO(선택 시간 안 + 순번 대조), IEC 60870-5-104 운영 지침(시각 붙은 명령의 지연 검사, 기본 30 s, 늦으면 실행·확인 안 함; 한 번에 한 점 선택). | **제조 표준: 찾지 못함(확정). 원격제어 표준·지침: 있음** | B2 (SvK 지침 PDF 원문 확인, libIEC61850 원문 확인, DNP3는 (검색 발췌)) |
+| **원격 권한 모드 이름의 표준** | MTP(VDI/VDE/NAMUR 2658)의 운전 모드 Offline / Operator / Automatic과 출처(internal/external) 채널. LOCAL/REMOTE라는 이름 자체는 못 찾음. | **개념 있음, 이름은 찾지 못함** | B3 |
+| **ISA-112 원문 요지** | ① 발행본: ANSI/ISA-112.00.01-2025 "SCADA Systems – Part 1: SCADA Lifecycle, Diagrams and Terminology". 기능 아키텍처는 **11개 층**(현장 장치부터 기업·클라우드 연결까지)이라는 기사. ② 위원회가 공개한 **중간 초안 그림(2022-01-26)** 의 11층: **A 현장 장치 / B 현장 센서망 / C 현장 제어기 / D 제어기망 / E 광역망(backhaul) / F 통신 서버(드라이버) / G 응용(HMI, Alarms & Events, Historian, DB) / H 제어망 / I DMZ·공정 정보망 / J 기업망 / K 외부망(외부 앱·클라우드).** Purdue와 대응: A–B = L0, C–E = L1, F–G = L2, H–I = L3, J = L4, K = "L5*"(원래 Purdue에는 없음). 글자를 쓴 이유: "ISA-95 등 다른 '층' 모델과 충돌을 피하려고". 주석: 층 사이 라우터·방화벽은 그림에 없음, **원격 앱의 직접 연결은 강하게 말림, ISA/IEC 62443 zone·conduit을 따를 것**, 클라우드 외부 앱과 하위 층의 통신은 극도로 조심. IT/OT 경계선은 I(DMZ)와 J 사이에 그려져 있다. | **초안 층 이름 확인. 발행본 층 이름은 [미확인](유료)** | [표준·초안] https://www.isa.org/getmedia/8883748c-12bc-42e7-8785-b0fbf481e83b/ISA112_SCADA-Systems_SCADA-model-architecture_rev2022-01-26.pdf (그림 원문 확인, "중간 작업 초안, 바뀔 수 있음" 표기) / 발행본 제목 https://webstore.ansi.org/standards/isa/ansiisa11200012025 (검색 발췌) / 11층 기사 https://www.all-about-industries.com/scada-reference-architecture-with-11-layer-model-for-automation-a-662faab5dce2f1ae051eb29c1164eb80/ (원문 확인, 2026-03-02, 층 이름은 기사에 없음) |
+| **이름 있는 제조사의 층 구조 공개 사례** | 벤더 행사(ProveIt! 2025) 소개 글만 있고, 제조사가 공장 안 층 구성(브로커·히스토리언·장부 위치)을 공개한 1차 자료는 못 찾았다. 전력 쪽은 Svenska kraftnät의 IEC 104 운영 지침이 공개돼 있다(층 구조가 아니라 명령 절차). Bosch는 지식 그래프 연구 논문만(F3). | **제조사 층 구조: 찾지 못함(확정)** | [벤더] https://www.hivemq.com/blog/insights-proveit-2025-unified-namespace-solutions-in-action/ (검색 발췌) |
+
+**ISA-112 초안이 우리 구조에 주는 뜻(판단):**
+- SCADA 표준 그림에서 **HMI·알람·이벤트·히스토리언은 같은 "응용(G)" 층, OT 쪽(Purdue L2)** 에 있다. 즉 공정 알람과 사이트 이력의 기본 자리는 OT다(C2·D1 판단과 같음).
+- **드라이버(F, 통신 서버)** 가 별도 층이다. 우리 EdgeX 자리와 같다.
+- **DMZ(I)는 OT 쪽 끝**, IT/OT 경계는 I와 J 사이다. 1차의 OT │ DMZ │ IT 3구역과 같은 모양이며, 원격 앱의 직접 연결을 말린다.
+- 층 사이 방화벽·라우터는 그림에서 뺐다고 적었다. 교육용에서 방화벽을 라우터 컨테이너·도커 망으로 대신하는 것(G1)과 같은 추상화 수준이다.
+
+---
+
+## 확인 못 한 것
+
+**끝내 찾지 못한 것(확정)**
+1. UNS 채택률을 직접 물은 독립 설문. 시장 규모 보고서만 있고 방법을 확인 못 했다(J).
+2. 명령 만료·중복 명령 거부를 요구하는 **제조** 표준 문장. 전력 원격제어 표준·지침에는 있다(B2, J).
+3. 이름 있는 제조사가 공개한 공장 안 층 구조(브로커·히스토리언·장부 위치)(J).
+
+**원문을 못 읽어 2차 출처나 검색 발췌에 기댄 것**
+4. ISA-112 발행본(2025)의 11층 이름. 2022 공개 초안 그림만 원문으로 봤다.
+5. ISA-18.2-2016의 alert·prompt·notice 정의 원문, ISA-TR18.2.8-2023 본문(유료). exida 인용과 웹스토어 소개만.
+6. VDI/VDE/NAMUR 2658(MTP) 원문. Beckhoff·Semodia 구현 문서로만 확인.
+7. IEEE 1815(DNP3) SBO 원문, IEC 61850-7-2 `sboTimeout`·단독 조작 원문. 오픈소스 구현 문서·전문가 블로그로만.
+8. EEMUA 191 알람 폭주 정의(EEMUA 페이지 403).
+9. ISO 14224:2016, ISO 13374-1 원문(ISO 페이지 403 또는 목차·해설만).
+10. IEC 62443-3-3의 SR 본문(미리보기 목차만).
+11. AVEVA PI ExcDev·CompDev 전형값(문서가 스크립트로 그려져 원문 못 읽음).
+12. Ignition tag group 기본값, Store and Forward 기본값(검색 결과만).
+13. EMQX Kafka Sink 기본 키·버퍼 동작, Kafka Connect MQTT Source의 키 규칙.
+14. OPC UA Part 4 §5.13 구독 큐 동작 문장(검색 발췌).
+15. Labshock의 망 구성(`l2_network`·`l3_network`)과 권장 사양(현재 compose는 포털·런처만).
+
+**수치·현업 비중이 없는 것**
+16. 신호 종류별 흔한 폴링 주기·deadband 값(제품 기본값만).
+17. store-and-forward 보관량 권장값.
+18. JSON 대 Sparkplug B, HMI 직결 대 브로커 경유의 현업 비율.
+19. 원시 진동 파형 보관 여부·기간.
+20. 규칙 알람 대 ML 알람 비중(독립 설문 없음, 벤더 설문의 예지정비 27%만).
+21. 원시·집계·감사 보존 기간의 표준 수치.
+22. "사이트 히스토리언을 OT에 둬야 한다"는 요구 문장(권장 배치만).
+23. 공정값·알람·감사를 한 저장소에 둘지 정한 표준.
+24. 설비 등록부(OPC UA·AAS·자체 DB 등)의 현업 주류 비율.
+25. 데이터 신선도 경보의 표준 임계값.
+
+**제품·구현 세부로 남긴 것**
+26. FUXA가 ISA-18.2 상태(ack 방식·셸빙·억제)를 어디까지 지원하는지.
+27. EdgeX `AllowedFails`·`DeviceDownTimeout` 기본값(필드 정의만 소스에서 확인).
+28. 참조 구현들의 메모리: EdgeX 기본 compose, HiveMQ Edge, OpenRemote, BaSyx, GRFICSv3는 문서에 값이 없다. UMH Core 최소 4 GB만 확인.
+29. AssetOpsBench 에이전트가 제어를 실행하는지. Bosch 지식 그래프가 공장 운영에 배치됐는지.
+30. "OT가 먼저 연다"를 컨테이너로 구현한 공개 예. 수단(브리지 `out`)만 확인.
+31. Windows Docker Desktop 한 대에서 macvlan·다중 bridge 망 동작. docker 실행 금지 조건이라 확인하지 않았다.
+32. 파이프라인(수집·장부·이력)과 보안 랩(PLC·HMI·망)을 합친 교육 사례.
+
+## §7 스택 조사로 넘기는 사실 (구조 조사 중 우연히 확인)
+
+- **OpenPLC Runtime v3는 수명 종료(End of Life), 저장소 보관(archived).** 후속은 OpenPLC Runtime v4(Autonomy-Logic/openplc-runtime, GitHub API상 MIT, 최종 push 2026-09-25). 출처: https://github.com/thiagoralves/OpenPLC_v3 README (원문 확인).
+- **EdgeX 문서에 4.1 판이 있다**(https://docs.edgexfoundry.org/4.1/…). 의뢰서의 "EdgeX 4.0 LTS 다음 판 계획 확인" 항목과 이어진다. 4.1의 LTS 여부는 이번에 확인하지 않았다 [미확인].
+- EdgeX 4.0 기본 compose(odessa 브랜치) 이미지: EdgeX 4.0.1, eclipse-mosquitto 2.0.22, postgres 16.3-alpine, lfedge/ekuiper 2.3.1-alpine.
+- OpenRemote compose의 이미지 태그 기본값이 `latest`다(관문 "latest 금지"와 부딪힘).
+- Labshock의 포털·오케스트레이션은 독점 라이선스(2026 판 2.0).
+- HiveMQ Edge를 도커로 띄우면 상용 기능 미리보기가 포함된다고 README에 적혀 있다.
