@@ -4,21 +4,21 @@
 :root{
   --bg:#f6f7f5; --panel:#ffffff; --ink:#1d2320; --muted:#5b645f; --line:#d9ddd8;
   --ot:#b8452f; --ot-bg:#fbeee9; --dmz:#9a6b12; --dmz-bg:#fbf3e2; --it:#1f6f8b; --it-bg:#e8f3f7;
-  --ok:#2f7a4a; --warn:#a15c07; --accent:#1f6f8b; --code:#eef1ee;
+  --ok:#2f7a4a; --warn:#a15c07; --accent:#1f6f8b; --code:#eef1ee; --f-data:#1f5fa8; --f-cmd:#c2571a; --f-alm:#23804a; --f-read:#7d8580; --f-nt:#ffffff;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
     --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
-    --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28;
+    --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-alm:#6cc48c; --f-read:#9aa49f; --f-nt:#10140f;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
   --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
-  --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28;
+  --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-alm:#6cc48c; --f-read:#9aa49f; --f-nt:#10140f;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -58,6 +58,32 @@ ul{margin:0;padding-left:20px} li{margin:3px 0}
 footer{font-size:13px;color:var(--muted)}
 .src{font-size:.85em;color:var(--muted);margin:-.3em 0 .8em}
 .src a,footer a{color:var(--accent)}
+
+.archwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.arch{display:block;font-family:inherit;width:100%;height:auto;min-width:900px}
+.arch .band-ot{fill:var(--ot-bg)} .arch .band-dmz{fill:var(--dmz-bg)} .arch .band-it{fill:var(--it-bg)}
+.arch .zline{stroke:var(--ink);stroke-width:1.4;stroke-dasharray:8 5;opacity:.45}
+.arch .bx{fill:var(--panel);stroke:var(--line);stroke-width:1.3}
+.arch .bx.ot{stroke:var(--ot)} .arch .bx.dmz{stroke:var(--dmz)} .arch .bx.it{stroke:var(--it)} .arch .bx.sub{stroke-dasharray:4 3}
+.arch .bt{font-size:14px;font-weight:700;fill:var(--ink)} .arch .bs{font-size:11.8px;fill:var(--muted)}
+.arch .bdg{font-size:10.5px;font-weight:700;fill:var(--warn)}
+.arch .ln{font-size:19px;font-weight:800;fill:var(--ink)} .arch .lname{font-size:13px;font-weight:600;fill:var(--ink)}
+.arch .zt{font-size:11px;font-weight:800;letter-spacing:.1em} .arch .zt-ot{fill:var(--ot)} .arch .zt-dmz{fill:var(--dmz)} .arch .zt-it{fill:var(--it)}
+.arch .l-data{stroke:var(--f-data);stroke-width:2.4} .arch .l-alm{stroke:var(--f-alm);stroke-width:2.4}
+.arch .l-cmd{stroke:var(--f-cmd);stroke-width:2.4;stroke-dasharray:8 4} .arch .l-read{stroke:var(--f-read);stroke-width:1.7;stroke-dasharray:3 3}
+.arch .mk-data,.arch .n-data{fill:var(--f-data)} .arch .mk-cmd,.arch .n-cmd{fill:var(--f-cmd)}
+.arch .mk-alm,.arch .n-alm{fill:var(--f-alm)} .arch .mk-read,.arch .n-read{fill:var(--f-read)}
+.arch .nt{font-size:9px;font-weight:800;fill:var(--f-nt)}
+.arch .al{font-size:11.5px;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin:8px 0 12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:26px;height:0;border-top:3px solid}
+.sw.d{border-color:var(--f-data)} .sw.c{border-color:var(--f-cmd);border-top-style:dashed} .sw.a{border-color:var(--f-alm)} .sw.r{border-color:var(--f-read);border-top-style:dotted}
+.steps{font-size:13.5px;margin:0;padding-left:0;list-style:none}
+.steps li{margin:4px 0;padding-left:0}
+.steps b{display:inline-block;min-width:30px;text-align:center;border-radius:9px;color:var(--f-nt);font-size:11px;padding:1px 5px;margin-right:6px}
+.steps.d b{background:var(--f-data)} .steps.c b{background:var(--f-cmd)} .steps.a b{background:var(--f-alm)}
+td.diff{color:var(--warn);font-weight:600}
 </style>
 
 <div class="wrap">
@@ -95,10 +121,10 @@ footer{font-size:13px;color:var(--muted)}
     </div>
     <div class="zone z-it"><h4>IT · 분석</h4>
       <div class="box">Kafka형 장부<small>보관·다시 읽기·여러 소비자</small></div>
-      <div class="box">실시간 탐지</div>
+      <div class="box">실시간 탐지<small>ML 탐지는 OT 가까이(엣지·SCADA)에도 흔함</small></div>
       <div class="box">이력 저장 · 대시보드</div>
       <div class="box">플랫폼 감시<small>공정 알람과 분리</small></div>
-      <div class="box">AI<small>읽고 추천만, 설비 직접 쓰기 없음</small></div>
+      <div class="box">AI(LLM·에이전트)<small>OT 밖에서 읽고 추천만, 설비 직접 쓰기 없음</small></div>
     </div>
   </div>
   <h3>현업 원칙</h3>
@@ -107,6 +133,16 @@ footer{font-size:13px;color:var(--muted)}
     <li>설비가 늘어도 층은 그대로다. 설비 이름 체계(ISA-95), 토픽 규칙, 설비 종류별 모델, 엣지 노드로 흡수한다.</li>
     <li>2026 흐름: UNS와 Kafka의 결합, 설비 모델·맥락화(DataOps), 에이전트형 AI 시작, AI는 OT 밖 읽기 전용.</li>
   </ul>
+  <h3>현업 흐름</h3>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부 근거 90곳 중 62곳은 검색 요약만 확인, EEMUA 191·ISO 14224 등 핵심 표준 원문은 미확인)</p>
+  <div class="flow">
+    <div><b>데이터 ↑</b> 설비 → 제어기(PLC) → 엣지(프로토콜 변환, 끊기면 저장 후 전송) → MQTT 허브(UNS, 공장/구역/라인/설비 이름 체계) → DMZ에서 위로 복제 → Kafka형 장부·이력 저장 → 분석·대시보드·AI(OT가 밀어낸 데이터를 읽기만). 주기 샘플링과 변화 필터, 값마다 시각과 품질(끊기면 STALE).</div>
+    <div><b>명령 ↓</b> 운전원은 SCADA 화면 → 제어기. 외부·AI 명령은 사람 승인 → DMZ 검증 통로 하나 → 제어기가 최종 판단(NAMUR NE 178). 확인은 제어기 응답과 바뀐 값 두 겹. IT에서 OT로 바로 가는 길은 없다.</div>
+    <div><b>알람</b> 공정 알람은 제어기·SCADA가 만들고 수명주기(인지·억제)를 가진다. 분석 결과는 ISA-18.2의 "경고(alert)"로 알람 목록과 따로 둔다. 서버·컨테이너 경보는 인프라 담당에게만 간다.</div>
+    <div><b>AI 위치</b> 현업에 "AI 층"은 따로 없다. ML 이상 탐지는 주로 L1~L3(PLC·엣지·SCADA 쪽), LLM·에이전트는 L4~5(OT 밖)에서 OT가 브로커·감사되는 버퍼로 내보낸 데이터를 읽기 전용으로 쓴다(CISA 등 9개 기관 AI-OT 지침 2025 표1·p.15·p.19). "Kafka를 거쳐 AI로"는 이 원칙과 UNS+Kafka 트렌드를 합친 구성이고, 표준이 제품을 지목하지는 않는다. 지식 그래프·LLM 에이전트의 현장 운영 비율은 설문 수치가 없다.</div>
+    <div><b>저장</b> 이력 정본은 IT 한 곳, OT에는 화면용 단기 추세만. 명령·승인·감사 기록은 추가만 한다.</div>
+    <div><b>설비 추가</b> 층은 그대로. 설비 종류 모델과 설비 목록(등록부)에 더하면 이름·토픽·키·규칙이 같은 ID로 이어진다.</div>
+  </div>
 </section>
 
 <section>
@@ -123,44 +159,13 @@ footer{font-size:13px;color:var(--muted)}
     <tr><td>알람</td><td>공정 알람과 분석 경고 분리, 수명주기</td><td>경보 분리</td><td>Flink 알람을 화면에 바로 표시</td></tr>
     <tr><td>MQTT → Kafka 분리</td><td>있음</td><td>있음</td><td class="same">있음</td></tr>
     <tr><td>엣지 연결 층</td><td>있음</td><td>있음</td><td class="same">있음(EdgeX)</td></tr>
+    <tr><td>실시간 이상 탐지 위치</td><td>ML은 주로 OT 가까이(L1~L3), LLM·에이전트는 OT 밖</td><td>IT(Flink)</td><td>Flink(망 구분 없음)</td></tr>
   </table></div>
   <p class="muted" style="margin-top:10px">v3와 우리 구조도는 비교 대상이고, 판단은 현업 조사로 했다. 원본 V1의 뼈대(엣지 → MQTT → Kafka → Flink)는 현업과 맞다. 고칠 곳은 망·PLC·명령 길·등록부다.</p>
 </section>
 
 <section>
-  <h2>3. 우리가 만들 베이스</h2>
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a></p>
-  <div class="grid3">
-    <div class="zone z-ot"><h4>OT · ot-net</h4>
-      <div class="box">가상설비 7대 · 배속 600<small>나중에 OPC UA 설비 추가</small></div>
-      <div class="box">OpenPLC v4 <span class="tag">새로</span><small>설비에 붙는 것은 PLC 하나</small></div>
-      <div class="box">엣지: Node-RED 또는 EdgeX<small>조립 때 실측으로 결정</small></div>
-      <div class="box">Mosquitto(OT 허브)<small>브로커 2개 → 1개. OT↔DMZ 연결 방향은 조립 때 정함</small></div>
-      <div class="box">FUXA 화면<small>허브 구독 + cmd 발행</small></div>
-    </div>
-    <div class="zone z-dmz"><h4>DMZ · dmz-net</h4>
-      <div class="box">Bento<small>MQTT → Kafka 복제, 알람 표시용 전달</small></div>
-      <div class="box">명령 게이트웨이 <span class="tag">새로</span><small>만료·중복·모드·범위 검사</small></div>
-    </div>
-    <div class="zone z-it"><h4>IT · it-net</h4>
-      <div class="box">Kafka · Flink(HA)</div>
-      <div class="box">InfluxDB · Grafana</div>
-      <div class="box">Prometheus · Alertmanager<small>플랫폼 경보, 공정 알람과 분리</small></div>
-      <div class="box">설비 등록부 <span class="tag">새로</span><small>토픽·키·규칙·온톨로지의 같은 ID</small></div>
-      <div class="box">AI(Neo4j·LangGraph) · 승인 흐름<small>AI 도구는 읽기 전용</small></div>
-    </div>
-  </div>
-  <h3>흐름</h3>
-  <div class="flow">
-    <div><b>데이터 ↑</b> 설비 → PLC → 엣지 → Mosquitto → DMZ 복제 → Kafka → Flink 탐지·InfluxDB 저장 → Grafana·AI. 값마다 시각과 품질(끊기면 STALE)을 붙인다. 토픽은 <code>공장/구역/라인/설비/종류/태그</code>.</div>
-    <div><b>명령 ↓</b> 운전원: FUXA → <code>cmd</code> → 엣지 → PLC 검사 → 설비. AI 제안: 사람 승인 → Kafka 명령 → 게이트웨이 검사 → 엣지 → PLC 최종 검사. 확인은 PLC 응답과 바뀐 값 두 겹. AI·화면의 직접 쓰기는 없다.</div>
-    <div><b>알람</b> 공정 알람은 PLC·화면이 만들고, Flink 결과는 "분석 경고"로 따로 보여 준다. 반복 경고는 사건 하나로 묶어 AI가 원인을 본다. 서버 이상은 인프라 담당에게만 간다.</div>
-    <div><b>설비 추가</b> 층은 그대로. 설비 등록부(종류 모델 + 설비 목록)에 한 줄 더하면 엣지 설정·토픽·Kafka 키·탐지 범위·온톨로지 노드가 함께 만들어진다.</div>
-  </div>
-</section>
-
-<section>
-  <h2>4. 칸별 스택 — 현업은 주로 무엇, 우리는 무엇, 왜</h2>
+  <h2>3. 칸별 스택 — 현업은 주로 무엇, 우리는 무엇, 왜</h2>
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
   <div class="tbl"><table>
     <tr><th>칸</th><th>현업에서 주로</th><th>우리</th><th>왜</th></tr>
@@ -180,6 +185,321 @@ footer{font-size:13px;color:var(--muted)}
   </table></div>
   <p class="muted" style="margin-top:10px">초록 = 현업과 같은 제품. 주황 = 현업 주류가 상용이라 무료 제품으로 대신한 칸(학생에게 "현업은 보통 상용"이라고 설명).</p>
 </section>
+
+<section id="arch">
+  <h2>4. 시스템 아키텍처 — 우리가 만들 베이스</h2>
+  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a>(층 B0~B13·길 목록) · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부) · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a>(제품·버전)</p>
+  <p>1절의 현업 구조·흐름과 3절의 칸별 스택을 한 장에 합쳤다. 아래 L1 설비에서 위 L10 업무·승인까지 10개 층이고, 색 띠가 망 구역(OT·DMZ·IT)이다. 번호 순서대로 따라가면 흐름이 된다.</p>
+  <p><b>구역 뜻:</b> OT(운영 기술)는 공장에서 기계를 실제로 움직이는 쪽(설비·PLC·SCADA 화면)이다. 멈추면 기계가 서므로 안전과 계속 도는 것이 먼저다. IT(정보 기술)는 사무실 쪽(저장·분석·AI·업무)이다. DMZ는 둘 사이 완충지대다. 데이터는 OT가 밀어서 내보내고, IT에서 기계로 바로 가는 명령 길은 없으며, IT가 멈춰도 공장은 돈다.</p>
+  <div class="legend">
+    <span><i class="sw d"></i>데이터가 올라가는 길(D)</span>
+    <span><i class="sw a"></i>알람·사건(A)</span>
+    <span><i class="sw c"></i>명령이 내려가는 길(C, M)</span>
+    <span><i class="sw r"></i>읽기·생성(R, G)</span>
+    <span><b style="color:var(--warn)">새로</b> = 원본 V1에 없던 것</span>
+  </div>
+  <div class="archwrap"><svg class="arch" viewBox="0 0 1200 1024" width="1200" height="1024" role="img" aria-label="우리 베이스 시스템 아키텍처: 10개 층, 데이터 상향·알람·명령 하향 흐름"><defs><marker id="m-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-data" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-cmd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-cmd" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-alm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-alm" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-read" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-read" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="band-it" x="0" y="16" width="1200" height="100"/>
+<text class="ln" x="12" y="58">L10</text>
+<text class="lname" x="12" y="76">업무 · 승인</text>
+<text class="zt zt-it" x="12" y="93">IT</text>
+<rect class="band-it" x="0" y="116" width="1200" height="100"/>
+<text class="ln" x="12" y="158">L9</text>
+<text class="lname" x="12" y="176">지식 · AI</text>
+<text class="zt zt-it" x="12" y="193">IT</text>
+<rect class="band-it" x="0" y="216" width="1200" height="100"/>
+<text class="ln" x="12" y="258">L8</text>
+<text class="lname" x="12" y="276">저장 · 관제</text>
+<text class="zt zt-it" x="12" y="293">IT</text>
+<rect class="band-it" x="0" y="316" width="1200" height="100"/>
+<text class="ln" x="12" y="358">L7</text>
+<text class="lname" x="12" y="376">스트림 탐지</text>
+<text class="zt zt-it" x="12" y="393">IT</text>
+<rect class="band-it" x="0" y="416" width="1200" height="100"/>
+<text class="ln" x="12" y="458">L6</text>
+<text class="lname" x="12" y="476">이벤트 장부</text>
+<text class="zt zt-it" x="12" y="493">IT</text>
+<rect class="band-dmz" x="0" y="516" width="1200" height="100"/>
+<text class="ln" x="12" y="558">L5</text>
+<text class="lname" x="12" y="576">DMZ 중계</text>
+<text class="zt zt-dmz" x="12" y="593">DMZ</text>
+<rect class="band-ot" x="0" y="616" width="1200" height="100"/>
+<text class="ln" x="12" y="658">L4</text>
+<text class="lname" x="12" y="676">UNS 허브 · 화면</text>
+<text class="zt zt-ot" x="12" y="693">OT</text>
+<rect class="band-ot" x="0" y="716" width="1200" height="100"/>
+<text class="ln" x="12" y="758">L3</text>
+<text class="lname" x="12" y="776">엣지 연결</text>
+<text class="zt zt-ot" x="12" y="793">OT</text>
+<rect class="band-ot" x="0" y="816" width="1200" height="100"/>
+<text class="ln" x="12" y="858">L2</text>
+<text class="lname" x="12" y="876">제어기</text>
+<text class="zt zt-ot" x="12" y="893">OT</text>
+<rect class="band-ot" x="0" y="916" width="1200" height="100"/>
+<text class="ln" x="12" y="958">L1</text>
+<text class="lname" x="12" y="976">현장 설비</text>
+<text class="zt zt-ot" x="12" y="993">OT</text>
+<line class="zline" x1="0" y1="616" x2="1200" y2="616"/>
+<line class="zline" x1="0" y1="516" x2="1200" y2="516"/>
+<rect class="bx ot" x="370" y="934" width="810" height="64" rx="7"/>
+<text class="bt" x="380" y="953">가상 설비 7대 · 센서 12태그</text>
+<text class="bs" x="380" y="970">Python(pymodbus) 시뮬레이터 · 배속 600 · 교반기 등 구동기</text>
+<text class="bs" x="380" y="984">OPC UA 설비는 설비 확장 단계에서 추가(OPC PLC 2.15.4)</text>
+<rect class="bx ot" x="370" y="834" width="810" height="64" rx="7"/>
+<text class="bt" x="380" y="853">OpenPLC Runtime v4.2.4 — soft-PLC</text>
+<text class="bdg" x="1172" y="852" text-anchor="end">새로</text>
+<text class="bs" x="380" y="870">설비에 쓰는 유일한 주체 · 인터록 · 운전 모드 · 명령 최종 판단</text>
+<text class="bs" x="380" y="884">IEC 61131-3 ST 프로그램 · 명령 만료·중복·범위 검사 · ACK 발행</text>
+<rect class="bx ot" x="370" y="734" width="810" height="64" rx="7"/>
+<text class="bt" x="380" y="753">엣지: Node-RED 5.0.x 또는 EdgeX 4.0.2</text>
+<text class="bs" x="380" y="770">프로토콜 변환(Modbus·이후 OPC UA) · 값마다 시각·품질(끊기면 STALE)</text>
+<text class="bs" x="380" y="784">끊기면 저장 후 전송 · 둘을 조립 때 나란히 재서 결정(둘 다 합격이면 Node-RED)</text>
+<rect class="bx ot" x="170" y="634" width="130" height="64" rx="7"/>
+<text class="bt" x="180" y="653">FUXA 1.3.4 · 화면</text>
+<text class="bs" x="180" y="670">현재값·공정 알람</text>
+<text class="bs" x="180" y="684">IT가 멈춰도 동작</text>
+<rect class="bx ot" x="370" y="634" width="810" height="64" rx="7"/>
+<text class="bt" x="380" y="653">Mosquitto 2.1.2 — UNS 허브(OT 하나)</text>
+<text class="bs" x="380" y="670">토픽 공장/구역/라인/설비/종류/태그 · 종류 = tag·status·cmd·alert</text>
+<text class="bs" x="380" y="684">cmd 발행은 FUXA·게이트웨이만(ACL) · 명령 retain 금지</text>
+<rect class="bx dmz" x="370" y="534" width="180" height="64" rx="7"/>
+<text class="bt" x="380" y="553">Bento 1.21.2 · 상향 복제</text>
+<text class="bs" x="380" y="570">MQTT → Kafka</text>
+<text class="bs" x="380" y="584">OT 데이터를 IT로</text>
+<rect class="bx dmz" x="840" y="534" width="160" height="64" rx="7"/>
+<text class="bt" x="850" y="553">Bento · 알람 표시</text>
+<text class="bs" x="850" y="570">Kafka alerts → MQTT</text>
+<text class="bs" x="850" y="584">화면 표시 전용</text>
+<rect class="bx dmz" x="1040" y="534" width="140" height="64" rx="7"/>
+<text class="bt" x="1050" y="553">명령 게이트웨이</text>
+<text class="bdg" x="1172" y="552" text-anchor="end">새로</text>
+<text class="bs" x="1050" y="570">형식·허용·만료 검사</text>
+<text class="bs" x="1050" y="584">중복·모드 · 자체 코드</text>
+<rect class="bx it" x="370" y="434" width="810" height="64" rx="7"/>
+<text class="bt" x="380" y="453">Kafka 4.3.1 — 이벤트 장부</text>
+<text class="bs" x="380" y="470">토픽은 데이터 종류별: telemetry.raw · telemetry.clean · anomaly.score · alerts · 명령 요청 · 상태·ACK</text>
+<text class="bs" x="380" y="484">키 = 설비 ID(설비가 늘어도 토픽 수는 그대로) · 보관·다시 읽기·여러 소비자</text>
+<rect class="bx it" x="370" y="334" width="180" height="64" rx="7"/>
+<text class="bt" x="380" y="353">Flink 2.2.1 · HA</text>
+<text class="bs" x="380" y="370">전처리 → 규칙·CEP</text>
+<text class="bs" x="380" y="384">+ Autoencoder(ONNX)</text>
+<rect class="bx it sub" x="170" y="334" width="150" height="64" rx="7"/>
+<text class="bt" x="180" y="353">ZooKeeper 3.9.5</text>
+<text class="bs" x="180" y="370">Flink 재시작 복구(HA)</text>
+<text class="bs" x="180" y="384">설비 종류 단위 규칙</text>
+<rect class="bx it" x="600" y="334" width="190" height="64" rx="7"/>
+<text class="bt" x="610" y="353">Bento · 이력 적재</text>
+<text class="bs" x="610" y="370">Kafka → InfluxDB</text>
+<text class="bs" x="610" y="384">원본·정제·점수·알람</text>
+<rect class="bx it sub" x="170" y="234" width="150" height="64" rx="7"/>
+<text class="bt" x="180" y="253">Prometheus 3.13</text>
+<text class="bs" x="180" y="270">LTS + Alertmanager</text>
+<text class="bs" x="180" y="284">지표 → 인프라 담당</text>
+<rect class="bx it" x="370" y="234" width="180" height="64" rx="7"/>
+<text class="bt" x="380" y="253">Grafana 13.2.3</text>
+<text class="bs" x="380" y="270">공정 추세·이력 화면</text>
+<text class="bs" x="380" y="284">+ 플랫폼 지표</text>
+<rect class="bx it" x="600" y="234" width="190" height="64" rx="7"/>
+<text class="bt" x="610" y="253">InfluxDB 2.9.1</text>
+<text class="bs" x="610" y="270">공정 이력 정본</text>
+<text class="bs" x="610" y="284">OT엔 화면 단기 추세만</text>
+<rect class="bx it" x="170" y="134" width="150" height="64" rx="7"/>
+<text class="bt" x="180" y="153">설비 등록부</text>
+<text class="bdg" x="312" y="152" text-anchor="end">새로</text>
+<text class="bs" x="180" y="170">정본 YAML → PG 표</text>
+<text class="bs" x="180" y="184">엣지·토픽·키·규칙 생성</text>
+<rect class="bx it" x="370" y="134" width="180" height="64" rx="7"/>
+<text class="bt" x="380" y="153">Neo4j 5.26 · 온톨로지</text>
+<text class="bs" x="380" y="170">설비·센서·고장(ISO 14224)</text>
+<text class="bs" x="380" y="184">매뉴얼 검색(임베딩)</text>
+<rect class="bx it" x="600" y="134" width="190" height="64" rx="7"/>
+<text class="bt" x="610" y="153">AI 에이전트</text>
+<text class="bs" x="610" y="170">LangGraph + LiteLLM</text>
+<text class="bs" x="610" y="184">도구 읽기 전용 · 제안만</text>
+<rect class="bx it" x="840" y="134" width="160" height="64" rx="7"/>
+<text class="bt" x="850" y="153">업무 서비스</text>
+<text class="bs" x="850" y="170">사건 접수(alerts)</text>
+<text class="bs" x="850" y="184">ACK 대조 → 재관측</text>
+<rect class="bx it" x="170" y="34" width="380" height="64" rx="7"/>
+<text class="bt" x="180" y="53">PostgreSQL 18.6 — 업무 기록</text>
+<text class="bs" x="180" y="70">사건·제안·승인·명령·ACK·감사(추가만) · 분석 경고 상태표(ISA-18.2)</text>
+<text class="bs" x="180" y="84">등록부 표 · 경보와 공정 알람을 섞지 않음</text>
+<rect class="bx it" x="600" y="34" width="190" height="64" rx="7"/>
+<text class="bt" x="610" y="53">사람 승인 · 업무 화면</text>
+<text class="bs" x="610" y="70">제안·근거 검토</text>
+<text class="bs" x="610" y="84">승인 / 반려</text>
+<rect class="bx it" x="1040" y="34" width="140" height="64" rx="7"/>
+<text class="bt" x="1050" y="53">명령 요청 발행</text>
+<text class="bs" x="1050" y="70">명령 ID·만료 부여</text>
+<text class="bs" x="1050" y="84">→ Kafka 명령 요청</text>
+<line class="l-data" x1="440" y1="934" x2="440" y2="898" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="456" cy="916.0" r="10.5"/>
+<text class="nt" x="456" y="919.4" text-anchor="middle">D1</text>
+<text class="al" x="469" y="919.8" text-anchor="start">Modbus 읽기</text>
+<line class="l-data" x1="440" y1="834" x2="440" y2="798" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="456" cy="816.0" r="10.5"/>
+<text class="nt" x="456" y="819.4" text-anchor="middle">D2</text>
+<text class="al" x="469" y="819.8" text-anchor="start">값·상태·ACK</text>
+<line class="l-data" x1="440" y1="734" x2="440" y2="698" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="456" cy="716.0" r="10.5"/>
+<text class="nt" x="456" y="719.4" text-anchor="middle">D3</text>
+<text class="al" x="469" y="719.8" text-anchor="start">MQTT 발행(시각·품질)</text>
+<line class="l-data" x1="370" y1="648" x2="300" y2="648" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="331.0" cy="648" r="10.5"/>
+<text class="nt" x="331.0" y="651.4" text-anchor="middle">D4</text>
+<line class="l-data" x1="440" y1="634" x2="440" y2="598" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="456" cy="616.0" r="10.5"/>
+<text class="nt" x="456" y="619.4" text-anchor="middle">D5</text>
+<text class="al" x="469" y="619.8" text-anchor="start">OT가 밀어냄(push)</text>
+<line class="l-data" x1="440" y1="534" x2="440" y2="498" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="456" cy="516.0" r="10.5"/>
+<text class="nt" x="456" y="519.4" text-anchor="middle">D6</text>
+<text class="al" x="469" y="519.8" text-anchor="start">raw·상태·ACK</text>
+<line class="l-data" x1="420" y1="434" x2="420" y2="398" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="404" cy="416.0" r="10.5"/>
+<text class="nt" x="404" y="419.4" text-anchor="middle">D7</text>
+<text class="al" x="391" y="419.8" text-anchor="end">raw</text>
+<line class="l-data" x1="510" y1="398" x2="510" y2="434" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="526" cy="416.0" r="10.5"/>
+<text class="nt" x="526" y="419.4" text-anchor="middle">D8</text>
+<text class="al" x="539" y="419.8" text-anchor="start">clean·score·alerts</text>
+<line class="l-data" x1="715" y1="434" x2="715" y2="398" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="731" cy="416.0" r="10.5"/>
+<text class="nt" x="731" y="419.4" text-anchor="middle">D9</text>
+<line class="l-data" x1="695" y1="334" x2="695" y2="298" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="711" cy="316.0" r="10.5"/>
+<text class="nt" x="711" y="319.4" text-anchor="middle">D10</text>
+<line class="l-data" x1="600" y1="266.0" x2="550" y2="266.0" marker-end="url(#m-data)"/>
+<circle class="n-data" cx="575.0" cy="253.0" r="10.5"/>
+<text class="nt" x="575.0" y="256.4" text-anchor="middle">D11</text>
+<line class="l-alm" x1="920" y1="434" x2="920" y2="198" marker-end="url(#m-alm)"/>
+<circle class="n-alm" cx="936" cy="316.0" r="10.5"/>
+<text class="nt" x="936" y="319.4" text-anchor="middle">A1</text>
+<text class="al" x="949" y="319.8" text-anchor="start">alerts · 상태·ACK</text>
+<line class="l-alm" x1="840" y1="166.0" x2="790" y2="166.0" marker-end="url(#m-alm)"/>
+<circle class="n-alm" cx="811.0" cy="166.0" r="10.5"/>
+<text class="nt" x="811.0" y="169.4" text-anchor="middle">A2</text>
+<line class="l-read" x1="695" y1="234" x2="695" y2="198" marker-end="url(#m-read)"/>
+<circle class="n-read" cx="679" cy="216.0" r="10.5"/>
+<text class="nt" x="679" y="219.4" text-anchor="middle">R</text>
+<text class="al" x="666" y="219.8" text-anchor="end">이력 읽기</text>
+<line class="l-read" x1="550" y1="166.0" x2="600" y2="166.0" marker-end="url(#m-read)"/>
+<circle class="n-read" cx="571.0" cy="166.0" r="10.5"/>
+<text class="nt" x="571.0" y="169.4" text-anchor="middle">R</text>
+<line class="l-alm" x1="695" y1="134" x2="695" y2="98" marker-end="url(#m-alm)"/>
+<circle class="n-alm" cx="711" cy="116.0" r="10.5"/>
+<text class="nt" x="711" y="119.4" text-anchor="middle">A3</text>
+<text class="al" x="724" y="119.8" text-anchor="start">제안 + 근거</text>
+<line class="l-alm" x1="920" y1="498" x2="920" y2="534" marker-end="url(#m-alm)"/>
+<circle class="n-alm" cx="904" cy="516.0" r="10.5"/>
+<text class="nt" x="904" y="519.4" text-anchor="middle">A4</text>
+<text class="al" x="891" y="519.8" text-anchor="end">alerts</text>
+<text class="al" x="912" y="620.0" text-anchor="end">alert 토픽 → 허브</text>
+<line class="l-alm" x1="920" y1="598" x2="920" y2="634" marker-end="url(#m-alm)"/>
+<line class="l-alm" x1="370" y1="684" x2="300" y2="684" marker-end="url(#m-alm)"/>
+<circle class="n-alm" cx="331.0" cy="684" r="10.5"/>
+<text class="nt" x="331.0" y="687.4" text-anchor="middle">A5</text>
+<line class="l-cmd" x1="790" y1="66.0" x2="1040" y2="66.0" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="915.0" cy="53.0" r="10.5"/>
+<text class="nt" x="915.0" y="56.4" text-anchor="middle">C1</text>
+<text class="al" x="915.0" y="39.0" text-anchor="middle">승인</text>
+<line class="l-cmd" x1="1110" y1="98" x2="1110" y2="434" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="266.0" r="10.5"/>
+<text class="nt" x="1094" y="269.4" text-anchor="middle">C2</text>
+<text class="al" x="1081" y="269.8" text-anchor="end">명령 요청</text>
+<line class="l-cmd" x1="1110" y1="498" x2="1110" y2="534" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="516.0" r="10.5"/>
+<text class="nt" x="1094" y="519.4" text-anchor="middle">C3</text>
+<line class="l-cmd" x1="1110" y1="598" x2="1110" y2="634" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="616.0" r="10.5"/>
+<text class="nt" x="1094" y="619.4" text-anchor="middle">C4</text>
+<text class="al" x="1081" y="619.8" text-anchor="end">cmd</text>
+<line class="l-cmd" x1="1110" y1="698" x2="1110" y2="734" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="716.0" r="10.5"/>
+<text class="nt" x="1094" y="719.4" text-anchor="middle">C5</text>
+<text class="al" x="1081" y="719.8" text-anchor="end">cmd 구독</text>
+<line class="l-cmd" x1="1110" y1="798" x2="1110" y2="834" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="816.0" r="10.5"/>
+<text class="nt" x="1094" y="819.4" text-anchor="middle">C6</text>
+<text class="al" x="1081" y="819.8" text-anchor="end">쓰기 요청</text>
+<line class="l-cmd" x1="1110" y1="898" x2="1110" y2="934" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="1094" cy="916.0" r="10.5"/>
+<text class="nt" x="1094" y="919.4" text-anchor="middle">C7</text>
+<text class="al" x="1081" y="919.8" text-anchor="end">검사 통과 시 쓰기</text>
+<line class="l-cmd" x1="300" y1="666" x2="370" y2="666" marker-end="url(#m-cmd)"/>
+<circle class="n-cmd" cx="331.0" cy="666" r="10.5"/>
+<text class="nt" x="331.0" y="669.4" text-anchor="middle">M</text>
+<line class="l-read" x1="320" y1="166.0" x2="370" y2="166.0" marker-end="url(#m-read)"/>
+<circle class="n-read" cx="341.0" cy="166.0" r="10.5"/>
+<text class="nt" x="341.0" y="169.4" text-anchor="middle">G</text>
+</svg></div>
+
+  <h3>흐름 순서</h3>
+  <div class="grid3">
+    <div><b>데이터 ↑</b>
+      <ol class="steps d">
+        <li><b>D1</b>PLC가 설비 값을 Modbus로 읽는다</li>
+        <li><b>D2</b>엣지가 PLC의 값·상태·ACK를 읽는다</li>
+        <li><b>D3</b>엣지가 시각·품질을 붙여 허브에 발행</li>
+        <li><b>D4</b>FUXA가 허브를 구독해 현재값 표시</li>
+        <li><b>D5</b>DMZ 상향 복제가 허브 데이터를 받는다(OT가 밀어냄)</li>
+        <li><b>D6</b>Kafka raw·상태·ACK 토픽에 기록</li>
+        <li><b>D7</b>Flink가 raw를 읽는다</li>
+        <li><b>D8</b>Flink가 clean·score·alerts를 Kafka에 쓴다</li>
+        <li><b>D9</b>이력 적재가 Kafka를 읽고</li>
+        <li><b>D10</b>InfluxDB에 저장(이력 정본)</li>
+        <li><b>D11</b>Grafana가 조회</li>
+      </ol></div>
+    <div><b>알람·사건</b>
+      <ol class="steps a">
+        <li><b>A1</b>업무 서비스가 alerts로 사건 접수, 상태·ACK는 명령 대조에 쓴다</li>
+        <li><b>A2</b>사건을 AI 에이전트에 넘긴다</li>
+        <li><b style="background:var(--f-read)">R</b>AI가 이력(InfluxDB)·관계·매뉴얼(Neo4j)을 읽기 전용으로 조회</li>
+        <li><b>A3</b>제안과 근거를 사람에게</li>
+        <li><b>A4</b>alerts가 DMZ 알람 표시로 내려가</li>
+        <li><b>A5</b>허브의 alert 토픽 → FUXA 분석 경고(공정 알람과 따로)</li>
+      </ol></div>
+    <div><b>명령 ↓</b>
+      <ol class="steps c">
+        <li><b>C1</b>사람이 승인하면 명령 요청(명령 ID·만료)</li>
+        <li><b>C2</b>Kafka 명령 요청 토픽</li>
+        <li><b>C3</b>DMZ 게이트웨이가 형식·허용·만료·중복·모드 검사</li>
+        <li><b>C4</b>허브의 cmd 토픽으로</li>
+        <li><b>C5</b>엣지가 cmd를 받아</li>
+        <li><b>C6</b>PLC에 쓰기 요청</li>
+        <li><b>C7</b>PLC가 인터록·모드·범위를 최종 검사하고 설비에 쓴다</li>
+        <li><b>M</b>운전원은 FUXA → 허브 cmd → C5~C7(IT를 거치지 않음)</li>
+        <li><b>확인</b>PLC ACK·바뀐 값이 D2~D6 → A1로 올라와 명령 ID로 대조 → 재관측 → PostgreSQL 기록</li>
+      </ol></div>
+  </div>
+  <p class="muted">설비 추가: 층은 그대로다. 설비 등록부(<b style="color:var(--f-read)">G</b>)에 한 줄 더하면 엣지 설정·토픽·Kafka 키·Flink 적용 범위·Neo4j 노드가 배포 전에 함께 만들어진다. 플랫폼 감시(Prometheus + Alertmanager·cAdvisor·kafka-exporter)는 전 구역 지표를 모아 인프라 담당에게만 보낸다.</p>
+
+  <h3>층별 — 어디까지가 현업 근거이고 어디부터 우리 설계인가</h3>
+  <p>"IoT-SCADA"는 표준의 층 이름이 아니다. 현업 표준 층은 Purdue 모델(L0 현장 장치, L1 PLC, L2 SCADA·HMI, L3 히스토리언·MES, L3.5 DMZ, L4~5 기업망)이다.</p>
+  <div class="tbl"><table>
+    <tr><th>우리 층</th><th>Purdue</th><th>현업 근거(종류)</th><th>우리가 맞춰 정한 것</th></tr>
+    <tr><td>L1 설비</td><td>L0</td><td>표준(NIST SP 800-82r3, CISA)</td><td>실물 대신 가상 설비(배속 600)</td></tr>
+    <tr><td>L2 제어기</td><td>L1</td><td>표준(NIST), NAMUR NE 178: 제어기가 명령 최종 판단</td><td>상용 PLC 대신 무료 OpenPLC</td></tr>
+    <tr><td>L3 엣지</td><td>L2~L3</td><td>재단·업계 권고(Sparkplug Edge Node, NAMUR NE 176·179)</td><td>현업 주류(Kepware 등 상용) 대신 무료, 실측으로 선택</td></tr>
+    <tr><td>L4 허브·화면</td><td>L2</td><td>SCADA 화면: 표준. UNS 허브: 업계 트렌드(Sparkplug 3.0), 채택 통계 없음</td><td>FUXA 무료 대체</td></tr>
+    <tr><td>L5 DMZ 중계</td><td>L3.5</td><td>DMZ·OT가 밀어냄: 표준(NIST, CISA 2016·2025) — 근거 강함. 검증 통로 하나: NE 178(개념)</td><td>게이트웨이 제품이 없어 자체 코드</td></tr>
+    <tr><td>L6 Kafka</td><td>L4 이상</td><td>MQTT→Kafka 연동: 벤더 문서·업계 동향(근거 약함)</td><td>—</td></tr>
+    <tr><td>L7 탐지</td><td>IT</td><td>CISA: ML 탐지는 주로 L1~L3(OT 쪽)</td><td class="diff">교육용으로 IT에 둠 — 현업과 다름</td></tr>
+    <tr><td>L8 저장·관제</td><td>IT</td><td>현업은 사이트 히스토리언 OT(L3) + DMZ 복제(CISA 2016, 권장 배치)</td><td class="diff">이력 정본을 IT 한 곳으로 줄임, OT엔 화면 단기 추세만 — 현업과 다름</td></tr>
+    <tr><td>L9 지식·AI</td><td>L4~5</td><td>CISA: LLM·에이전트는 OT 밖·읽기 전용. 현장 운영은 연구·초기 제품 단계(설문 수치 없음)</td><td>원본 AI 층 재사용, 도구 읽기 전용</td></tr>
+    <tr><td>L10 업무·승인</td><td>L4~5</td><td>CISA(사람 승인), ISA-95 Part 3(정비 요청 → 작업지시)</td><td>자체 코드 + PostgreSQL</td></tr>
+  </table></div>
+
+  <h3>OT 데이터를 밖으로 보내는 현업 패턴</h3>
+  <div class="tbl"><table>
+    <tr><th>패턴</th><th>흐름</th><th>근거</th></tr>
+    <tr><td>① 히스토리언 복제(전통)</td><td>SCADA → 사이트 히스토리언(OT L3) → DMZ 복제 히스토리언 → 기업 사용자</td><td>표준: CISA Defense in Depth 2016 §2.4.1~2 — 가장 강함</td></tr>
+    <tr><td>② 단방향 장치</td><td>L2~L3 사이 데이터 다이오드(방화벽 대안)</td><td>표준: NIST SP 800-82r3 §5.2.3.1</td></tr>
+    <tr><td>③ IIoT(우리)</td><td>엣지 → MQTT 허브(UNS) → DMZ 복제 → Kafka·히스토리언</td><td>현업 추세: 독립 분석 기관 IoT Analytics(2026-01)가 "UNS가 Kafka·NATS 같은 백엔드를 쓰는 쪽으로 성숙"이라고 적음. HiveMQ·Kafka 쪽 저자 등 벤더도 같은 역할 분담. 사용 비율 통계 없음, 이름 있는 제조사 공장 구조 공개 자료 없음</td></tr>
+  </table></div>
+  <p class="muted">공통 원칙은 "OT가 밖으로 밀어내고, IT에서 OT로 직접 들어오는 길은 없다"(표준, 근거 강함)이다. "UNS는 히스토리언을 대체하지 않는다"(IT/OT Insider). 우리는 규칙을 지키고 방법은 ③을 쓴다(원본 V1 뼈대가 ③이고, 규칙을 지키면 현업과 맞다는 조사 12번 판단, 무료로 구성 가능). ③은 "현업 추세"이지 "주류"로 확인된 것은 아니며, 수업에서 ①이 표준 기본 배치임을 함께 설명한다.</p>
+</section>
+
 
 <section>
   <h2>5. 주요 결정과 이유</h2>
