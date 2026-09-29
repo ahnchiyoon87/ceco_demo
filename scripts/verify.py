@@ -164,8 +164,9 @@ def t1_edge() -> None:
             check("수집기 프로토콜 정규화 (Modbus → EdgeX 이벤트 JSON, edgex/telemetry)", len(names) >= 12,
                   f"이벤트 1건에 계측 {len(names)}종")
         except Exception as e2:
-            results.append(("EdgeX 정규화", True, "lite 프로파일 — 건너뜀"))
-            print(f"{SKIP} EdgeX 정규화 — lite 프로파일로 판단, 건너뜀 ({e}; 수집기 확인도 실패: {e2})")
+            # EdgeX 도 수집기 계측 이벤트도 확인 못 함 = 수집 정규화가 안 되는 것. 건너뜀(통과)으로 세지 않는다
+            # (V1 은 EdgeX 실패를 "lite 프로파일 건너뜀"으로 통과 처리해 실패가 가려졌다).
+            check("수집 프로토콜 정규화 (EdgeX 또는 수집기 edgex/telemetry)", False, f"EdgeX: {e} / 수집기: {e2}")
 
     # Southbound: 펌프 정지 → 유량/전류가 실제로 0 이 되는가
     before = get(f"{SIM}/state")["readings"]
@@ -297,7 +298,12 @@ from(bucket: "%s")
           "실측/추정 구분이 히스토리안까지 전달됨")
 
     # ── PDF p.7 핵심 규약: Prometheus 에 센서 데이터가 없어야 한다 ──
-    series = get(f"{PROM}/api/v1/label/__name__/values")["data"]
+    # V2: 운영 감시(Prometheus 등)는 선택 모듈(--profile monitoring). 꺼져 있으면 통과도 실패도 아닌 "꺼짐"으로 따로 표시한다.
+    try:
+        series = get(f"{PROM}/api/v1/label/__name__/values")["data"]
+    except (urllib.error.URLError, ConnectionError, OSError) as e:
+        print(f"{SKIP} 운영 감시 선택 모듈 꺼짐 — Prometheus 검사 2건 제외 (켜기: --profile monitoring) ({e})", flush=True)
+        return
     sensor_leak = [m for m in series
                    if any(t.replace("-", "_").lower() in m.lower()
                           for t in ["LT_101", "TT_101", "PT_101", "pH_101"])]

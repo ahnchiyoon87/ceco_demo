@@ -26,7 +26,10 @@ def http(url, body=None):
 
 ap = argparse.ArgumentParser(); ap.add_argument("--reps", type=int, default=3); ap.add_argument("--out", required=True)
 ap.add_argument("--limit-s", type=float, default=12.0)
-ap.add_argument("--faults", default=",".join(EXPECT)); a = ap.parse_args()
+ap.add_argument("--faults", default=",".join(EXPECT))
+ap.add_argument("--broker", default="emqx")                    # V2: mqtt
+ap.add_argument("--mqtt-topic", default="scada/alerts/#")      # V2: scada/hmi/latest-alert (FUXA 가 구독하는 글자 형식)
+a = ap.parse_args()
 lock, events = threading.Lock(), []
 kc = Consumer({"bootstrap.servers": "kafka:9092", "group.id": f"onset-{uuid.uuid4().hex[:6]}", "auto.offset.reset": "latest"})
 kc.subscribe(["sensor.alerts", "sensor.telemetry.clean"])
@@ -46,17 +49,20 @@ def kloop():
                 pass
 threading.Thread(target=kloop, daemon=True).start()
 mc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"onset-{uuid.uuid4().hex[:6]}")
-mc.on_connect = lambda c, u, f, rc, p=None: c.subscribe("scada/alerts/#", 1)
+mc.on_connect = lambda c, u, f, rc, p=None: c.subscribe(a.mqtt_topic, 1)
 def on_mqtt(c, u, msg):
     try:
         d = json.loads(msg.payload)                       # Telegraf JSON: {"tags": {...}, "fields": {...}, "timestamp": ns}
         al = {**d.get("tags", {}), **d.get("fields", {}), "ts": d.get("timestamp")}
-        with lock:
-            events.append(("mqtt", time.time(), al))
-    except ValueError:
-        pass
+    except ValueError:                                    # 최근알람 글자 형식 "MM-DD HH:MM:SS UTC | 심각도 | 태그 | 유형"
+        parts = [x.strip() for x in msg.payload.decode(errors="replace").split("|")]
+        if len(parts) < 4:
+            return
+        al = {"tag": parts[2], "alert_type": parts[3], "severity": parts[1], "ts": time.time_ns()}
+    with lock:
+        events.append(("mqtt", time.time(), al))
 mc.on_message = on_mqtt
-mc.connect("emqx", 1883); mc.loop_start(); time.sleep(5)
+mc.connect(a.broker, 1883); mc.loop_start(); time.sleep(5)
 
 results = {}
 for fault, match in [(f, EXPECT[f]) for f in a.faults.split(",")]:

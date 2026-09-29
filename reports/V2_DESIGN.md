@@ -144,6 +144,28 @@ V2  설비 ─Modbus(설비 전용망)─▶ 수집기(Telegraf 1.40) ─▶ Kaf
 | 중계기 로그 잡음 | InfluxDB 싱크 `version` 미지정 경고가 재시작마다 반복 | `version: "2"`(검사기 통과 뒤 적용, 경고 0) |
 | Flink 지표 이름 충돌 경고(S14) | Flink 2.2.1 에도 미수정(FLINK-35321·37559 열림, 수정 PR 은 master 만, 08) | 대장 S14 "남김(상류 미수정)" — V2 로그에서 건수 실측 |
 
+## 7-2. 땜빵 점검표 (V1 과 달라진 V2 설정·코드 전수, 세션 4 — 작업하며 발견되면 추가)
+
+분류: **근본** = 원인을 없앰 / **땜빵** = 증상만 막음(근본 수정 계획 필수) / **부분** = 원인 일부만.
+
+| # | 위치 | 한 일 | 분류 | 근본 원인 · 근본 수정 | 상태 |
+|---|---|---|---|---|---|
+| 1 | `docker-compose.v2.yml` influx `influx-config-v2` | 설정 폴더를 V2 전용 이름 볼륨으로 | 근본 | 이름 없는 볼륨이 옛 컨테이너 설정을 물려받음 — 공식 compose 문서 구성(데이터·설정 둘 다 볼륨) | 완료(S15) |
+| 2 | `flink/conf/client-config.v2.yaml` | ONNX 잡 체크포인트 10 s | 근본 | 제출 설정에 항목 누락 | 완료(S17) |
+| 3 | `v2/vector/vector.yaml` acknowledgements | InfluxDB 싱크 쓰기 성공 뒤 읽은 위치 넘김 | 근본 | V1 최소 1회 전달 보장 복원. MQTT 싱크는 PUBACK 전 표시(Vector 한계, 리서치 08) — R01 에서 화면 영향 실측 | 완료 |
+| 4 | `v2/prometheus/*`, 수집기 `inputs.internal`, 중계기 지표 | 탐지 잡 정지·중계기 정지·브로커 상태 감시 | 근본 | 감시 대상·규칙이 없었음(V1 E11 0/2) | 완료, E11 로 확인 |
+| 5 | `harness/e2e/baseline.sh` | 이름표를 기본값 뒤에 읽음 | 근본 | 변수 순서 오류(#125) | 완료 |
+| 6 | `scripts/verify.py` EdgeX 단계 | 수집 확인 실패를 실패로 셈 | 근본 | V1 은 실패를 "lite 건너뜀 = 통과"로 셈 — V2 확인까지 가리고 있었음(세션 4 발견) | 완료 |
+| 7 | 설비 전용망 `plant-field` 별칭 | 수집기가 전용망 이름으로 설비를 읽음 | 근본 | 설비 이름이 백본망 주소로 풀려 R02 때 설비 읽기도 끊김(로그 172.24.0.13 i/o timeout) | 파일 준비, 측정 뒤 적용(S18) |
+| 8 | 수집기 `depends_on: mqtt` | 브로커가 먼저 떠야 수집기 기동 | **땜빵** | 수집기가 Kafka+MQTT 두 곳에 씀 → outputs.mqtt 가 기동 때 연결 실패면 종료(리서치 08). 근본: 계측 MQTT 사본을 중계기(브리지)로 옮겨 수집기는 Kafka 만 | V3 #6 |
+| 9 | 수집기 `buffer_directory = /tmp/telegraf-buffer` | 권한 오류 회피 | **땜빵** | 컨테이너 쓰기 계층이라 컨테이너 재생성 때 버퍼 소실. 근본: 이미지 사용자(telegraf)가 쓸 수 있는 전용 이름 볼륨 | V2 확정 전 수정 |
+| 10 | 중계기 `VECTOR_DANGEROUSLY_ALLOW_ENV_VAR_INTERPOLATION` | 환경변수 치환 켬 | **땜빵에 가까움** | Vector 권장은 비밀값 백엔드. 근본: compose secrets(환경변수에서) → Vector `secret` directory 백엔드 `SECRET[...]` | V2 확정 전 수정 |
+| 11 | 수집기 `idempotent_writes` | 클라이언트 재시도 중복 방지 | **부분** | 배치 재전송 중복은 남음(PR #19735 미병합, 리서치 08). R03 중복을 V1(중앙 150)과 비교 | 측정 대기 |
+| 12 | Flink HA `storageDir` 를 체크포인트 볼륨 안에 | 별도 볼륨은 root 소유라 못 씀 | 설계 선택 | 같은 수명(체크포인트와 함께)이라 기능상 문제 없음. 분리하려면 이미지에 폴더를 flink 소유로 만들고 볼륨 연결 | 기록 |
+| 13 | `fuxa/provision.py` `MQTT_URL` | 브로커 주소 환경변수 | 근본(설정화) | 값이 없으면 V1 과 같음 | 완료 |
+| 14 | `v2/telegraf/sink.conf` `kafka_version = "3.0.0"` | Telegraf 소비기의 Kafka 4.x 호환 | 해당 없음 | V2 실행에 안 쓰임(중계 벤치 `harness/pipebench` 만 참조) | 기록 |
+| 15 | 중계기 InfluxDB `version: "2"` | 명시 | 근본 | 미지정 경고가 로그를 덮음 | 완료 |
+
 ## 8. 측정 계획 (결정을 바꿀 수 있는 것만)
 - 전체 측정 `STRUCT=V2 sh harness/e2e/baseline.sh EXP-002 V2`: P1(E3·E7·E12·R09) → P2(E1 3묶음) → P3(R01·R02·R03 각 3회, R06·R07·R08·R11·E11).
 - 회귀 `STRUCT=V2 sh harness/e2e/regression.sh EXP-002 V2`(S01~S08·S14~S22·S24·S25). V2 가 전부 통과하면 V1 회귀는 결정을 바꾸지 못하므로 생략, 실패 항목이 있으면 그 항목만 V1 에서 잰다.

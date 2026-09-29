@@ -3,12 +3,17 @@
 #   2026-09-23 FUXA 가 latest-alert 로 옮긴 뒤(scripts/apply-fuxa-alert-topic.py) 구독하는 곳이 없어 뺐다(#124).
 # 출처: 중계 벤치에서 V1 과 결과 동일로 확인된 설정(harness/pipebench/vector/vector.yaml, #113)에서
 #   중계 ①(MQTT→Kafka)만 뺐다 — V2 는 수집기가 Kafka 에 바로 쓴다. InfluxDB 접속값은 .env 환경변수, 브로커는 mqtt(Mosquitto).
-# 전달 확인: Kafka 읽은 위치는 InfluxDB 싱크가 쓰기 성공을 받은 뒤에만 넘긴다 — V1 Telegraf kafka_consumer 가
+# 전달 확인(싱크별 acknowledgements): Kafka 읽은 위치는 InfluxDB 싱크가 쓰기 성공을 받은 뒤에만 넘긴다 — V1 Telegraf kafka_consumer 가
 # 출력 전달 뒤에 위치를 표시하던 것(최소 1회 전달)과 같은 보장(기능 보존, #124).
 # 주의(리서치 08, 코드 확인): Vector 0.58 MQTT 싱크는 브로커 PUBACK 전에 전달로 표시한다 — 알람 화면 경로는 이 보장이 없다.
 #   브로커 재시작 때 화면 알람 영향은 R01 에서 실측한다.
-acknowledgements:
-  enabled: true
+
+# 비밀값: compose secrets 가 /run/secrets 에 파일로 넣고 Vector 공식 비밀값 기능으로 읽는다(환경변수 치환 플래그 대신, 땜빵 점검표 #10).
+secret:
+  run_secrets:
+    type: directory
+    path: /run/secrets
+    remove_trailing_whitespace: true
 
 sources:
   relay_metrics:                                # 중계기 자체 지표 → Prometheus(중계기 정지를 up==0 으로 탐지, V1 E11 미탐 수정 #124)
@@ -41,6 +46,7 @@ transforms:
   relay2_route:
     type: route
     inputs: [relay2_parse]
+    reroute_unmatched: false                    # 네 토픽이 모두 매핑돼 해당 없음 출구가 쓰일 일이 없음(받는 곳 없음 경고 제거)
     route:
       process: '.measurement == "process"'
       process_raw: '.measurement == "process_raw"'
@@ -58,42 +64,46 @@ transforms:
 sinks:
   influx_process:
     type: influxdb_logs
+    acknowledgements: {enabled: true}
     version: "2"                                  # 명시하지 않으면 재시작마다 경고(로그 잡음, #126)
     inputs: [relay2_route.process]
     endpoint: http://influxdb:8086
-    org: "${INFLUX_ORG}"
-    bucket: "${INFLUX_BUCKET}"
-    token: "${INFLUX_TOKEN}"
+    org: "SECRET[run_secrets.influx_org]"
+    bucket: "SECRET[run_secrets.influx_bucket]"
+    token: "SECRET[run_secrets.influx_token]"
     measurement: process
     tags: [site, device, tag, quality]
   influx_process_raw:
     type: influxdb_logs
+    acknowledgements: {enabled: true}
     version: "2"                                  # 명시하지 않으면 재시작마다 경고(로그 잡음, #126)
     inputs: [relay2_route.process_raw]
     endpoint: http://influxdb:8086
-    org: "${INFLUX_ORG}"
-    bucket: "${INFLUX_BUCKET}"
-    token: "${INFLUX_TOKEN}"
+    org: "SECRET[run_secrets.influx_org]"
+    bucket: "SECRET[run_secrets.influx_bucket]"
+    token: "SECRET[run_secrets.influx_token]"
     measurement: process_raw
     tags: [site, device, tag, quality]
   influx_anomaly:
     type: influxdb_logs
+    acknowledgements: {enabled: true}
     version: "2"                                  # 명시하지 않으면 재시작마다 경고(로그 잡음, #126)
     inputs: [relay2_route.anomaly]
     endpoint: http://influxdb:8086
-    org: "${INFLUX_ORG}"
-    bucket: "${INFLUX_BUCKET}"
-    token: "${INFLUX_TOKEN}"
+    org: "SECRET[run_secrets.influx_org]"
+    bucket: "SECRET[run_secrets.influx_bucket]"
+    token: "SECRET[run_secrets.influx_token]"
     measurement: anomaly
     tags: [site, device, top_contributors]
   influx_alerts:
     type: influxdb_logs
+    acknowledgements: {enabled: true}
     version: "2"                                  # 명시하지 않으면 재시작마다 경고(로그 잡음, #126)
     inputs: [relay2_route.alerts]
     endpoint: http://influxdb:8086
-    org: "${INFLUX_ORG}"
-    bucket: "${INFLUX_BUCKET}"
-    token: "${INFLUX_TOKEN}"
+    org: "SECRET[run_secrets.influx_org]"
+    bucket: "SECRET[run_secrets.influx_bucket]"
+    token: "SECRET[run_secrets.influx_token]"
     measurement: alerts
     tags: [site, device, tag, alert_type, severity, detector]
   mqtt_hmi:

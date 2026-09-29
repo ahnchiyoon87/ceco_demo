@@ -21,7 +21,13 @@ networks:
   field:            # 설비 전용망(설비 ↔ 수집기). 수집기의 백본 쪽 연결만 끊어도 설비 읽기는 계속된다(R02 를 V1 과 같은 의미로)
     name: ${SCADA_NETWORK:-iiot}-field
 
+secrets:                 # 중계기 InfluxDB 접속값(.env) → /run/secrets 파일. Vector 공식 비밀값 기능으로 읽는다(땜빵 점검표 #10)
+  influx_token: { environment: INFLUX_TOKEN }
+  influx_org: { environment: INFLUX_ORG }
+  influx_bucket: { environment: INFLUX_BUCKET }
+
 volumes:
+  ingest-buffer-v2:      # 수집기 디스크 버퍼(컨테이너 재생성에도 유지, 땜빵 점검표 #9)
   kafka-data-v2:
   flink-checkpoints-v2:
   influx-data-v2:
@@ -44,7 +50,11 @@ services:
     <<: *restart
     image: rot-plant-simulator:v2-ts        # 배속 600 기본값(simulator/plant.yaml), 레지스터 지도는 V1 과 같음
     container_name: ${CN_PREFIX:-}plant-simulator
-    networks: [iiot, field]
+    networks:
+      iiot: {}
+      field:
+        aliases: [plant-field]   # 설비 전용망에서만 보이는 이름. 수집기는 이 이름으로 읽는다 — plant-simulator 는 백본망 주소로 풀려
+                                 # 백본을 끊으면 설비 읽기까지 끊겼다(R02 r2_ 로그 "i/o timeout", 172.24.0.13 = 백본망, 대장 S18)
     hostname: plant-simulator
     ports:
       - "${PORT_SIM_MODBUS}:502"
@@ -62,7 +72,8 @@ services:
   # ── L2 수집: Telegraf 한 대(설비 Modbus 읽기 → Kafka raw) ──────────────────
   ingest:
     <<: *restart
-    image: telegraf:1.40.1-alpine
+    build: { context: ./v2/telegraf }   # telegraf:1.40.1-alpine + 버퍼 폴더(telegraf 소유)
+    image: rot-telegraf-ingest:v2
     container_name: ${CN_PREFIX:-}ingest
     networks: [iiot, field]
     hostname: ingest
@@ -72,6 +83,7 @@ services:
       mqtt: { condition: service_healthy }   # outputs.mqtt 는 기동 때 브로커 연결 실패를 재시도하지 않고 종료(리서치 08, 대장 S7 성격)
     volumes:
       - ./v2/telegraf/ingest.conf:/etc/telegraf/telegraf.conf:ro
+      - ingest-buffer-v2:/var/lib/telegraf-buffer
 
   # ── L3 브로커: Mosquitto(알람 → FUXA 화면) ─────────────────────────────────
   mqtt:
@@ -248,12 +260,8 @@ services:
       kafka: { condition: service_healthy }
       influxdb: { condition: service_healthy }
       mqtt: { condition: service_healthy }
-    environment:
-      # Vector 0.58 은 설정 파일의 ${VAR} 치환이 기본 꺼짐(--help 원문, #124) — 꺼 두면 토큰이 글자 그대로 가서 InfluxDB 401·저장 유실
-      VECTOR_DANGEROUSLY_ALLOW_ENV_VAR_INTERPOLATION: "true"
-      INFLUX_TOKEN: ${INFLUX_TOKEN}
-      INFLUX_ORG: ${INFLUX_ORG}
-      INFLUX_BUCKET: ${INFLUX_BUCKET}
+    # Vector 0.58 은 설정 파일의 ${VAR} 치환이 기본 꺼짐(#124). 치환 플래그 대신 공식 권장인 비밀값(파일)으로 넘긴다(#10)
+    secrets: [influx_token, influx_org, influx_bucket]
     volumes:
       - ./v2/vector/vector.yaml:/etc/vector/vector.yaml:ro
 
@@ -314,6 +322,7 @@ services:
   # ── 운영 감시: Prometheus + Alertmanager + 수집기 ─────────────────────────
   prometheus:
     <<: *restart
+    profiles: [monitoring]   # 선택 모듈(기본 꺼짐): 운영 감시. 알림 수신처가 없고 수업은 개념 설명만 — 켜기: --profile monitoring (#129)
     image: prom/prometheus:v3.15.0
     container_name: ${CN_PREFIX:-}prometheus
     hostname: prometheus
@@ -331,6 +340,7 @@ services:
 
   alertmanager:
     <<: *restart
+    profiles: [monitoring]   # 선택 모듈(기본 꺼짐): 운영 감시. 알림 수신처가 없고 수업은 개념 설명만 — 켜기: --profile monitoring (#129)
     image: prom/alertmanager:v0.34.1
     container_name: ${CN_PREFIX:-}alertmanager
     hostname: alertmanager
@@ -341,6 +351,7 @@ services:
 
   kafka-exporter:
     <<: *restart
+    profiles: [monitoring]   # 선택 모듈(기본 꺼짐): 운영 감시. 알림 수신처가 없고 수업은 개념 설명만 — 켜기: --profile monitoring (#129)
     image: danielqsj/kafka-exporter:v1.10.0
     container_name: ${CN_PREFIX:-}kafka-exporter
     hostname: kafka-exporter
@@ -350,6 +361,7 @@ services:
 
   cadvisor:
     <<: *restart
+    profiles: [monitoring]   # 선택 모듈(기본 꺼짐): 운영 감시. 알림 수신처가 없고 수업은 개념 설명만 — 켜기: --profile monitoring (#129)
     image: ghcr.io/google/cadvisor:v0.60.6
     container_name: ${CN_PREFIX:-}cadvisor
     hostname: cadvisor
