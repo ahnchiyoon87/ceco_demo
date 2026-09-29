@@ -129,7 +129,7 @@ footer{font-size:13px;color:var(--muted)}
       <div class="box">가상설비 7대 · 배속 600<small>나중에 OPC UA 설비 추가</small></div>
       <div class="box">OpenPLC v4 <span class="tag">새로</span><small>설비에 붙는 것은 PLC 하나</small></div>
       <div class="box">엣지: Node-RED 또는 EdgeX<small>조립 때 실측으로 결정</small></div>
-      <div class="box">Mosquitto 하나<small>브로커 2개 → 1개</small></div>
+      <div class="box">Mosquitto(OT 허브)<small>브로커 2개 → 1개. OT↔DMZ 연결 방향은 구조 확정 때 정함</small></div>
       <div class="box">FUXA 화면<small>허브 구독 + cmd 발행</small></div>
     </div>
     <div class="zone z-dmz"><h4>DMZ · dmz-net</h4>
@@ -201,7 +201,7 @@ footer{font-size:13px;color:var(--muted)}
       <li>원본 폴더 <code>lecture-iiot-scada</code>(수정하지 않음)</li>
       <li>가상설비 7대·센서 12개·고장 시나리오(배속 600은 원본에 더해 둔 기능)</li>
       <li>탐지 규칙(임계치·Z-Score·CEP)과 학습된 오토인코더 모델</li>
-      <li>AI 층(에이전트·온톨로지·매뉴얼 검색)</li>
+      <li>AI 층의 판단 로직(에이전트·온톨로지·매뉴얼 검색). 설비에 닿는 연결 부분만 새 명령 길로 바뀐다</li>
       <li>수업 자료가 쓰는 계측 토픽 <code>edgex/telemetry</code></li>
       <li>확인 스크립트 <code>scripts/verify.py</code>가 검사하는 내용(검사 방법은 새 구조에 맞게 바뀜)</li>
     </ul></div>
@@ -213,13 +213,19 @@ footer{font-size:13px;color:var(--muted)}
   <div class="tbl"><table>
     <tr><th>항목</th><th>원본 V1 실측(배속 600)</th><th>새 베이스 합격선</th></tr>
     <tr><td>탐지 정확도</td><td>판정 70/70</td><td>같음(조금도 나빠지면 안 됨)</td></tr>
+    <tr><td>ML 점수</td><td>오토인코더 ONNX 점수</td><td>V1과 같음</td></tr>
+    <tr><td>정상 운전 오경보</td><td>조립 전에 안정화 V1로 한 번 잼</td><td>V1보다 많지 않음</td></tr>
+    <tr><td>화면값 = 이력값</td><td>99.17 %</td><td>나빠지지 않음</td></tr>
+    <tr><td>제어·안전(회귀 S14~S22)</td><td>V1 쓰기 길 기준</td><td>새 명령 길로 다시 정의해 통과</td></tr>
+    <tr><td>Kafka 재시작</td><td>복구 11.6초 · 유실 0</td><td>더 나쁘지 않음</td></tr>
+    <tr><td>한 사이클</td><td>—</td><td>이상 → 감지 → AI 조치 제안 1분 안</td></tr>
     <tr><td>고장 → 알람</td><td>최대 8.1초(베어링)</td><td>모든 고장 10초 안</td></tr>
     <tr><td>잡음 고장(Z-Score)</td><td>확률적, 약 10.8초</td><td>원본보다 나빠지지 않음</td></tr>
     <tr><td>알람 → 화면 지연 p95</td><td>FUXA 1.84초</td><td>+5% 이내</td></tr>
     <tr><td>브로커 10초 정지</td><td>3회 중 2회 스스로 복구 못 함</td><td>3회 모두 스스로 복구</td></tr>
     <tr><td>수집기 10초 단절</td><td>복구 7.3초 · 유실 120</td><td>더 나쁘지 않음</td></tr>
     <tr><td>탐지기 재시작</td><td>잡 소멸 · 알람 유실</td><td>스스로 복구(HA)</td></tr>
-    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29</td><td>전체(SCADA + AI)가 도커 7.6 GB 안에서 오류 없이</td></tr>
+    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29(SCADA 24 + AI 5)</td><td>전체(SCADA + AI)가 도커 7.6 GB 안에서 오류 없이</td></tr>
   </table></div>
   <p class="muted" style="margin-top:10px">과부하·장시간 시험은 개인 실습 목적에 과해서 하지 않는다. 성능·복구 시간은 3회 중앙값.</p>
 </section>
