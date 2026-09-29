@@ -17,6 +17,8 @@
 networks:
   iiot:
     name: ${SCADA_NETWORK:-iiot}
+  field:            # 설비 전용망(설비 ↔ 수집기). 수집기의 백본 쪽 연결만 끊어도 설비 읽기는 계속된다(R02 를 V1 과 같은 의미로)
+    name: ${SCADA_NETWORK:-iiot}-field
 
 volumes:
   kafka-data-v2:
@@ -40,6 +42,7 @@ services:
     <<: *restart
     image: rot-plant-simulator:v2-ts        # 배속 600 기본값(simulator/plant.yaml), 레지스터 지도는 V1 과 같음
     container_name: ${CN_PREFIX:-}plant-simulator
+    networks: [iiot, field]
     hostname: plant-simulator
     ports:
       - "${PORT_SIM_MODBUS}:502"
@@ -59,6 +62,7 @@ services:
     <<: *restart
     image: telegraf:1.40.1-alpine
     container_name: ${CN_PREFIX:-}ingest
+    networks: [iiot, field]
     hostname: ingest
     depends_on:
       plant-simulator: { condition: service_healthy }
@@ -179,7 +183,7 @@ services:
       - model-store-v2:/opt/models:ro
 
   model-trainer:
-    image: iiot/model-trainer:1.0            # V1 학습기 그대로(대장 S6: 배속 설비 데이터 재학습은 별도 판단)
+    image: iiot/model-trainer:1.0            # V1 학습기 그대로 — V2 설비로 재학습하면 드리프트·베어링 탐지율 100→0 %(대장 S6, #109)
     container_name: ${CN_PREFIX:-}model-trainer
     networks: [iiot]
     restart: "no"
@@ -241,7 +245,7 @@ services:
       INFLUX_ORG: ${INFLUX_ORG}
       INFLUX_BUCKET: ${INFLUX_BUCKET}
     volumes:
-      - ./telegraf/sink.conf:/etc/telegraf/telegraf.conf:ro
+      - ./v2/telegraf/sink.conf:/etc/telegraf/telegraf.conf:ro   # V1 원문 + Kafka 4.3.1 호환 한 줄(#114)
 
   # ── L6 알람 → 화면: 알람 재발행(Kafka → MQTT) ──────────────────────────────
   alert-republisher:

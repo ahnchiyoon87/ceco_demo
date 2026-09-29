@@ -1,0 +1,3 @@
+{"engine":"storm","rule":"L4-03/04 CEP","feature":"Storm 모듈 목록","ok":false,"error":"Storm 3.1.0 에 CEP·패턴 모듈 없음, Storm SQL 은 2.8.2 가 마지막 — 시도할 엔진 기능이 없음","at":1.790657145607E9}
+{"engine":"storm","rule":"L4-12 ONNX","feature":"틱 튜플 볼트","ok":false,"error":"미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략","at":1.790657145659E9}
+{"engine":"storm","rule":"L4-01·L4-02","feature":"StormSubmitter.submitTopology","ok":true,"error":"","at":1.790657153953E9}

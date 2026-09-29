@@ -1,0 +1,261 @@
+{
+ "window": {
+  "t0": 1790656085.0546086,
+  "t1": 1790656198.0892618,
+  "seconds": 113.0
+ },
+ "throughput": {
+  "messages": 113,
+  "msgs_per_s": 1.0,
+  "readings_per_s": 12.0
+ },
+ "completeness": {
+  "expected_samples": 1356,
+  "unique_samples": 1356,
+  "missing_gap_based": 0,
+  "duplicates": 0,
+  "near_duplicates": 0,
+  "complete_second_ratio": 1.0,
+  "all_12_tags_present": true,
+  "unknown_tags": [],
+  "per_tag": {
+   "LT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "LT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "TT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "TT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "PT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "FT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "FT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "IT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "IT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "VT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "pH-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   },
+   "CT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.02
+   }
+  }
+ },
+ "values": {
+  "checked": 1356,
+  "matched": 1356,
+  "mismatch": 0,
+  "no_state": 0,
+  "sentinel": 0,
+  "none_value": 0,
+  "match_rate": 1.0,
+  "seq_lag_hist": {
+   "0": 1356
+  },
+  "mismatch_examples": []
+ },
+ "latency_ms": {
+  "recv_minus_origin": {
+   "p50": 1.37,
+   "p95": 2.51,
+   "max": 26.2,
+   "n": 1356,
+   "note": "origin 은 수집기 시각(도커 VM 같은 시계)"
+  },
+  "value_age": {
+   "p50": 787.34,
+   "p95": 835.33,
+   "max": 840.27,
+   "note": "설비 값 변경 최초 관측(0.1 s 폴링) → MQTT 수신. 폴링 주기 위상 포함"
+  }
+ },
+ "shape": {
+  "parser": "edgex",
+  "notes": {},
+  "unparsable_messages": 0,
+  "readings_per_message": {
+   "p50": 12,
+   "min": 12,
+   "max": 12
+  },
+  "v1_edgex_shape": true
+ },
+ "state_poll": {
+  "snapshots": 121,
+  "errors": 0
+ },
+ "downstream": {
+  "file": "/experiments/EXP-ING/raw/downstream_nodered.jsonl",
+  "present": true,
+  "records_in_window": 1356,
+  "expected_from_candidate": 1356,
+  "missing": 0,
+  "extra": 0,
+  "duplicates": 0,
+  "value_mismatch": 0,
+  "schema_mismatch": 0,
+  "record_keys": [
+   [
+    "device",
+    "quality",
+    "site",
+    "tag",
+    "ts",
+    "value"
+   ]
+  ],
+  "unparsable_lines": 0,
+  "per_tag": {
+   "LT-101": 113,
+   "LT-102": 113,
+   "TT-101": 113,
+   "TT-102": 113,
+   "PT-101": 113,
+   "FT-101": 113,
+   "FT-102": 113,
+   "IT-101": 113,
+   "IT-102": 113,
+   "VT-101": 113,
+   "pH-101": 113,
+   "CT-101": 113
+  },
+  "missing_examples": [],
+  "equivalent": true,
+  "note": "후보 발행에 origin(원천 시각)이 없으면 비교 불가(expected_from_candidate=0) → equivalent=false"
+ },
+ "exp": "EXP-ING",
+ "profile": "nodered",
+ "run": "r1",
+ "duration": 120.0,
+ "mqtt": "mosquitto:1883",
+ "topic": "edgex/telemetry",
+ "measured_at": "2026-09-29T04:30:00+0000",
+ "resources": {
+  "per_container": {
+   "ingestbench-client-run-60ee0e1fc714": {
+    "cpu_pct_median": 1.19,
+    "cpu_pct_p95": 1.87,
+    "mem_mib_median": 20.1,
+    "mem_mib_max": 20.5,
+    "samples": 37
+   },
+   "ingestbench-downstream-1": {
+    "cpu_pct_median": 0.4,
+    "cpu_pct_p95": 0.67,
+    "mem_mib_median": 65.8,
+    "mem_mib_max": 73.2,
+    "samples": 41
+   },
+   "ingestbench-mosquitto-1": {
+    "cpu_pct_median": 0.1,
+    "cpu_pct_p95": 0.16,
+    "mem_mib_median": 3.8,
+    "mem_mib_max": 4.8,
+    "samples": 41
+   },
+   "ingestbench-nodered-1": {
+    "cpu_pct_median": 0.25,
+    "cpu_pct_p95": 6.82,
+    "mem_mib_median": 84.9,
+    "mem_mib_max": 85.8,
+    "samples": 41
+   },
+   "ingestbench-plant-simulator-1": {
+    "cpu_pct_median": 1.38,
+    "cpu_pct_p95": 14.49,
+    "mem_mib_median": 30.3,
+    "mem_mib_max": 31.5,
+    "samples": 41
+   }
+  },
+  "total": {
+   "containers": 1,
+   "only": "^ingestbench-nodered-",
+   "cpu_pct_median": 0.25,
+   "cpu_pct_p95": 6.82,
+   "mem_mib_median": 84.9,
+   "mem_mib_max": 85.8
+  },
+  "stats_csv": "experiments/EXP-ING/raw/stats_nodered.csv",
+  "images_mib": {
+   "nodered/node-red:5.0.7": 220.8
+  },
+  "images_total_mib": 220.8
+ }
+}

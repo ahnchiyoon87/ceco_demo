@@ -21,7 +21,9 @@ pipe_up() {
   $DC --profile "$P" up -d ${BUILD:+--build} || { $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}.txt" 2>&1; exit 6; }
   if [ -n "$SETUP" ]; then
     sleep 5
-    $DC --profile tools run --rm -T client $SETUP || { $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}.txt" 2>&1; echo "[pipe] SETUP 실패 → ② 탈락 후보(재현 가능 설정 실패 포함)"; exit 7; }
+    # 설정 출력은 파일로(층 줄 출력은 다음 후보가 덮어씀 — #112)
+    $DC --profile tools run --rm -T client $SETUP > "$RAW/setup_${TAG}.txt" 2>&1 || { cat "$RAW/setup_${TAG}.txt"; $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}.txt" 2>&1; echo "[pipe] SETUP 실패 → 원인 확인 필요(설정 출력 $RAW/setup_${TAG}.txt)"; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 7; }   # 정리(#116)
+    cat "$RAW/setup_${TAG}.txt"
   fi
   sleep "${WARM:-15}"
 }

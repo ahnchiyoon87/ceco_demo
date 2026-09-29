@@ -1,6 +1,6 @@
 # HANDOFF — V1 IoT·SCADA 기반을 회전으로 안정적인 시스템으로 (scada-rotation)
 
-최종 갱신 2026-09-29 13:40 · 작성 Claude Code(세션 3 진행 중)
+최종 갱신 2026-09-29 14:55 · 작성 Claude Code(세션 3 진행 중)
 **이 문서만 읽고 이 작업을 이어갈 수 있게 쓴다.** 실제 파일·실행 상태·사용자 지시와 다르면 실제가 우선이고 이 파일을 고친다.
 **판정 기준의 정본은 `QUESTIONS.md` §1 하나다.** 이 파일은 기준을 복제하지 않고 가리킨다.
 
@@ -36,21 +36,18 @@
 8. **사실 기반, 추론 금지.** 모든 판단·수치는 실행 결과·로그·파일·1차 출처로 증명 가능해야 한다. "~같다·~로 보인다"로 결론 내리지 않는다 — 확인 못 한 것은 "미확인"과 확인 방법으로 쓴다. 바꾸기 전에 그 변경이 닿는 문서·설정·측정을 모두 찾아 영향을 파악한다(예: #97 은 짐작으로 원인을 잘못 짚었다가 로그·Kafka 오프셋으로 정정).
 9. **말은 쉽게.** 사용자·대표님에게는 어려운 용어 없이 무엇을 왜 했는지 쉬운 말로 답한다(예: "Flink 재시작 복구"를 약점처럼 어렵게 설명했다가 지적받음). 결론 먼저, 짧게.
 
-## 3. 지금 멈춘 지점 (2026-09-29 13:40, 세션 3 진행 중)
-- **실행 중:** 층별 후보 ② 두 줄(`sh harness/run_lanes.sh`, 12:26 시작, PowerShell Start-Process). 요약 `experiments/STAGE2_RUNS.log`, 줄별 출력 `experiments/_stage2_<층>.out`(층마다 덮어씀). 격리 스택(rot-iiot·rot-ai)은 정지(볼륨 보존).
-- **끝난 것(세션 3):**
-  - EXP-001 V1 기준 재측정 완료 #103 → `experiments/EXP-001/summary_V1_r2_.json`(`harness/tools/summarize_baseline.py EXP-001 V1 r2_`). 핵심: **R01 브로커 재시작 → 3회 중 2회 수집 스스로 복구 안 됨**(S2), R02 7.3 s·유실 120, R03 11.6 s·Kafka 중복 150, R06 3.2 s, E11 감지 0/2, E1 FUXA 1.84 s.
-  - 도구 수정: wait_flow 2분 연속(#101), completeness 장치 필터·끝 공백, E11 \r, internal_errors 경로, e1 결과 파일 경로(#103), 브로커 줄 보정(#104), s09 대기(#105), 벤치 설정 결함 다수(#105·#106·#108).
-  - V1 데이터 기록 `experiments/REC-V1/`(#102), 공용 생성기·중계 벤치가 재생.
-  - 층 결과(증거 재계산 도구 `harness/tools/layer_broker.py`·`layer_ingest.py`):
-    - 브로커: 유효 7종 — **Mosquitto 재시작 중복 1(2회), RMQTT·LavinMQ·ActiveMQ 유실 0·중복 0** → 판정 바뀔 수 있어 3회 채우기 대기(#106). RobustMQ 제품 기동 실패 탈락.
-    - 이상탐지: V1 flinksql 70/70(R05 무효), **Flink 2.2.1+HA 70/70·V1 동일·JM kill 뒤 잡 4개 자동 복귀(S1 해결), 약점 CEP 중복 1**(#107).
-    - 수집: EdgeX 기준 1356/1356·p95 9.75 ms·10컨테이너, benthos-umh 1356/1356·p95 1.36 ms·1컨테이너.
-  - V2 조립 초안 `docker-compose.v2.yml`(+`v2/`·`flink/Dockerfile.v2`·`onnx-job-2x`·`conf/config.v2.yaml`) — `config -q` 통과, 아직 띄우지 않음(#108).
-- **재측정 대기 목록:** `experiments/_retry_broker.txt`(tbmq bifromq mochi nats + 상위 후보·Mosquitto·EMQX 3회), `_retry_ingest.txt`(telegraf hivemq-edge neuron), `_retry_l4.txt`(ekuiper). 두 줄이 끝난 뒤 돌린다.
-- **바로 다음:** ① 두 줄 결과를 층마다 확인(벤치 결함이면 고치고 무효·재측정, 제품 거부면 탈락 기록) ② 재측정 목록 ③ 층 승자 확정 → V2 조립(구조 재조립 5개 포함) → `STRUCT=V2` 전체 측정(baseline.sh 는 구조별 컨테이너 변수 지원, V2 이름표 `harness/e2e/struct_V2.sh` 작성 필요) + S01~S25·G0~G10 회귀 → 태그 `v2` ④ 보고 문서 2개(§9)·작업보고.
-- 같은 제품 고정판(로컬 이미지 보유): Kafka 4.3.1, Telegraf 1.40.1, InfluxDB 2.9.1, Grafana 13.2.2, Prometheus v3.15.0, Alertmanager v0.34.1, cAdvisor `ghcr.io/google/cadvisor:v0.60.6`, kafka-exporter v1.10.0, Mosquitto 2.1.2, Flink 2.2.1(+커넥터 5.0.0)+ZooKeeper 3.9.5, FUXA 1.3.4, Neo4j 5.26.
-- 쓰기 경로 사실: AI 백엔드 한 프로세스가 Vue 운전원 조작(`simulation.py /control`)·AI 조치(`actions.py`)를 Modbus 로, FUXA 운전원 HMI, EdgeX core-command(인증 없음) → 수집기 교체로 EdgeX 명령 경로 소멸(E12 로 확인 예정).
+## 3. 지금 멈춘 지점 (2026-09-29 14:55, 세션 3 진행 중)
+- **실행 중:** 층별 ② 두 줄(`run_lanes.sh`, 12:26~). 무거운 줄은 ts(시계열 저장), 가벼운 줄은 중계 끝 → 알람 워커·감시·알람·HMI. 요약 `experiments/STAGE2_RUNS.log`. 격리 스택 정지(볼륨 보존).
+- **다음 실행:** 두 줄이 끝나면 `sh harness/run_retry.sh`(PowerShell Start-Process) — 벤치 결함 수정 뒤 재측정·중계 ④·수집 R02·백본 8개(목록은 스크립트 안, 근거 #105~#116).
+- **층 결과(증거 재계산 도구 `harness/tools/layer_{broker,ingest,l4,pipe,backbone}.py` → `experiments/EXP-*/layer_*.json`):**
+  - 이상탐지: **Flink 2.2.1+HA 채택 후보**(70/70·V1 동일·JM kill 자동 복귀, 약점 CEP 중복 1) — Quix·Kafka Streams·Storm·Beam·Proton·Arroyo ② 탈락(엔진이 CEP·Z-Score 거부 원문), eKuiper·RisingWave·StreamPipes 재측정.
+  - 브로커: Mosquitto 재시작 중복 1 vs RMQTT·LavinMQ·ActiveMQ 0 → 3회 채우기(재측정). RobustMQ 탈락.
+  - 수집: EdgeX 기준·benthos-umh·Node-RED 통과, Telegraf·HiveMQ Edge·Neuron·TB GW·OpenRemote·StreamPipes 재측정, R02 선별(재측정).
+  - 중계: V1 710 MiB/3 → **Vector 45 MiB/1·지연 대폭↓·결과 동일**(④ 대기), Bento(타임스탬프 반올림 약점), Kafka Connect·RMQTT 내장 탈락, 나머지 재측정.
+  - 백본: Kafka 3.9 기준선 유효, 대안 8개 재측정.
+- **중요 사실:** Kafka 4.3.1 에서 Telegraf 1.40.1 소비는 `kafka_version = "3.0.0"` 없이는 0건(#114) → V2 Telegraf 소비 설정에 반영. S6(ML 오경보)은 재학습하면 탐지율 100→0 % 라 V1 모델 유지(#109).
+- **V2 조립 준비 완료:** `docker-compose.v2.yml`(설비 전용망 field, 서비스 이름 V1 과 같음, 볼륨 -v2), `v2/`(ingest·sink·republish·mosquitto·prometheus), `rot-flink-onnx:v2` 빌드됨, 측정 도구 `STRUCT=V2`(`harness/e2e/struct_V2.sh`), 회귀 `harness/e2e/regression.sh`(+`regression_control.py`, `alerts_window.py`) — V1 에서 먼저 돌려 기준을 만든다.
+- **이후 순서:** ① 재측정 ② 층 승자 확정·decision-log ③ V1 스택 기동 → `STRUCT=V1 sh harness/e2e/regression.sh EXP-001 V1`(S25=1) ④ V1 내림 → V2 기동·디버그 → `STRUCT=V2 RUN=… baseline.sh EXP-002 V2`(P0~P3, R01~R03 3회) + 회귀 + fault_onset → 태그 `v2` ⑤ 보고 문서 2개(§9)·작업보고.
 
 ## 4. 확정 사실 — 다시 조사하지 마라
 - **V1 구성:** 34서비스(SCADA 29 + AI 5, 일회성 4). 흐름: 설비 → EdgeX(Modbus 폴링, 내부 MQTT) → EMQX(`edgex/telemetry`) → Telegraf#1 → Kafka(`sensor.telemetry.raw`) → Flink(규칙 SQL 3 + ONNX 잡) → Kafka(`sensor.alerts`) → Telegraf#3 → EMQX(`scada/alerts/*`) → FUXA / Telegraf#2 → InfluxDB / 알람 워커 → PostgreSQL. FUXA 는 설비를 Modbus 로 직접도 폴링. **알람→화면 12단계**, 브로커 2·중계 4·저장소 4(E2, `harness/situations/paths.yaml`, `experiments/EXP-000/e2_V1.json`).

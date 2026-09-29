@@ -1,0 +1,58 @@
+{
+ "benthos-umh": {
+  "expected": 1356,
+  "unique": 1356,
+  "duplicates": 0,
+  "value_match_rate": 1.0,
+  "p95_ms": 1.36,
+  "value_age_p95_ms": 983.68,
+  "v1_shape": true,
+  "downstream_equivalent": true,
+  "downstream_missing": 0,
+  "containers": 1,
+  "mem_mib_median": 60.7,
+  "cpu_pct_median": 0.16
+ },
+ "edgex": {
+  "expected": 1356,
+  "unique": 1356,
+  "duplicates": 0,
+  "value_match_rate": 1.0,
+  "p95_ms": 9.75,
+  "value_age_p95_ms": 215.96,
+  "v1_shape": true,
+  "downstream_equivalent": true,
+  "downstream_missing": 0,
+  "containers": 10,
+  "mem_mib_median": 158.1,
+  "cpu_pct_median": 1.74
+ },
+ "nodered": {
+  "expected": 1356,
+  "unique": 1356,
+  "duplicates": 0,
+  "value_match_rate": 1.0,
+  "p95_ms": 2.51,
+  "value_age_p95_ms": 835.33,
+  "v1_shape": true,
+  "downstream_equivalent": true,
+  "downstream_missing": 0,
+  "containers": 1,
+  "mem_mib_median": 84.9,
+  "cpu_pct_median": 0.25
+ },
+ "tbgw": {
+  "expected": 1356,
+  "unique": 0,
+  "duplicates": 0,
+  "value_match_rate": 0.0,
+  "p95_ms": null,
+  "value_age_p95_ms": null,
+  "v1_shape": false,
+  "downstream_equivalent": false,
+  "downstream_missing": 0,
+  "containers": 1,
+  "mem_mib_median": 76.7,
+  "cpu_pct_median": 1.26
+ }
+}

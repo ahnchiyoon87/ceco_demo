@@ -1,0 +1,60 @@
+{
+ "kafka39": {
+  "verdict": "통과",
+  "startup_s": 5,
+  "base": {
+   "lost": 0,
+   "dup": 0,
+   "reorder": 0,
+   "p95_ms": 27.103,
+   "replay_pos": true,
+   "replay_time": true,
+   "error": null
+  },
+  "x10": {
+   "lost": 0,
+   "dup": 0,
+   "reorder": 0,
+   "p95_ms": 12.388,
+   "replay_pos": true,
+   "replay_time": true,
+   "error": null
+  },
+  "scale": {
+   "lost": 0,
+   "dup": 0,
+   "reorder": 0,
+   "p95_ms": 14.419,
+   "replay_pos": true,
+   "replay_time": true,
+   "error": null
+  },
+  "restart": {
+   "lost": 0,
+   "dup": 0,
+   "reorder": 0,
+   "p95_ms": 7969.483,
+   "replay_pos": true,
+   "replay_time": true,
+   "error": null
+  },
+  "mem_mib_median_base": 341.9,
+  "containers": 1,
+  "telegraf": {
+   "output_kafka": {
+    "sent": 120,
+    "received": 0,
+    "shape_v1": false
+   },
+   "input_kafka_consumer_v1_config": {
+    "sent": 120,
+    "stored": 120
+   },
+   "input_kafka_consumer_kafka_version_set": {
+    "sent": 120,
+    "stored": 120
+   },
+   "issue": "https://github.com/influxdata/telegraf/issues/17570 (consume: EOF with Kafka 4, 워크어라운드 kafka_version)"
+  }
+ }
+}

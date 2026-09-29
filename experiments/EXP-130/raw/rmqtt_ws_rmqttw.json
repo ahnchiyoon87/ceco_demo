@@ -1,0 +1,9 @@
+{
+ "ws_connected": true,
+ "roundtrip": 20,
+ "broker": "rmqtt",
+ "mode": "ws",
+ "run": "rmqttw",
+ "rate": 120,
+ "duration": 60
+}

@@ -1,0 +1,4 @@
+# benthos-umh 이미지는 기본으로 -c /benthos.yaml 을 읽는다. 스트림 모드에서 이 파일에 input/pipeline/output 이 있으면 설정 검사에서 종료(#112)
+# → 스트림 모드용 빈 기본 설정(로그만)으로 덮어쓴다. 스트림 정의는 /streams/relay*.yaml(공용).
+logger:
+  level: INFO

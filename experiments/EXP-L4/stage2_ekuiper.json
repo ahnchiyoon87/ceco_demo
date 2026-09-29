@@ -1,0 +1,221 @@
+{
+ "profile": "ekuiper",
+ "runs": [
+  {
+   "run": "s2_ekuiper_09291322",
+   "at": "2026-09-29T13:24:08+0900",
+   "stopped_at": "deploy",
+   "status": "fail",
+   "note": "배포 명령 실패",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": null,
+   "v1_compare": null,
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "setup",
+     "feature": "POST /streams",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "setup",
+     "feature": "POST /streams",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "setup",
+     "feature": "POST /streams",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-01 임계치",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT ts, site, device, tag, value, CASE WHEN (tag = \\\"LT-101\\\" AND value > 95.0) OR (tag = \\\"LT-102\\\" AND value > 90.0) OR (tag = \\\"TT-101\\\" AND value > 95.0) OR (tag = \\\"TT-102\\\" AND value > 125.0) OR (tag = \\\"PT-101\\\" AND value > 6.0) OR (tag = \\\"IT-101\\\" AND value > 14.0) OR (tag = \\\"IT-102\\\" AND value > 9.6) OR (tag = \\\"VT-101\\\" AND value > 7.1) OR (tag = \\\"pH-101\\\" AND value > 8.4) THEN \\\"THRESHOLD_USL\\\" ELSE \\\"THRESHOLD_LSL\\\" END AS alert_type, \\\"CRITICAL\\\" AS severity, \\\"TIER1_RULE\\\" AS detector, concat(tag, \\\" = \\\", format(round(value, 3), \\\"\\\"), CASE WHEN tag = \\\"LT-101\\\" THEN \\\" % / 규격 [10.0, 95.0]\\\" WHEN tag = \\\"LT-102\\\" THEN \\\" % / 규격 [15.0, 90.0]\\\" WHEN tag = \\\"TT-101\\\" THEN \\\" degC / 규격 [40.0, 95.0]\\\" WHEN tag = \\\"TT-102\\\" THEN \\\" degC / 규격 [-, 125.0]\\\" WHEN tag = \\\"PT-101\\\" THEN \\\" barg / 규격 [-, 6.0]\\\" WHEN tag = \\\"IT-101\\\" THEN \\\" A / 규격 [-, 14.0]\\\" WHEN tag = \\\"IT-102\\\" THEN \\\" A / 규격 [-, 9.6]\\\" WHEN tag = \\\"VT-101\\\" THEN \\\" mm/s / 규격 [-, 7.1]\\\" WHEN tag = \\\"pH-101\\\" THEN \\\" pH / 규격 [6.2, 8.4]\\\" ELSE \\\"\\\" END) AS detail FROM raw WHERE (tag = \\\"LT-101\\\" AND (value > 95.0 OR value < 10.0)) OR (tag = \\\"LT-102\\\" AND (value > 90.0 OR value < 15.0)) OR (tag = \\\"TT-101\\\" AND (value > 95.0 OR value < 40.0)) OR (tag = \\\"TT-102\\\" AND (value > 125.0)) OR (tag = \\\"PT-101\\\" AND (value > 6.0)) OR (tag = \\\"IT-101\\\" AND (value > 14.0)) OR (tag = \\\"IT-102\\\" AND (value > 9.6)) OR (tag = \\\"VT-101\\\" AND (value > 7.1)) OR (tag = \\\"pH-101\\\" AND (value > 8.4 OR value < 6.2)) error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"LT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"LT-102\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"TT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"TT-102\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"PT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"FT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"FT-102\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"IT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"IT-102\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"VT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"pH-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid argument for func stddevs: aggregate argument is not allowed\"}\n"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, last_value(device, true) AS device, last_value(tag, true) AS tag, last_value(value, true) AS value, \\\"ZSCORE\\\" AS alert_type, \\\"WARNING\\\" AS severity, \\\"TIER1_ZSCORE\\\" AS detector, concat(last_value(tag, true), \\\" 최근5중 \\\", format(sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END), \\\"\\\"), \\\"회 위반\\\") AS detail FROM zmid WHERE tag = \\\"CT-101\\\" AND n >= 30 GROUP BY COUNTWINDOW(5, 1) HAVING sum(CASE WHEN CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END > 3.5 THEN 1 ELSE 0 END) >= 3 error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-03/04 CEP(분석 함수 근사)",
+     "feature": "POST /rules",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-03/04 CEP(분석 함수 근사)",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT ts, site, device, \\\"VT-101\\\" AS tag, value, \\\"CEP_BEARING\\\" AS alert_type, \\\"CRITICAL\\\" AS severity, \\\"TIER1_CEP\\\" AS detector, concat(\\\"교반기 전류 \\\", format(round(oc_val, 2), \\\"\\\"), \\\"A (정격 120% 초과) 후 \\\", format((ts - oc_ts) / 1000000000, \\\"\\\"), \\\"초 내 진동 \\\", format(round(value, 2), \\\"\\\"), \\\"mm/s 상회 → 베어링 열화 의심\\\") AS detail FROM cepmid WHERE tag = \\\"VT-101\\\" AND value > 7.1 AND oc_ts > 0 AND ts >= oc_ts AND ts - oc_ts < 10000000000 AND lag(oc_ts, 1, 0) OVER (PARTITION BY device WHEN tag = \\\"VT-101\\\" AND value > 7.1 AND oc_ts > 0 AND ts >= oc_ts AND ts - oc_ts < 10000000000) != oc_ts error: validate function format error: Expect integer type for parameter 2.\"}\n"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "GET /plugins/functions (설치된 함수 플러그인)",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "POST /rules",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":1000,\"message\":\"invalid rule json: Parse SQL SELECT onnx(\\\"autoencoder\\\", value) AS score FROM raw error: function onnx not found.\"}\n"
+    }
+   ],
+   "rules_by_execution": {
+    "setup": "accepted",
+    "L4-01 임계치": "rejected",
+    "L4-02 Z-Score": "rejected",
+    "L4-03/04 CEP(분석 함수 근사)": "accepted",
+    "L4-12 ONNX": "accepted"
+   }
+  }
+ ]
+}

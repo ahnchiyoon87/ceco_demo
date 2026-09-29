@@ -1,0 +1,94 @@
+{
+ "ref": {
+  "dir": "experiments/EXP-L4/raw",
+  "run": "m1",
+  "alerts": "alerts_m1_flinksql.jsonl",
+  "count": 263,
+  "types": {
+   "ZSCORE": 53,
+   "CEP_BEARING": 40,
+   "THRESHOLD_USL": 170
+  }
+ },
+ "cand": {
+  "run": "s2_proton_09291358",
+  "count": 170,
+  "types": {
+   "THRESHOLD_USL": 170
+  },
+  "ml_excluded": 0
+ },
+ "only_cand": 0,
+ "only_ref": 93,
+ "only_cand_types": {},
+ "only_ref_types": {
+  "ZSCORE": 53,
+  "CEP_BEARING": 40
+ },
+ "duplicates_cand": 20,
+ "duplicates_ref": 22,
+ "equal": false,
+ "sample_only_cand": [],
+ "sample_only_ref": [
+  [
+   "S02-3",
+   "ZSCORE",
+   "TT-101",
+   0
+  ],
+  [
+   "S02-4",
+   "ZSCORE",
+   "TT-101",
+   0
+  ],
+  [
+   "S02-5",
+   "ZSCORE",
+   "TT-101",
+   0
+  ],
+  [
+   "S02-6",
+   "ZSCORE",
+   "TT-101",
+   0
+  ],
+  [
+   "S08a-6",
+   "CEP_BEARING",
+   "VT-101",
+   1200
+  ],
+  [
+   "S08a-8",
+   "CEP_BEARING",
+   "VT-101",
+   1300
+  ],
+  [
+   "S08b-2",
+   "CEP_BEARING",
+   "VT-101",
+   1400
+  ],
+  [
+   "S08b-7",
+   "CEP_BEARING",
+   "VT-101",
+   1900
+  ],
+  [
+   "S04-1",
+   "CEP_BEARING",
+   "VT-101",
+   2800
+  ],
+  [
+   "S04-7",
+   "CEP_BEARING",
+   "VT-101",
+   2300
+  ]
+ ]
+}

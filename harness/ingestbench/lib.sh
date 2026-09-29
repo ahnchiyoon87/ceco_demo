@@ -18,10 +18,12 @@ ing_up() {
   rm -f "$RAW/cred_${p}.env"
   $DC --profile tools build -q client || exit 6
   echo "[ingest] up $p ($(date +%T))"
-  $DC --profile "$p" up -d ${BUILD:+--build} || { $DC --profile "$p" logs --no-color > "$RAW/logs_${tag}.txt" 2>&1; exit 6; }
+  $DC --profile "$p" up -d ${BUILD:+--build} || { $DC --profile "$p" logs --no-color > "$RAW/logs_${tag}.txt" 2>&1; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 6; }
   if [ -n "$SETUP" ]; then
     sleep 5
-    $DC --profile tools run --rm -T client $SETUP || { $DC --profile "$p" logs --no-color > "$RAW/logs_${tag}.txt" 2>&1; echo "[ingest] SETUP 실패 → ② 기동·기능 탈락 후보(로그: $RAW/logs_${tag}.txt)"; exit 7; }
+    # 설정 스크립트 출력은 파일로 남긴다(층 줄 출력은 다음 후보가 덮어씀 — #110)
+    $DC --profile tools run --rm -T client $SETUP > "$RAW/setup_${tag}.txt" 2>&1 || { cat "$RAW/setup_${tag}.txt"; $DC --profile "$p" logs --no-color > "$RAW/logs_${tag}.txt" 2>&1; echo "[ingest] SETUP 실패 → 원인 확인 필요(설정 출력: $RAW/setup_${tag}.txt, 로그: $RAW/logs_${tag}.txt)"; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 7; }   # 정리(#116)
+    cat "$RAW/setup_${tag}.txt"
   fi
   # SETUP 이 만든 자격증명(OpenRemote 서비스 사용자 등)을 읽고, 하류 파서를 그 값으로 다시 만든다
   if [ -f "$RAW/cred_${p}.env" ]; then . "$RAW/cred_${p}.env"; export INGEST_USER="$MQTT_USER" INGEST_PASS="$MQTT_PASS"; fi

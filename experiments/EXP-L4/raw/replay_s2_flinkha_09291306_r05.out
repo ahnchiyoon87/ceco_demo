@@ -1,0 +1,10 @@
+ Container l4bench-kafka-1 Running 
+ Container l4bench-kafka-1 Waiting 
+ Container l4bench-kafka-1 Healthy 
+ Container l4bench-kafka-init-1 Starting 
+ Container l4bench-kafka-init-1 Started 
+ Container l4bench-kafka-init-1 Waiting 
+ Container l4bench-kafka-init-1 Exited 
+ Container l4bench-tools-run-b5f29557aaf3 Creating 
+ Container l4bench-tools-run-b5f29557aaf3 Created 
+emitted 114 records, devices 1, event span 56s

@@ -299,9 +299,15 @@ services:
     depends_on:
       plant-simulator: {condition: service_healthy}
       mosquitto: {condition: service_started}
+    # 게이트웨이는 설정 폴더에 쓴다(읽기 전용 마운트면 커넥터 적재 실패 "Read-only file system", #109) 그리고 첫 실행 때
+    # 기본 설정을 설정 폴더에 덮어쓴다(/start-gateway.sh) → 벤치 파일은 /bench 에 두고, 기본 설정을 깐 뒤 덮어쓰고 시작한다.
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cp -r /default-config/config/* /thingsboard_gateway/config/ && cp -r /default-config/extensions/* /thingsboard_gateway/extensions/           && cp /bench/tb_gateway.json /bench/modbus.json /thingsboard_gateway/config/ && touch /thingsboard_gateway/config/.firstlaunch           && exec python /thingsboard_gateway/tb_gateway.py
     volumes:
-      - ./tbgw/tb_gateway.json:/thingsboard_gateway/config/tb_gateway.json:ro
-      - ./tbgw/modbus.json:/thingsboard_gateway/config/modbus.json:ro
+      - ./tbgw/tb_gateway.json:/bench/tb_gateway.json:ro
+      - ./tbgw/modbus.json:/bench/modbus.json:ro
       - tbgw-logs:/thingsboard_gateway/logs
       - tbgw-ext:/thingsboard_gateway/extensions
 

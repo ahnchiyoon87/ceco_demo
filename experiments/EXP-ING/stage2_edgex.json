@@ -1,0 +1,333 @@
+{
+ "window": {
+  "t0": 1790655310.2017894,
+  "t1": 1790655423.2346787,
+  "seconds": 113.0
+ },
+ "throughput": {
+  "messages": 113,
+  "msgs_per_s": 1.0,
+  "readings_per_s": 12.0
+ },
+ "completeness": {
+  "expected_samples": 1356,
+  "unique_samples": 1356,
+  "missing_gap_based": 0,
+  "duplicates": 0,
+  "near_duplicates": 0,
+  "complete_second_ratio": 0.9912,
+  "all_12_tags_present": true,
+  "unknown_tags": [],
+  "per_tag": {
+   "LT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.0
+   },
+   "LT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.0
+   },
+   "TT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.0
+   },
+   "TT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.0
+   },
+   "PT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "FT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "FT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "IT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "IT-102": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "VT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "pH-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   },
+   "CT-101": {
+    "unique": 113,
+    "expected": 113,
+    "missing_gap_based": 0,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": 1.01
+   }
+  }
+ },
+ "values": {
+  "checked": 1356,
+  "matched": 1356,
+  "mismatch": 0,
+  "no_state": 0,
+  "sentinel": 0,
+  "none_value": 0,
+  "match_rate": 1.0,
+  "seq_lag_hist": {
+   "0": 1356
+  },
+  "mismatch_examples": []
+ },
+ "latency_ms": {
+  "recv_minus_origin": {
+   "p50": 4.28,
+   "p95": 9.75,
+   "max": 21.36,
+   "n": 1356,
+   "note": "origin 은 수집기 시각(도커 VM 같은 시계)"
+  },
+  "value_age": {
+   "p50": 164.38,
+   "p95": 215.96,
+   "max": 229.49,
+   "note": "설비 값 변경 최초 관측(0.1 s 폴링) → MQTT 수신. 폴링 주기 위상 포함"
+  }
+ },
+ "shape": {
+  "parser": "edgex",
+  "notes": {},
+  "unparsable_messages": 0,
+  "readings_per_message": {
+   "p50": 12,
+   "min": 12,
+   "max": 12
+  },
+  "v1_edgex_shape": true
+ },
+ "state_poll": {
+  "snapshots": 122,
+  "errors": 0
+ },
+ "downstream": {
+  "file": "/experiments/EXP-ING/raw/downstream_edgex.jsonl",
+  "present": true,
+  "records_in_window": 1356,
+  "expected_from_candidate": 1356,
+  "missing": 0,
+  "extra": 0,
+  "duplicates": 0,
+  "value_mismatch": 0,
+  "schema_mismatch": 0,
+  "record_keys": [
+   [
+    "device",
+    "quality",
+    "site",
+    "tag",
+    "ts",
+    "value"
+   ]
+  ],
+  "unparsable_lines": 0,
+  "per_tag": {
+   "LT-101": 113,
+   "LT-102": 113,
+   "TT-101": 113,
+   "TT-102": 113,
+   "PT-101": 113,
+   "FT-101": 113,
+   "FT-102": 113,
+   "IT-101": 113,
+   "IT-102": 113,
+   "VT-101": 113,
+   "pH-101": 113,
+   "CT-101": 113
+  },
+  "missing_examples": [],
+  "equivalent": true,
+  "note": "후보 발행에 origin(원천 시각)이 없으면 비교 불가(expected_from_candidate=0) → equivalent=false"
+ },
+ "exp": "EXP-ING",
+ "profile": "edgex",
+ "run": "r1",
+ "duration": 120.0,
+ "mqtt": "mosquitto:1883",
+ "topic": "edgex/telemetry",
+ "measured_at": "2026-09-29T04:17:06+0000",
+ "resources": {
+  "per_container": {
+   "ingestbench-client-run-b78c0a3c299f": {
+    "cpu_pct_median": 1.19,
+    "cpu_pct_p95": 1.79,
+    "mem_mib_median": 19.4,
+    "mem_mib_max": 20.4,
+    "samples": 34
+   },
+   "ingestbench-downstream-1": {
+    "cpu_pct_median": 0.42,
+    "cpu_pct_p95": 1.42,
+    "mem_mib_median": 62.1,
+    "mem_mib_max": 80.5,
+    "samples": 38
+   },
+   "ingestbench-edgex-app-mqtt-export-1": {
+    "cpu_pct_median": 0.15,
+    "cpu_pct_p95": 0.71,
+    "mem_mib_median": 13.9,
+    "mem_mib_max": 14.7,
+    "samples": 38
+   },
+   "ingestbench-edgex-common-config-1": {
+    "cpu_pct_median": 0.0,
+    "cpu_pct_p95": 0.01,
+    "mem_mib_median": 1.0,
+    "mem_mib_max": 1.1,
+    "samples": 38
+   },
+   "ingestbench-edgex-core-command-1": {
+    "cpu_pct_median": 0.0,
+    "cpu_pct_p95": 0.2,
+    "mem_mib_median": 9.4,
+    "mem_mib_max": 9.6,
+    "samples": 38
+   },
+   "ingestbench-edgex-core-data-1": {
+    "cpu_pct_median": 0.26,
+    "cpu_pct_p95": 0.63,
+    "mem_mib_median": 12.6,
+    "mem_mib_max": 13.7,
+    "samples": 38
+   },
+   "ingestbench-edgex-core-keeper-1": {
+    "cpu_pct_median": 0.04,
+    "cpu_pct_p95": 1.44,
+    "mem_mib_median": 12.6,
+    "mem_mib_max": 14.2,
+    "samples": 38
+   },
+   "ingestbench-edgex-core-metadata-1": {
+    "cpu_pct_median": 0.0,
+    "cpu_pct_p95": 0.23,
+    "mem_mib_median": 10.1,
+    "mem_mib_max": 10.5,
+    "samples": 38
+   },
+   "ingestbench-edgex-device-modbus-1": {
+    "cpu_pct_median": 0.46,
+    "cpu_pct_p95": 1.29,
+    "mem_mib_median": 12.5,
+    "mem_mib_max": 13.3,
+    "samples": 38
+   },
+   "ingestbench-edgex-mqtt-broker-1": {
+    "cpu_pct_median": 0.06,
+    "cpu_pct_p95": 0.17,
+    "mem_mib_median": 2.5,
+    "mem_mib_max": 3.2,
+    "samples": 38
+   },
+   "ingestbench-edgex-postgres-1": {
+    "cpu_pct_median": 0.24,
+    "cpu_pct_p95": 3.07,
+    "mem_mib_median": 76.9,
+    "mem_mib_max": 77.7,
+    "samples": 38
+   },
+   "ingestbench-edgex-ui-1": {
+    "cpu_pct_median": 0.0,
+    "cpu_pct_p95": 0.0,
+    "mem_mib_median": 6.1,
+    "mem_mib_max": 6.5,
+    "samples": 38
+   },
+   "ingestbench-mosquitto-1": {
+    "cpu_pct_median": 0.1,
+    "cpu_pct_p95": 0.2,
+    "mem_mib_median": 4.6,
+    "mem_mib_max": 5.2,
+    "samples": 38
+   },
+   "ingestbench-plant-simulator-1": {
+    "cpu_pct_median": 1.76,
+    "cpu_pct_p95": 11.95,
+    "mem_mib_median": 49.7,
+    "mem_mib_max": 50.9,
+    "samples": 38
+   }
+  },
+  "total": {
+   "containers": 10,
+   "only": "^ingestbench-edgex-",
+   "cpu_pct_median": 1.74,
+   "cpu_pct_p95": 5.39,
+   "mem_mib_median": 158.1,
+   "mem_mib_max": 160.8
+  },
+  "stats_csv": "experiments/EXP-ING/raw/stats_edgex.csv",
+  "images_mib": {
+   "postgres:16.3-alpine3.20": 92.4,
+   "eclipse-mosquitto:2.0.21": 4.4,
+   "edgexfoundry/core-keeper:4.0.0": 11.1,
+   "edgexfoundry/core-common-config-bootstrapper:4.0.0": 6.9,
+   "edgexfoundry/core-metadata:4.0.0": 11.3,
+   "edgexfoundry/core-data:4.0.0": 11.2,
+   "edgexfoundry/core-command:4.0.0": 10.2,
+   "edgexfoundry/device-modbus:4.0.0": 13.8,
+   "edgexfoundry/app-service-configurable:4.0.0": 15.0,
+   "edgexfoundry/edgex-ui:4.0.0": 23.7
+  },
+  "images_total_mib": 200.0
+ }
+}

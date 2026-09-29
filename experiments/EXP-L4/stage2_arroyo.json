@@ -1,0 +1,265 @@
+{
+ "profile": "arroyo",
+ "runs": [
+  {
+   "run": "s2_arroyo_09291405",
+   "at": "2026-09-29T14:10:39+0900",
+   "stopped_at": "done",
+   "status": "ok",
+   "note": "",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": {
+    "pass": 30,
+    "fail": 40,
+    "record": [
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-1",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-10",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-2",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-3",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-4",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-5",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-6",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-7",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-8",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_arroyo_09291405.a0c3c-S07-9",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     }
+    ],
+    "cep_latency_ms": {
+     "n": 0,
+     "p50": null,
+     "p95": null,
+     "max": null,
+     "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+    }
+   },
+   "v1_compare": {
+    "ref": {
+     "dir": "experiments/EXP-L4/raw",
+     "run": "m1",
+     "alerts": "alerts_m1_flinksql.jsonl",
+     "count": 263,
+     "types": {
+      "ZSCORE": 53,
+      "CEP_BEARING": 40,
+      "THRESHOLD_USL": 170
+     }
+    },
+    "cand": {
+     "run": "s2_arroyo_09291405",
+     "count": 170,
+     "types": {
+      "THRESHOLD_USL": 170
+     },
+     "ml_excluded": 0
+    },
+    "only_cand": 0,
+    "only_ref": 93,
+    "only_cand_types": {},
+    "only_ref_types": {
+     "ZSCORE": 53,
+     "CEP_BEARING": 40
+    },
+    "duplicates_cand": 20,
+    "duplicates_ref": 22,
+    "equal": false,
+    "sample_only_cand": [],
+    "sample_only_ref": [
+     [
+      "S02-3",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-4",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-5",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-6",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S08a-6",
+      "CEP_BEARING",
+      "VT-101",
+      1200
+     ],
+     [
+      "S08a-8",
+      "CEP_BEARING",
+      "VT-101",
+      1300
+     ],
+     [
+      "S08b-2",
+      "CEP_BEARING",
+      "VT-101",
+      1400
+     ],
+     [
+      "S08b-7",
+      "CEP_BEARING",
+      "VT-101",
+      1900
+     ],
+     [
+      "S04-1",
+      "CEP_BEARING",
+      "VT-101",
+      2800
+     ],
+     [
+      "S04-7",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ]
+    ]
+   },
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "L4-01 임계치",
+     "feature": "POST /pipelines → Running",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "POST /pipelines",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":\"Error during planning: Window functions require already windowed input\"}"
+    },
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "POST /pipelines",
+     "ok": false,
+     "error": "HTTP 400: {\"error\":\"SQL error: ParserError(\\\"Expected: end of statement, found: MATCH_RECOGNIZE at Line: 10, Column: 1\\\")\"}"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "POST /udfs/validate (python, import onnxruntime)",
+     "ok": false,
+     "error": "HTTP 200: {\"udf_name\":null,\"errors\":[\"ModuleNotFoundError: No module named 'arroyo_udf_python'\"]}"
+    }
+   ],
+   "rules_by_execution": {
+    "L4-01 임계치": "accepted",
+    "L4-02 Z-Score": "rejected",
+    "L4-03/04 CEP": "rejected",
+    "L4-12 ONNX": "rejected"
+   },
+   "resources": {
+    "containers": "l4bench-arroyo-",
+    "n": 44,
+    "mem_avg_mib": 90,
+    "mem_max_mib": 100,
+    "cpu_avg_pct": 1.0,
+    "cpu_max_pct": 3.6
+   }
+  }
+ ]
+}

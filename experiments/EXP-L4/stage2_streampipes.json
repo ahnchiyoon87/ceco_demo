@@ -1,0 +1,66 @@
+{
+ "profile": "streampipes",
+ "runs": [
+  {
+   "run": "s2_streampipes_09291410",
+   "at": "2026-09-29T14:12:50+0900",
+   "stopped_at": "deploy",
+   "status": "fail",
+   "note": "배포 명령 실패",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": null,
+   "v1_compare": null,
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "설정",
+     "feature": "설치된 처리 요소·싱크",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-01 임계치",
+     "feature": "설치 요소 검색 /threshold|limit|numerical/",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "설치 요소 검색 /moving|average|welford|stddev|standard deviation|z-?score|trend/",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "설치 요소 검색 /sequence|pattern|cep|absence/",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "설치 요소 검색 /onnx|inference|autoencoder|model/",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "입력",
+     "feature": "POST compact-adapters (Kafka 어댑터, 스키마 추정)",
+     "ok": false,
+     "error": "HTTP 500: {\"timestamp\":\"2026-09-29T05:12:49.673+00:00\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/streampipes-backend/api/v2/connect/compact-adapters\"}"
+    }
+   ],
+   "rules_by_execution": {
+    "설정": "accepted",
+    "L4-01 임계치": "accepted",
+    "L4-02 Z-Score": "accepted",
+    "L4-03/04 CEP": "accepted",
+    "L4-12 ONNX": "accepted",
+    "입력": "rejected"
+   }
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "ref": {
+  "dir": "experiments/EXP-L4/raw",
+  "run": "m1",
+  "alerts": "alerts_m1_flinksql.jsonl",
+  "count": 263,
+  "types": {
+   "ZSCORE": 53,
+   "CEP_BEARING": 40,
+   "THRESHOLD_USL": 170
+  }
+ },
+ "cand": {
+  "run": "s2_flinkha_09291306",
+  "count": 263,
+  "types": {
+   "THRESHOLD_USL": 170,
+   "ZSCORE": 53,
+   "CEP_BEARING": 40
+  },
+  "ml_excluded": 0
+ },
+ "only_cand": 0,
+ "only_ref": 0,
+ "only_cand_types": {},
+ "only_ref_types": {},
+ "duplicates_cand": 22,
+ "duplicates_ref": 22,
+ "equal": true,
+ "sample_only_cand": [],
+ "sample_only_ref": []
+}

@@ -1,0 +1,136 @@
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqttd:71: Starting rmqtt (version=rmqtt/0.24.0-20260919215606, rustc=1.98.1)
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:150: node_id is 1
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:151: exec_workers is 2000
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:152: exec_queue_max is 300000
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:153: node.busy config is: Busy { check_enable: false, update_interval: 2s, loadavg: 80.0, cpuloadavg: 90.0, handshaking: 0 }
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:154: node.rpc config is: Rpc { server_addr: 0.0.0.0:5363, reuseaddr: true, reuseport: false }
+rmqtt-1  | 2026-09-29 11:26:34.747  INFO rmqtt_conf:155: circuit_breaker config is: CircuitBreaker { failure_rate_threshold: 0.35, sliding_window_type: "TimeBased", sliding_window_size: 20, sliding_window_duration: 45s, minimum_number_of_calls: 10, wait_duration_in_open: 30s, slow_call_duration_threshold: 2s, slow_call_rate_threshold: 1.0 }
+rmqtt-1  | 2026-09-29 11:26:34.748  INFO handy_grpc::server:145: gRPC DataTransfer is listening on tcp://0.0.0.0:5363
+rmqtt-1  | 2026-09-29 11:26:34.749  INFO rmqtt_acl:58: rmqtt-acl AclPlugin cfg: Ok(PluginConfig { disconnect_if_pub_rejected: true, priority: 10, rules: ([Rule { access: Allow, users: [Username("dashboard", None, false)], control: Subscribe, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [Ipaddr("127.0.0.1")], control: Pubsub, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 3, values_size: 2 } }, placeholders: [] } }, Rule { access: Deny, users: [All], control: Subscribe, topics: Topics { all: false, eqs: {"#": ()}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [All], control: All, topics: Topics { all: true, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 0, values_size: 0 } }, placeholders: [] } }], Array [Array [String("allow"), Object {"user": String("dashboard")}, String("subscribe"), Array [String("$SYS/#")]], Array [String("allow"), Object {"ipaddr": String("127.0.0.1")}, String("pubsub"), Array [String("$SYS/#"), String("#")]], Array [String("deny"), String("all"), String("subscribe"), Array [String("$SYS/#"), Object {"eq": String("#")}]], Array [String("allow"), String("all")]]) })
+rmqtt-1  | 2026-09-29 11:26:34.749  INFO rmqtt_acl:69: rmqtt-acl init
+rmqtt-1  | 2026-09-29 11:26:34.749  INFO rmqtt_acl:99: rmqtt-acl start
+rmqtt-1  | 2026-09-29 11:26:34.749  INFO rmqtt_counter:50: rmqtt-counter init
+rmqtt-1  | 2026-09-29 11:26:34.749  INFO rmqtt_counter:127: rmqtt-counter start
+rmqtt-1  | 2026-09-29 11:26:34.750  INFO rmqtt_http_api:60: rmqtt-http-api HttpApiPlugin cfg: PluginConfig { max_row_limit: 10000, http_laddr: 0.0.0.0:6060, metrics_sample_interval: 5s, http_bearer_token: None, message_type: 99, http_reuseaddr: true, http_reuseport: false, http_request_log: false, message_expiry_interval: 300s, prometheus_metrics_cache_interval: 5s, dashboard_static_dir: None, storage: Some(Config { typ: Redb, sled: SledConfig { path: "", cache_capacity: 1G, cleanup_f: 0x7b75ae6fbe70 }, redis: RedisConfig { url: "", prefix: "__def" }, redis_cluster: RedisConfig { urls: [], prefix: "__def" }, redb: RedbConfig { path: "/var/log/rmqtt/.cache/http-api-history/{node}.redb", cache_size: 1073741824, cleanup_f: 0x7b75ae6fbb38 } }), flush_interval: 5s, history_retention: 604800s }
+rmqtt-1  | 2026-09-29 11:26:34.750  INFO rmqtt_http_api:83: rmqtt-http-api redb storage path: /var/log/rmqtt/.cache/http-api-history/1.redb
+rmqtt-1  | 2026-09-29 11:26:34.751  INFO rmqtt_http_api::api:235: HTTP API Listening on 0.0.0.0:6060, reuseaddr: true, reuseport: false
+rmqtt-1  | 2026-09-29 11:26:34.751  INFO rmqtt_http_api:134: rmqtt-http-api init
+rmqtt-1  | 2026-09-29 11:26:34.752  INFO rmqtt_http_api::api:283: Dashboard SPA mounted from embedded assets (rust-embed)
+rmqtt-1  | 2026-09-29 11:26:34.752  INFO salvo_core::server:271: listening [HTTP/1.1] on http://0.0.0.0:6060
+rmqtt-1  | 2026-09-29 11:26:34.760  INFO rmqtt_http_api:228: rmqtt-http-api start
+rmqtt-1  | 2026-09-29 11:26:34.761  INFO rmqtt_retainer:65: rmqtt-retainer RetainerPlugin cfg: PluginConfig { storage: Some(Ram), max_retained_messages: 0, max_payload_size: 1M, retained_message_ttl: Some(0ns), batch_messages_limit: 500, backend_timeout: 8s }
+rmqtt-1  | 2026-09-29 11:26:34.761  INFO rmqtt_retainer:132: rmqtt-retainer init
+rmqtt-1  | 2026-09-29 11:26:34.761  INFO rmqtt_retainer:184: rmqtt-retainer start
+rmqtt-1  | 2026-09-29 11:26:34.762  INFO rmqtt_session_storage:108: rmqtt-session-storage StoragePlugin cfg: PluginConfig { storage: Config { typ: Sled, sled: SledConfig { path: "/var/log/rmqtt/.cache/session/1", cache_capacity: 3G, cleanup_f: 0x7b75ae6fbe70 }, redis: RedisConfig { url: "redis://127.0.0.1:6379/", prefix: "session-{node}" }, redis_cluster: RedisConfig { urls: ["redis://127.0.0.1:6380/", "redis://127.0.0.1:6381/", "redis://127.0.0.1:6382/"], prefix: "session-{node}" }, redb: RedbConfig { path: "", cache_size: 1073741824, cleanup_f: 0x7b75ae6fbb38 } }, backend_timeout: 15s }
+rmqtt-1  | 2026-09-29 11:26:34.762  INFO rmqtt_http_api::flusher:223: [http-api] history cache warmup complete, stats=0, metrics=0
+rmqtt-1  | 2026-09-29 11:26:34.776  INFO rmqtt_session_storage:400: rmqtt-session-storage init
+rmqtt-1  | 2026-09-29 11:26:34.778  INFO rmqtt_session_storage:138: "rmqtt-session-storage" load_offline_session_infos ...
+rmqtt-1  | 2026-09-29 11:26:34.779  INFO rmqtt_session_storage::session:883: retain_latests removeds: 0, cost: 3.655µs
+rmqtt-1  | 2026-09-29 11:26:34.779  INFO rmqtt_session_storage:290: stored_session_infos len: 0, cost: 2.308086ms
+rmqtt-1  | 2026-09-29 11:26:34.779  INFO rmqtt_session_storage:448: rmqtt-session-storage start
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_shared_subscription:67: rmqtt-shared-subscription cfg: Ok(PluginConfig { strategy: RoundRobin, sticky_cache_size: 100000 })
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_shared_subscription:84: rmqtt-shared-subscription init
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_shared_subscription:98: Shared subscription handler registered, strategy: RoundRobin
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_shared_subscription:122: rmqtt-shared-subscription start
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tcp 0.0.0.0:1883
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_net::builder:515: MQTT Broker Listening on internal/tcp 0.0.0.0:11883
+rmqtt-1  | 2026-09-29 11:26:34.780  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tls 0.0.0.0:8883
+rmqtt-1  | 2026-09-29 11:26:34.782  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/ws 0.0.0.0:8083
+rmqtt-1  | 2026-09-29 11:26:34.782  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/wss 0.0.0.0:8443
+rmqtt-1  | 2026-09-29 11:26:34.785  INFO rmqtt_net::builder:545: MQTT Broker Listening on external/quic 0.0.0.0:9443
+rmqtt-1  | 2026-09-29 11:26:34.785  INFO rmqtt_session_storage:820: BeforeStartup storage_type: Sled, stored_session_infos len: 0
+rmqtt-1  | 2026-09-29 11:26:34.785  INFO rmqtt_session_storage:809: offline_sessions_count: 0, cost: 10.444µs
+rmqtt-1  | 2026-09-29 11:26:34.785  INFO rmqtt_session_storage:382: Rebuild offline sessions, completed_count: 0, active_count: 0, waiting_count: 0, rate: 0.0, cost: 8.712365ms
+rmqtt-1  | 2026-09-29 11:26:34.786  INFO rmqtt_session_storage:390: Offline session rebuilding finished
+rmqtt-1  | 2026-09-29 11:26:34.786  INFO rmqtt_session_storage:828: BeforeStartup rebuild total cost: 340.115µs
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqttd:71: Starting rmqtt (version=rmqtt/0.24.0-20260919215606, rustc=1.98.1)
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:150: node_id is 1
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:151: exec_workers is 2000
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:152: exec_queue_max is 300000
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:153: node.busy config is: Busy { check_enable: false, update_interval: 2s, loadavg: 80.0, cpuloadavg: 90.0, handshaking: 0 }
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:154: node.rpc config is: Rpc { server_addr: 0.0.0.0:5363, reuseaddr: true, reuseport: false }
+rmqtt-1  | 2026-09-29 11:28:28.998  INFO rmqtt_conf:155: circuit_breaker config is: CircuitBreaker { failure_rate_threshold: 0.35, sliding_window_type: "TimeBased", sliding_window_size: 20, sliding_window_duration: 45s, minimum_number_of_calls: 10, wait_duration_in_open: 30s, slow_call_duration_threshold: 2s, slow_call_rate_threshold: 1.0 }
+rmqtt-1  | 2026-09-29 11:28:28.999  INFO rmqtt_acl:58: rmqtt-acl AclPlugin cfg: Ok(PluginConfig { disconnect_if_pub_rejected: true, priority: 10, rules: ([Rule { access: Allow, users: [Username("dashboard", None, false)], control: Subscribe, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [Ipaddr("127.0.0.1")], control: Pubsub, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 3, values_size: 2 } }, placeholders: [] } }, Rule { access: Deny, users: [All], control: Subscribe, topics: Topics { all: false, eqs: {"#": ()}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [All], control: All, topics: Topics { all: true, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 0, values_size: 0 } }, placeholders: [] } }], Array [Array [String("allow"), Object {"user": String("dashboard")}, String("subscribe"), Array [String("$SYS/#")]], Array [String("allow"), Object {"ipaddr": String("127.0.0.1")}, String("pubsub"), Array [String("$SYS/#"), String("#")]], Array [String("deny"), String("all"), String("subscribe"), Array [String("$SYS/#"), Object {"eq": String("#")}]], Array [String("allow"), String("all")]]) })
+rmqtt-1  | 2026-09-29 11:28:28.999  INFO rmqtt_acl:69: rmqtt-acl init
+rmqtt-1  | 2026-09-29 11:28:28.999  INFO rmqtt_acl:99: rmqtt-acl start
+rmqtt-1  | 2026-09-29 11:28:28.999  INFO handy_grpc::server:145: gRPC DataTransfer is listening on tcp://0.0.0.0:5363
+rmqtt-1  | 2026-09-29 11:28:28.999  INFO rmqtt_counter:50: rmqtt-counter init
+rmqtt-1  | 2026-09-29 11:28:29.000  INFO rmqtt_counter:127: rmqtt-counter start
+rmqtt-1  | 2026-09-29 11:28:29.000  INFO rmqtt_http_api:60: rmqtt-http-api HttpApiPlugin cfg: PluginConfig { max_row_limit: 10000, http_laddr: 0.0.0.0:6060, metrics_sample_interval: 5s, http_bearer_token: None, message_type: 99, http_reuseaddr: true, http_reuseport: false, http_request_log: false, message_expiry_interval: 300s, prometheus_metrics_cache_interval: 5s, dashboard_static_dir: None, storage: Some(Config { typ: Redb, sled: SledConfig { path: "", cache_capacity: 1G, cleanup_f: 0x7ca19624fe70 }, redis: RedisConfig { url: "", prefix: "__def" }, redis_cluster: RedisConfig { urls: [], prefix: "__def" }, redb: RedbConfig { path: "/var/log/rmqtt/.cache/http-api-history/{node}.redb", cache_size: 1073741824, cleanup_f: 0x7ca19624fb38 } }), flush_interval: 5s, history_retention: 604800s }
+rmqtt-1  | 2026-09-29 11:28:29.000  INFO rmqtt_http_api:83: rmqtt-http-api redb storage path: /var/log/rmqtt/.cache/http-api-history/1.redb
+rmqtt-1  | 2026-09-29 11:28:29.000  INFO rmqtt_http_api::api:235: HTTP API Listening on 0.0.0.0:6060, reuseaddr: true, reuseport: false
+rmqtt-1  | 2026-09-29 11:28:29.001  INFO rmqtt_http_api:134: rmqtt-http-api init
+rmqtt-1  | 2026-09-29 11:28:29.001  INFO rmqtt_http_api::api:283: Dashboard SPA mounted from embedded assets (rust-embed)
+rmqtt-1  | 2026-09-29 11:28:29.001  INFO salvo_core::server:271: listening [HTTP/1.1] on http://0.0.0.0:6060
+rmqtt-1  | 2026-09-29 11:28:29.006  INFO rmqtt_http_api:228: rmqtt-http-api start
+rmqtt-1  | 2026-09-29 11:28:29.007  INFO rmqtt_retainer:65: rmqtt-retainer RetainerPlugin cfg: PluginConfig { storage: Some(Ram), max_retained_messages: 0, max_payload_size: 1M, retained_message_ttl: Some(0ns), batch_messages_limit: 500, backend_timeout: 8s }
+rmqtt-1  | 2026-09-29 11:28:29.007  INFO rmqtt_http_api::flusher:223: [http-api] history cache warmup complete, stats=0, metrics=0
+rmqtt-1  | 2026-09-29 11:28:29.007  INFO rmqtt_retainer:132: rmqtt-retainer init
+rmqtt-1  | 2026-09-29 11:28:29.007  INFO rmqtt_retainer:184: rmqtt-retainer start
+rmqtt-1  | 2026-09-29 11:28:29.007  INFO rmqtt_session_storage:108: rmqtt-session-storage StoragePlugin cfg: PluginConfig { storage: Config { typ: Sled, sled: SledConfig { path: "/var/log/rmqtt/.cache/session/1", cache_capacity: 3G, cleanup_f: 0x7ca19624fe70 }, redis: RedisConfig { url: "redis://127.0.0.1:6379/", prefix: "session-{node}" }, redis_cluster: RedisConfig { urls: ["redis://127.0.0.1:6380/", "redis://127.0.0.1:6381/", "redis://127.0.0.1:6382/"], prefix: "session-{node}" }, redb: RedbConfig { path: "", cache_size: 1073741824, cleanup_f: 0x7ca19624fb38 } }, backend_timeout: 15s }
+rmqtt-1  | 2026-09-29 11:28:29.024  INFO rmqtt_session_storage:400: rmqtt-session-storage init
+rmqtt-1  | 2026-09-29 11:28:29.024  INFO rmqtt_session_storage:138: "rmqtt-session-storage" load_offline_session_infos ...
+rmqtt-1  | 2026-09-29 11:28:29.028  INFO rmqtt_session_storage::session:883: retain_latests removeds: 0, cost: 4.139µs
+rmqtt-1  | 2026-09-29 11:28:29.028  INFO rmqtt_session_storage:290: stored_session_infos len: 2, cost: 3.675695ms
+rmqtt-1  | 2026-09-29 11:28:29.028  INFO rmqtt_session_storage:448: rmqtt-session-storage start
+rmqtt-1  | 2026-09-29 11:28:29.028  INFO rmqtt_shared_subscription:67: rmqtt-shared-subscription cfg: Ok(PluginConfig { strategy: RoundRobin, sticky_cache_size: 100000 })
+rmqtt-1  | 2026-09-29 11:28:29.028  INFO rmqtt_shared_subscription:84: rmqtt-shared-subscription init
+rmqtt-1  | 2026-09-29 11:28:29.029  INFO rmqtt_shared_subscription:98: Shared subscription handler registered, strategy: RoundRobin
+rmqtt-1  | 2026-09-29 11:28:29.029  INFO rmqtt_shared_subscription:122: rmqtt-shared-subscription start
+rmqtt-1  | 2026-09-29 11:28:29.029  INFO rmqtt_net::builder:515: MQTT Broker Listening on internal/tcp 0.0.0.0:11883
+rmqtt-1  | 2026-09-29 11:28:29.029  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tcp 0.0.0.0:1883
+rmqtt-1  | 2026-09-29 11:28:29.029  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tls 0.0.0.0:8883
+rmqtt-1  | 2026-09-29 11:28:29.030  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/ws 0.0.0.0:8083
+rmqtt-1  | 2026-09-29 11:28:29.030  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/wss 0.0.0.0:8443
+rmqtt-1  | 2026-09-29 11:28:29.032  INFO rmqtt_net::builder:545: MQTT Broker Listening on external/quic 0.0.0.0:9443
+rmqtt-1  | 2026-09-29 11:28:29.032  INFO rmqtt_session_storage:820: BeforeStartup storage_type: Sled, stored_session_infos len: 2
+rmqtt-1  | 2026-09-29 11:28:29.033  INFO rmqtt_session_storage:809: offline_sessions_count: 2, cost: 638.375µs
+rmqtt-1  | 2026-09-29 11:28:29.034  INFO rmqtt_session_storage:382: Rebuild offline sessions, completed_count: 2, active_count: 0, waiting_count: 0, rate: 0.0, cost: 9.246232ms
+rmqtt-1  | 2026-09-29 11:28:29.034  INFO rmqtt_session_storage:390: Offline session rebuilding finished
+rmqtt-1  | 2026-09-29 11:28:29.034  INFO rmqtt_session_storage:828: BeforeStartup rebuild total cost: 1.606284ms
+rmqtt-1  | 2026-09-29 11:29:20.749  INFO rmqttd:71: Starting rmqtt (version=rmqtt/0.24.0-20260919215606, rustc=1.98.1)
+rmqtt-1  | 2026-09-29 11:29:20.749  INFO rmqtt_conf:150: node_id is 1
+rmqtt-1  | 2026-09-29 11:29:20.749  INFO rmqtt_conf:151: exec_workers is 2000
+rmqtt-1  | 2026-09-29 11:29:20.749  INFO rmqtt_conf:152: exec_queue_max is 300000
+rmqtt-1  | 2026-09-29 11:29:20.749  INFO rmqtt_conf:153: node.busy config is: Busy { check_enable: false, update_interval: 2s, loadavg: 80.0, cpuloadavg: 90.0, handshaking: 0 }
+rmqtt-1  | 2026-09-29 11:29:20.750  INFO rmqtt_conf:154: node.rpc config is: Rpc { server_addr: 0.0.0.0:5363, reuseaddr: true, reuseport: false }
+rmqtt-1  | 2026-09-29 11:29:20.750  INFO rmqtt_conf:155: circuit_breaker config is: CircuitBreaker { failure_rate_threshold: 0.35, sliding_window_type: "TimeBased", sliding_window_size: 20, sliding_window_duration: 45s, minimum_number_of_calls: 10, wait_duration_in_open: 30s, slow_call_duration_threshold: 2s, slow_call_rate_threshold: 1.0 }
+rmqtt-1  | 2026-09-29 11:29:20.752  INFO rmqtt_acl:58: rmqtt-acl AclPlugin cfg: Ok(PluginConfig { disconnect_if_pub_rejected: true, priority: 10, rules: ([Rule { access: Allow, users: [Username("dashboard", None, false)], control: Subscribe, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [Ipaddr("127.0.0.1")], control: Pubsub, topics: Topics { all: false, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 3, values_size: 2 } }, placeholders: [] } }, Rule { access: Deny, users: [All], control: Subscribe, topics: Topics { all: false, eqs: {"#": ()}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 2, values_size: 1 } }, placeholders: [] } }, Rule { access: Allow, users: [All], control: All, topics: Topics { all: true, eqs: {}, eq_placeholders: [], tree: RwLock { data: Node { nodes_size: 0, values_size: 0 } }, placeholders: [] } }], Array [Array [String("allow"), Object {"user": String("dashboard")}, String("subscribe"), Array [String("$SYS/#")]], Array [String("allow"), Object {"ipaddr": String("127.0.0.1")}, String("pubsub"), Array [String("$SYS/#"), String("#")]], Array [String("deny"), String("all"), String("subscribe"), Array [String("$SYS/#"), Object {"eq": String("#")}]], Array [String("allow"), String("all")]]) })
+rmqtt-1  | 2026-09-29 11:29:20.753  INFO handy_grpc::server:145: gRPC DataTransfer is listening on tcp://0.0.0.0:5363
+rmqtt-1  | 2026-09-29 11:29:20.765  INFO rmqtt_acl:69: rmqtt-acl init
+rmqtt-1  | 2026-09-29 11:29:20.765  INFO rmqtt_acl:99: rmqtt-acl start
+rmqtt-1  | 2026-09-29 11:29:20.765  INFO rmqtt_counter:50: rmqtt-counter init
+rmqtt-1  | 2026-09-29 11:29:20.766  INFO rmqtt_counter:127: rmqtt-counter start
+rmqtt-1  | 2026-09-29 11:29:20.766  INFO rmqtt_http_api:60: rmqtt-http-api HttpApiPlugin cfg: PluginConfig { max_row_limit: 10000, http_laddr: 0.0.0.0:6060, metrics_sample_interval: 5s, http_bearer_token: None, message_type: 99, http_reuseaddr: true, http_reuseport: false, http_request_log: false, message_expiry_interval: 300s, prometheus_metrics_cache_interval: 5s, dashboard_static_dir: None, storage: Some(Config { typ: Redb, sled: SledConfig { path: "", cache_capacity: 1G, cleanup_f: 0x76822614be70 }, redis: RedisConfig { url: "", prefix: "__def" }, redis_cluster: RedisConfig { urls: [], prefix: "__def" }, redb: RedbConfig { path: "/var/log/rmqtt/.cache/http-api-history/{node}.redb", cache_size: 1073741824, cleanup_f: 0x76822614bb38 } }), flush_interval: 5s, history_retention: 604800s }
+rmqtt-1  | 2026-09-29 11:29:20.766  INFO rmqtt_http_api:83: rmqtt-http-api redb storage path: /var/log/rmqtt/.cache/http-api-history/1.redb
+rmqtt-1  | 2026-09-29 11:29:20.769  INFO rmqtt_http_api::api:235: HTTP API Listening on 0.0.0.0:6060, reuseaddr: true, reuseport: false
+rmqtt-1  | 2026-09-29 11:29:20.770  INFO rmqtt_http_api::api:283: Dashboard SPA mounted from embedded assets (rust-embed)
+rmqtt-1  | 2026-09-29 11:29:20.773  INFO salvo_core::server:271: listening [HTTP/1.1] on http://0.0.0.0:6060
+rmqtt-1  | 2026-09-29 11:29:20.773  INFO rmqtt_http_api:134: rmqtt-http-api init
+rmqtt-1  | 2026-09-29 11:29:20.783  INFO rmqtt_http_api:228: rmqtt-http-api start
+rmqtt-1  | 2026-09-29 11:29:20.784  INFO rmqtt_retainer:65: rmqtt-retainer RetainerPlugin cfg: PluginConfig { storage: Some(Ram), max_retained_messages: 0, max_payload_size: 1M, retained_message_ttl: Some(0ns), batch_messages_limit: 500, backend_timeout: 8s }
+rmqtt-1  | 2026-09-29 11:29:20.784  INFO rmqtt_retainer:132: rmqtt-retainer init
+rmqtt-1  | 2026-09-29 11:29:20.784  INFO rmqtt_retainer:184: rmqtt-retainer start
+rmqtt-1  | 2026-09-29 11:29:20.784  INFO rmqtt_session_storage:108: rmqtt-session-storage StoragePlugin cfg: PluginConfig { storage: Config { typ: Sled, sled: SledConfig { path: "/var/log/rmqtt/.cache/session/1", cache_capacity: 3G, cleanup_f: 0x76822614be70 }, redis: RedisConfig { url: "redis://127.0.0.1:6379/", prefix: "session-{node}" }, redis_cluster: RedisConfig { urls: ["redis://127.0.0.1:6380/", "redis://127.0.0.1:6381/", "redis://127.0.0.1:6382/"], prefix: "session-{node}" }, redb: RedbConfig { path: "", cache_size: 1073741824, cleanup_f: 0x76822614bb38 } }, backend_timeout: 15s }
+rmqtt-1  | 2026-09-29 11:29:20.791  INFO rmqtt_http_api::flusher:223: [http-api] history cache warmup complete, stats=0, metrics=0
+rmqtt-1  | 2026-09-29 11:29:20.879  INFO rmqtt_session_storage:400: rmqtt-session-storage init
+rmqtt-1  | 2026-09-29 11:29:20.879  INFO rmqtt_session_storage:138: "rmqtt-session-storage" load_offline_session_infos ...
+rmqtt-1  | 2026-09-29 11:29:20.913  INFO rmqtt_session_storage::session:883: retain_latests removeds: 0, cost: 6.451µs
+rmqtt-1  | 2026-09-29 11:29:20.913  INFO rmqtt_session_storage:290: stored_session_infos len: 3, cost: 33.508972ms
+rmqtt-1  | 2026-09-29 11:29:20.913  INFO rmqtt_session_storage:448: rmqtt-session-storage start
+rmqtt-1  | 2026-09-29 11:29:20.913  INFO rmqtt_shared_subscription:67: rmqtt-shared-subscription cfg: Ok(PluginConfig { strategy: RoundRobin, sticky_cache_size: 100000 })
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_shared_subscription:84: rmqtt-shared-subscription init
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_shared_subscription:98: Shared subscription handler registered, strategy: RoundRobin
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_shared_subscription:122: rmqtt-shared-subscription start
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tcp 0.0.0.0:1883
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_net::builder:515: MQTT Broker Listening on internal/tcp 0.0.0.0:11883
+rmqtt-1  | 2026-09-29 11:29:20.914  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/tls 0.0.0.0:8883
+rmqtt-1  | 2026-09-29 11:29:20.915  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/ws 0.0.0.0:8083
+rmqtt-1  | 2026-09-29 11:29:20.915  INFO rmqtt_net::builder:515: MQTT Broker Listening on external/wss 0.0.0.0:8443
+rmqtt-1  | 2026-09-29 11:29:20.924  INFO rmqtt_net::builder:545: MQTT Broker Listening on external/quic 0.0.0.0:9443
+rmqtt-1  | 2026-09-29 11:29:20.927  INFO rmqtt_session_storage:820: BeforeStartup storage_type: Sled, stored_session_infos len: 3
+rmqtt-1  | 2026-09-29 11:29:20.927  INFO rmqtt_session_storage:809: offline_sessions_count: 3, cost: 314.208µs
+rmqtt-1  | 2026-09-29 11:29:20.929  INFO rmqtt_session_storage:382: Rebuild offline sessions, completed_count: 3, active_count: 0, waiting_count: 0, rate: 0.0, cost: 49.359636ms
+rmqtt-1  | 2026-09-29 11:29:20.929  INFO rmqtt_session_storage:390: Offline session rebuilding finished
+rmqtt-1  | 2026-09-29 11:29:20.929  INFO rmqtt_session_storage:828: BeforeStartup rebuild total cost: 2.200857ms
+rmqtt-1  | 2026-09-29 11:30:30.290  WARN rmqtt_net::ws:81: WebSocket protocol error: Connection reset without closing handshake

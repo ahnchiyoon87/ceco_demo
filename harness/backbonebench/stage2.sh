@@ -34,7 +34,8 @@ if [ -n "$(docker ps -q --filter label=com.docker.compose.project=backbonebench)
   echo "backbonebench 컨테이너가 이미 떠 있음 — 먼저 down"; exit 4; fi
 
 $DC --profile tools build client >/dev/null || { echo "client build 실패"; exit 5; }
-$DC --profile "$prof" up -d || { echo "up 실패"; $DC --profile "$prof" logs --tail 50; exit 6; }
+# 기동 실패는 로그를 파일로 남기고 내린다(남겨 두면 다음 후보가 모두 "이미 떠 있음"으로 거부됨 — #116)
+$DC --profile "$prof" up -d > "$RAW/${prof}_up.log" 2>&1 || { echo "up 실패(로그 $RAW/${prof}_up_fail.log)"; cat "$RAW/${prof}_up.log"; $DC --profile "$prof" logs --no-color > "$RAW/${prof}_up_fail.log" 2>&1; tail -20 "$RAW/${prof}_up.log"; $DC --profile "$prof" down -v --remove-orphans >/dev/null 2>&1; exit 6; }
 docker compose -f $F --profile "$prof" images --format json > "$RAW/images_${prof}.json" 2>/dev/null
 docker compose -f $F --profile "$prof" images | tail -n +2 | awk '{print $2":"$3" "$4}' > "$RAW/images_${prof}.txt"
 

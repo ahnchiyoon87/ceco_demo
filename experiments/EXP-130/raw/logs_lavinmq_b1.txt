@@ -1,0 +1,188 @@
+lavinmq-1  | 
+lavinmq-1  |     ██╗      █████╗ ██╗   ██╗██╗███╗   ██╗███╗   ███╗ ██████╗
+lavinmq-1  |     ██║     ██╔══██╗██║   ██║██║████╗  ██║████╗ ████║██╔═══██╗
+lavinmq-1  |     ██║     ███████║██║   ██║██║██╔██╗ ██║██╔████╔██║██║   ██║
+lavinmq-1  |     ██║     ██╔══██║╚██╗ ██╔╝██║██║╚██╗██║██║╚██╔╝██║██║▄▄ ██║
+lavinmq-1  |     ███████╗██║  ██║ ╚████╔╝ ██║██║ ╚████║██║ ╚═╝ ██║╚██████╔╝
+lavinmq-1  |     ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝ ╚══▀▀═╝
+lavinmq-1  | 
+lavinmq-1  |              The message broker built for peaks
+lavinmq-1  | 2026-09-29T03:43:56.862907Z  INFO lmq[level: "Info", target: "stdout"] Logger settings
+lavinmq-1  | 2026-09-29T03:43:56.866413Z  INFO lmq.launcher LavinMQ 2.10.0
+lavinmq-1  | 2026-09-29T03:43:56.866415Z  INFO lmq.launcher Crystal 1.21.0 (2026-07-16)
+lavinmq-1  | 2026-09-29T03:43:56.866415Z  INFO lmq.launcher LLVM: 18.1.3
+lavinmq-1  | 2026-09-29T03:43:56.866416Z  INFO lmq.launcher Default target: x86_64-pc-linux-gnu
+lavinmq-1  | 2026-09-29T03:43:56.866418Z  INFO lmq.launcher Build flags: --release --debug
+lavinmq-1  | 2026-09-29T03:43:56.866419Z  INFO lmq.launcher Parallelism: 1
+lavinmq-1  | 2026-09-29T03:43:56.866432Z  INFO lmq.launcher PID: 1
+lavinmq-1  | 2026-09-29T03:43:56.866434Z  INFO lmq.launcher Data directory: /var/lib/lavinmq
+lavinmq-1  | 2026-09-29T03:43:56.866567Z  INFO lmq.launcher Max mmap count: 262144
+lavinmq-1  | 2026-09-29T03:43:56.866572Z  INFO lmq.launcher FD limit: 1048576
+lavinmq-1  | 2026-09-29T03:43:56.880977Z  INFO lmq.vhost[vhost: "/"] Loading default definitions
+lavinmq-1  | 2026-09-29T03:43:56.881038Z  INFO lmq.vhost[vhost: "/"] Compacting definitions
+lavinmq-1  | 2026-09-29T03:43:56.884041Z  INFO lmq.vhost_store Created vhost /
+lavinmq-1  | 2026-09-29T03:43:56.892949Z  INFO lmq.server Bound AMQP to 0.0.0.0:5672
+lavinmq-1  | 2026-09-29T03:43:56.892957Z  INFO lmq.server Bound MQTT to 0.0.0.0:1883
+lavinmq-1  | 2026-09-29T03:43:56.892963Z  INFO lmq.http.server Bound to 0.0.0.0:15672
+lavinmq-1  | 2026-09-29T03:43:56.894612Z  INFO lmq.http.server Bound to /tmp/lavinmqctl.sock
+lavinmq-1  | 2026-09-29T03:43:56.894854Z  INFO lmq.metrics.server Bound to 127.0.0.1:15692
+lavinmq-1  | 2026-09-29T03:43:56.895483Z  INFO lmq.launcher Finished startup in 0.028186888s
+lavinmq-1  | 2026-09-29T03:43:58.028810Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:49641", client_id: "wait-1790653438022"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:43:58.029031Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:49641", client_id: "wait-1790653438022"] Connection disconnected for user=guest duration=00:00:00
+lavinmq-1  | 2026-09-29T03:43:59.706095Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:44891", client_id: "sub-b1n"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:43:59.706862Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:55049", client_id: "pub-b1n"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:43:59.711283Z  INFO lmq.message_store[queue: "mqtt.sub-b1n", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:43:59.715072Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.sub-b1n (durable=true auto_delete=false arguments=#<AMQ::Protocol::Table:0x7c1a87948c90>)
+lavinmq-1  | 2026-09-29T03:45:03.745941Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:55049", client_id: "pub-b1n"] Connection disconnected for user=guest duration=00:01:04
+lavinmq-1  | 2026-09-29T03:45:04.745669Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:44891", client_id: "sub-b1n"] Connection disconnected for user=guest duration=00:01:05
+lavinmq-1  | 2026-09-29T03:45:32.065406Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57791", client_id: "sub-b1r"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:45:32.065523Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57589", client_id: "pub-b1r"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:45:32.069386Z  INFO lmq.message_store[queue: "mqtt.sub-b1r", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:45:32.071664Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.sub-b1r (durable=true auto_delete=false arguments=#<AMQ::Protocol::Table:0x7c1a8c981180>)
+lavinmq-1  | 2026-09-29T03:45:53.463590Z  WARN lmq.launcher Stopping
+lavinmq-1  | 2026-09-29T03:45:53.464137Z  INFO lmq.vhost[vhost: "/"] Closing connections
+lavinmq-1  | 2026-09-29T03:45:53.464182Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57791", client_id: "sub-b1r"] Closing connection: Broker shutdown
+lavinmq-1  | 2026-09-29T03:45:53.464222Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57791", client_id: "sub-b1r"] Connection disconnected for user=guest duration=00:00:21
+lavinmq-1  | 2026-09-29T03:45:53.464289Z  INFO lmq.vhost[vhost: "/"] All connections closed gracefully
+lavinmq-1  | 2026-09-29T03:45:53.464308Z ERROR lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57589", client_id: "pub-b1r"] Client unexpectedly closed connection: Closed stream
+lavinmq-1  | 2026-09-29T03:45:53.464309Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:57589", client_id: "pub-b1r"] Connection disconnected for user=guest duration=00:00:21
+lavinmq-1  | 2026-09-29T03:45:53.466475Z  INFO lmq.launcher Fibers: 
+lavinmq-1  | 2026-09-29T03:45:53.466478Z  INFO lmq.launcher #<Fiber:0x7c1a94d3be40: main>
+lavinmq-1  | 2026-09-29T03:45:53.466479Z  INFO lmq.launcher #<Fiber:0x7c1a94d3bd80: DEFAULT-0:loop>
+lavinmq-1  | 2026-09-29T03:45:53.466482Z  INFO lmq.launcher #<Fiber:0x7c1a94d3bc00: main>
+lavinmq-1  | 2026-09-29T03:45:53.466484Z  INFO lmq.launcher #<Fiber:0x7c1a94d3bb40: signal-loop>
+lavinmq-1  | 2026-09-29T03:45:53.466484Z  INFO lmq.launcher #<Fiber:0x7c1a94d3ba80>
+lavinmq-1  | 2026-09-29T03:45:53.466484Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b9c0>
+lavinmq-1  | 2026-09-29T03:45:53.466504Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b900: RoughTime>
+lavinmq-1  | 2026-09-29T03:45:53.466504Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b780: main>
+lavinmq-1  | 2026-09-29T03:45:53.466504Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b600>
+lavinmq-1  | 2026-09-29T03:45:53.466504Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b540: main>
+lavinmq-1  | 2026-09-29T03:45:53.466505Z  INFO lmq.launcher #<Fiber:0x7c1a94d3b300: Server#stats_loop>
+lavinmq-1  | 2026-09-29T03:45:53.466505Z  INFO lmq.launcher #<Fiber:0x7c1a8794ef00: HTTP metrics listener>
+lavinmq-1  | 2026-09-29T03:45:53.466505Z  INFO lmq.launcher #<Fiber:0x7c1a8c923000>
+lavinmq-1  | 
+lavinmq-1  |     ██╗      █████╗ ██╗   ██╗██╗███╗   ██╗███╗   ███╗ ██████╗
+lavinmq-1  |     ██║     ██╔══██╗██║   ██║██║████╗  ██║████╗ ████║██╔═══██╗
+lavinmq-1  |     ██║     ███████║██║   ██║██║██╔██╗ ██║██╔████╔██║██║   ██║
+lavinmq-1  |     ██║     ██╔══██║╚██╗ ██╔╝██║██║╚██╗██║██║╚██╔╝██║██║▄▄ ██║
+lavinmq-1  |     ███████╗██║  ██║ ╚████╔╝ ██║██║ ╚████║██║ ╚═╝ ██║╚██████╔╝
+lavinmq-1  |     ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝ ╚══▀▀═╝
+lavinmq-1  | 
+lavinmq-1  |              The message broker built for peaks
+lavinmq-1  | 2026-09-29T03:45:53.798271Z  INFO lmq[level: "Info", target: "stdout"] Logger settings
+lavinmq-1  | 2026-09-29T03:45:53.798595Z  INFO lmq.launcher LavinMQ 2.10.0
+lavinmq-1  | 2026-09-29T03:45:53.798596Z  INFO lmq.launcher Crystal 1.21.0 (2026-07-16)
+lavinmq-1  | 2026-09-29T03:45:53.798596Z  INFO lmq.launcher LLVM: 18.1.3
+lavinmq-1  | 2026-09-29T03:45:53.798597Z  INFO lmq.launcher Default target: x86_64-pc-linux-gnu
+lavinmq-1  | 2026-09-29T03:45:53.798598Z  INFO lmq.launcher Build flags: --release --debug
+lavinmq-1  | 2026-09-29T03:45:53.798598Z  INFO lmq.launcher Parallelism: 1
+lavinmq-1  | 2026-09-29T03:45:53.798604Z  INFO lmq.launcher PID: 1
+lavinmq-1  | 2026-09-29T03:45:53.798628Z  INFO lmq.launcher Data directory: /var/lib/lavinmq
+lavinmq-1  | 2026-09-29T03:45:53.798672Z  INFO lmq.launcher Max mmap count: 262144
+lavinmq-1  | 2026-09-29T03:45:53.798674Z  INFO lmq.launcher FD limit: 1048576
+lavinmq-1  | 2026-09-29T03:45:53.800373Z  INFO lmq.vhost[vhost: "/"] Loading definitions
+lavinmq-1  | 2026-09-29T03:45:53.800451Z  INFO lmq.vhost[vhost: "/"] Applying 6 exchanges
+lavinmq-1  | 2026-09-29T03:45:53.800480Z  INFO lmq.vhost[vhost: "/"] Applying 2 queues
+lavinmq-1  | 2026-09-29T03:45:53.801661Z  INFO lmq.message_store[queue: "mqtt.sub-b1n", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:45:53.802145Z  INFO lmq.message_store[queue: "mqtt.sub-b1r", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:45:53.802187Z  INFO lmq.vhost[vhost: "/"] Applying 0 exchange bindings
+lavinmq-1  | 2026-09-29T03:45:53.802188Z  INFO lmq.vhost[vhost: "/"] Applying 2 queue bindings
+lavinmq-1  | 2026-09-29T03:45:53.802196Z  INFO lmq.vhost[vhost: "/"] Definitions loaded
+lavinmq-1  | 2026-09-29T03:45:53.803342Z  INFO lmq.server Bound AMQP to 0.0.0.0:5672
+lavinmq-1  | 2026-09-29T03:45:53.803356Z  INFO lmq.server Bound MQTT to 0.0.0.0:1883
+lavinmq-1  | 2026-09-29T03:45:53.803374Z  INFO lmq.http.server Bound to 0.0.0.0:15672
+lavinmq-1  | 2026-09-29T03:45:53.803408Z  INFO lmq.http.server Bound to /tmp/lavinmqctl.sock
+lavinmq-1  | 2026-09-29T03:45:53.803491Z  INFO lmq.metrics.server Bound to 127.0.0.1:15692
+lavinmq-1  | 2026-09-29T03:45:53.803676Z  INFO lmq.launcher Finished startup in 0.004982541s
+lavinmq-1  | 2026-09-29T03:45:54.467538Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:45467", client_id: "pub-b1r"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:45:54.467585Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:58951", client_id: "sub-b1r"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:46:36.152673Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:45467", client_id: "pub-b1r"] Connection disconnected for user=guest duration=00:00:42
+lavinmq-1  | 2026-09-29T03:46:37.107875Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:58951", client_id: "sub-b1r"] Connection disconnected for user=guest duration=00:00:43
+lavinmq-1  | 2026-09-29T03:46:38.219280Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:48845", client_id: "wait-1790653598214"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:46:38.219821Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:48845", client_id: "wait-1790653598214"] Connection disconnected for user=guest duration=00:00:00
+lavinmq-1  | 2026-09-29T03:46:39.677509Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:51753", client_id: "oq-b1q"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:46:39.682883Z  INFO lmq.message_store[queue: "mqtt.oq-b1q", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:46:39.685540Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.oq-b1q (durable=true auto_delete=false arguments=#<AMQ::Protocol::Table:0x7111c7abc690>)
+lavinmq-1  | 2026-09-29T03:46:41.691242Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:51753", client_id: "oq-b1q"] Connection disconnected for user=guest duration=00:00:02
+lavinmq-1  | 2026-09-29T03:46:41.692180Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:35439", client_id: "oqp-b1q"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:46:42.841974Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:35439", client_id: "oqp-b1q"] Connection disconnected for user=guest duration=00:00:01
+lavinmq-1  | 2026-09-29T03:46:43.556179Z  WARN lmq.launcher Stopping
+lavinmq-1  | 2026-09-29T03:46:43.556760Z  INFO lmq.vhost[vhost: "/"] Closing connections
+lavinmq-1  | 2026-09-29T03:46:43.556788Z  INFO lmq.vhost[vhost: "/"] All connections closed gracefully
+lavinmq-1  | 2026-09-29T03:46:43.560693Z  INFO lmq.launcher Fibers: 
+lavinmq-1  | 2026-09-29T03:46:43.560701Z  INFO lmq.launcher #<Fiber:0x7111d4154e40: main>
+lavinmq-1  | 2026-09-29T03:46:43.560703Z  INFO lmq.launcher #<Fiber:0x7111d4154d80: DEFAULT-0:loop>
+lavinmq-1  | 2026-09-29T03:46:43.560703Z  INFO lmq.launcher #<Fiber:0x7111d4154c00: main>
+lavinmq-1  | 2026-09-29T03:46:43.560704Z  INFO lmq.launcher #<Fiber:0x7111d4154b40: signal-loop>
+lavinmq-1  | 2026-09-29T03:46:43.560705Z  INFO lmq.launcher #<Fiber:0x7111d4154a80>
+lavinmq-1  | 2026-09-29T03:46:43.560706Z  INFO lmq.launcher #<Fiber:0x7111d41549c0>
+lavinmq-1  | 2026-09-29T03:46:43.560706Z  INFO lmq.launcher #<Fiber:0x7111d4154900: RoughTime>
+lavinmq-1  | 2026-09-29T03:46:43.560707Z  INFO lmq.launcher #<Fiber:0x7111d4154780: main>
+lavinmq-1  | 2026-09-29T03:46:43.560707Z  INFO lmq.launcher #<Fiber:0x7111d4154540: main>
+lavinmq-1  | 2026-09-29T03:46:43.560708Z  INFO lmq.launcher #<Fiber:0x7111d4154240: Server#stats_loop>
+lavinmq-1  | 2026-09-29T03:46:43.560708Z  INFO lmq.launcher #<Fiber:0x7111c70b3e40: HTTP metrics listener>
+lavinmq-1  | 2026-09-29T03:46:43.560708Z  INFO lmq.launcher #<Fiber:0x7111c7b33240>
+lavinmq-1  | 
+lavinmq-1  |     ██╗      █████╗ ██╗   ██╗██╗███╗   ██╗███╗   ███╗ ██████╗
+lavinmq-1  |     ██║     ██╔══██╗██║   ██║██║████╗  ██║████╗ ████║██╔═══██╗
+lavinmq-1  |     ██║     ███████║██║   ██║██║██╔██╗ ██║██╔████╔██║██║   ██║
+lavinmq-1  |     ██║     ██╔══██║╚██╗ ██╔╝██║██║╚██╗██║██║╚██╔╝██║██║▄▄ ██║
+lavinmq-1  |     ███████╗██║  ██║ ╚████╔╝ ██║██║ ╚████║██║ ╚═╝ ██║╚██████╔╝
+lavinmq-1  |     ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝ ╚══▀▀═╝
+lavinmq-1  | 
+lavinmq-1  |              The message broker built for peaks
+lavinmq-1  | 2026-09-29T03:46:43.943996Z  INFO lmq[level: "Info", target: "stdout"] Logger settings
+lavinmq-1  | 2026-09-29T03:46:43.944642Z  INFO lmq.launcher LavinMQ 2.10.0
+lavinmq-1  | 2026-09-29T03:46:43.944643Z  INFO lmq.launcher Crystal 1.21.0 (2026-07-16)
+lavinmq-1  | 2026-09-29T03:46:43.944643Z  INFO lmq.launcher LLVM: 18.1.3
+lavinmq-1  | 2026-09-29T03:46:43.944644Z  INFO lmq.launcher Default target: x86_64-pc-linux-gnu
+lavinmq-1  | 2026-09-29T03:46:43.944645Z  INFO lmq.launcher Build flags: --release --debug
+lavinmq-1  | 2026-09-29T03:46:43.944645Z  INFO lmq.launcher Parallelism: 1
+lavinmq-1  | 2026-09-29T03:46:43.944647Z  INFO lmq.launcher PID: 1
+lavinmq-1  | 2026-09-29T03:46:43.944667Z  INFO lmq.launcher Data directory: /var/lib/lavinmq
+lavinmq-1  | 2026-09-29T03:46:43.944725Z  INFO lmq.launcher Max mmap count: 262144
+lavinmq-1  | 2026-09-29T03:46:43.944728Z  INFO lmq.launcher FD limit: 1048576
+lavinmq-1  | 2026-09-29T03:46:43.946528Z  INFO lmq.vhost[vhost: "/"] Loading definitions
+lavinmq-1  | 2026-09-29T03:46:43.946575Z  INFO lmq.vhost[vhost: "/"] Applying 6 exchanges
+lavinmq-1  | 2026-09-29T03:46:43.946597Z  INFO lmq.vhost[vhost: "/"] Applying 3 queues
+lavinmq-1  | 2026-09-29T03:46:43.947638Z  INFO lmq.message_store[queue: "mqtt.sub-b1n", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:46:43.948708Z  INFO lmq.message_store[queue: "mqtt.sub-b1r", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:46:43.948968Z  INFO lmq.message_store[queue: "mqtt.oq-b1q", vhost: "/"] Loaded 1 segments, 600 messages
+lavinmq-1  | 2026-09-29T03:46:43.948996Z  INFO lmq.vhost[vhost: "/"] Applying 0 exchange bindings
+lavinmq-1  | 2026-09-29T03:46:43.948997Z  INFO lmq.vhost[vhost: "/"] Applying 3 queue bindings
+lavinmq-1  | 2026-09-29T03:46:43.949003Z  INFO lmq.vhost[vhost: "/"] Definitions loaded
+lavinmq-1  | 2026-09-29T03:46:43.950391Z  INFO lmq.server Bound AMQP to 0.0.0.0:5672
+lavinmq-1  | 2026-09-29T03:46:43.950420Z  INFO lmq.server Bound MQTT to 0.0.0.0:1883
+lavinmq-1  | 2026-09-29T03:46:43.950433Z  INFO lmq.http.server Bound to 0.0.0.0:15672
+lavinmq-1  | 2026-09-29T03:46:43.950481Z  INFO lmq.http.server Bound to /tmp/lavinmqctl.sock
+lavinmq-1  | 2026-09-29T03:46:43.950559Z  INFO lmq.metrics.server Bound to 127.0.0.1:15692
+lavinmq-1  | 2026-09-29T03:46:43.950971Z  INFO lmq.launcher Finished startup in 0.006216919s
+lavinmq-1  | 2026-09-29T03:46:45.156449Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.4:34935", client_id: "wait-1790653605146"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:46:45.157737Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.4:34935", client_id: "wait-1790653605146"] Connection disconnected for user=guest duration=00:00:00
+lavinmq-1  | 2026-09-29T03:46:53.889790Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:51653", client_id: "oq-b1q"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:08.948525Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:51653", client_id: "oq-b1q"] Connection disconnected for user=guest duration=00:00:15
+lavinmq-1  | 2026-09-29T03:47:09.018613Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:39877", client_id: "ret-b1q"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:09.060266Z  INFO lmq.message_store[queue: "mqtt.ret-b1q", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:47:09.063398Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.ret-b1q (durable=false auto_delete=true arguments=#<AMQ::Protocol::Table:0x7a2dbb9bc2a0>)
+lavinmq-1  | 2026-09-29T03:47:14.117395Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:39877", client_id: "ret-b1q"] Connection disconnected for user=guest duration=00:00:05
+lavinmq-1  | 2026-09-29T03:47:18.855665Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:45229", client_id: "oq-b1q0"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:18.867152Z  INFO lmq.message_store[queue: "mqtt.oq-b1q0", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:47:18.873249Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.oq-b1q0 (durable=true auto_delete=false arguments=#<AMQ::Protocol::Table:0x7a2dbba18f60>)
+lavinmq-1  | 2026-09-29T03:47:20.880218Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:45229", client_id: "oq-b1q0"] Connection disconnected for user=guest duration=00:00:02
+lavinmq-1  | 2026-09-29T03:47:20.880967Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:54021", client_id: "oqp-b1q0"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:21.995482Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:54021", client_id: "oqp-b1q0"] Connection disconnected for user=guest duration=00:00:01
+lavinmq-1  | 2026-09-29T03:47:31.030220Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:36921", client_id: "oq-b1q0"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:46.059312Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:36921", client_id: "oq-b1q0"] Connection disconnected for user=guest duration=00:00:15
+lavinmq-1  | 2026-09-29T03:47:46.063261Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:53561", client_id: "ret-b1q0"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:46.072726Z  INFO lmq.message_store[queue: "mqtt.ret-b1q0", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:47:46.074488Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.ret-b1q0 (durable=false auto_delete=true arguments=#<AMQ::Protocol::Table:0x7a2dbba97990>)
+lavinmq-1  | 2026-09-29T03:47:51.121932Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:53561", client_id: "ret-b1q0"] Connection disconnected for user=guest duration=00:00:05
+lavinmq-1  | 2026-09-29T03:47:52.364925Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:44367", client_id: "ws-b1w"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:52.368532Z  INFO lmq.message_store[queue: "mqtt.ws-b1w", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:47:52.370194Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.ws-b1w (durable=false auto_delete=true arguments=#<AMQ::Protocol::Table:0x7a2dbba97660>)
+lavinmq-1  | 2026-09-29T03:47:56.412893Z ERROR lmq.mqtt.client[vhost: "/", address: "172.26.0.3:44367", client_id: "ws-b1w"] Client unexpectedly closed connection: Closed stream
+lavinmq-1  | 2026-09-29T03:47:56.412928Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:44367", client_id: "ws-b1w"] Connection disconnected for user=guest duration=00:00:04
+lavinmq-1  | 2026-09-29T03:47:58.125679Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:37329", client_id: "br07-lavinmq-1790653678"] Connection established for user=guest
+lavinmq-1  | 2026-09-29T03:47:58.132384Z  INFO lmq.message_store[queue: "mqtt.br07-lavinmq-1790653678", vhost: "/"] Loaded 1 segments, 0 messages
+lavinmq-1  | 2026-09-29T03:47:58.134863Z  INFO lmq.vhost[vhost: "/"] Created queue: mqtt.br07-lavinmq-1790653678 (durable=false auto_delete=true arguments=#<AMQ::Protocol::Table:0x7a2dbbb21c30>)
+lavinmq-1  | 2026-09-29T03:48:08.151301Z  INFO lmq.mqtt.client[vhost: "/", address: "172.26.0.3:37329", client_id: "br07-lavinmq-1790653678"] Connection disconnected for user=guest duration=00:00:10

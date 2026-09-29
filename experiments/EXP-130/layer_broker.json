@@ -1,0 +1,554 @@
+{
+ "activemq": {
+  "broker": "activemq",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    5.44
+   ],
+   "p95_median_ms": 5.44
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "max_gap_ms": [
+    3162.7
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": false
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "FAIL"
+  ],
+  "mem_mib_median": 295.75,
+  "cpu_pct_median": 10.42,
+  "image_mb": 279.7
+ },
+ "artemis": {
+  "broker": "artemis",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    7.33
+   ],
+   "p95_median_ms": 7.33
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    1
+   ],
+   "max_gap_ms": [
+    7130.3
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "PASS"
+  ],
+  "mem_mib_median": 426.0,
+  "cpu_pct_median": 21.45,
+  "image_mb": 158.1
+ },
+ "bifromq": {
+  "broker": "bifromq",
+  "verdict_stage2": "기동·접속 실패",
+  "up_logs": [
+   "logs_bifromq_up_09291239.txt"
+  ]
+ },
+ "comqtt": {
+  "broker": "comqtt",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    70.94
+   ],
+   "p95_median_ms": 70.94
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "max_gap_ms": [
+    1013.4
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 0,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "PASS"
+  ],
+  "mem_mib_median": 12.9,
+  "cpu_pct_median": 13.06,
+  "image_mb": 24.3
+ },
+ "emqx": {
+  "broker": "emqx",
+  "normal": {
+   "runs": 2,
+   "lost": [
+    0,
+    0
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "p95_ms": [
+    2.6,
+    2.26
+   ],
+   "p95_median_ms": 2.43
+  },
+  "live_restart": {
+   "lost": [
+    4,
+    69
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "max_gap_ms": [
+    11074.6,
+    11060.9
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 0,
+    "session_present": false
+   },
+   {
+    "acked": 600,
+    "received": 0,
+    "session_present": false
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   },
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true,
+   true
+  ],
+  "metrics_br07": [],
+  "mem_mib_median": 273.2,
+  "cpu_pct_median": 14.06,
+  "image_mb": null
+ },
+ "hivemq": {
+  "broker": "hivemq",
+  "normal": {
+   "runs": 2,
+   "lost": [
+    0,
+    0
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "p95_ms": [
+    47.38,
+    47.66
+   ],
+   "p95_median_ms": 47.52
+  },
+  "live_restart": {
+   "lost": [
+    527,
+    569
+   ],
+   "dup": [
+    5,
+    5
+   ],
+   "max_gap_ms": [
+    13346.6,
+    13302.2
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   },
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true,
+   true
+  ],
+  "metrics_br07": [],
+  "mem_mib_median": 300.7,
+  "cpu_pct_median": 21.98,
+  "image_mb": null
+ },
+ "lavinmq": {
+  "broker": "lavinmq",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    1.19
+   ],
+   "p95_median_ms": 1.19
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "max_gap_ms": [
+    1011.4
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "FAIL"
+  ],
+  "mem_mib_median": 26.0,
+  "cpu_pct_median": 2.01,
+  "image_mb": 40.1
+ },
+ "mosquitto": {
+  "broker": "mosquitto",
+  "normal": {
+   "runs": 2,
+   "lost": [
+    0,
+    0
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "p95_ms": [
+    1.66,
+    1.73
+   ],
+   "p95_median_ms": 1.69
+  },
+  "live_restart": {
+   "lost": [
+    0,
+    0
+   ],
+   "dup": [
+    1,
+    1
+   ],
+   "max_gap_ms": [
+    1013.7,
+    1014.3
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   },
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true,
+   true
+  ],
+  "metrics_br07": [],
+  "mem_mib_median": 4.9,
+  "cpu_pct_median": 3.36,
+  "image_mb": null
+ },
+ "nanomq": {
+  "broker": "nanomq",
+  "normal": {
+   "runs": 2,
+   "lost": [
+    0,
+    0
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "p95_ms": [
+    2.01,
+    1.98
+   ],
+   "p95_median_ms": 1.99
+  },
+  "live_restart": {
+   "lost": [
+    4,
+    0
+   ],
+   "dup": [
+    0,
+    0
+   ],
+   "max_gap_ms": [
+    1013.4,
+    1012.7
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 0,
+    "session_present": false
+   },
+   {
+    "acked": 600,
+    "received": 0,
+    "session_present": false
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 0
+   },
+   {
+    "acked": 600,
+    "received": 0
+   }
+  ],
+  "ws": [
+   true,
+   true
+  ],
+  "metrics_br07": [],
+  "mem_mib_median": 4.1,
+  "cpu_pct_median": 11.2,
+  "image_mb": null
+ },
+ "rabbitmq": {
+  "broker": "rabbitmq",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    2.88
+   ],
+   "p95_median_ms": 2.88
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    1
+   ],
+   "max_gap_ms": [
+    11020.6
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "PASS"
+  ],
+  "mem_mib_median": 121.5,
+  "cpu_pct_median": 18.34,
+  "image_mb": 84.9
+ },
+ "rmqtt": {
+  "broker": "rmqtt",
+  "normal": {
+   "runs": 1,
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "p95_ms": [
+    1.4
+   ],
+   "p95_median_ms": 1.4
+  },
+  "live_restart": {
+   "lost": [
+    0
+   ],
+   "dup": [
+    0
+   ],
+   "max_gap_ms": [
+    1018.7
+   ]
+  },
+  "offline_queue_restart": [
+   {
+    "acked": 600,
+    "received": 600,
+    "session_present": true
+   }
+  ],
+  "offline_queue_no_restart": [
+   {
+    "acked": 600,
+    "received": 600
+   }
+  ],
+  "ws": [
+   true
+  ],
+  "metrics_br07": [
+   "FAIL"
+  ],
+  "mem_mib_median": 70.3,
+  "cpu_pct_median": 3.57,
+  "image_mb": 16.3
+ },
+ "tbmq": {
+  "broker": "tbmq",
+  "verdict_stage2": "기동·접속 실패",
+  "up_logs": [
+   "logs_tbmq_up_09291235.txt"
+  ]
+ }
+}

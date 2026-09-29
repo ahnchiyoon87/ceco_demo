@@ -1,0 +1,193 @@
+hivemq-edge-1  | Getting bind address from container hostname
+hivemq-edge-1  | setting bind address to 172.26.0.2
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   _    _ _           __  __  ____             _                          
+hivemq-edge-1  |  | |  | (_)         |  \/  |/ __ \           | |                         
+hivemq-edge-1  |  | |__| |___   _____| \  / | |  | |   ___  __| | __ _  ___               
+hivemq-edge-1  |  |  __  | \ \ / / _ \ |\/| | |  | |  / _ \/ _` |/ _` |/ _ \              
+hivemq-edge-1  |  | |  | | |\ V /  __/ |  | | |__| | |  __/ (_| | (_| |  __/              
+hivemq-edge-1  |  |_|  |_|_| \_/ \___|_|  |_|\___\_\  \___|\__,_|\__, |\___|              
+hivemq-edge-1  |                                                 __/ |                    
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HiveMQ Edge Start Script for Linux/Unix v1.13
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HIVEMQ_HOME: /opt/hivemq
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseNUMA -Djava.net.preferIPv4Stack=true --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -Djava.security.egd=file:/dev/./urandom -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Duser.language=en -Duser.region=US -XX:+CrashOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_VERSION: 25
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  | [0.001s][warning][os] NUMA support disabled: Failed to initialize libnuma
+hivemq-edge-1  | 2026-09-29 04:09:32,212 [main] INFO com.hivemq.HiveMQEdgeMain#main - Starting HiveMQ Edge...
+hivemq-edge-1  | 2026-09-29 04:09:32,492 INFO  - Log Configuration was overridden by /opt/hivemq/conf/logback.xml
+hivemq-edge-1  | LOGBACK: No context given for ch.qos.logback.core.read.ListAppender[null]
+hivemq-edge-1  | 2026-09-29 04:09:32,311 INFO  - HiveMQ Edge Version: 2026.14
+hivemq-edge-1  | 2026-09-29 04:09:32,311 INFO  - HiveMQ home directory: /opt/hivemq
+hivemq-edge-1  | 2026-09-29 04:09:32,598 WARN  - The configuration file /opt/hivemq/conf/config.xml is read only and cannot be written by HiveMQ.
+hivemq-edge-1  | 2026-09-29 04:09:33,254 INFO  - Reading configuration file /opt/hivemq/conf/config.xml
+hivemq-edge-1  | 2026-09-29 04:09:33,553 INFO  - No valid license is present.
+hivemq-edge-1  | 2026-09-29 04:09:33,600 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.jctools.util.UnsafeAccess (file:/opt/hivemq/bin/hivemq.jar)
+hivemq-edge-1  | WARNING: Please consider reporting this to the maintainers of class org.jctools.util.UnsafeAccess
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+hivemq-edge-1  | 2026-09-29 04:09:33,829 INFO  - HiveMQ Edge starts with Persistence Mode: 'IN_MEMORY'
+hivemq-edge-1  | 2026-09-29 04:09:33,880 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | 2026-09-29 04:09:34,106 INFO  - Synchronizing bridge configurations: 0 configured bridge(s), 0 currently active
+hivemq-edge-1  | 2026-09-29 04:09:34,110 INFO  - Bridge synchronization completed in 2 ms: 0 added, 0 updated, 0 removed
+hivemq-edge-1  | 2026-09-29 04:09:34,195 INFO  - Discovered 11 protocol adapter-type(s): ['Modbus TCP', 'File Protocol', 'EtherNet/IP - Logical Addressing', 'Simulation', 'Databases', 'ADS', 'OPC UA', 'MTConnect', 'Ethernet/IP CIP', 'S7', 'HTTP(s) over TCP'].
+hivemq-edge-1  | 2026-09-29 04:09:34,768 INFO  - Starting HiveMQ extension system.
+hivemq-edge-1  | 2026-09-29 04:09:34,893 WARN  - 
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | # This HiveMQ deployment is not secure! You are lacking Authentication and Authorization.                      #
+hivemq-edge-1  | # Right now any MQTT client can connect to the broker with a full set of permissions.                          #
+hivemq-edge-1  | # For production usage, add an appropriate security extension and remove the hivemq-allow-all extension.       #
+hivemq-edge-1  | # You can download security extensions from the HiveMQ Marketplace (https://www.hivemq.com/extensions/).       #
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | 2026-09-29 04:09:34,897 INFO  - Extension "Allow All Extension" version 1.0.0 started successfully.
+hivemq-edge-1  | 2026-09-29 04:09:34,901 INFO  - Refreshing adapters
+hivemq-edge-1  | 2026-09-29 04:09:34,902 INFO  - Refreshing data combiners
+hivemq-edge-1  | 2026-09-29 04:09:34,902 INFO  - DataCombiners: []
+hivemq-edge-1  | 2026-09-29 04:09:34,918 INFO  - Refreshing Pulse Asset Mappers
+hivemq-edge-1  | 2026-09-29 04:09:35,102 INFO  - Started MQTT TCP Listener on address 0.0.0.0 and on port 1883
+hivemq-edge-1  | 2026-09-29 04:09:35,103 INFO  - Started MQTT Websocket Listener on address 0.0.0.0 and on port 8083
+hivemq-edge-1  | 2026-09-29 04:09:36,598 INFO  - Started WebServer with protocol 'http' on port 8080 in 1486ms
+hivemq-edge-1  | 2026-09-29 04:09:36,601 INFO  - Started HiveMQ Edge in 4385ms
+hivemq-edge-1  | 2026-09-29 04:11:32,592 INFO  - Shutting down HiveMQ. Please wait, this could take a while...
+hivemq-edge-1  | 2026-09-29 04:11:32,603 INFO  - Stopped HTTP server /127.0.0.1:8080
+hivemq-edge-1  | 2026-09-29 04:11:32,735 INFO  - Shutting down extension system
+hivemq-edge-1  | 2026-09-29 04:11:32,737 INFO  - Extension "Allow All Extension" version 1.0.0 stopped successfully.
+hivemq-edge-1  | 2026-09-29 04:11:33,321 INFO  - Shutdown completed.
+hivemq-edge-1  | Getting bind address from container hostname
+hivemq-edge-1  | setting bind address to 172.26.0.2
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   _    _ _           __  __  ____             _                          
+hivemq-edge-1  |  | |  | (_)         |  \/  |/ __ \           | |                         
+hivemq-edge-1  |  | |__| |___   _____| \  / | |  | |   ___  __| | __ _  ___               
+hivemq-edge-1  |  |  __  | \ \ / / _ \ |\/| | |  | |  / _ \/ _` |/ _` |/ _ \              
+hivemq-edge-1  |  | |  | | |\ V /  __/ |  | | |__| | |  __/ (_| | (_| |  __/              
+hivemq-edge-1  |  |_|  |_|_| \_/ \___|_|  |_|\___\_\  \___|\__,_|\__, |\___|              
+hivemq-edge-1  |                                                 __/ |                    
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HiveMQ Edge Start Script for Linux/Unix v1.13
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HIVEMQ_HOME: /opt/hivemq
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseNUMA -Djava.net.preferIPv4Stack=true --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -Djava.security.egd=file:/dev/./urandom -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Duser.language=en -Duser.region=US -XX:+CrashOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_VERSION: 25
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  | [0.001s][warning][os] NUMA support disabled: Failed to initialize libnuma
+hivemq-edge-1  | 2026-09-29 04:11:35,193 [main] INFO com.hivemq.HiveMQEdgeMain#main - Starting HiveMQ Edge...
+hivemq-edge-1  | 2026-09-29 04:11:35,464 INFO  - Log Configuration was overridden by /opt/hivemq/conf/logback.xml
+hivemq-edge-1  | LOGBACK: No context given for ch.qos.logback.core.read.ListAppender[null]
+hivemq-edge-1  | 2026-09-29 04:11:35,256 INFO  - HiveMQ Edge Version: 2026.14
+hivemq-edge-1  | 2026-09-29 04:11:35,256 INFO  - HiveMQ home directory: /opt/hivemq
+hivemq-edge-1  | 2026-09-29 04:11:35,535 WARN  - The configuration file /opt/hivemq/conf/config.xml is read only and cannot be written by HiveMQ.
+hivemq-edge-1  | 2026-09-29 04:11:36,355 INFO  - Reading configuration file /opt/hivemq/conf/config.xml
+hivemq-edge-1  | 2026-09-29 04:11:36,975 INFO  - No valid license is present.
+hivemq-edge-1  | 2026-09-29 04:11:37,026 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.jctools.util.UnsafeAccess (file:/opt/hivemq/bin/hivemq.jar)
+hivemq-edge-1  | WARNING: Please consider reporting this to the maintainers of class org.jctools.util.UnsafeAccess
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+hivemq-edge-1  | 2026-09-29 04:11:37,327 INFO  - HiveMQ Edge starts with Persistence Mode: 'IN_MEMORY'
+hivemq-edge-1  | 2026-09-29 04:11:37,396 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | 2026-09-29 04:11:37,621 INFO  - Synchronizing bridge configurations: 0 configured bridge(s), 0 currently active
+hivemq-edge-1  | 2026-09-29 04:11:37,624 INFO  - Bridge synchronization completed in 1 ms: 0 added, 0 updated, 0 removed
+hivemq-edge-1  | 2026-09-29 04:11:37,681 INFO  - Discovered 11 protocol adapter-type(s): ['Modbus TCP', 'File Protocol', 'EtherNet/IP - Logical Addressing', 'Simulation', 'Databases', 'ADS', 'OPC UA', 'MTConnect', 'Ethernet/IP CIP', 'S7', 'HTTP(s) over TCP'].
+hivemq-edge-1  | 2026-09-29 04:11:38,009 INFO  - Starting HiveMQ extension system.
+hivemq-edge-1  | 2026-09-29 04:11:38,095 WARN  - 
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | # This HiveMQ deployment is not secure! You are lacking Authentication and Authorization.                      #
+hivemq-edge-1  | # Right now any MQTT client can connect to the broker with a full set of permissions.                          #
+hivemq-edge-1  | # For production usage, add an appropriate security extension and remove the hivemq-allow-all extension.       #
+hivemq-edge-1  | # You can download security extensions from the HiveMQ Marketplace (https://www.hivemq.com/extensions/).       #
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | 2026-09-29 04:11:38,104 INFO  - Extension "Allow All Extension" version 1.0.0 started successfully.
+hivemq-edge-1  | 2026-09-29 04:11:38,109 INFO  - Refreshing adapters
+hivemq-edge-1  | 2026-09-29 04:11:38,111 INFO  - Refreshing data combiners
+hivemq-edge-1  | 2026-09-29 04:11:38,111 INFO  - DataCombiners: []
+hivemq-edge-1  | 2026-09-29 04:11:38,134 INFO  - Refreshing Pulse Asset Mappers
+hivemq-edge-1  | 2026-09-29 04:11:38,295 INFO  - Started MQTT TCP Listener on address 0.0.0.0 and on port 1883
+hivemq-edge-1  | 2026-09-29 04:11:38,296 INFO  - Started MQTT Websocket Listener on address 0.0.0.0 and on port 8083
+hivemq-edge-1  | 2026-09-29 04:11:39,247 INFO  - Started WebServer with protocol 'http' on port 8080 in 946ms
+hivemq-edge-1  | 2026-09-29 04:11:39,249 INFO  - Started HiveMQ Edge in 4052ms
+hivemq-edge-1  | 2026-09-29 04:12:50,707 INFO  - Shutting down HiveMQ. Please wait, this could take a while...
+hivemq-edge-1  | 2026-09-29 04:12:50,717 INFO  - Stopped HTTP server /127.0.0.1:8080
+hivemq-edge-1  | 2026-09-29 04:12:50,839 INFO  - Shutting down extension system
+hivemq-edge-1  | 2026-09-29 04:12:50,841 INFO  - Extension "Allow All Extension" version 1.0.0 stopped successfully.
+hivemq-edge-1  | 2026-09-29 04:12:51,409 INFO  - Shutdown completed.
+hivemq-edge-1  | Getting bind address from container hostname
+hivemq-edge-1  | setting bind address to 172.26.0.2
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   _    _ _           __  __  ____             _                          
+hivemq-edge-1  |  | |  | (_)         |  \/  |/ __ \           | |                         
+hivemq-edge-1  |  | |__| |___   _____| \  / | |  | |   ___  __| | __ _  ___               
+hivemq-edge-1  |  |  __  | \ \ / / _ \ |\/| | |  | |  / _ \/ _` |/ _` |/ _ \              
+hivemq-edge-1  |  | |  | | |\ V /  __/ |  | | |__| | |  __/ (_| | (_| |  __/              
+hivemq-edge-1  |  |_|  |_|_| \_/ \___|_|  |_|\___\_\  \___|\__,_|\__, |\___|              
+hivemq-edge-1  |                                                 __/ |                    
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HiveMQ Edge Start Script for Linux/Unix v1.13
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  |   HIVEMQ_HOME: /opt/hivemq
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseNUMA -Djava.net.preferIPv4Stack=true --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -Djava.security.egd=file:/dev/./urandom -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Duser.language=en -Duser.region=US -XX:+CrashOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError
+hivemq-edge-1  | 
+hivemq-edge-1  |   JAVA_VERSION: 25
+hivemq-edge-1  | 
+hivemq-edge-1  | -------------------------------------------------------------------------
+hivemq-edge-1  | 
+hivemq-edge-1  | [0.001s][warning][os] NUMA support disabled: Failed to initialize libnuma
+hivemq-edge-1  | 2026-09-29 04:12:52,793 [main] INFO com.hivemq.HiveMQEdgeMain#main - Starting HiveMQ Edge...
+hivemq-edge-1  | 2026-09-29 04:12:53,052 INFO  - Log Configuration was overridden by /opt/hivemq/conf/logback.xml
+hivemq-edge-1  | LOGBACK: No context given for ch.qos.logback.core.read.ListAppender[null]
+hivemq-edge-1  | 2026-09-29 04:12:52,841 INFO  - HiveMQ Edge Version: 2026.14
+hivemq-edge-1  | 2026-09-29 04:12:52,841 INFO  - HiveMQ home directory: /opt/hivemq
+hivemq-edge-1  | 2026-09-29 04:12:53,093 WARN  - The configuration file /opt/hivemq/conf/config.xml is read only and cannot be written by HiveMQ.
+hivemq-edge-1  | 2026-09-29 04:12:53,415 INFO  - Reading configuration file /opt/hivemq/conf/config.xml
+hivemq-edge-1  | 2026-09-29 04:12:53,662 INFO  - No valid license is present.
+hivemq-edge-1  | 2026-09-29 04:12:53,698 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.jctools.util.UnsafeAccess (file:/opt/hivemq/bin/hivemq.jar)
+hivemq-edge-1  | WARNING: Please consider reporting this to the maintainers of class org.jctools.util.UnsafeAccess
+hivemq-edge-1  | WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+hivemq-edge-1  | 2026-09-29 04:12:53,895 INFO  - HiveMQ Edge starts with Persistence Mode: 'IN_MEMORY'
+hivemq-edge-1  | 2026-09-29 04:12:53,947 INFO  - HiveMQ Data Hub Module is not started because a valid license is missing.
+hivemq-edge-1  | 2026-09-29 04:12:54,140 INFO  - Synchronizing bridge configurations: 0 configured bridge(s), 0 currently active
+hivemq-edge-1  | 2026-09-29 04:12:54,143 INFO  - Bridge synchronization completed in 1 ms: 0 added, 0 updated, 0 removed
+hivemq-edge-1  | 2026-09-29 04:12:54,196 INFO  - Discovered 11 protocol adapter-type(s): ['Modbus TCP', 'File Protocol', 'EtherNet/IP - Logical Addressing', 'Simulation', 'Databases', 'ADS', 'OPC UA', 'MTConnect', 'Ethernet/IP CIP', 'S7', 'HTTP(s) over TCP'].
+hivemq-edge-1  | 2026-09-29 04:12:54,460 INFO  - Starting HiveMQ extension system.
+hivemq-edge-1  | 2026-09-29 04:12:54,527 WARN  - 
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | # This HiveMQ deployment is not secure! You are lacking Authentication and Authorization.                      #
+hivemq-edge-1  | # Right now any MQTT client can connect to the broker with a full set of permissions.                          #
+hivemq-edge-1  | # For production usage, add an appropriate security extension and remove the hivemq-allow-all extension.       #
+hivemq-edge-1  | # You can download security extensions from the HiveMQ Marketplace (https://www.hivemq.com/extensions/).       #
+hivemq-edge-1  | ################################################################################################################
+hivemq-edge-1  | 2026-09-29 04:12:54,529 INFO  - Extension "Allow All Extension" version 1.0.0 started successfully.
+hivemq-edge-1  | 2026-09-29 04:12:54,534 INFO  - Refreshing adapters
+hivemq-edge-1  | 2026-09-29 04:12:54,534 INFO  - Refreshing data combiners
+hivemq-edge-1  | 2026-09-29 04:12:54,535 INFO  - DataCombiners: []
+hivemq-edge-1  | 2026-09-29 04:12:54,559 INFO  - Refreshing Pulse Asset Mappers
+hivemq-edge-1  | 2026-09-29 04:12:54,693 INFO  - Started MQTT TCP Listener on address 0.0.0.0 and on port 1883
+hivemq-edge-1  | 2026-09-29 04:12:54,693 INFO  - Started MQTT Websocket Listener on address 0.0.0.0 and on port 8083
+hivemq-edge-1  | 2026-09-29 04:12:55,795 INFO  - Started WebServer with protocol 'http' on port 8080 in 1095ms
+hivemq-edge-1  | 2026-09-29 04:12:55,798 INFO  - Started HiveMQ Edge in 3002ms

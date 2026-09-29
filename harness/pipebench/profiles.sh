@@ -8,6 +8,8 @@ pipe_profile() {
     v1)            IMAGES="telegraf:1.33-alpine" ;;                              # V1 기준(Telegraf 1.33 ×3, 강제 교체 대상)
     telegraf140x3) IMAGES="telegraf:1.40.1-alpine" ;;
     telegraf140x1) IMAGES="telegraf:1.40.1-alpine"; CAND='^pipebench-telegraf140x1-1$' ;;
+    telegraf140v2) IMAGES="telegraf:1.40.1-alpine" ;;                                   # V2 조립용(#114)
+    telegraf140x1k4) IMAGES="telegraf:1.40.1-alpine"; CAND='^pipebench-telegraf140x1k4-1$' ;;
     bento)         IMAGES="ghcr.io/warpstreamlabs/bento:1.21.2" ;;
     rpconnect)     IMAGES="docker.redpanda.com/redpandadata/connect:4.111.0" ;;
     benthos-umh)   IMAGES="ghcr.io/united-manufacturing-hub/benthos-umh:0.16.0" ;;
@@ -21,4 +23,4 @@ pipe_profile() {
     *) echo "알 수 없는 프로파일: $P ($PIPE_ALL)" >&2; return 1 ;;
   esac
 }
-PIPE_ALL="v1 telegraf140x3 telegraf140x1 bento rpconnect benthos-umh ekuiper vector nifi kconnect rmqtt-pc tbmq-pc"
+PIPE_ALL="v1 telegraf140x3 telegraf140v2 telegraf140x1 telegraf140x1k4 bento rpconnect benthos-umh ekuiper vector nifi kconnect rmqtt-pc tbmq-pc"

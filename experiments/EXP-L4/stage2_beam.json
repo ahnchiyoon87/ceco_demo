@@ -1,0 +1,64 @@
+{
+ "profile": "beam",
+ "runs": [
+  {
+   "run": "s2_beam_09291351",
+   "at": "2026-09-29T13:57:07+0900",
+   "stopped_at": "precheck",
+   "status": "fail",
+   "note": "후보 컨테이너가 떠 있지 않음",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": null,
+   "v1_compare": null,
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "Beam Java SDK",
+     "ok": false,
+     "error": "Beam Java 에 RunInference 없음(Python SDK 전용). 미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략"
+    },
+    {
+     "rule": "L4-01 임계치",
+     "feature": "SqlTransform.query",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "SqlTransform.query",
+     "ok": false,
+     "error": "CannotPlanException: There are not enough rules to produce a node with desired properties: convention=BEAM_LOGICAL. All the inputs have relevant nodes, however the cost is still infinite.\nRoot: rel#221:RelSubset#5.BEAM_LOGICAL\nOriginal rel:\nLogicalProject(subset=[rel#221:RelSubset#5.BEAM_LOGICAL], ts=[$0], site=[$1], device=[$2], tag=[$3], v=[$4], alert_type=['ZSCORE'], severity=['WARNING'], detector=['TIER1_ZSCORE'], detail=['z']): rowcount = 1.0, cumulative cost = {inf}, id = 219\n  LogicalFilter(subset=[rel#218:RelSubset#4.NONE], condition=[>=($7, 3)]): rowcount = 1.0, cumulative cost = {inf… <- SqlConversionException: Unable to convert query SELECT ts, site, device, tag, v, 'ZSCORE' AS alert_type, 'WARNING' AS severity, 'TIER1_ZSCORE' AS detector, 'z' AS detail FROM (SELECT ts, site, device, tag, v, mu, sd,  SUM(CASE WHEN sd > 1e-9 AND ABS(v - mu) / sd > 3.5 THEN 1 ELSE 0 END) OVER (PARTITION BY tag ORDER BY ts   ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) AS viol_run FROM (SELECT ts, site, device, tag, v,   AVG(v) OVER (PARTITION BY tag ORDER BY ts ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS mu,   STDDEV_SAMP(v) OVER (PARTITION BY tag ORDER BY ts ROWS BETWEEN 59 PRECEDING AND CURREN…"
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "SqlTransform.query + GlobalWindows 레코드 단위 트리거",
+     "ok": false,
+     "error": "CannotPlanException: There are not enough rules to produce a node with desired properties: convention=BEAM_LOGICAL. All the inputs have relevant nodes, however the cost is still infinite.\nRoot: rel#884:RelSubset#5.BEAM_LOGICAL\nOriginal rel:\nLogicalProject(subset=[rel#884:RelSubset#5.BEAM_LOGICAL], ts=[$0], site=[$1], device=[$2], tag=[$3], v=[$4], alert_type=['ZSCORE'], severity=['WARNING'], detector=['TIER1_ZSCORE'], detail=['z']): rowcount = 1.0, cumulative cost = {inf}, id = 882\n  LogicalFilter(subset=[rel#881:RelSubset#4.NONE], condition=[>=($7, 3)]): rowcount = 1.0, cumulative cost = {inf… <- SqlConversionException: Unable to convert query SELECT ts, site, device, tag, v, 'ZSCORE' AS alert_type, 'WARNING' AS severity, 'TIER1_ZSCORE' AS detector, 'z' AS detail FROM (SELECT ts, site, device, tag, v, mu, sd,  SUM(CASE WHEN sd > 1e-9 AND ABS(v - mu) / sd > 3.5 THEN 1 ELSE 0 END) OVER (PARTITION BY tag ORDER BY ts   ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) AS viol_run FROM (SELECT ts, site, device, tag, v,   AVG(v) OVER (PARTITION BY tag ORDER BY ts ROWS BETWEEN 59 PRECEDING AND CURRENT ROW) AS mu,   STDDEV_SAMP(v) OVER (PARTITION BY tag ORDER BY ts ROWS BETWEEN 59 PRECEDING AND CURREN…"
+    },
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "SqlTransform.query",
+     "ok": false,
+     "error": "IllegalStateException: GroupByKey cannot be applied to non-bounded PCollection in the GlobalWindow without a trigger. Use a Window.into or Window.triggering transform prior to GroupByKey."
+    },
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "SqlTransform.query + GlobalWindows 레코드 단위 트리거",
+     "ok": true,
+     "error": ""
+    }
+   ],
+   "rules_by_execution": {
+    "L4-12 ONNX": "rejected",
+    "L4-01 임계치": "accepted",
+    "L4-02 Z-Score": "rejected",
+    "L4-03/04 CEP": "accepted"
+   }
+  }
+ ]
+}

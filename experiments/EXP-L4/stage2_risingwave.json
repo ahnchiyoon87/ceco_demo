@@ -1,0 +1,20 @@
+{
+ "profile": "risingwave",
+ "runs": [
+  {
+   "run": "s2_risingwave_09291357",
+   "at": "2026-09-29T13:58:42+0900",
+   "stopped_at": "deploy",
+   "status": "fail",
+   "note": "배포 명령 실패",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": null,
+   "v1_compare": null,
+   "s13": null
+  }
+ ]
+}

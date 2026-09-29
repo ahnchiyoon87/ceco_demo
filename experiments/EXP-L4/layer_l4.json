@@ -1,0 +1,177 @@
+{
+ "arroyo": {
+  "run": "s2_arroyo_09291405",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 30,
+  "fail": 40,
+  "v1_equal": false,
+  "only_cand": 0,
+  "only_ref": 93,
+  "only_ref_types": {
+   "ZSCORE": 53,
+   "CEP_BEARING": 40
+  },
+  "only_cand_types": {},
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": 90,
+  "cpu_avg_pct": 1.0
+ },
+ "beam": {
+  "run": "s2_beam_09291351",
+  "stopped_at": "precheck",
+  "status": "fail",
+  "note": "후보 컨테이너가 떠 있지 않음",
+  "pass": null,
+  "fail": null,
+  "v1_equal": null,
+  "only_cand": null,
+  "only_ref": null,
+  "only_ref_types": null,
+  "only_cand_types": null,
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": null,
+  "cpu_avg_pct": null
+ },
+ "ekuiper": {
+  "run": "s2_ekuiper_09291322",
+  "stopped_at": "deploy",
+  "status": "fail",
+  "note": "배포 명령 실패",
+  "pass": null,
+  "fail": null,
+  "v1_equal": null,
+  "only_cand": null,
+  "only_ref": null,
+  "only_ref_types": null,
+  "only_cand_types": null,
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": null,
+  "cpu_avg_pct": null
+ },
+ "flinkha": {
+  "run": "s2_flinkha_09291306",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 70,
+  "fail": 0,
+  "v1_equal": true,
+  "only_cand": 0,
+  "only_ref": 0,
+  "only_ref_types": {},
+  "only_cand_types": {},
+  "s13": "PASS",
+  "r05": {
+   "pass": 0,
+   "fail": 1,
+   "jobs_after": "{'AR100-Tier1-CEP': 'RUNNING', 'AR100-Tier1-Threshold': 'RUNNING', 'AR100-Tier1-ZScore': 'RUNNING', 'AR100-Tier2-OnnxAnomalyDetection': 'RUNNING'}"
+  },
+  "mem_avg_mib": 1581,
+  "cpu_avg_pct": 23.0
+ },
+ "kstreams": {
+  "run": "s2_kstreams_09291335",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 30,
+  "fail": 40,
+  "v1_equal": false,
+  "only_cand": 2,
+  "only_ref": 40,
+  "only_ref_types": {
+   "CEP_BEARING": 40
+  },
+  "only_cand_types": {
+   "ZSCORE": 2
+  },
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": 182,
+  "cpu_avg_pct": 6.7
+ },
+ "proton": {
+  "run": "s2_proton_09291358",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 30,
+  "fail": 40,
+  "v1_equal": false,
+  "only_cand": 0,
+  "only_ref": 93,
+  "only_ref_types": {
+   "ZSCORE": 53,
+   "CEP_BEARING": 40
+  },
+  "only_cand_types": {},
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": 233,
+  "cpu_avg_pct": 5.4
+ },
+ "quix": {
+  "run": "s2_quix_09291324",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 30,
+  "fail": 40,
+  "v1_equal": false,
+  "only_cand": 2,
+  "only_ref": 40,
+  "only_ref_types": {
+   "CEP_BEARING": 40
+  },
+  "only_cand_types": {
+   "ZSCORE": 2
+  },
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": 80,
+  "cpu_avg_pct": 4.1
+ },
+ "risingwave": {
+  "run": "s2_risingwave_09291357",
+  "stopped_at": "deploy",
+  "status": "fail",
+  "note": "배포 명령 실패",
+  "pass": null,
+  "fail": null,
+  "v1_equal": null,
+  "only_cand": null,
+  "only_ref": null,
+  "only_ref_types": null,
+  "only_cand_types": null,
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": null,
+  "cpu_avg_pct": null
+ },
+ "storm": {
+  "run": "s2_storm_09291343",
+  "stopped_at": "done",
+  "status": "ok",
+  "note": "",
+  "pass": 30,
+  "fail": 40,
+  "v1_equal": false,
+  "only_cand": 2,
+  "only_ref": 40,
+  "only_ref_types": {
+   "CEP_BEARING": 40
+  },
+  "only_cand_types": {
+   "ZSCORE": 2
+  },
+  "s13": null,
+  "r05": null,
+  "mem_avg_mib": 888,
+  "cpu_avg_pct": 81.1
+ }
+}

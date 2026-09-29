@@ -30,8 +30,8 @@ W=alwbench-${SVC}-1
 C="$DC --profile tools run --rm -T client python /repo/harness/alarmworkerbench/check_alw.py"
 $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1
 $DC --profile tools build -q client || exit 6
-$DC --profile "$P" up -d ${BUILD:+--build} || exit 6
-[ -n "${SETUP:-}" ] && { sleep 5; $DC --profile tools run --rm -T client $SETUP || { $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}.txt" 2>&1; echo "[alw] SETUP 실패 → ② 탈락 후보"; exit 7; }; }
+$DC --profile "$P" up -d ${BUILD:+--build} || { $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}_up_fail.txt" 2>&1; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 6; }   # 실패 시 정리(#116)
+[ -n "${SETUP:-}" ] && { sleep 5; $DC --profile tools run --rm -T client $SETUP > "$RAW/setup_${TAG}.txt" 2>&1 || { cat "$RAW/setup_${TAG}.txt"; $DC --profile "$P" logs --no-color > "$RAW/logs_${TAG}.txt" 2>&1; echo "[alw] SETUP 실패 → 원인 확인 필요(설정 출력 $RAW/setup_${TAG}.txt, #112)"; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 7; }; cat "$RAW/setup_${TAG}.txt"; }
 sleep 10
 harness/sample_stats.sh "$RAW/stats_${TAG}.csv" 900 '^alwbench-' &
 sp=$!

@@ -1,0 +1,20 @@
+{
+ "sent": 7200,
+ "received_unique": 7200,
+ "lost": 0,
+ "duplicates": 0,
+ "publish_rc_fail": 0,
+ "latency_ms": {
+  "p50": 2.84,
+  "p95": 18.86,
+  "p99": 618.73,
+  "max": 1008.3
+ },
+ "max_gap_ms": 1013.4,
+ "note": "호스트가 발행 시작 약 20초 뒤 브로커 docker restart",
+ "broker": "comqtt",
+ "mode": "live_restart",
+ "run": "b1r",
+ "rate": 120,
+ "duration": 60
+}

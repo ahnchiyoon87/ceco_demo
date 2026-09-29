@@ -36,7 +36,7 @@ label="$p.$MODE"; export MON_PROFILE=$label
 printf '# TYPE flink_jobmanager_numRunningJobs gauge\nflink_jobmanager_numRunningJobs 4\n' > "$RAW/detector_www/metrics"
 $DC --profile tools build client >/dev/null || exit 5
 rm -f "$RAW/sink_$label.jsonl" "$RAW/${label}_victim_"* "$RAW/${label}_detector_"*
-$DC $profs up -d || { $DC $profs logs --tail 60; exit 6; }
+$DC $profs up -d || { $DC $profs logs --no-color > "experiments/EXP-MON/raw/${p}_up_fail.log" 2>&1; $DC $profs logs --tail 60; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 6; }   # 실패 시 정리(#116)
 $DC $profs images | tail -n +2 | awk '{print $2":"$3" "$4}' > "$RAW/images_$label.txt"
 harness/sample_stats.sh "$RAW/stats_$label.csv" 1200 "^monbench-" &
 sp=$!

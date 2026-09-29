@@ -1,0 +1,12 @@
+{
+ "queued_acked": 600,
+ "received_after_restart": 600,
+ "session_present": true,
+ "connect_rc": "Success",
+ "retained_after_restart": true,
+ "broker": "lavinmq",
+ "mode": "offline_queue",
+ "run": "b1q0",
+ "rate": 120,
+ "duration": 60
+}

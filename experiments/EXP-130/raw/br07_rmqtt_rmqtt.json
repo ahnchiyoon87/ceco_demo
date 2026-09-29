@@ -1,0 +1,52 @@
+{
+ "rmqtt": {
+  "http": [
+   {
+    "url": "http://rmqtt:6060/api/v1/metrics/prometheus",
+    "status": 200,
+    "bytes": 10194,
+    "sample": [
+     "rmqtt_metrics{item=\"client.auth.anonymous\",node=\"1\"} 8",
+     "rmqtt_metrics{item=\"client.auth.anonymous\",node=\"all\"} 8",
+     "rmqtt_metrics{item=\"client.auth.anonymous.error\",node=\"1\"} 0",
+     "rmqtt_metrics{item=\"client.auth.anonymous.error\",node=\"all\"} 0",
+     "rmqtt_metrics{item=\"client.authenticate\",node=\"1\"} 1"
+    ]
+   },
+   {
+    "url": "http://rmqtt:6060/api/v1/stats/sum",
+    "status": 200,
+    "bytes": 766,
+    "sample": [
+     "{\"nodes\":{\"1\":{\"name\":\"1@127.0.0.1\",\"running\":true}},\"stats\":{\"handshakings.count\":0,\"handshakings.max\":1,\"handshakings_active.count\":0,\"handshakings_rate.count\":0.06,\"handshakings_rate.max\":0.22,\"connections.count\":0,\"connections.max\":1,\"sessions.count\":4,\"sessions.max\":5,\"subscriptions.count\":4,\"subscriptions.max\":5,\"subscriptions_shared.count\":0,\"subscriptions_shared.max\":0,\"retaineds.count\":1,\"retaineds.max\":1,\"message_queues.count\":0,\"message_queues.max\":600,\"out_inflights.count\":0,\"out_inflights.max\":128,\"in_inflights.count\":0,\"in_inflights.max\":1,\"forwards.count\":0,\"forwards.max\":0,\"message_storages.count\":-1,\"message_storages.max\":0,\"delayed_publishs.count\":0,\"delayed_publishs.max\":0,\"topics.count\":4,\"topics.max\":5,\"routes.count\":4,\"routes.max\":5}}"
+    ]
+   },
+   {
+    "url": "http://rmqtt:6060/api/v1/metrics/sum",
+    "status": 200,
+    "bytes": 1426,
+    "sample": [
+     "{\"client.authenticate\":1,\"client.auth.anonymous\":8,\"client.auth.anonymous.error\":0,\"client.handshaking.timeout\":0,\"client.connect\":8,\"client.connack\":8,\"client.connack.auth.error\":0,\"client.connack.unavailable.error\":0,\"client.connack.error\":0,\"client.connected\":8,\"client.disconnected\":8,\"client.subscribe.check.acl\":4,\"client.publish.check.acl\":621,\"client.subscribe\":4,\"client.unsubscribe\":0,\"client.subscribe.error\":0,\"client.subscribe.auth.error\":0,\"client.publish.auth.error\":0,\"client.publish.error\":0,\"client.publish.duplicate\":0,\"session.subscribed\":4,\"session.unsubscribed\":0,\"session.created\":6,\"session.resumed\":2,\"session.terminated\":5,\"messages.publish\":621,\"messages.delivered\":1221,\"messages.acked\":1221,\"messages.dropped\":0,\"messages.publish.custom\":621,\"messages.delivered.custom\":1221,\"messages.acked.custom\":1221,\"messages.publish.admin\":0,\"messages.delivered.admin\":0,\"messages.acked.admin\":0,\"messages.publish.lastwill\":0,\"messages.delivered.lastwill\":0,\"messages.acked.lastwill\":0,\"messages.publish.system\":0,\"messages.delivered.system\":0,\"messages.acked.system\":0,\"messages.publish.bridge\":0,\"messages.delivered.bridge\":0,\"messages.acked.bridge\":0,\"messages.delivered.retain\":1,\"messages.acked.retain\":1,\"messages.nonsubscribed\":1,\"messages.nonsubscribed.custom\":1,\"messages.nonsubscribed.admin\":0,\"messages.nonsubscribed.lastwill\":0,\"messages.nonsubscribed.system\":0,\"messages.nonsubscribed.bridge\":0}"
+    ]
+   }
+  ],
+  "sys_topics": 0,
+  "sys_sample": [],
+  "http_found": {
+   "connections": true,
+   "received": false,
+   "sent": false
+  },
+  "sys_found": {
+   "connections": false,
+   "received": false,
+   "sent": false
+  },
+  "verdict": "FAIL",
+  "covered": {
+   "connections": true,
+   "received": false,
+   "sent": false
+  }
+ }
+}

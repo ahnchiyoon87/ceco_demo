@@ -1,0 +1,237 @@
+{
+ "window": {
+  "t0": 1790656263.3530655,
+  "t1": 1790656376.3908594,
+  "seconds": 113.0
+ },
+ "throughput": {
+  "messages": 0,
+  "msgs_per_s": 0.0,
+  "readings_per_s": 0.0
+ },
+ "completeness": {
+  "expected_samples": 1356,
+  "unique_samples": 0,
+  "missing_gap_based": 1356,
+  "duplicates": 0,
+  "near_duplicates": 0,
+  "complete_second_ratio": 0.0,
+  "all_12_tags_present": false,
+  "unknown_tags": [],
+  "per_tag": {
+   "LT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "LT-102": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "TT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "TT-102": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "PT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "FT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "FT-102": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "IT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "IT-102": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "VT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "pH-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   },
+   "CT-101": {
+    "unique": 0,
+    "expected": 113,
+    "missing_gap_based": 113,
+    "duplicates": 0,
+    "near_duplicates": 0,
+    "max_gap_s": null
+   }
+  }
+ },
+ "values": {
+  "checked": 0,
+  "matched": 0,
+  "mismatch": 0,
+  "no_state": 0,
+  "sentinel": 0,
+  "none_value": 0,
+  "match_rate": 0.0,
+  "seq_lag_hist": {},
+  "mismatch_examples": []
+ },
+ "latency_ms": {
+  "recv_minus_origin": {
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "n": 0,
+   "note": "origin 은 수집기 시각(도커 VM 같은 시계)"
+  },
+  "value_age": {
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "note": "설비 값 변경 최초 관측(0.1 s 폴링) → MQTT 수신. 폴링 주기 위상 포함"
+  }
+ },
+ "shape": {
+  "parser": "tbgw",
+  "notes": {},
+  "unparsable_messages": 0,
+  "readings_per_message": {
+   "p50": null,
+   "min": null,
+   "max": null
+  },
+  "v1_edgex_shape": false
+ },
+ "state_poll": {
+  "snapshots": 122,
+  "errors": 0
+ },
+ "downstream": {
+  "file": "/experiments/EXP-ING/raw/downstream_tbgw.jsonl",
+  "present": true,
+  "records_in_window": 0,
+  "expected_from_candidate": 0,
+  "missing": 0,
+  "extra": 0,
+  "duplicates": 0,
+  "value_mismatch": 0,
+  "schema_mismatch": 0,
+  "record_keys": [],
+  "unparsable_lines": 0,
+  "per_tag": {},
+  "missing_examples": [],
+  "equivalent": false,
+  "note": "후보 발행에 origin(원천 시각)이 없으면 비교 불가(expected_from_candidate=0) → equivalent=false"
+ },
+ "exp": "EXP-ING",
+ "profile": "tbgw",
+ "run": "r1",
+ "duration": 120.0,
+ "mqtt": "mosquitto:1883",
+ "topic": "v1/gateway/telemetry",
+ "measured_at": "2026-09-29T04:32:59+0000",
+ "resources": {
+  "per_container": {
+   "ingestbench-client-run-bede12ae3def": {
+    "cpu_pct_median": 1.2,
+    "cpu_pct_p95": 1.62,
+    "mem_mib_median": 25.2,
+    "mem_mib_max": 25.7,
+    "samples": 35
+   },
+   "ingestbench-downstream-1": {
+    "cpu_pct_median": 0.13,
+    "cpu_pct_p95": 0.22,
+    "mem_mib_median": 83.7,
+    "mem_mib_max": 84.9,
+    "samples": 39
+   },
+   "ingestbench-mosquitto-1": {
+    "cpu_pct_median": 0.06,
+    "cpu_pct_p95": 0.1,
+    "mem_mib_median": 5.9,
+    "mem_mib_max": 6.3,
+    "samples": 39
+   },
+   "ingestbench-plant-simulator-1": {
+    "cpu_pct_median": 1.4,
+    "cpu_pct_p95": 11.06,
+    "mem_mib_median": 33.5,
+    "mem_mib_max": 34.5,
+    "samples": 39
+   },
+   "ingestbench-tbgw-1": {
+    "cpu_pct_median": 1.26,
+    "cpu_pct_p95": 1.79,
+    "mem_mib_median": 76.7,
+    "mem_mib_max": 76.9,
+    "samples": 39
+   }
+  },
+  "total": {
+   "containers": 1,
+   "only": "^ingestbench-tbgw-",
+   "cpu_pct_median": 1.26,
+   "cpu_pct_p95": 1.79,
+   "mem_mib_median": 76.7,
+   "mem_mib_max": 76.9
+  },
+  "stats_csv": "experiments/EXP-ING/raw/stats_tbgw.csv",
+  "images_mib": {
+   "thingsboard/tb-gateway:3.8.5": 103.3
+  },
+  "images_total_mib": 103.3
+ }
+}

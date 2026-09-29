@@ -1,0 +1,29 @@
+{
+ "exp": "EXP-L4",
+ "run": "s2_flinkha_09291306_r05",
+ "alerts_topic": "exp.l4.alerts.flinkha",
+ "pass": 0,
+ "fail": 1,
+ "record": [],
+ "cep_latency_ms": {
+  "n": 0,
+  "p50": null,
+  "p95": null,
+  "max": null,
+  "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+ },
+ "rows": [
+  {
+   "device": "s2_flinkha_09291306_r05.a006f-S09-1",
+   "case": "S09",
+   "expected_cep": 1,
+   "cep": 2,
+   "types": {
+    "CEP_BEARING": 2,
+    "THRESHOLD_USL": 4,
+    "ZSCORE": 4
+   },
+   "verdict": "FAIL"
+  }
+ ]
+}

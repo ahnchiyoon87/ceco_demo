@@ -1,0 +1,182 @@
+artemis-1  | WARNING: A restricted method in java.lang.System has been called
+artemis-1  | WARNING: java.lang.System::loadLibrary has been called by org.apache.activemq.artemis.nativo.jlibaio.LibaioContext in an unnamed module (file:/opt/artemis/lib/activemq-artemis-native-2.0.0.jar)
+artemis-1  | WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+artemis-1  | WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+artemis-1  | 
+artemis-1  | Creating Apache Artemis instance at: /var/lib/artemis-instance
+artemis-1  | 
+artemis-1  | Auto tuning journal ...
+artemis-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/opt/artemis/lib/netty-common-4.1.137.Final.jar)
+artemis-1  | WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+artemis-1  | done! Your system can make 41.67 writes per millisecond, your journal-buffer-timeout will be 24000
+artemis-1  | 
+artemis-1  | You can now start the broker by executing:  
+artemis-1  | 
+artemis-1  |    "/var/lib/artemis-instance/bin/artemis" run
+artemis-1  | 
+artemis-1  | Or you can run the broker in the background using:
+artemis-1  | 
+artemis-1  |    "/var/lib/artemis-instance/bin/artemis-service" start
+artemis-1  | 
+artemis-1  |      _        _               _
+artemis-1  |     / \  ____| |_  ___ __  __(_) _____
+artemis-1  |    / _ \|  _ \ __|/ _ \  \/  | |/  __/
+artemis-1  |   / ___ \ | \/ |_/  __/ |\/| | |\___ \
+artemis-1  |  /_/   \_\|   \__\____|_|  |_|_|/___ /
+artemis-1  |  Apache Artemis 2.57.0
+artemis-1  | 
+artemis-1  | 
+artemis-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/opt/artemis/lib/netty-common-4.1.137.Final.jar)
+artemis-1  | WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+artemis-1  | WARNING: A restricted method in java.lang.System has been called
+artemis-1  | WARNING: java.lang.System::loadLibrary has been called by org.apache.activemq.artemis.nativo.jlibaio.LibaioContext in an unnamed module (file:/opt/artemis/lib/activemq-artemis-native-2.0.0.jar)
+artemis-1  | WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+artemis-1  | WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+artemis-1  | 
+artemis-1  | 2026-09-29 03:50:14,236 INFO  [org.apache.activemq.artemis.integration.bootstrap] AMQ101000: Starting Apache Artemis Server version 2.57.0
+artemis-1  | 2026-09-29 03:50:14,345 INFO  [org.apache.activemq.artemis.core.server] AMQ221000: Primary message broker is starting with configuration Broker Configuration (clustered=false,journalDirectory=data/journal,bindingsDirectory=data/bindings,largeMessagesDirectory=data/large-messages,pagingDirectory=data/paging)
+artemis-1  | 2026-09-29 03:50:14,410 INFO  [org.apache.activemq.artemis.core.server] AMQ221012: Using AIO Journal
+artemis-1  | 2026-09-29 03:50:14,593 INFO  [org.apache.activemq.artemis.core.server] AMQ221057: Global Max Size is being adjusted to 1/2 of the JVM max size (-Xmx). being defined as 1073741824
+artemis-1  | 2026-09-29 03:50:14,681 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-server]. Adding protocol support for: CORE
+artemis-1  | 2026-09-29 03:50:14,683 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-amqp-protocol]. Adding protocol support for: AMQP
+artemis-1  | 2026-09-29 03:50:14,684 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-hornetq-protocol]. Adding protocol support for: HORNETQ
+artemis-1  | 2026-09-29 03:50:14,685 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-mqtt-protocol]. Adding protocol support for: MQTT
+artemis-1  | 2026-09-29 03:50:14,686 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-openwire-protocol]. Adding protocol support for: OPENWIRE
+artemis-1  | 2026-09-29 03:50:14,691 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-stomp-protocol]. Adding protocol support for: STOMP
+artemis-1  | 2026-09-29 03:50:14,758 INFO  [org.apache.activemq.artemis.core.server] AMQ221034: Waiting indefinitely to obtain primary lock
+artemis-1  | 2026-09-29 03:50:14,759 INFO  [org.apache.activemq.artemis.core.server] AMQ221035: Primary Server Obtained primary lock
+artemis-1  | 2026-09-29 03:50:14,939 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address DLQ supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:50:14,972 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue DLQ on address DLQ
+artemis-1  | 2026-09-29 03:50:15,076 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address ExpiryQueue supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:50:15,078 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue ExpiryQueue on address ExpiryQueue
+artemis-1  | 2026-09-29 03:50:15,857 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61616 for protocols [CORE,MQTT,AMQP,STOMP,HORNETQ,OPENWIRE]
+artemis-1  | 2026-09-29 03:50:15,884 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5445 for protocols [HORNETQ,STOMP]
+artemis-1  | 2026-09-29 03:50:15,896 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5672 for protocols [AMQP]
+artemis-1  | 2026-09-29 03:50:15,927 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:1883 for protocols [MQTT]
+artemis-1  | 2026-09-29 03:50:15,931 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61613 for protocols [STOMP]
+artemis-1  | 2026-09-29 03:50:15,935 INFO  [org.apache.activemq.artemis.core.server] AMQ221007: Server is now active
+artemis-1  | 2026-09-29 03:50:15,935 INFO  [org.apache.activemq.artemis.core.server] AMQ221001: Apache Artemis Message Broker version 2.57.0 [0.0.0.0, nodeID=e0b1c88a-bbb8-11f1-8301-c68e1c24929f] 
+artemis-1  | 2026-09-29 03:50:15,958 INFO  [org.apache.activemq.artemis] AMQ241003: Starting embedded web server
+artemis-1  | 2026-09-29 03:50:16,611 INFO  [io.hawt.HawtioContextListener] Initialising Hawtio services
+artemis-1  | 2026-09-29 03:50:16,621 INFO  [io.hawt.jmx.JmxTreeWatcher] Welcome to Hawtio 4.7.0
+artemis-1  | 2026-09-29 03:50:16,633 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Authentication throttling is enabled
+artemis-1  | 2026-09-29 03:50:16,637 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Starting Hawtio authentication filter, JAAS realm: "activemq" authorized role(s): amq, role principal class names: org.apache.activemq.artemis.spi.core.security.jaas.RolePrincipal
+artemis-1  | 2026-09-29 03:50:16,638 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Looking for OIDC configuration file in: /var/lib/artemis-instance/etc/hawtio-oidc.properties
+artemis-1  | 2026-09-29 03:50:16,700 INFO  [io.hawt.web.auth.ClientRouteRedirectFilter] Hawtio ClientRouteRedirectFilter is using 1800 sec. HttpSession timeout
+artemis-1  | 2026-09-29 03:50:16,743 INFO  [org.apache.activemq.artemis] AMQ241001: HTTP Server started at http://0.0.0.0:8161
+artemis-1  | 2026-09-29 03:50:16,744 INFO  [org.apache.activemq.artemis] AMQ241002: Artemis Jolokia REST API available at http://0.0.0.0:8161/console/jolokia
+artemis-1  | 2026-09-29 03:50:16,744 INFO  [org.apache.activemq.artemis] AMQ241004: Artemis Console available at http://0.0.0.0:8161/console
+artemis-1  | 2026-09-29 03:52:14,262 INFO  [org.apache.activemq.artemis] AMQ241005: Stopping embedded web server
+artemis-1  | 2026-09-29 03:52:14,270 INFO  [io.hawt.HawtioContextListener] Destroying Hawtio services
+artemis-1  | 2026-09-29 03:52:14,278 INFO  [org.apache.activemq.artemis] AMQ241006: Stopped embedded web server
+artemis-1  | 2026-09-29 03:52:14,279 INFO  [org.apache.activemq.artemis.core.server] AMQ221002: Apache Artemis Message Broker version 2.57.0 [e0b1c88a-bbb8-11f1-8301-c68e1c24929f] stopped, uptime 1 minute
+artemis-1  | skipping broker instance creation; instance already exists
+artemis-1  |      _        _               _
+artemis-1  |     / \  ____| |_  ___ __  __(_) _____
+artemis-1  |    / _ \|  _ \ __|/ _ \  \/  | |/  __/
+artemis-1  |   / ___ \ | \/ |_/  __/ |\/| | |\___ \
+artemis-1  |  /_/   \_\|   \__\____|_|  |_|_|/___ /
+artemis-1  |  Apache Artemis 2.57.0
+artemis-1  | 
+artemis-1  | 
+artemis-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/opt/artemis/lib/netty-common-4.1.137.Final.jar)
+artemis-1  | WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+artemis-1  | WARNING: A restricted method in java.lang.System has been called
+artemis-1  | WARNING: java.lang.System::loadLibrary has been called by org.apache.activemq.artemis.nativo.jlibaio.LibaioContext in an unnamed module (file:/opt/artemis/lib/activemq-artemis-native-2.0.0.jar)
+artemis-1  | WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+artemis-1  | WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+artemis-1  | 
+artemis-1  | 2026-09-29 03:52:17,555 INFO  [org.apache.activemq.artemis.integration.bootstrap] AMQ101000: Starting Apache Artemis Server version 2.57.0
+artemis-1  | 2026-09-29 03:52:17,603 INFO  [org.apache.activemq.artemis.core.server] AMQ221000: Primary message broker is starting with configuration Broker Configuration (clustered=false,journalDirectory=data/journal,bindingsDirectory=data/bindings,largeMessagesDirectory=data/large-messages,pagingDirectory=data/paging)
+artemis-1  | 2026-09-29 03:52:17,673 INFO  [org.apache.activemq.artemis.core.server] AMQ221012: Using AIO Journal
+artemis-1  | 2026-09-29 03:52:17,789 INFO  [org.apache.activemq.artemis.core.server] AMQ221057: Global Max Size is being adjusted to 1/2 of the JVM max size (-Xmx). being defined as 1073741824
+artemis-1  | 2026-09-29 03:52:17,826 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-server]. Adding protocol support for: CORE
+artemis-1  | 2026-09-29 03:52:17,828 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-amqp-protocol]. Adding protocol support for: AMQP
+artemis-1  | 2026-09-29 03:52:17,829 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-hornetq-protocol]. Adding protocol support for: HORNETQ
+artemis-1  | 2026-09-29 03:52:17,829 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-mqtt-protocol]. Adding protocol support for: MQTT
+artemis-1  | 2026-09-29 03:52:17,830 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-openwire-protocol]. Adding protocol support for: OPENWIRE
+artemis-1  | 2026-09-29 03:52:17,831 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-stomp-protocol]. Adding protocol support for: STOMP
+artemis-1  | 2026-09-29 03:52:17,887 INFO  [org.apache.activemq.artemis.core.server] AMQ221034: Waiting indefinitely to obtain primary lock
+artemis-1  | 2026-09-29 03:52:17,887 INFO  [org.apache.activemq.artemis.core.server] AMQ221035: Primary Server Obtained primary lock
+artemis-1  | 2026-09-29 03:52:19,193 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address DLQ supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:52:19,194 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue DLQ on address DLQ
+artemis-1  | 2026-09-29 03:52:19,194 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address ExpiryQueue supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:52:19,194 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue ExpiryQueue on address ExpiryQueue
+artemis-1  | 2026-09-29 03:52:19,576 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61616 for protocols [CORE,MQTT,AMQP,STOMP,HORNETQ,OPENWIRE]
+artemis-1  | 2026-09-29 03:52:19,593 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5445 for protocols [HORNETQ,STOMP]
+artemis-1  | 2026-09-29 03:52:19,598 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5672 for protocols [AMQP]
+artemis-1  | 2026-09-29 03:52:19,615 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:1883 for protocols [MQTT]
+artemis-1  | 2026-09-29 03:52:19,619 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61613 for protocols [STOMP]
+artemis-1  | 2026-09-29 03:52:19,621 INFO  [org.apache.activemq.artemis.core.server] AMQ221007: Server is now active
+artemis-1  | 2026-09-29 03:52:19,621 INFO  [org.apache.activemq.artemis.core.server] AMQ221001: Apache Artemis Message Broker version 2.57.0 [0.0.0.0, nodeID=e0b1c88a-bbb8-11f1-8301-c68e1c24929f] 
+artemis-1  | 2026-09-29 03:52:19,631 INFO  [org.apache.activemq.artemis] AMQ241003: Starting embedded web server
+artemis-1  | 2026-09-29 03:52:20,031 INFO  [io.hawt.HawtioContextListener] Initialising Hawtio services
+artemis-1  | 2026-09-29 03:52:20,038 INFO  [io.hawt.jmx.JmxTreeWatcher] Welcome to Hawtio 4.7.0
+artemis-1  | 2026-09-29 03:52:20,045 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Authentication throttling is enabled
+artemis-1  | 2026-09-29 03:52:20,047 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Starting Hawtio authentication filter, JAAS realm: "activemq" authorized role(s): amq, role principal class names: org.apache.activemq.artemis.spi.core.security.jaas.RolePrincipal
+artemis-1  | 2026-09-29 03:52:20,048 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Looking for OIDC configuration file in: /var/lib/artemis-instance/etc/hawtio-oidc.properties
+artemis-1  | 2026-09-29 03:52:20,092 INFO  [io.hawt.web.auth.ClientRouteRedirectFilter] Hawtio ClientRouteRedirectFilter is using 1800 sec. HttpSession timeout
+artemis-1  | 2026-09-29 03:52:20,122 INFO  [org.apache.activemq.artemis] AMQ241001: HTTP Server started at http://0.0.0.0:8161
+artemis-1  | 2026-09-29 03:52:20,123 INFO  [org.apache.activemq.artemis] AMQ241002: Artemis Jolokia REST API available at http://0.0.0.0:8161/console/jolokia
+artemis-1  | 2026-09-29 03:52:20,123 INFO  [org.apache.activemq.artemis] AMQ241004: Artemis Console available at http://0.0.0.0:8161/console
+artemis-1  | 2026-09-29 03:53:03,957 INFO  [org.apache.activemq.artemis] AMQ241005: Stopping embedded web server
+artemis-1  | 2026-09-29 03:53:03,963 INFO  [io.hawt.HawtioContextListener] Destroying Hawtio services
+artemis-1  | 2026-09-29 03:53:03,967 INFO  [org.apache.activemq.artemis] AMQ241006: Stopped embedded web server
+artemis-1  | 2026-09-29 03:53:03,969 INFO  [org.apache.activemq.artemis.core.server] AMQ221002: Apache Artemis Message Broker version 2.57.0 [e0b1c88a-bbb8-11f1-8301-c68e1c24929f] stopped, uptime 46.381 seconds
+artemis-1  | skipping broker instance creation; instance already exists
+artemis-1  |      _        _               _
+artemis-1  |     / \  ____| |_  ___ __  __(_) _____
+artemis-1  |    / _ \|  _ \ __|/ _ \  \/  | |/  __/
+artemis-1  |   / ___ \ | \/ |_/  __/ |\/| | |\___ \
+artemis-1  |  /_/   \_\|   \__\____|_|  |_|_|/___ /
+artemis-1  |  Apache Artemis 2.57.0
+artemis-1  | 
+artemis-1  | 
+artemis-1  | WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/opt/artemis/lib/netty-common-4.1.137.Final.jar)
+artemis-1  | WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+artemis-1  | WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+artemis-1  | WARNING: A restricted method in java.lang.System has been called
+artemis-1  | WARNING: java.lang.System::loadLibrary has been called by org.apache.activemq.artemis.nativo.jlibaio.LibaioContext in an unnamed module (file:/opt/artemis/lib/activemq-artemis-native-2.0.0.jar)
+artemis-1  | WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+artemis-1  | WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+artemis-1  | 
+artemis-1  | 2026-09-29 03:53:07,340 INFO  [org.apache.activemq.artemis.integration.bootstrap] AMQ101000: Starting Apache Artemis Server version 2.57.0
+artemis-1  | 2026-09-29 03:53:07,385 INFO  [org.apache.activemq.artemis.core.server] AMQ221000: Primary message broker is starting with configuration Broker Configuration (clustered=false,journalDirectory=data/journal,bindingsDirectory=data/bindings,largeMessagesDirectory=data/large-messages,pagingDirectory=data/paging)
+artemis-1  | 2026-09-29 03:53:07,444 INFO  [org.apache.activemq.artemis.core.server] AMQ221012: Using AIO Journal
+artemis-1  | 2026-09-29 03:53:07,586 INFO  [org.apache.activemq.artemis.core.server] AMQ221057: Global Max Size is being adjusted to 1/2 of the JVM max size (-Xmx). being defined as 1073741824
+artemis-1  | 2026-09-29 03:53:07,643 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-server]. Adding protocol support for: CORE
+artemis-1  | 2026-09-29 03:53:07,654 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-amqp-protocol]. Adding protocol support for: AMQP
+artemis-1  | 2026-09-29 03:53:07,655 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-hornetq-protocol]. Adding protocol support for: HORNETQ
+artemis-1  | 2026-09-29 03:53:07,656 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-mqtt-protocol]. Adding protocol support for: MQTT
+artemis-1  | 2026-09-29 03:53:07,657 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-openwire-protocol]. Adding protocol support for: OPENWIRE
+artemis-1  | 2026-09-29 03:53:07,658 INFO  [org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: [artemis-stomp-protocol]. Adding protocol support for: STOMP
+artemis-1  | 2026-09-29 03:53:07,775 INFO  [org.apache.activemq.artemis.core.server] AMQ221034: Waiting indefinitely to obtain primary lock
+artemis-1  | 2026-09-29 03:53:07,775 INFO  [org.apache.activemq.artemis.core.server] AMQ221035: Primary Server Obtained primary lock
+artemis-1  | 2026-09-29 03:53:10,350 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address DLQ supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:53:10,352 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue DLQ on address DLQ
+artemis-1  | 2026-09-29 03:53:10,353 INFO  [org.apache.activemq.artemis.core.server] AMQ221080: Deploying address ExpiryQueue supporting [ANYCAST]
+artemis-1  | 2026-09-29 03:53:10,353 INFO  [org.apache.activemq.artemis.core.server] AMQ221003: Deploying ANYCAST queue ExpiryQueue on address ExpiryQueue
+artemis-1  | 2026-09-29 03:53:10,736 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61616 for protocols [CORE,MQTT,AMQP,STOMP,HORNETQ,OPENWIRE]
+artemis-1  | 2026-09-29 03:53:10,751 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5445 for protocols [HORNETQ,STOMP]
+artemis-1  | 2026-09-29 03:53:10,755 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5672 for protocols [AMQP]
+artemis-1  | 2026-09-29 03:53:10,769 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:1883 for protocols [MQTT]
+artemis-1  | 2026-09-29 03:53:10,773 INFO  [org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61613 for protocols [STOMP]
+artemis-1  | 2026-09-29 03:53:10,776 INFO  [org.apache.activemq.artemis.core.server] AMQ221007: Server is now active
+artemis-1  | 2026-09-29 03:53:10,776 INFO  [org.apache.activemq.artemis.core.server] AMQ221001: Apache Artemis Message Broker version 2.57.0 [0.0.0.0, nodeID=e0b1c88a-bbb8-11f1-8301-c68e1c24929f] 
+artemis-1  | 2026-09-29 03:53:10,787 INFO  [org.apache.activemq.artemis] AMQ241003: Starting embedded web server
+artemis-1  | 2026-09-29 03:53:11,400 INFO  [io.hawt.HawtioContextListener] Initialising Hawtio services
+artemis-1  | 2026-09-29 03:53:11,406 INFO  [io.hawt.jmx.JmxTreeWatcher] Welcome to Hawtio 4.7.0
+artemis-1  | 2026-09-29 03:53:11,418 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Authentication throttling is enabled
+artemis-1  | 2026-09-29 03:53:11,422 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Starting Hawtio authentication filter, JAAS realm: "activemq" authorized role(s): amq, role principal class names: org.apache.activemq.artemis.spi.core.security.jaas.RolePrincipal
+artemis-1  | 2026-09-29 03:53:11,422 INFO  [io.hawt.web.auth.AuthenticationConfiguration] Looking for OIDC configuration file in: /var/lib/artemis-instance/etc/hawtio-oidc.properties
+artemis-1  | 2026-09-29 03:53:11,470 INFO  [io.hawt.web.auth.ClientRouteRedirectFilter] Hawtio ClientRouteRedirectFilter is using 1800 sec. HttpSession timeout
+artemis-1  | 2026-09-29 03:53:11,513 INFO  [org.apache.activemq.artemis] AMQ241001: HTTP Server started at http://0.0.0.0:8161
+artemis-1  | 2026-09-29 03:53:11,513 INFO  [org.apache.activemq.artemis] AMQ241002: Artemis Jolokia REST API available at http://0.0.0.0:8161/console/jolokia
+artemis-1  | 2026-09-29 03:53:11,514 INFO  [org.apache.activemq.artemis] AMQ241004: Artemis Console available at http://0.0.0.0:8161/console

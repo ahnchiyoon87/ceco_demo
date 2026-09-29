@@ -1,0 +1,180 @@
+{
+ "exp": "EXP-PIPE",
+ "profile": "benthos-umh",
+ "run": "r1",
+ "duration": 120.0,
+ "shape_in": "edgex",
+ "relays_checked": [
+  "1",
+  "2",
+  "3"
+ ],
+ "generator": {
+  "events": 120,
+  "expected_raw": 1428,
+  "filtered_expected_absent": 36,
+  "clean": 1440,
+  "anomaly": 120,
+  "alerts": 240,
+  "producer_errors": []
+ },
+ "measured_at": "2026-09-29T04:59:39+0000",
+ "relay1_mqtt_to_kafka_raw": {
+  "expected": 1428,
+  "received_unique": 0,
+  "lost": 1428,
+  "duplicates": 0,
+  "unexpected_records": 0,
+  "filter_leaks(sentinel/non-sensor)": 0,
+  "schema_or_value_mismatch": 0,
+  "kafka_key_not_tag": 0,
+  "ts_not_exact_ns(float64 등)": 0,
+  "order_inversions_per_tag": 0,
+  "partitions_used": [],
+  "latency_ms": {
+   "p50": null,
+   "p95": null,
+   "max": null
+  },
+  "examples": [],
+  "raw_records_total": 0
+ },
+ "relay2_kafka_to_influx": {
+  "process": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "process_raw": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "anomaly": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "alerts": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "alerts_expected": 240,
+  "alerts_found": 0,
+  "alerts_lost": 240,
+  "alerts_tag_mismatch": 0,
+  "clean_expected": 1440,
+  "anomaly_expected": 120,
+  "process_raw_vs_raw_topic": {
+   "influx_value_count": null,
+   "raw_topic_records": 0
+  },
+  "expected_schema": {
+   "process": {
+    "tags": [
+     "device",
+     "quality",
+     "site",
+     "tag"
+    ],
+    "fields": [
+     "value"
+    ]
+   },
+   "anomaly": {
+    "tags": [
+     "device",
+     "site",
+     "top_contributors"
+    ],
+    "fields": [
+     "inference_ms",
+     "is_anomaly",
+     "reconstruction_error",
+     "threshold"
+    ]
+   },
+   "alerts": {
+    "tags": [
+     "alert_type",
+     "detector",
+     "device",
+     "severity",
+     "site",
+     "tag"
+    ],
+    "fields": [
+     "detail",
+     "value"
+    ]
+   }
+  },
+  "latency_ms(1s poll)": {
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "n": 0
+  }
+ },
+ "relay3_kafka_to_mqtt": {
+  "alerts_expected": 240,
+  "received_unique": 0,
+  "lost": 240,
+  "duplicates": 0,
+  "shape_mismatch": 0,
+  "topic_mismatch": 0,
+  "hmi_expected": 240,
+  "hmi_matching": 0,
+  "hmi_total_received": 0,
+  "hmi_examples": [],
+  "latency_ms": {
+   "p50": null,
+   "p95": null,
+   "max": null
+  },
+  "examples": []
+ },
+ "event_rate": 1.0,
+ "resources": {
+  "per_container": {
+   "pipebench-client-run-efbbe027f2b7": {
+    "cpu_pct_median": 0.45,
+    "cpu_pct_p95": 0.73,
+    "mem_mib_median": 26.5,
+    "mem_mib_max": 27.4,
+    "samples": 39
+   },
+   "pipebench-emqx-1": {
+    "cpu_pct_median": 2.2,
+    "cpu_pct_p95": 104.2,
+    "mem_mib_median": 236.2,
+    "mem_mib_max": 280.0,
+    "samples": 42
+   },
+   "pipebench-influxdb-1": {
+    "cpu_pct_median": 0.7,
+    "cpu_pct_p95": 6.07,
+    "mem_mib_median": 83.1,
+    "mem_mib_max": 88.6,
+    "samples": 42
+   },
+   "pipebench-kafka-1": {
+    "cpu_pct_median": 5.04,
+    "cpu_pct_p95": 127.01,
+    "mem_mib_median": 367.6,
+    "mem_mib_max": 446.3,
+    "samples": 42
+   }
+  },
+  "total": {
+   "containers": 0,
+   "only": "^pipebench-benthos-umh-",
+   "cpu_pct_median": null,
+   "cpu_pct_p95": null,
+   "mem_mib_median": null,
+   "mem_mib_max": null
+  },
+  "stats_csv": "experiments/EXP-PIPE/raw/stats_benthos-umh.csv",
+  "images_mib": {
+   "ghcr.io/united-manufacturing-hub/benthos-umh:0.16.0": 88.7
+  },
+  "images_total_mib": 88.7
+ }
+}

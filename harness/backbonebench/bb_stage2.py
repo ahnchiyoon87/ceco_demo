@@ -782,7 +782,17 @@ def telegraf_check(a):
     bs = a.bootstrap or "kafka:9092"
     run = f"tg-{uuid.uuid4().hex[:6]}"
     n = 120
-    # out
+    # out — 확인용 토픽을 먼저 만든다(자동 생성이 꺼져 있어 없으면 "topic … does not exist" 로 쓰기 실패, #115)
+    from confluent_kafka.admin import AdminClient, NewTopic
+    ad = AdminClient({"bootstrap.servers": bs})
+    if "tg.out.raw" not in ad.list_topics(timeout=30).topics:
+        for fut in ad.create_topics([NewTopic("tg.out.raw", PARTITIONS, 1)]).values():
+            try:
+                fut.result(30)
+            except Exception as e:
+                if "TOPIC_ALREADY_EXISTS" not in str(e):
+                    raise
+        time.sleep(3)   # 텔레그래프 생산자가 새 메타데이터를 받도록
     s = socket.create_connection(("telegraf-out", 8094), timeout=30)
     base = time.time_ns()
     for i in range(n):

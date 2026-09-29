@@ -1,0 +1,12 @@
+{
+ "queued_acked": 600,
+ "received_after_restart": 0,
+ "session_present": true,
+ "connect_rc": "Success",
+ "retained_after_restart": true,
+ "broker": "comqtt",
+ "mode": "offline_queue",
+ "run": "b1q",
+ "rate": 120,
+ "duration": 60
+}

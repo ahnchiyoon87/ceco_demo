@@ -122,7 +122,7 @@ EOF
     for v in $vols; do docker volume rm "l4bench_$v" >>"$log" 2>&1; done   # 후보 상태 볼륨(다음 실행이 옛 규칙·체크포인트를 물려받지 않게)
   fi
 }
-fail(){ status="fail"; note="$*"; say "실패($stage): $*"; finish; exit 1; }
+fail(){ status="fail"; note="$*"; say "실패($stage): $*"; $C logs --no-color $svcs > "$raw/stage2_${run}_services.log" 2>&1; finish; exit 1; }   # 실패 원인 확인용 후보 로그(#113)
 
 # ── 2. 기동 (지난 실행이 남긴 후보 상태 볼륨은 먼저 지운다) ──
 for v in $vols; do docker volume rm "l4bench_$v" >/dev/null 2>&1; done

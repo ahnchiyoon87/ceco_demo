@@ -1,0 +1,275 @@
+{
+ "profile": "quix",
+ "runs": [
+  {
+   "run": "s2_quix_09291324",
+   "at": "2026-09-29T13:35:51+0900",
+   "stopped_at": "done",
+   "status": "ok",
+   "note": "",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": {
+    "pass": 30,
+    "fail": 40,
+    "record": [
+     {
+      "device": "s2_quix_09291324.a031e-S07-1",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-10",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-2",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-3",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2,
+       "ZSCORE": 1
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-4",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2,
+       "ZSCORE": 1
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-5",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-6",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-7",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-8",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_quix_09291324.a031e-S07-9",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     }
+    ],
+    "cep_latency_ms": {
+     "n": 0,
+     "p50": null,
+     "p95": null,
+     "max": null,
+     "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+    }
+   },
+   "v1_compare": {
+    "ref": {
+     "dir": "experiments/EXP-L4/raw",
+     "run": "m1",
+     "alerts": "alerts_m1_flinksql.jsonl",
+     "count": 263,
+     "types": {
+      "ZSCORE": 53,
+      "CEP_BEARING": 40,
+      "THRESHOLD_USL": 170
+     }
+    },
+    "cand": {
+     "run": "s2_quix_09291324",
+     "count": 225,
+     "types": {
+      "THRESHOLD_USL": 170,
+      "ZSCORE": 55
+     },
+     "ml_excluded": 0
+    },
+    "only_cand": 2,
+    "only_ref": 40,
+    "only_cand_types": {
+     "ZSCORE": 2
+    },
+    "only_ref_types": {
+     "CEP_BEARING": 40
+    },
+    "duplicates_cand": 22,
+    "duplicates_ref": 22,
+    "equal": false,
+    "sample_only_cand": [
+     [
+      "S07-3",
+      "ZSCORE",
+      "VT-101",
+      6000
+     ],
+     [
+      "S07-4",
+      "ZSCORE",
+      "VT-101",
+      6000
+     ]
+    ],
+    "sample_only_ref": [
+     [
+      "S08a-6",
+      "CEP_BEARING",
+      "VT-101",
+      1200
+     ],
+     [
+      "S08a-8",
+      "CEP_BEARING",
+      "VT-101",
+      1300
+     ],
+     [
+      "S08b-2",
+      "CEP_BEARING",
+      "VT-101",
+      1400
+     ],
+     [
+      "S08b-7",
+      "CEP_BEARING",
+      "VT-101",
+      1900
+     ],
+     [
+      "S04-1",
+      "CEP_BEARING",
+      "VT-101",
+      2800
+     ],
+     [
+      "S04-7",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ],
+     [
+      "S08a-2",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ],
+     [
+      "S08b-1",
+      "CEP_BEARING",
+      "VT-101",
+      3700
+     ],
+     [
+      "S08a-9",
+      "CEP_BEARING",
+      "VT-101",
+      3200
+     ],
+     [
+      "S08b-3",
+      "CEP_BEARING",
+      "VT-101",
+      4000
+     ]
+    ]
+   },
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "StreamingDataFrame API 조사",
+     "ok": false,
+     "error": "quixstreams 3.26.0: StreamingDataFrame 에 pattern/cep/match/sequence 메서드 없음"
+    },
+    {
+     "rule": "L4-12b 보간",
+     "feature": "없음",
+     "ok": false,
+     "error": "선형 보간(뒤 값 대기) 연산 없음 — 미구현"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "group_by + tumbling_window(1s) + sliding_count_window(10) + onnxruntime",
+     "ok": true,
+     "error": ""
+    }
+   ],
+   "rules_by_execution": {
+    "L4-03/04 CEP": "rejected",
+    "L4-12b 보간": "rejected",
+    "L4-12 ONNX": "accepted"
+   },
+   "resources": {
+    "containers": "l4bench-quix-",
+    "n": 47,
+    "mem_avg_mib": 80,
+    "mem_max_mib": 90,
+    "cpu_avg_pct": 4.1,
+    "cpu_max_pct": 24.7
+   }
+  }
+ ]
+}

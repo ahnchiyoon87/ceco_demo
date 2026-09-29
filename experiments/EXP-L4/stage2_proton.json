@@ -1,0 +1,298 @@
+{
+ "profile": "proton",
+ "runs": [
+  {
+   "run": "s2_proton_09291358",
+   "at": "2026-09-29T14:05:11+0900",
+   "stopped_at": "done",
+   "status": "ok",
+   "note": "",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": {
+    "pass": 30,
+    "fail": 40,
+    "record": [
+     {
+      "device": "s2_proton_09291358.a0add-S07-1",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-10",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-2",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-3",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-4",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-5",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-6",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-7",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-8",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_proton_09291358.a0add-S07-9",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     }
+    ],
+    "cep_latency_ms": {
+     "n": 0,
+     "p50": null,
+     "p95": null,
+     "max": null,
+     "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+    }
+   },
+   "v1_compare": {
+    "ref": {
+     "dir": "experiments/EXP-L4/raw",
+     "run": "m1",
+     "alerts": "alerts_m1_flinksql.jsonl",
+     "count": 263,
+     "types": {
+      "ZSCORE": 53,
+      "CEP_BEARING": 40,
+      "THRESHOLD_USL": 170
+     }
+    },
+    "cand": {
+     "run": "s2_proton_09291358",
+     "count": 170,
+     "types": {
+      "THRESHOLD_USL": 170
+     },
+     "ml_excluded": 0
+    },
+    "only_cand": 0,
+    "only_ref": 93,
+    "only_cand_types": {},
+    "only_ref_types": {
+     "ZSCORE": 53,
+     "CEP_BEARING": 40
+    },
+    "duplicates_cand": 20,
+    "duplicates_ref": 22,
+    "equal": false,
+    "sample_only_cand": [],
+    "sample_only_ref": [
+     [
+      "S02-3",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-4",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-5",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S02-6",
+      "ZSCORE",
+      "TT-101",
+      0
+     ],
+     [
+      "S08a-6",
+      "CEP_BEARING",
+      "VT-101",
+      1200
+     ],
+     [
+      "S08a-8",
+      "CEP_BEARING",
+      "VT-101",
+      1300
+     ],
+     [
+      "S08b-2",
+      "CEP_BEARING",
+      "VT-101",
+      1400
+     ],
+     [
+      "S08b-7",
+      "CEP_BEARING",
+      "VT-101",
+      1900
+     ],
+     [
+      "S04-1",
+      "CEP_BEARING",
+      "VT-101",
+      2800
+     ],
+     [
+      "S04-7",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ]
+    ]
+   },
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "소스",
+     "feature": "CREATE EXTERNAL STREAM IF NOT EXISTS raw_ext ",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "싱크",
+     "feature": "CREATE EXTERNAL STREAM IF NOT EXISTS alerts_ext ",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "규격표",
+     "feature": "CREATE STREAM IF NOT EXISTS tag_limits ",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "규격표",
+     "feature": "INSERT INTO tag_limits ",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-01 임계치",
+     "feature": "CREATE MATERIALIZED VIEW IF NOT EXISTS mv_threshold INTO alerts_ext AS SELECT r.",
+     "ok": true,
+     "error": ""
+    },
+    {
+     "rule": "L4-02 Z-Score",
+     "feature": "CREATE MATERIALIZED VIEW IF NOT EXISTS mv_zscore INTO alerts_ext AS SELECT ts, s",
+     "ok": false,
+     "error": "HTTP 501: Code: 48. DB::Exception: Window functions are not supported in streaming queries. (NOT_IMPLEMENTED) (version 3.0.31)\n"
+    },
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "CREATE MATERIALIZED VIEW IF NOT EXISTS mv_cep INTO alerts_ext AS SELECT ts, site",
+     "ok": false,
+     "error": "HTTP 400: Code: 62. DB::Exception: Syntax error: failed at position 278 ('('): (PARTITION BY device ORDER BY _tp_time MEASURES LAST(VIB.ts) AS ts, LAST(VIB.site) AS site, 'VT-101' AS tag, LAST(VIB.`value`) AS `value` ONE ROW PER MATCH AFTE. Expected one of: FINAL, SAMPLE, table, table function, subquery or list of joined tables, array join, LEFT ARRAY JOIN, INNER, ARRAY JOIN, JOIN, WHERE, PARTITION BY, SHUFFLE BY, GROUP BY, WITH, HAVING, WINDOW, ORDER BY, LIMIT, EMIT, SETTINGS, UNION, STORAGE_SETTINGS, TTL, COMMENT, FORMAT, SETTINGS, end of query. (SYNTAX_ERROR) (version 3.0.31)\n"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "CREATE OR REPLACE FUNCTION onnx_probe",
+     "ok": false,
+     "error": "HTTP 500: Code: 2624. DB::Exception: UDF running error, detail message: No module named 'onnxruntime': \nFile \"\", line 2, in <module>\n\n. (UDF_RUNNING_ERROR) (version 3.0.31)\n"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "SELECT onnx_probe",
+     "ok": false,
+     "error": "HTTP 404: Code: 46. DB::Exception: Unknown function onnx_probe. (UNKNOWN_FUNCTION) (version 3.0.31)\n"
+    }
+   ],
+   "rules_by_execution": {
+    "소스": "accepted",
+    "싱크": "accepted",
+    "규격표": "accepted",
+    "L4-01 임계치": "accepted",
+    "L4-02 Z-Score": "rejected",
+    "L4-03/04 CEP": "rejected",
+    "L4-12 ONNX": "rejected"
+   },
+   "resources": {
+    "containers": "l4bench-proton-",
+    "n": 50,
+    "mem_avg_mib": 233,
+    "mem_max_mib": 288,
+    "cpu_avg_pct": 5.4,
+    "cpu_max_pct": 11.1
+   }
+  }
+ ]
+}

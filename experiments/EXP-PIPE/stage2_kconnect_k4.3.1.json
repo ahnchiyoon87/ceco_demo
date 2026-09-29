@@ -1,0 +1,856 @@
+{
+ "exp": "EXP-PIPE",
+ "profile": "kconnect",
+ "run": "r1",
+ "duration": 120.0,
+ "shape_in": "edgex",
+ "relays_checked": [
+  "1",
+  "2",
+  "3"
+ ],
+ "generator": {
+  "events": 120,
+  "expected_raw": 1428,
+  "filtered_expected_absent": 36,
+  "clean": 1440,
+  "anomaly": 120,
+  "alerts": 240,
+  "producer_errors": []
+ },
+ "measured_at": "2026-09-29T05:18:44+0000",
+ "relay1_mqtt_to_kafka_raw": {
+  "expected": 1428,
+  "received_unique": 0,
+  "lost": 1428,
+  "duplicates": 0,
+  "unexpected_records": 120,
+  "filter_leaks(sentinel/non-sensor)": 0,
+  "schema_or_value_mismatch": 120,
+  "kafka_key_not_tag": 120,
+  "ts_not_exact_ns(float64 등)": 0,
+  "order_inversions_per_tag": 0,
+  "partitions_used": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "latency_ms": {
+   "p50": null,
+   "p95": null,
+   "max": null
+  },
+  "examples": [
+   {
+    "record": {
+     "apiVersion": "v3",
+     "id": "gen-r1-1",
+     "deviceName": "reactor-line-01",
+     "profileName": "AR100-Reactor-Line",
+     "sourceName": "AllSensors",
+     "origin": 1790658984727448067,
+     "readings": [
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0057930e+01"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.0340275e+01"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0742424e+01"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "9.4243430e+01"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.8048131e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9064183e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.7813320e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0870840e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.5710216e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "VT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "2.0936313e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "pH-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.4042726e+00"
+      },
+      {
+       "origin": 1790658984727448067,
+       "deviceName": "reactor-line-01",
+       "resourceName": "CT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.4018362e+00"
+      }
+     ]
+    },
+    "keys": [
+     "apiVersion",
+     "deviceName",
+     "id",
+     "origin",
+     "profileName",
+     "readings",
+     "sourceName"
+    ]
+   },
+   {
+    "record": {
+     "apiVersion": "v3",
+     "id": "gen-r1-2",
+     "deviceName": "reactor-line-01",
+     "profileName": "AR100-Reactor-Line",
+     "sourceName": "AllSensors",
+     "origin": 1790658985727723545,
+     "readings": [
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9964290e+01"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.0549330e+01"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0681380e+01"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "9.4500010e+01"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.8524997e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9738793e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.7494110e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.1421432e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.6173050e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "VT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "2.1184604e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "pH-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.4048340e+00"
+      },
+      {
+       "origin": 1790658985727723545,
+       "deviceName": "reactor-line-01",
+       "resourceName": "CT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.3875546e+00"
+      }
+     ]
+    },
+    "keys": [
+     "apiVersion",
+     "deviceName",
+     "id",
+     "origin",
+     "profileName",
+     "readings",
+     "sourceName"
+    ]
+   },
+   {
+    "record": {
+     "apiVersion": "v3",
+     "id": "gen-r1-0",
+     "deviceName": "reactor-line-01",
+     "profileName": "AR100-Reactor-Line",
+     "sourceName": "AllSensors",
+     "origin": 1790658983727324528,
+     "readings": [
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0037300e+01"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "5.9958410e+01"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "-9.9999900e+05"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "9.4573940e+01"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.7755070e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0052857e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.7331758e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.1600950e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.5612020e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "VT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "2.1848474e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "pH-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.4176570e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "CT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.3687130e+00"
+      },
+      {
+       "origin": 1790658983727324528,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PumpSpeedSp",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Int16",
+       "value": "60"
+      }
+     ]
+    },
+    "keys": [
+     "apiVersion",
+     "deviceName",
+     "id",
+     "origin",
+     "profileName",
+     "readings",
+     "sourceName"
+    ]
+   },
+   {
+    "record": {
+     "apiVersion": "v3",
+     "id": "gen-r1-3",
+     "deviceName": "reactor-line-01",
+     "profileName": "AR100-Reactor-Line",
+     "sourceName": "AllSensors",
+     "origin": 1790658986727598566,
+     "readings": [
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9968430e+01"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.0660183e+01"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.1014530e+01"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "9.4325300e+01"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.8330170e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9434414e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.7552743e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0845790e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.6342235e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "VT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "2.1759865e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "pH-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.4161070e+00"
+      },
+      {
+       "origin": 1790658986727598566,
+       "deviceName": "reactor-line-01",
+       "resourceName": "CT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.3795094e+00"
+      }
+     ]
+    },
+    "keys": [
+     "apiVersion",
+     "deviceName",
+     "id",
+     "origin",
+     "profileName",
+     "readings",
+     "sourceName"
+    ]
+   },
+   {
+    "record": {
+     "apiVersion": "v3",
+     "id": "gen-r1-4",
+     "deviceName": "reactor-line-01",
+     "profileName": "AR100-Reactor-Line",
+     "sourceName": "AllSensors",
+     "origin": 1790658987727414020,
+     "readings": [
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9917790e+01"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "LT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.0877098e+01"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.0940285e+01"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "TT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "9.4709680e+01"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "PT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.8674166e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.9141645e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "FT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.8328924e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.1621640e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "IT-102",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "6.6060440e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "VT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "2.0996163e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "pH-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "7.4075570e+00"
+      },
+      {
+       "origin": 1790658987727414020,
+       "deviceName": "reactor-line-01",
+       "resourceName": "CT-101",
+       "profileName": "AR100-Reactor-Line",
+       "valueType": "Float32",
+       "units": "",
+       "value": "3.3707445e+00"
+      }
+     ]
+    },
+    "keys": [
+     "apiVersion",
+     "deviceName",
+     "id",
+     "origin",
+     "profileName",
+     "readings",
+     "sourceName"
+    ]
+   }
+  ],
+  "raw_records_total": 120
+ },
+ "relay2_kafka_to_influx": {
+  "process": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "process_raw": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "anomaly": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "alerts": {
+   "field_counts": {},
+   "tag_keys": []
+  },
+  "alerts_expected": 240,
+  "alerts_found": 0,
+  "alerts_lost": 240,
+  "alerts_tag_mismatch": 0,
+  "clean_expected": 1440,
+  "anomaly_expected": 120,
+  "process_raw_vs_raw_topic": {
+   "influx_value_count": null,
+   "raw_topic_records": 120
+  },
+  "expected_schema": {
+   "process": {
+    "tags": [
+     "device",
+     "quality",
+     "site",
+     "tag"
+    ],
+    "fields": [
+     "value"
+    ]
+   },
+   "anomaly": {
+    "tags": [
+     "device",
+     "site",
+     "top_contributors"
+    ],
+    "fields": [
+     "inference_ms",
+     "is_anomaly",
+     "reconstruction_error",
+     "threshold"
+    ]
+   },
+   "alerts": {
+    "tags": [
+     "alert_type",
+     "detector",
+     "device",
+     "severity",
+     "site",
+     "tag"
+    ],
+    "fields": [
+     "detail",
+     "value"
+    ]
+   }
+  },
+  "latency_ms(1s poll)": {
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "n": 0
+  }
+ },
+ "relay3_kafka_to_mqtt": {
+  "alerts_expected": 240,
+  "received_unique": 0,
+  "lost": 240,
+  "duplicates": 0,
+  "shape_mismatch": 0,
+  "topic_mismatch": 0,
+  "hmi_expected": 240,
+  "hmi_matching": 0,
+  "hmi_total_received": 0,
+  "hmi_examples": [],
+  "latency_ms": {
+   "p50": null,
+   "p95": null,
+   "max": null
+  },
+  "examples": []
+ },
+ "event_rate": 1.0,
+ "resources": {
+  "per_container": {
+   "pipebench-client-run-9cd3c4b6abf9": {
+    "cpu_pct_median": 0.41,
+    "cpu_pct_p95": 0.58,
+    "mem_mib_median": 26.6,
+    "mem_mib_max": 27.7,
+    "samples": 43
+   },
+   "pipebench-emqx-1": {
+    "cpu_pct_median": 3.83,
+    "cpu_pct_p95": 85.09,
+    "mem_mib_median": 247.1,
+    "mem_mib_max": 291.6,
+    "samples": 46
+   },
+   "pipebench-influxdb-1": {
+    "cpu_pct_median": 0.58,
+    "cpu_pct_p95": 4.08,
+    "mem_mib_median": 108.2,
+    "mem_mib_max": 110.1,
+    "samples": 46
+   },
+   "pipebench-kafka-1": {
+    "cpu_pct_median": 6.73,
+    "cpu_pct_p95": 168.87,
+    "mem_mib_median": 452.0,
+    "mem_mib_max": 534.7,
+    "samples": 46
+   },
+   "pipebench-kconnect-1": {
+    "cpu_pct_median": 0.92,
+    "cpu_pct_p95": 1.98,
+    "mem_mib_median": 493.4,
+    "mem_mib_max": 494.9,
+    "samples": 46
+   },
+   "pipebench-kconnect-telegraf23-1": {
+    "cpu_pct_median": 1.06,
+    "cpu_pct_p95": 2.32,
+    "mem_mib_median": 169.6,
+    "mem_mib_max": 177.2,
+    "samples": 46
+   }
+  },
+  "total": {
+   "containers": 2,
+   "only": "^pipebench-kconnect-",
+   "cpu_pct_median": 1.93,
+   "cpu_pct_p95": 6.37,
+   "mem_mib_median": 663.5,
+   "mem_mib_max": 670.7
+  },
+  "stats_csv": "experiments/EXP-PIPE/raw/stats_kconnect_k4.3.1.csv",
+  "images_mib": {
+   "apache/kafka:4.3.1": 227.8,
+   "telegraf:1.40.1-alpine": 93.3
+  },
+  "images_total_mib": 321.1
+ }
+}

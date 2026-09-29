@@ -1,0 +1,42 @@
+{
+ "exp": "EXP-L4",
+ "run": "s2_flinksql_09291226_r05",
+ "token": "9f718",
+ "t0_wall_ms": 1790653078809,
+ "topic": "exp.l4.raw",
+ "seed": 20260928,
+ "repeat": 1,
+ "jitter": false,
+ "cases": "S09",
+ "background": "synthetic (plant.yaml 규격·노이즈 기반, 실측 아님)",
+ "normal": {
+  "IT-102": [
+   7.0,
+   0.025
+  ],
+  "VT-101": [
+   2.1,
+   0.06
+  ],
+  "TT-101": [
+   72.0,
+   0.06
+  ]
+ },
+ "high": {
+  "IT-102": 9.9,
+  "VT-101": 7.5,
+  "TT-101": 96.0
+ },
+ "window_s": 10,
+ "watermark_s": 5,
+ "t0_event_ns": 1790653100809227776,
+ "records": 114,
+ "expected": {
+  "s2_flinksql_09291226_r05.9f718-S09-1": {
+   "case": "S09",
+   "expected_cep": 1,
+   "lag_s": null
+  }
+ }
+}

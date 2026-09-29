@@ -1,0 +1,437 @@
+{
+ "exp": "EXP-L4",
+ "run": "s2_flinksql_09291226",
+ "token": "9f5cd",
+ "t0_wall_ms": 1790652747707,
+ "topic": "exp.l4.raw",
+ "seed": 1001,
+ "repeat": 10,
+ "jitter": true,
+ "cases": "S02,S04,S05,S06a,S06b,S07,S08a,S08b",
+ "background": "synthetic (plant.yaml 규격·노이즈 기반, 실측 아님)",
+ "normal": {
+  "IT-102": [
+   7.0,
+   0.025
+  ],
+  "VT-101": [
+   2.1,
+   0.06
+  ],
+  "TT-101": [
+   72.0,
+   0.06
+  ]
+ },
+ "high": {
+  "IT-102": 9.9,
+  "VT-101": 7.5,
+  "TT-101": 96.0
+ },
+ "window_s": 10,
+ "watermark_s": 5,
+ "t0_event_ns": 1790652769707021312,
+ "records": 9599,
+ "expected": {
+  "s2_flinksql_09291226.9f5cd-S02-1": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-2": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-3": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-4": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-5": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-6": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-7": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-8": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-9": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S02-10": {
+   "case": "S02",
+   "expected_cep": null,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S04-1": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 2.8
+  },
+  "s2_flinksql_09291226.9f5cd-S04-2": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 7.3
+  },
+  "s2_flinksql_09291226.9f5cd-S04-3": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 4.4
+  },
+  "s2_flinksql_09291226.9f5cd-S04-4": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 5.5
+  },
+  "s2_flinksql_09291226.9f5cd-S04-5": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 6.4
+  },
+  "s2_flinksql_09291226.9f5cd-S04-6": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 7.1
+  },
+  "s2_flinksql_09291226.9f5cd-S04-7": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 2.3
+  },
+  "s2_flinksql_09291226.9f5cd-S04-8": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 4.7
+  },
+  "s2_flinksql_09291226.9f5cd-S04-9": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 6.2
+  },
+  "s2_flinksql_09291226.9f5cd-S04-10": {
+   "case": "S04",
+   "expected_cep": 1,
+   "lag_s": 8.5
+  },
+  "s2_flinksql_09291226.9f5cd-S05-1": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-2": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-3": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-4": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-5": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-6": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-7": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-8": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-9": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S05-10": {
+   "case": "S05",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-1": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-2": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-3": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-4": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-5": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-6": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-7": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-8": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-9": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06a-10": {
+   "case": "S06a",
+   "expected_cep": 1,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-1": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-2": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-3": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-4": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-5": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-6": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-7": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-8": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-9": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S06b-10": {
+   "case": "S06b",
+   "expected_cep": 0,
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-1": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-2": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-3": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-4": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-5": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-6": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-7": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-8": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-9": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S07-10": {
+   "case": "S07",
+   "expected_cep": "policy",
+   "lag_s": null
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-1": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 4.8
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-2": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 2.3
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-3": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 8.1
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-4": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 4.1
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-5": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 8.5
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-6": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 1.2
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-7": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 4.4
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-8": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 1.3
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-9": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 3.2
+  },
+  "s2_flinksql_09291226.9f5cd-S08a-10": {
+   "case": "S08a",
+   "expected_cep": 1,
+   "lag_s": 8.7
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-1": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 3.7
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-2": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 1.4
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-3": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 4.0
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-4": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 6.7
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-5": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 6.8
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-6": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 7.6
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-7": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 1.9
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-8": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 5.1
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-9": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 4.4
+  },
+  "s2_flinksql_09291226.9f5cd-S08b-10": {
+   "case": "S08b",
+   "expected_cep": 1,
+   "lag_s": 4.4
+  }
+ }
+}

@@ -14,7 +14,7 @@ RAW=experiments/EXP-HMI/raw; mkdir -p "$RAW"
 [ -n "$(docker ps -q --filter label=com.docker.compose.project=hmibench)" ] && { echo "hmibench 가 이미 떠 있음"; exit 4; }
 $DC --profile tools build client >/dev/null || exit 5
 t0=$(date +%s)
-$DC --profile "$p" up -d --build || { $DC --profile "$p" logs --tail 80; exit 6; }
+$DC --profile "$p" up -d --build || { mkdir -p experiments/EXP-HMI/raw; $DC --profile "$p" logs --no-color > "experiments/EXP-HMI/raw/${p}_up_fail.log" 2>&1; $DC --profile "$p" logs --tail 80; $DC --profile '*' down -v --remove-orphans >/dev/null 2>&1; exit 6; }   # 실패 시 정리(#116)
 CL="$DC --profile tools run --rm -T client python /repo/harness/hmibench/hmi_stage2.py"
 if [ "$p" = thingsboard ]; then
   $CL tb-prepare | tail -1

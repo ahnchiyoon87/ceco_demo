@@ -1,0 +1,275 @@
+{
+ "profile": "kstreams",
+ "runs": [
+  {
+   "run": "s2_kstreams_09291335",
+   "at": "2026-09-29T13:43:22+0900",
+   "stopped_at": "done",
+   "status": "ok",
+   "note": "",
+   "replay": {
+    "seed": 1001,
+    "repeat": 10,
+    "jitter": true
+   },
+   "cases": {
+    "pass": 30,
+    "fail": 40,
+    "record": [
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-1",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-10",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-2",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-3",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2,
+       "ZSCORE": 1
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-4",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2,
+       "ZSCORE": 1
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-5",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-6",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-7",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-8",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     },
+     {
+      "device": "s2_kstreams_09291335.a05da-S07-9",
+      "case": "S07",
+      "expected_cep": "policy",
+      "cep": 0,
+      "types": {
+       "THRESHOLD_USL": 2
+      },
+      "verdict": "RECORD(cep=0, dropped_logged=0)"
+     }
+    ],
+    "cep_latency_ms": {
+     "n": 0,
+     "p50": null,
+     "p95": null,
+     "max": null,
+     "note": "진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함"
+    }
+   },
+   "v1_compare": {
+    "ref": {
+     "dir": "experiments/EXP-L4/raw",
+     "run": "m1",
+     "alerts": "alerts_m1_flinksql.jsonl",
+     "count": 263,
+     "types": {
+      "ZSCORE": 53,
+      "CEP_BEARING": 40,
+      "THRESHOLD_USL": 170
+     }
+    },
+    "cand": {
+     "run": "s2_kstreams_09291335",
+     "count": 225,
+     "types": {
+      "THRESHOLD_USL": 170,
+      "ZSCORE": 55
+     },
+     "ml_excluded": 0
+    },
+    "only_cand": 2,
+    "only_ref": 40,
+    "only_cand_types": {
+     "ZSCORE": 2
+    },
+    "only_ref_types": {
+     "CEP_BEARING": 40
+    },
+    "duplicates_cand": 22,
+    "duplicates_ref": 22,
+    "equal": false,
+    "sample_only_cand": [
+     [
+      "S07-3",
+      "ZSCORE",
+      "VT-101",
+      6000
+     ],
+     [
+      "S07-4",
+      "ZSCORE",
+      "VT-101",
+      6000
+     ]
+    ],
+    "sample_only_ref": [
+     [
+      "S08a-6",
+      "CEP_BEARING",
+      "VT-101",
+      1200
+     ],
+     [
+      "S08a-8",
+      "CEP_BEARING",
+      "VT-101",
+      1300
+     ],
+     [
+      "S08b-2",
+      "CEP_BEARING",
+      "VT-101",
+      1400
+     ],
+     [
+      "S08b-7",
+      "CEP_BEARING",
+      "VT-101",
+      1900
+     ],
+     [
+      "S04-1",
+      "CEP_BEARING",
+      "VT-101",
+      2800
+     ],
+     [
+      "S04-7",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ],
+     [
+      "S08a-2",
+      "CEP_BEARING",
+      "VT-101",
+      2300
+     ],
+     [
+      "S08b-1",
+      "CEP_BEARING",
+      "VT-101",
+      3700
+     ],
+     [
+      "S08a-9",
+      "CEP_BEARING",
+      "VT-101",
+      3200
+     ],
+     [
+      "S08b-3",
+      "CEP_BEARING",
+      "VT-101",
+      4000
+     ]
+    ]
+   },
+   "s13": null,
+   "attempts": [
+    {
+     "rule": "L4-03/04 CEP",
+     "feature": "DSL 연산자·Processor API",
+     "ok": false,
+     "error": "Kafka Streams DSL 에 패턴(CEP) 연산 없음. Processor API 로는 CEP 엔진(NFA) 재구현 필요 — 직접 제작 금지로 미구현"
+    },
+    {
+     "rule": "L4-12 ONNX",
+     "feature": "Processor API punctuator",
+     "ok": false,
+     "error": "미시도 — 결정(2026-09-29): ONNX 이식 안 함, ② 에서 CEP 실패가 먼저 확정되면 뒤 항목 생략"
+    },
+    {
+     "rule": "L4-01·L4-02",
+     "feature": "topology",
+     "ok": true,
+     "error": ""
+    }
+   ],
+   "rules_by_execution": {
+    "L4-03/04 CEP": "rejected",
+    "L4-12 ONNX": "rejected",
+    "L4-01·L4-02": "accepted"
+   },
+   "resources": {
+    "containers": "l4bench-kstreams-",
+    "n": 44,
+    "mem_avg_mib": 182,
+    "mem_max_mib": 206,
+    "cpu_avg_pct": 6.7,
+    "cpu_max_pct": 45.4
+   }
+  }
+ ]
+}

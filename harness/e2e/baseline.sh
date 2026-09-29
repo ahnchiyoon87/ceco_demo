@@ -39,13 +39,16 @@ phase0(){
   ensure_jobs
 }
 
+# 구조 이름표가 자기 P0 를 주면 그것을 쓴다(V1 은 아래 phase0)
+if [ "$(type -t phase0_$STRUCT 2>/dev/null)" = function ]; then eval "phase0(){ phase0_$STRUCT; }"; fi
+
 phase1(){
   say "P1 정상 3분(E3·R09·E7·E12)"
   T0=$(ms)
   sh harness/sample_stats.sh $R/e3_${NAME}_stats.csv 180 '^rot-' &
   SPID=$!
   sleep 20
-  $CLIENT python harness/e2e/security_probe.py --out /repo/$R/e12_${NAME}.json 2>&1 | tail -3 | tee -a $LOG
+  $CLIENT python harness/e2e/security_probe.py --broker $BROKER_H --out /repo/$R/e12_${NAME}.json 2>&1 | tail -3 | tee -a $LOG
   $CLIENT python harness/e2e/screen_vs_history.py --n 10 --out /repo/$R/e7_${NAME}.json 2>&1 | tail -2 | tee -a $LOG
   wait $SPID
   complete $((T0 + 20000)) $(ms) r09_${NAME}
@@ -88,7 +91,7 @@ phase3(){
   if has r08; then
   # R08: 10배 과부하 10분, 그동안 E1 20회
   T0=$(ms); say "r08 과부하 시작"
-  $CLIENT python harness/e2e/loadgen.py --devices 10 --seconds 60 >>$LOG 2>&1 &
+  $CLIENT python harness/e2e/loadgen.py --mqtt $BROKER_H ${LOAD_KAFKA:+--kafka $LOAD_KAFKA} --devices 10 --seconds 60 >>$LOG 2>&1 &
   LPID=$!; sleep 10
   $CLIENT python harness/e2e/e1.py --exp $EXP --run e1_${NAME}_r08 --reps 5 --quiet-s 3 --sim http://plant-simulator:8080 \
       --mqtt $BROKER_H --kafka kafka:9092 --kafka-topic sensor.alerts --mqtt-topics scada/alerts/PT-101,scada/hmi/latest-alert \

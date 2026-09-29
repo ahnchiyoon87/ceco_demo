@@ -11,11 +11,12 @@ set -uo pipefail
 . harness/pipebench/lib.sh
 bench_guard
 T=${1:?r01|r03|r06|r08}; PROF=${2:?profile}
+# 시간 값은 #89 개정(결과 전): R01 정지 10 s, R06 다운 30 s, R08 과부하 60 s — 판정에 필요한 최소 길이(QUESTIONS §1 시간)
 case "$T" in
-  r01) DUR=240; AT=60; RATE=1 ;;
-  r03) DUR=240; AT=60; RATE=1 ;;
-  r06) DUR=480; AT=60; RATE=1 ;;
-  r08) DUR=600; AT=0;  RATE=10 ;;
+  r01) DUR=120; AT=30; RATE=1 ;;
+  r03) DUR=120; AT=30; RATE=1 ;;
+  r06) DUR=150; AT=30; RATE=1 ;;
+  r08) DUR=60;  AT=0;  RATE=10 ;;
   *) echo "test?" >&2; exit 2 ;;
 esac
 pipe_up "$PROF" "${T}_"
@@ -33,9 +34,9 @@ if [ "$T" = r08 ]; then
 else
   sleep "$AT"; T0=$(date +%s.%N)
   case "$T" in
-    r01) docker stop -t 10 "$BROKER_CTR" >/dev/null; sleep 30; docker start "$BROKER_CTR" >/dev/null; KIND="broker-stop-30s" ;;
+    r01) docker stop -t 10 "$BROKER_CTR" >/dev/null; sleep 10; docker start "$BROKER_CTR" >/dev/null; KIND="broker-stop-10s" ;;
     r03) docker restart -t 10 pipebench-kafka-1 >/dev/null; KIND="kafka-restart" ;;
-    r06) docker stop -t 10 pipebench-influxdb-1 >/dev/null; sleep 300; docker start pipebench-influxdb-1 >/dev/null; KIND="influx-down-300s" ;;
+    r06) docker stop -t 10 pipebench-influxdb-1 >/dev/null; sleep 30; docker start pipebench-influxdb-1 >/dev/null; KIND="influx-down-30s" ;;
   esac
   T1=$(date +%s.%N)
 fi

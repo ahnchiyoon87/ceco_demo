@@ -1,0 +1,3 @@
+{"engine": "quix", "rule": "L4-03/04 CEP", "feature": "StreamingDataFrame API 조사", "ok": false, "error": "quixstreams 3.26.0: StreamingDataFrame 에 pattern/cep/match/sequence 메서드 없음", "statement": "dir(StreamingDataFrame)", "at": 1790656065.427947}
+{"engine": "quix", "rule": "L4-12b 보간", "feature": "없음", "ok": false, "error": "선형 보간(뒤 값 대기) 연산 없음 — 미구현", "statement": "", "at": 1790656065.4305317}
+{"engine": "quix", "rule": "L4-12 ONNX", "feature": "group_by + tumbling_window(1s) + sliding_count_window(10) + onnxruntime", "ok": true, "error": "", "statement": "이벤트 시각 1초 창(V1 은 처리시각 1초 타이머)", "at": 1790656070.3738976}
