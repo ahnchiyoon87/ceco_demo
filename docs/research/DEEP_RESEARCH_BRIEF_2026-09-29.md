@@ -201,3 +201,13 @@ UNS 채택 통계, 명령 만료·중복 방지를 요구하는 표준, ISA-112 
 - 맨 앞: **최종 권장 스택 표 한 장**(칸 / 제품 / 버전 / 이미지 태그 / 라이선스 / 지원 종료 / 메모리 / 현업 주류 순위 / 선택 이유). 관문(§1: 비용 0, 금지 라이선스, 12개월 지원, latest 금지, PC 한 대 Docker 7.6 GB) 안에서 고른다. 권장 스택 전체의 메모리 합계를 문서 수치로 추정할 수 있으면 "문서 기준 추정"이라고 표시해 적는다(실측 아님).
 - 그다음 칸별 절, 마지막에 "확인 못 한 것".
 - 근거 규칙은 §5와 같다.
+
+---
+
+## 8. 무료 대체품 비교 — soft-PLC·엣지·HMI (2026-09-29 추가)
+
+**배경:** 세 칸은 현업 주류가 상용이라(CODESYS·벤더 vPLC / Kepware·Ignition Edge·Litmus / WinCC·FactoryTalk·Ignition) 무료 제품으로 대신한다. 스택 조사(§7, 14번 파일)의 "무료 중 1위"는 도커 내려받기 수·GitHub 별 수 정도라 약하다. 무료 후보를 빠짐없이 모아 여러 지표로 나란히 비교한다.
+**먼저 읽을 것:** §1, 14번 파일 B1·B2·B4 절.
+**후보(찾으면 추가):** soft-PLC — OpenPLC Runtime v4, Eclipse 4diac FORTE, Beremiz / 엣지 — EdgeX Foundry, Node-RED(+modbus·opcua 노드), Apache PLC4X, Eclipse Kura, Telegraf, Eclipse Milo 기반 게이트웨이 / HMI — FUXA, Scada-LTS, OpenRemote, Node-RED Dashboard 2(라이선스 확인 후 Rapid SCADA 등).
+**후보마다 적을 것:** 라이선스, GitHub 별·기여자·최근 12개월 릴리스·마지막 릴리스일, 재단 소속, 학술 사용(논문 수·예), 대학·교육 사용 사례, 이름 있는 산업 사례, 표준 지원(soft-PLC: IEC 61131-3 언어·PLCopen / 엣지: Modbus 읽기·쓰기, OPC UA 클라이언트, 끊김 시 저장, 장치 등록·명령 API, MQTT / HMI: MQTT 구독, OPC UA 클라이언트, ISA-18.2 알람 상태(ack·셸빙), 사용자 역할), 도커 이미지와 유지 상태.
+**결과:** `docs/research/deep-2026-09-29/15-free-options-compare.md` — 칸마다 비교표, "결론: 이 근거로 무엇을 쓴다", "현업 상용과의 차이(학생에게 설명할 것)", 마지막에 확인 못 한 것. 근거 규칙은 §5.

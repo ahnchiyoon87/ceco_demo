@@ -12,6 +12,7 @@
    - **구조(완료):** `docs/research/deep-2026-09-29/12-industry-structure.md` — 현업 구조, v3·우리 비교, 권장 베이스. 요지는 §2-1.
    - **세부(완료):** `13-industry-detail.md` — 의뢰서 §6(질문 A~J). 맨 앞 "우리 베이스에 주는 결정" 29줄, 요지는 §2-2.
    - **스택(완료):** `14-industry-stack.md` — 칸마다 현업 주류 순위·라이선스·도커 버전·메모리·V1 대비 권고, 맨 앞 최종 권장 스택 표(의뢰서 §7). 요지와 사용자 결정 대기 항목은 §2-3.
+   - **무료 대체품 비교(진행 중):** `15-free-options-compare.md` — soft-PLC·엣지·HMI의 무료 후보를 여러 지표로 비교(의뢰서 §8). §2-3 "무료 중 1위" 근거를 이 결과로 바꾼다.
    - 파일이 없거나 "확인 못 한 것"으로 끝나지 않았으면 미완이다. 해당 의뢰서 절로 **조사 하나**를 다시 돌린다(구조 결과를 같이 넘기고, 도커 금지를 명시한다).
 3. **§2-3의 사용자 결정 세 가지를 먼저 받는다.** 그다음 세 결과(구조·세부·스택)를 합쳐 사용자에게 **쉬운 말 한 장**으로 보고한다. 담을 것: 확정할 베이스 구조(층·길·망), 칸별 제품·버전, 우리 구조에서 바꿀 것, 세부 결정표. 사용자 확인 뒤 §2 단계 2로 간다.
 4. 시작 전에 실제 상태를 대조한다: `git status`, `docker ps -a`.
@@ -134,7 +135,7 @@
 | 알람 수명주기 | 공정은 FUXA, 분석 alert는 PostgreSQL ISA-18.2 상태표 | 추가 |
 | 공용 DB | PostgreSQL 18.6(2030-11 지원) | 공통, EdgeX 전용 DB 제거 |
 
-**"현업에서 주로 쓰는 것" 기준 정리:** MQTT·Kafka·Flink·Grafana·Prometheus·Neo4j·PostgreSQL은 현업 1위를 그대로 쓴다. PLC·HMI·히스토리언은 현업 주류가 상용(Siemens·GE·Rockwell, 상용 히스토리언, CODESYS)이라 무료 1위(OpenPLC v4·FUXA·InfluxDB)로 대신하고, 학생에게 "현업은 보통 상용"이라고 설명한다. 엣지는 상용 게이트웨이가 주류이고 오픈소스 중에서는 Node-RED가 가장 널리 쓰인다(결정 대기 ①).
+**"현업에서 주로 쓰는 것" 기준 정리:** MQTT·Kafka·Flink·Grafana·Prometheus·Neo4j·PostgreSQL은 현업 1위를 그대로 쓴다. PLC·HMI·히스토리언은 현업 주류가 상용(Siemens·GE·Rockwell, 상용 히스토리언, CODESYS)이라 무료 1위(OpenPLC v4·FUXA·InfluxDB)로 대신하고, 학생에게 "현업은 보통 상용"이라고 설명한다. 엣지는 상용 게이트웨이가 주류다. **"무료 중 1위"(OpenPLC v4·Node-RED/EdgeX·FUXA)의 근거는 내려받기 수·GitHub 별 수 정도라 약하다** → 무료 대체품 비교(의뢰서 §8, 15번 파일)로 확정한다(결정 대기 ①과 연결).
 
 **사용자 결정 대기(에이전트가 정하지 않는다):**
 1. **엣지를 EdgeX로 유지할지, Node-RED로 바꿀지.**
@@ -320,8 +321,8 @@ V2 설정에만 있던 "같은 제품이면 어디서나 필요한 수정"을 �
 | 위치 | 역할 |
 |---|---|
 | `HANDOFF.md` | 유일한 정본(기준·방향·상태) |
-| `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서 하나(목표, 우리 구조 요약, 부록 A v3 옮겨 적기, §6 세부 질문, §7 스택 질문) |
-| `docs/research/deep-2026-09-29/12-industry-structure.md` · `13-industry-detail.md` · `14-industry-stack.md` | 현업 조사 결과: 구조·세부·스택(모두 완료) |
+| `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서 하나(목표, 우리 구조 요약, 부록 A v3 옮겨 적기, §6 세부 질문, §7 스택 질문, §8 무료 대체품 비교) |
+| `docs/research/deep-2026-09-29/12-industry-structure.md` · `13-industry-detail.md` · `14-industry-stack.md` | 현업 조사 결과: 구조·세부·스택(완료). 무료 대체품 비교 `15-free-options-compare.md`(진행 중) |
 | `docker-compose.stable.yml` | 안정화 V1 덧씌우기(§5-1) |
 | `docs/research/deep-2026-09-29/01~11`, compass 4종, `AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 정의), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석) | 1차 출처 사실. `11-unified-hub-feasibility.md`는 중단된 조사라 미완 |
 | `시스템구성도_*.pdf`·`.md`, `프로토타입_아키텍처_보고용.*` | 우리 V1 구조도(사용자 자료) |
