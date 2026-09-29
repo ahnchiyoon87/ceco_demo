@@ -104,8 +104,28 @@
   - 근거 강도: URL 89개 중 검색 요약만 본 곳 36군데. 무료 제품끼리의 점유율 설문은 없다.
 - **상용을 쓰지 않는 근거:** CODESYS는 라이선스 없이 2시간 데모, Ignition 무료판은 비상업·개인 교육용만, HiveMQ Edge는 설비 쓰기가 유료, ThingsBoard는 4.4부터 BUSL, TimescaleDB 압축·연속 집계는 TSL.
 
+**칸별 선택 근거 — 보고서도 이 틀(현업은 주로 무엇 → 우리는 무엇 → 왜)로 쓴다** (근거는 14·15번 파일)
+| 칸 | 현업에서 주로 쓰는 것 | 우리가 쓰는 것 | 왜 |
+|---|---|---|---|
+| 설비 | 실제 설비 | Python 가상설비(배속 600) | 교육용. 나중에 OPC UA 설비(Microsoft OPC PLC) 추가 |
+| PLC | 제조사 하드웨어 PLC, soft-PLC는 CODESYS 등(상용) | OpenPLC Runtime v4.2.4 | 상용·체험판(CODESYS는 라이선스 없이 2시간 데모). 무료 중 유일한 공식 도커 이미지, IEC 61131-3 다섯 언어, 논문 138편, 대학 PLC 과목 사용 |
+| 엣지 연결 | Kepware·Ignition Edge·Litmus Edge(상용) | Node-RED 5.0.x | 상용. 무료 중 산업 논문 486편(EdgeX 33), OpenJS 재단, Opto 22 산업 제어기 기본 탑재, 컨테이너 1개 |
+| MQTT 브로커 | MQTT가 산업 IoT 프로토콜 1위. 브로커는 EMQX·HiveMQ·Mosquitto | Mosquitto 2.1.2 | 현업에서도 널리 씀(내려받기 1위). EMQX는 5.9부터 BSL |
+| MQTT→Kafka 중계 | 브로커 내장 Kafka 확장(상용·BSL), Kafka Connect 커넥터(독점 많음) | Bento 1.21.2 + 자체 명령 게이트웨이 | 상용·독점 제외. Bento는 MIT이고 V1과 같은 결과를 냈다 |
+| 이벤트 장부 | Kafka | Kafka 4.3.1 | 현업과 같음 |
+| 실시간 탐지 | Flink | Flink 2.2.1 | 현업과 같음 |
+| 이력 저장 | 상용 히스토리언(AVEVA PI 등) | InfluxDB 2.9.1 | 상용. 무료 시계열 DB 1위(DB-Engines) |
+| 화면(SCADA/HMI) | Siemens WinCC·Rockwell FactoryTalk·GE·Ignition(상용) | FUXA 1.3.4 | 상용(Ignition 무료판은 비상업·개인 교육용만). 무료로 MQTT·OPC UA·Modbus를 모두 갖춘 유일한 공정 HMI, 가장 활발히 개발 중 |
+| 대시보드 | Grafana | Grafana 13.2.3 | 현업과 같음 |
+| 플랫폼 감시 | Prometheus | Prometheus 3.13 LTS | 현업과 같음 |
+| 지식 그래프 | Neo4j | Neo4j 5.26 Community | 현업과 같음(무료판) |
+| 업무 DB | PostgreSQL | PostgreSQL 18.6 | 현업과 같음 |
+| 설비 등록부 | AAS·OPC UA 정보 모델 기반 상용 플랫폼 | 자체(속성 이름은 AAS·ISA-95를 따름) | 무료 정식판 없음(BaSyx 정식판 없음) |
+| 승인 흐름 | Camunda 등 BPMN 엔진 | 자체(선택 시 Operaton) | Camunda 7 무료판 종료, 8은 운영 유료 |
+| 알람 수명주기 | Hexagon·Honeywell·Yokogawa 등 상용 | FUXA 알람 + PostgreSQL 상태표 | 상용. Alerta는 유지 중단 신호 |
+
 **결정(에이전트 권고로 확정 — 사용자는 전문가가 아니므로 에이전트가 근거로 정한다. 사용자가 바꾸라고 하면 바꾼다):**
-1. **엣지는 Node-RED.** 기준 순서(§1 우선순위)로 판단한다: ① 무료 중 현업 사용 근거가 더 많다(산업 논문 486편 대 EdgeX 33편, OpenJS 재단, Opto 22 산업 제어기 기본 탑재) ② 5.x가 지원 중이라 관문을 통과한다(EdgeX 4.0은 2027-03 종료, 다음 판 미출시) ③ 컨테이너 1개(EdgeX 약 10개). EdgeX가 기본으로 가진 장치 등록·명령 받기·끊김 시 저장은 Node-RED에서 이렇게 채운다.
+1. **엣지는 Node-RED.** 결정적 이유는 둘이다: 무료 중 현업 사용 근거가 더 많고(산업 논문 486편 대 EdgeX 33편, OpenJS 재단, Opto 22 산업 제어기 기본 탑재), 훨씬 가볍다(컨테이너 1개 대 약 10개). 지원 기간은 결정적이지 않다: EdgeX 4.0 판의 지원이 2027-03에 끝나도 프로젝트는 계속되고(다음 판 Queensland 2027 봄 예정), 롤링 규칙(결정 ②)으로 다음 판에 올려 쓸 수 있다. EdgeX가 기본으로 가진 장치 등록·명령 받기·끊김 시 저장은 Node-RED에서 이렇게 채운다.
    - 흐름은 손으로 그리지 않고 설비 등록부(B11)에서 생성한다.
    - 명령: MQTT `cmd` 구독 → PLC 쓰기 → ACK 발행 흐름.
    - 끊김 시 저장: 조립 뒤 검증(수집기 단절 유실·복구, V1 기준 7.3 s·120 태그·초)으로 판정한다.
