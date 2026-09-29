@@ -14,8 +14,8 @@ run(){ layer=$1; shift; t0=$(date +%s); echo "[$(date +%H:%M:%S)] $layer $* ì‹œì
 }
 layers=${*:-"l4 ingest broker pipe alw backbone ts mon alarm hmi"}
 for L in $layers; do case $L in
-  l4)      for p in flinksql ekuiper quix kstreams storm beam risingwave proton arroyo streampipes; do
-             R05=$(case $p in flinksql) echo 1;; *) echo 0;; esac) run l4 bash harness/l4bench/stage2.sh $p; done ;;
+  l4)      for p in flinksql flinkha ekuiper quix kstreams storm beam risingwave proton arroyo streampipes; do
+             R05=$(case $p in flinksql|flinkha) echo 1;; *) echo 0;; esac) run l4 bash harness/l4bench/stage2.sh $p; done ;;
   ingest)  for p in edgex telegraf benthos-umh hivemq-edge neuron nodered tbgw openremote streampipes; do run ingest bash harness/ingestbench/stage2.sh $p; done ;;
   broker)  for p in rmqtt tbmq bifromq rabbitmq lavinmq artemis activemq comqtt robustmq mochi nats hivemq-edge; do run broker bash harness/brokerbench/stage2_new.sh $p; done ;;
   pipe)    for p in v1 bento rpconnect benthos-umh ekuiper vector nifi kconnect rmqtt-pc tbmq-pc; do run pipe bash harness/pipebench/stage2.sh $p; done ;;
