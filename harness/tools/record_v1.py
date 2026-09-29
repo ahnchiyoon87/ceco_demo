@@ -1,4 +1,4 @@
-"""[측정 도구 — 솔루션 부품 아님] V1 이 실제로 흘린 데이터를 파일로 한 번 기록한다(층별 후보 재생 입력, QUESTIONS §1 시험 범위).
+"""[측정 도구 — 솔루션 부품 아님] V1 이 실제로 흘린 데이터를 파일로 한 번 기록한다(층별 후보 재생 입력, HANDOFF §3 §1 시험 범위).
 
 rot-iiot 망에서 실행. 정상 --normal-s 초 뒤 고장을 하나씩 주입(--fault-s 초 유지 → 해제 → --gap-s 초)하며
 MQTT edgex/telemetry(EdgeX 이벤트 원문)와 Kafka 토픽(raw·clean·alerts·anomaly)을 받은 그대로 기록한다.

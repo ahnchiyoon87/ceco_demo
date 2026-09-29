@@ -2,7 +2,7 @@
 # 세션 2~4 에서 실측으로 찾아 고친 "같은 제품이면 어디서나 필요한 수정"만 모았다. 근거: reports/STABILITY.md, decision-log.
 #   docker compose --env-file .env --env-file .env.rotation \
 #     -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml -f docker-compose.stable.yml \
-#     --profile edgex up -d
+#     --profile edgex up -d --no-build
 #
 # 1) Flink 재시작 복구(HA, ZooKeeper) — S1: V1 은 HA 가 꺼져 JobManager·Docker 재시작 때 탐지 잡이 사라짐.
 #    Flink 2.2.1 빌드(flink/Dockerfile.v2, ONNX 잡 onnx-job-2x)로 판정 70/70 이 V1 알람과 같고, JobManager kill 뒤 잡 4개 자동 복귀를 확인했다(#107).
@@ -47,7 +47,7 @@ services:
     volumes:
       - influx-config:/etc/influxdb2
 
-  # 5) 원본은 frangoteam/fuxa:latest — 태그 고정 원칙에 따라 V1 기록 판으로 고정.
+  # 5) 원본 FUXA 이미지는 digest로만 고정돼 있다 — 태그 고정 원칙에 따라 V1 기록 판으로 고정.
   fuxa:
     image: frangoteam/fuxa:1.3.4
 

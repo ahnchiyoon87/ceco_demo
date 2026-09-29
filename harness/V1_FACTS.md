@@ -17,7 +17,7 @@
 |---|---|---|
 | §4.1 "냉각 장치는 없다" | HX-102 가상 냉각기 있음: 코일 3 `cooler_enable`, 물리모델 `cooler`, 고장 `heater_stuck`·`cooling_loss`, C3 조치 `enable_cooling` | 시나리오·CQ에 냉각 조치 경로 포함 필요 |
 | §4.1 대표 태그 TK-101·R-101 | TK-101·R-101·M-101·HX-101·CV-101은 설비명. 계측 태그 12개는 LT-101/102, TT-101/102, PT-101, FT-101/102, IT-101/102, VT-101, pH-101, CT-101 | 없음(표기만) |
-| §11.4 EXP-141 기준선 = Flink DataStream CEP | V1 패턴 탐지는 이미 **Flink SQL MATCH_RECOGNIZE** (`PATTERN (OVERCURRENT OTHER*? VIB)`). 규칙·Z-Score·CEP 모두 SQL 파일, 자바 코드 없음. ONNX 잡만 자바(`flink/onnx-job`) | 기준선 = EXP-142 형태. DataStream CEP는 새 후보가 됨 → §11.4 재배치 필요(QUESTIONS Q1) |
+| §11.4 EXP-141 기준선 = Flink DataStream CEP | V1 패턴 탐지는 이미 **Flink SQL MATCH_RECOGNIZE** (`PATTERN (OVERCURRENT OTHER*? VIB)`). 규칙·Z-Score·CEP 모두 SQL 파일, 자바 코드 없음. ONNX 잡만 자바(`flink/onnx-job`) | 기준선 = EXP-142 형태. DataStream CEP는 새 후보가 됨 → §11.4 재배치 필요(당시 질문 — 탐지는 Flink로 확정, HANDOFF §2-3) |
 | §4.3 C2 = "Vue → 백엔드 직접 제어" | Vue(`ai-web`) → `ai-knowledge` API `POST /control` (`simulation.py`). C2와 C3가 같은 서비스 | 없음 |
 | §4.3 C3 = "Modbus 정지 명령" | 조치 3종: `stop_mixer`(코일 1←0), `enable_cooling`(코일 3←1), `inspect_only`(명령 없음) | S16~S21을 두 쓰기 조치 모두에 적용 |
 | §4.3 C3 "알람 → 사건 → 사람이 분석 시작" | 사건 등록은 `consumer.py`가 자동. 분석은 별도 `POST /analyze` 호출 시에만 | 브리프와 일치(자동 분석 아님) |

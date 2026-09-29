@@ -31,7 +31,7 @@ manual_fix(){ # 스스로 복구 못 한 경우만: 다음 시험 오염 방지�
 
 phase0(){
   say "P0 순수 기준 버전 복구"
-  $SCADA -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml up -d --no-build --no-deps plant-simulator >>$LOG 2>&1   # V2 설비(배속 기본값) — V1·V2 같은 설비(QUESTIONS §1 "시간")
+  $SCADA -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml up -d --no-build --no-deps plant-simulator >>$LOG 2>&1   # V2 설비(배속 기본값) — V1·V2 같은 설비(HANDOFF §3-6 "시간")
   docker start rot-grafana rot-edgex-ui rot-cadvisor rot-prometheus rot-alertmanager rot-kafka-exporter >>$LOG 2>&1
   docker stop rot-ai-embed-1 rot-ai-knowledge-1 rot-ai-graph-1 >>$LOG 2>&1
   docker run --rm -v rot-ai_graph-snap-A:/from:ro -v rot-ai_graph-data:/to alpine:3.22 sh -c "rm -rf /to/*; cp -a /from/. /to/"

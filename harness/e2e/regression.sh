@@ -3,7 +3,7 @@
 #   STRUCT=V1|V2 sh harness/e2e/regression.sh <EXP> <이름> [S25=1]
 # S01 정상 3분 알람·저장 / S02·S04~S08 리플레이(실제 스택 raw 토픽, V1 과 같은 시드)로 판정 70건 / S14~S21·S24·S16 제어·안전
 # (regression_control.py, AI 백엔드 안) / S22 업무 DB 다운 fail-closed / S25 근거 문서 없는 사건 분석(LLM 1회, S25=1 일 때).
-# S09~S12 = baseline.sh 의 R05·R02·R01·R03·R06, S13 = l4bench S13, S23 = E1 — 여기서는 재지 않고 요약에서 가져온다.
+# S09~S12 = baseline.sh 의 R05·R02·R01·R03·R06, S13 = harness/tools/s13.py(모델 경로는 조립 때 모델 볼륨으로 고친다), S23 = E1 — 여기서는 재지 않고 요약에서 가져온다.
 set -u
 EXP=$1; NAME=$2
 export MSYS_NO_PATHCONV=1

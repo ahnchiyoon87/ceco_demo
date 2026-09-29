@@ -59,6 +59,6 @@
 | FUXA | `latest` = 1.3.4 | CISA 권고(1.3.2+)는 이미 충족. 태그를 버전으로 고정. Node-RED 통합 사용 여부 확인 |
 | kafka-exporter | `latest` | 버전 태그로 고정 |
 | ar100-ai-* 3종 | 로컬 빌드 `latest` | 실험 브랜치에서는 버전 태그로 빌드 |
-| LiteLLM | 외부 프록시, 버전 미확인 | 프록시 버전 확인 필요(QUESTIONS) |
+| LiteLLM | 외부 프록시, 버전 미확인 | 프록시 버전 확인 필요(1.82.7·1.82.8은 쓰지 않는다, HANDOFF §2-3) |
 | InfluxDB | 2.7 고정 | 조치 없음(9/15 `latest`→3 Core 전환 영향 없음) |
 | EMQX | 5.8.6 | 조치 없음(BSL 이전 라인) |

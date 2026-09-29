@@ -2,7 +2,7 @@
 
 **추가만 하고 지우거나 고치지 않는다.** 정정은 새 항목으로 남긴다.
 판정 값: **채택 / 보류 / 탈락 / 무효 / 기록**(판정 없이 사실만)
-판정 규칙: 현재 기준은 `HANDOFF.md` §3이다(옛 행의 `QUESTIONS.md`·"Q2" 표기는 당시 기준이며, 그 문서는 git `bdced23`에 있다).
+판정 규칙: 현재 기준은 `HANDOFF.md` §3이다(옛 행의 `QUESTIONS.md`·"Q2" 표기는 당시 기준이다. 옛 행이 가리키는 지운 경로 — `QUESTIONS.md`, `candidates/`, `harness/l4bench/`, `harness/situations/CANDIDATES.md`, `reports/V2_DESIGN.md`, `docker-compose.v2.yml`, `experiments/EXP-002` 등 — 는 git `bdced23`에 있다).
 수행자: 에이전트 = Claude Code(이 세션). 결정자: 규칙(사전 확정 기준 자동 적용) 또는 사용자.
 
 | # | 시각(KST) | 실험 · 실행 | 대상 | 수행자 | 무엇을 · 어떻게 | 결과 | 판정 | 사유 | 결정자 | 근거 |
