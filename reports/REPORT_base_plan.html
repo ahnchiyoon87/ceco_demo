@@ -67,7 +67,7 @@ footer{font-size:13px;color:var(--muted)}
 <section>
   <h2>한눈에</h2>
   <div class="grid3">
-    <div class="card"><b>기준</b>① 현업에서 주로 쓰는 것 ② 비용 0·라이선스·도커 ③ 경량화(현업 수준은 유지). 학생 PC 한 대(도커 7.6 GB)에서 돈다.</div>
+    <div class="card"><b>기준</b>① 현업에서 주로 쓰는 것 ② 비용 0·라이선스·도커·제품 계열 유지 ③ 경량화(현업 수준은 유지). 학생 PC 한 대(도커 7.6 GB)에서 돈다.</div>
     <div class="card"><b>원본은 그대로</b>원본 폴더 <code>lecture-iiot-scada</code>는 고치지 않는다. 복사본에서 원본 V1 코드를 출발점으로 바꾸며, 원본 기능은 잃지 않는 것이 기준이다.</div>
     <div class="card"><b>순서</b>베이스(구조·스택 확정 → 조립 → 검증) → 설비 확장(다수·OPC UA) → 시나리오·온톨로지. 이후 피지컬 AI에 쓴다.</div>
   </div>
@@ -139,7 +139,7 @@ footer{font-size:13px;color:var(--muted)}
     <div class="zone z-it"><h4>IT · it-net</h4>
       <div class="box">Kafka · Flink(HA)</div>
       <div class="box">InfluxDB · Grafana</div>
-      <div class="box">Prometheus<small>공정 알람과 분리</small></div>
+      <div class="box">Prometheus · Alertmanager<small>플랫폼 경보, 공정 알람과 분리</small></div>
       <div class="box">설비 등록부 <span class="tag">새로</span><small>토픽·키·규칙·온톨로지의 같은 ID</small></div>
       <div class="box">AI(Neo4j·LangGraph) · 승인 흐름<small>AI 도구는 읽기 전용</small></div>
     </div>
@@ -214,11 +214,12 @@ footer{font-size:13px;color:var(--muted)}
     <tr><th>항목</th><th>원본 V1 실측(배속 600)</th><th>새 베이스 합격선</th></tr>
     <tr><td>탐지 정확도</td><td>판정 70/70</td><td>같음(조금도 나빠지면 안 됨)</td></tr>
     <tr><td>고장 → 알람</td><td>최대 8.1초(베어링)</td><td>모든 고장 10초 안</td></tr>
+    <tr><td>잡음 고장(Z-Score)</td><td>확률적, 약 10.8초</td><td>원본보다 나빠지지 않음</td></tr>
     <tr><td>알람 → 화면 지연 p95</td><td>FUXA 1.84초</td><td>+5% 이내</td></tr>
     <tr><td>브로커 10초 정지</td><td>3회 중 2회 스스로 복구 못 함</td><td>3회 모두 스스로 복구</td></tr>
     <tr><td>수집기 10초 단절</td><td>복구 7.3초 · 유실 120</td><td>더 나쁘지 않음</td></tr>
     <tr><td>탐지기 재시작</td><td>잡 소멸 · 알람 유실</td><td>스스로 복구(HA)</td></tr>
-    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29</td><td>도커 7.6 GB 안</td></tr>
+    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29</td><td>전체(SCADA + AI)가 도커 7.6 GB 안에서 오류 없이</td></tr>
   </table></div>
   <p class="muted" style="margin-top:10px">과부하·장시간 시험은 개인 실습 목적에 과해서 하지 않는다. 성능·복구 시간은 3회 중앙값.</p>
 </section>

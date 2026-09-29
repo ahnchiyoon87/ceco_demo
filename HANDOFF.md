@@ -6,17 +6,17 @@
 ---
 
 ## 0. 새 세션이 처음 할 일
-1. 이 파일을 끝까지 읽는다. 이어서 `reports/QA.md`(사용자 질문과 확정 답)를 끝까지 읽는다 — 같은 질문에는 그 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
-2. 조사 결과를 끝까지 읽는다(모두 `docs/research/deep-2026-09-29/`). 구조와 스택은 함께 본다.
+1. 실제 상태를 대조한다: `git status`, `docker ps -a`(§6과 다르면 실제가 우선이고 이 파일을 고친다).
+2. 이 파일을 끝까지 읽는다. 이어서 `reports/QA.md`(사용자 질문과 확정 답)를 끝까지 읽는다 — 같은 질문에는 그 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
+3. 조사 결과를 끝까지 읽는다(모두 `docs/research/deep-2026-09-29/`). 구조와 스택은 함께 본다.
    - `12-industry-structure.md` — 현업 구조, v3·우리 비교, 권장 베이스 (요지 §2-1)
    - `13-industry-detail.md` — 세부 결정 29줄 (요지 §2-2)
    - `14-industry-stack.md` — 칸별 제품·버전·라이선스·지원 기간·메모리 (요지 §2-3)
    - `15-free-options-compare.md` — soft-PLC·엣지·HMI 무료 후보 비교(의뢰서 §8, 요지 §2-3)
    - 조사 원문(12~15)에 있는 "지원 기간 관문 탈락·조건부" 판정(예: EdgeX 관문 탈락, Flink 조건부)은 옛 기준이다. 지금 기준은 §3-1이다(판별 지원 종료일은 제외 이유가 아님). 원문은 고치지 않는다.
-   - 조사를 다시 돌릴 때는 의뢰서의 해당 절(§6·§7·§8)을 쓰고 도커 실행 금지를 명시한다.
-3. **피지컬 AI 조사(§2 단계 1-2)를 한다.** 질문 목록을 사용자에게 먼저 보여 주고, 의뢰서에 절(§9)로 추가한 뒤 조사 하나로 돌린다.
-4. 구조·세부·스택·피지컬 AI 결과와 §2-3 결정을 합쳐 사용자에게 쉬운 말 한 장으로 보고한다(베이스 구조, 칸별 제품·버전, 지금 구조에서 바꿀 것, 피지컬 AI로 확장할 때 더할 것). 확인을 받으면 §2 단계 2로 간다. 사용자가 고를 항목은 두지 않는다 — 에이전트가 근거로 정하고 이유를 쉬운 말로 설명한다.
-5. 시작 전에 실제 상태를 대조한다: `git status`, `docker ps -a`.
+   - 조사를 다시 돌릴 때는 의뢰서의 해당 절(§0~§5 구조, §6 세부, §7 스택, §8 무료 대체품)을 쓰고, 구조와 스택을 함께 묻고, 도커 실행 금지를 명시한다.
+4. **피지컬 AI 조사(§2 단계 1-2)를 한다.** 질문 목록을 사용자에게 먼저 보여 주고(빠진 것을 더할 기회이며 승인 대기가 아니다. 더할 것이 없으면 바로 띄운다), 의뢰서에 절(§9)로 추가한 뒤 조사 하나로 돌린다.
+5. 구조·세부·스택·피지컬 AI 결과와 §2-3 결정을 합쳐 **구조 확정 보고(§2 단계 2) 한 장**을 사용자에게 쉬운 말로 보여 준다(베이스 구조, 칸별 제품·버전, 지금 구조에서 바꿀 것, 피지컬 AI로 확장할 때 더할 것, 단계 2 미결의 결정). 방향 확인이므로 사용자 확인을 받고 단계 4(조립)로 간다. 사용자가 고를 항목은 두지 않는다 — 에이전트가 근거로 정하고 이유를 쉬운 말로 설명한다.
 
 ## 1. 목표와 방향
 - **무엇:** 국립 경남대 제조 AI 과정 학생이 배우고 실습할 IIoT·SCADA 시스템.
@@ -28,12 +28,13 @@
   3. 시나리오·온톨로지 보강: 풍부하고 자세하게
   → 베이스는 설비가 늘어도 다시 짜지 않아도 되는 구조여야 한다.
 - **확장 요구 — 피지컬 AI:** 이 시스템은 이후 피지컬 AI(AI가 현실 설비·로봇을 보고 판단해 움직이게 하는 것)에 쓰인다. 무엇이 필요한지(로봇 층 ROS 2, 카메라·비전, AI의 설비 조작, 디지털 트윈 등)는 사용자도 아직 정하지 않았다 → 에이전트가 조사로 정한다(§2 단계 1-2). 베이스의 AI 명령 경로(사람 승인 → 검증 통로 → PLC 최종 판단)와 설비 등록부는 이 확장의 받침이다.
-- **우선순위:** ① 현업 주류 ② 비용 0·라이선스·도커 적합성·지원 기간(같은 제품 안에서 판을 고르는 기준) ③ 경량화.
+- **우선순위:** ① 현업 주류 ② 비용 0·라이선스·도커 적합성·제품 계열 유지(§3-1) ③ 경량화.
 - **경량화:** 현업 수준(구조·기능·주류 제품)을 유지하면서 효율적으로 가볍게 한다. 층을 빼거나 비주류 제품으로 바꾸지 않는다. 방법은 네 가지다. 성능·안정성이 V1보다 나빠지면 그 경량화는 쓰지 않는다.
   - 같은 제품 안에서 가벼운 지원 판(alpine 등)을 고른다.
   - 설정을 실제 사용량에 맞춘다(JVM 힙, 보존 기간, 로그, 수집 주기).
   - 현업에서도 선택인 기능은 프로필로 켠다.
   - 같은 역할의 중복을 하나로 합친다.
+- **저장소의 옛 문서:** 루트의 `README.md`·`ARCHITECTURE.md`·`TODO.md`와 `docs/`(`docs/ai-work/HANDOFF.md`, `RUNBOOK.md`, `VERIFICATION.md` 등)는 원본 V1 저장소에서 온 문서다. V1 설명 자료로만 읽고 기준·지시로 따르지 않는다(기준은 이 파일뿐). 이미지·볼륨 이름의 `v2`(`rot-flink-onnx:v2`, `rot-plant-simulator:v2-ts`, `model-store-v2`)는 이름일 뿐이며, 쓰지 않기로 한 옛 V2 구성과 관계없다.
 - **참조:** 참조 설계서 v3(다른 팀이 구축·실행한 구조, 내용은 의뢰서 부록 A)와 우리 구조도(`시스템구성도_풀스택_보강본.pdf`, `시스템구성도_실제통신구조_확인본.pdf`)는 비교 대상이다. 판단은 현업 조사 결과로 한다.
 - **AI 층(L7~L9):** 구조 그림에는 포함한다. 베이스 단계에서는 AI 코드를 고치지 않는다. 큰 순서 3에서 적용할 원칙은 이렇다.
   - 그래프 DB 필수, 원인 분석은 온톨로지 그래프 추론, 매뉴얼 검색은 임베딩 + 그래프 연결
@@ -46,7 +47,7 @@
 |---|---|---|
 | 1 | 현업 구조 조사(층·길·망·확장·AI 연결), 세부 조사 | 완료(12·13) |
 | 1-2 | 피지컬 AI 조사(의뢰서에 절 추가): 2026 제조 피지컬 AI의 뜻과 주류(로봇·AI 공정 제어·비전·디지털 트윈), 참조 구조, 엣지 칸 후보(EdgeX·Node-RED·ROS 2·Zenoh·OPC UA 로봇 표준 등), 우리 베이스에 더할 것, 학생 PC(도커 7.6 GB, GPU 없음)에서 가능한 범위. 질문 목록은 띄우기 전에 사용자에게 보여 준다 | 대기 |
-| 2 | 구조 확정: 우리 베이스의 층과 길 목록을 확정하고 사용자에게 한 장으로 보고 | 대기 |
+| 2 | 구조 확정: 우리 베이스의 층과 길 목록을 확정하고 사용자에게 한 장으로 보고. **이 단계에서 정할 미결:** ① OT↔DMZ 상향 연결 방향(후보: DMZ에 브로커를 하나 더 두고 OT Mosquitto가 브리지로 밀어냄 / DMZ 커넥터가 OT 브로커를 구독하고 방향 예외를 문서화. 13번 A6에 따르면 둘 다 현업에 흔함) ② 명령 게이트웨이가 OT로 명령을 내리는 연결을 어느 쪽이 여는가 ③ 채택할 세부 결정(§2-2)의 핵심 근거를 원문으로 확인(EEMUA 191, ISO 14224, 전력 원격제어 표준) ④ 회귀 S14~S22를 새 명령 길에 맞춰 다시 정의(§3-5) | 대기 |
 | 3 | 칸별 제품·버전 확정 | 완료(14·15, 결정 3건 §2-3) |
 | 4 | 조립 한 번에: V1 코드에서 출발해 확정 구조·스택으로 바꾸고 기능 대응표(§3-4)를 채운다. 엣지는 먼저 Node-RED·EdgeX를 나란히 재서 정한다(§2-3 결정 ①) | 대기 |
 | 5 | 검증 한 번에(§3-5) → 나빠진 곳만 고침 → 태그 | 대기 |
@@ -89,11 +90,11 @@
 | MQTT 브로커 | Mosquitto 2.1.2 하나 | EMQX 대체 |
 | DMZ 중계 | Bento 1.21.2 + 자체 명령 게이트웨이 | Telegraf 3개 대체 |
 | 장부 | Kafka 4.3.1 | 버전만 |
-| 탐지 | Flink 2.2.1 + ZooKeeper HA(2.3 커넥터 나오면 2.3.x) | 버전만 |
+| 탐지 | Flink 2.2.1 + ZooKeeper HA(2.3 커넥터 나오면 2.3.x) | 버전 올림 + 재시작 복구(HA) 추가 |
 | 이력 | InfluxDB 2.9.1 | 버전만 |
 | 화면 | FUXA 1.3.4(UNS 구독 + `cmd` 발행) | 유지, 구성 변경 |
 | 대시보드 | Grafana 13.2.3 | 버전만 |
-| 감시 | Prometheus 3.13 LTS, cAdvisor 0.60.6, kafka-exporter 1.10.0 | 버전만 |
+| 감시 | Prometheus 3.13 LTS, Alertmanager(플랫폼 경보 전달, V1 기능 보존), cAdvisor 0.60.6, kafka-exporter 1.10.0 | 버전만 |
 | 설비 등록부 | 자체(YAML/JSON → PostgreSQL 표·Neo4j 노드) | 추가 |
 | AI·지식 | Neo4j 5.26 LTS CE, LangGraph, LiteLLM(1.82.7·1.82.8 금지) | 유지, 도구 읽기 전용 |
 | 승인 흐름 | 자체(PostgreSQL). BPMN이 필요하면 Operaton 2.1.5 | 유지 |
@@ -103,7 +104,7 @@
 - **현업 주류와의 관계:** MQTT·Kafka·Flink·Grafana·Prometheus·Neo4j·PostgreSQL은 현업 1위와 같은 오픈소스 본체다. PLC·HMI·히스토리언·엣지는 현업 주류가 상용(CODESYS·벤더 PLC, WinCC·FactoryTalk·Ignition, 상용 히스토리언, Kepware 등)이라 무료 제품으로 대신하고, 학생에게 "현업은 보통 상용"이라고 설명한다.
 - **무료 대체품 선택 근거(15번 파일):**
   - **PLC — OpenPLC Runtime v4.2.4.** 후보(OpenPLC·4diac·Beremiz) 중 공식 도커 이미지가 있는 유일한 제품이다. IEC 61131-3 다섯 언어, Modbus·OPC UA 플러그인이 있다. 논문 138편(4diac 88편), Western Carolina 대학 PLC 과목에서 쓴다. 약점: 근거 대부분이 v3 계보이고, v4(2025-08 새 저장소)는 한 회사 개발자 9명뿐이다. 2안(설명용)은 Eclipse 4diac(IEC 61499, 대학 교육 근거가 가장 강함, 도커 이미지 없음).
-  - **엣지 — Node-RED 5.0.x(결정 ①).** 산업 논문 486편(EdgeX 33, Telegraf 11, Kura 9, PLC4X 5), OpenJS 재단, Opto 22 산업 제어기 기본 탑재. Modbus 읽기·쓰기, OPC UA, MQTT 모두 무료. 끊김 시 저장·장치 등록부·명령 API는 없어 등록부 생성 흐름과 조립 뒤 검증으로 채운다. 2안 EdgeX(셋 다 기본 제공, 도입 기업 Eaton·Wipro 등).
+  - **엣지 — 1안 Node-RED 5.0.x, 2안 EdgeX(조립 때 실측으로 결정, 결정 ①).** Node-RED는 산업 논문 486편(EdgeX 33, Telegraf 11, Kura 9, PLC4X 5), OpenJS 재단, Opto 22 산업 제어기 기본 탑재, Modbus 읽기·쓰기·OPC UA·MQTT 무료. 끊김 시 저장·장치 등록부·명령 API는 없어 등록부 생성 흐름으로 채운다. EdgeX는 셋 다 기본 제공하고 도입 기업(Eaton·Wipro 등)이 있다.
   - **화면 — FUXA 1.3.4.** 공식 이미지·MQTT 구독·OPC UA·Modbus를 모두 무료(MIT)로 갖춘 유일한 공정 HMI다. 별 5,059, 최근 1년 개발자 29명, 12개월 릴리스 10회 이상. 약점: 재단 없음, 이름 있는 공장·대학 사례 없음, 알람 보류(shelving) 없음. 2안은 Rapid SCADA 6(Apache-2.0, 공장 사례 있음, 공식 도커 이미지 없음 — 직접 빌드 실측 필요).
   - 근거 강도: URL 89개 중 검색 요약만 본 곳 36군데. 무료 제품끼리의 점유율 설문은 없다.
 - **상용·제한형을 쓰지 않는 근거:** CODESYS는 라이선스 없이 2시간 데모, Ignition 무료판은 비상업·개인 교육용만, HiveMQ Edge는 설비 쓰기가 유료, ThingsBoard는 4.4부터 BUSL, TimescaleDB 압축·연속 집계는 TSL.
@@ -128,16 +129,18 @@
 | 승인 흐름 | Camunda 등 BPMN 엔진 | 자체(선택 시 Operaton) | Camunda 7 무료판 종료, 8은 운영 유료 |
 | 알람 수명주기 | Hexagon·Honeywell·Yokogawa 등 상용 | FUXA 알람 + PostgreSQL 상태표 | 상용. Alerta는 유지 중단 신호 |
 
-**결정(에이전트 권고로 확정 — 사용자는 전문가가 아니므로 에이전트가 근거로 정한다. 사용자가 바꾸라고 하면 바꾼다):**
-1. **엣지는 조립 단계에서 Node-RED와 EdgeX를 나란히 재서 확정한다(1안 Node-RED).** 문헌만으로는 막상막하다.
+**결정(에이전트가 근거로 정한다. 사용자가 바꾸라고 하면 바꾼다):**
+1. **엣지는 조립 단계에서 Node-RED와 EdgeX를 나란히 재서 확정한다(1안 Node-RED).**
    - Node-RED: 무료 중 현업 사용 근거가 더 많다(산업 논문 486편 대 33편, OpenJS 재단, Opto 22 산업 제어기 기본 탑재). 컨테이너 1개. 흐름이 눈에 보여 학생이 이해하기 쉽다. 장치 등록·명령 받기·끊김 시 저장은 블록(흐름)으로 조립해야 한다(흐름은 설비 등록부에서 생성).
    - EdgeX: 장치 등록·명령 창구·끊김 시 저장이 기본으로 있다. 컨테이너 약 10개. V1이 이미 쓴다(1356/1356 수집 실측). 다음 판(Queensland)이 나오면 올린다.
-   - **나란히 재는 것**(같은 가상설비·soft-PLC에 붙여 짧게): 12태그 누락 0 / 화면 명령이 PLC까지 가고 ACK가 돌아옴 / 10초 단절 뒤 복구 시간·유실이 V1(7.3 s·120 태그·초)보다 나쁘지 않음 / 메모리 / 설비 한 대 추가를 등록부에서 자동 생성할 수 있음.
+   - **나란히 재는 것**(같은 가상설비·soft-PLC에 붙여 짧게): 12태그 누락 0 / 화면 명령이 PLC까지 가고 ACK가 돌아옴 / 10초 단절 뒤 복구 시간·유실이 V1(7.3 s·120 태그·초)보다 나쁘지 않음 / 설비 한 대 추가를 등록부에서 자동 생성할 수 있음 — 여기까지가 합격 조건이다. 메모리는 둘 다 합격했을 때의 비교값이다.
+   - **EdgeX를 고르면:** EdgeX는 내부 메시지 버스용 브로커가 필요하다(V1은 전용 Mosquitto 2.0.21). "브로커 하나"를 지키려면 EdgeX 메시지 버스를 UNS Mosquitto에 붙일 수 있는지 확인하고, 못 하면 내부 버스 브로커를 엣지 안에만 두고 그 사실을 적는다.
+   - **피지컬 AI 조사 결과:** 엣지에 새 요구(카메라·로봇 연결 등)가 나오면 재는 항목에 더한다. ROS 2 등 로봇 층은 엣지를 대신하는 것이 아니라 추가 층으로 본다.
    - **정하는 규칙:** 둘 다 합격하면 Node-RED(가볍고 더 많이 쓰임). 하나만 합격하면 그쪽. 결과는 decision-log에 숫자로 남긴다.
    - 기능 보존: 수업 자료가 쓰는 `edgex/telemetry` 계측 토픽은 어느 쪽이든 같은 모양으로 낸다. Node-RED로 가면 수업의 EdgeX 차시가 바뀌며 보고서의 "바뀐 것"에 적는다.
    - 학생 설명: 현업 엣지 칸의 주류는 Kepware 같은 상용이다. EdgeX는 "장치 등록·명령 API를 갖춘 플랫폼형", Node-RED는 "흐름을 이어 만드는 범용 도구"로 비교해 가르친다.
 2. **버전 올림 규칙:** 패키지를 다시 만들 때(학기마다) 같은 메이저 안 최신 부 버전으로 올리고, 지원이 끝나는 판은 다음 판으로 올린다(§3-1). 판별 지원 종료일은 제품 선택의 이유로 쓰지 않는다.
-3. **Flink는 2.2.1로 시작하고, 2.3용 Kafka 커넥터(FLINK-40121)가 나오면 2.3.x로 올린다.** 실시간 탐지의 현업 1위이고 판정 70/70·재시작 자동 복구를 실측했다.
+3. **Flink는 2.2.1로 시작하고, 2.3용 Kafka 커넥터(FLINK-40121)가 나오면 2.3.x로 올린다.** 일반 규칙: 다음 판에 필요한 연결 부품이 아직 없으면 부품이 나올 때까지 현재 판의 최신 패치를 쓰고 그 사실을 적는다. 실시간 탐지의 현업 1위이고 판정 70/70·재시작 자동 복구를 실측했다.
 
 **그 밖의 사실:**
 - 메모리: 실측이 있는 칸만 더해 약 4,960 MiB. 미측정 5칸(OpenPLC, 엣지, 게이트웨이, AI 백엔드·LiteLLM, 승인). 문서 기본값으로는 Kafka·Flink·Neo4j·Grafana만 약 6.8 GB라 이 넷의 메모리를 명시적으로 낮춰 고정한다.
@@ -163,16 +166,17 @@
 - 할 것:
   - 흐름: 12태그 저장, 화면값과 이력값 일치
   - 탐지 판정 70건(회귀 S02~S08 리플레이)
-  - 고장→알람: 배속 600에서 모든 고장 10초 안
-  - 제어·안전: S14~S22
+  - 고장→알람: 배속 600에서 모든 고장 10초 안. 단 잡음(Z-Score) 고장은 V1도 확률적으로 약 10.8 s이므로 V1보다 나빠지지 않으면 합격
+  - 제어·안전: 회귀 S14~S22(`docs/research/AGENT_BRIEF_FINAL.md`의 시나리오). V1 쓰기 길 기준으로 적혀 있으므로 단계 2에서 새 명령 길(`cmd` → 엣지 → PLC ACK·상태)에 맞춰 다시 정의한다. 판정하는 뜻(인터록, 사람 승인, 실행 직전 재검사, 중복 실행 방지, 감사 기록, 명령≠상태)은 그대로다
   - 재시작 복구: 브로커·Kafka·수집기·탐지기 재시작 뒤 3회 모두 스스로 복구, 유실·중복
   - 알람→화면 지연 p95
-  - 메모리·CPU·이미지·디스크
+  - 메모리·CPU·이미지·디스크: 전체(SCADA + AI)가 도커 7.6 GB 안에서 엔진 오류 없이 돈다. V1 기록값(5,918 MiB)과 나란히 적는다
   - 내부 오류 로그
+- 번호 표기: "회귀 S14"는 회귀 시나리오, "결함 S6"은 `reports/STABILITY.md`의 결함 번호다.
 - 판정: 정확도·유실·중복은 V1보다 조금도 나빠지면 안 된다. 지연 p95는 +5% 이내면 같다. 성능·복구 시간은 3회 중앙값.
 - 하지 않을 것: 과부하, 장시간(개인 실습 목적에 과함).
 ### 3-6. 시간
-- 가상설비는 **배속 600이 기본값**이다(`simulator/plant.yaml physics_time_scale: 600`). 그 반대 개념을 가리키는 말은 쓰지 않는다.
+- 가상설비는 **배속 600이 기본값**이다(`simulator/plant.yaml physics_time_scale: 600`). "1배속"이라는 말은 쓰지 않는다.
 - 목표: 이상 주입→알람 10초 안, 한 사이클(이상→감지→AI 조치 제안) 1분 안.
 - 걸리는 시간은 짐작하지 말고 첫 실행을 재서 말한다.
 
@@ -184,11 +188,11 @@
 5. **학생 PC에서도 같다:** 새로 받은 패키지를 그대로 띄워도 똑같이 뜬다(빈 도커에서 한 번 확인).
 
 ## 4. 작업 방식
-1. **질문에는 먼저 쉬운 자연어로 답한다.** "~하면 안 되나?"는 지시가 아니라 질문이다. 권고로 답한다. 단계마다 번호 붙은 짧은 중간 보고를 쓰고, 보고 뒤에는 멈추지 말고 계속한다.
+1. **질문에는 먼저 쉬운 자연어로 답한다.** "~하면 안 되나?"는 지시가 아니라 질문이다. 권고로 답한다. 단계마다 번호 붙은 짧은 중간 보고를 쓰고, 중간 보고 뒤에는 멈추지 말고 계속한다. 멈추고 확인을 받는 것은 방향 보고(구조 확정 등)뿐이다.
 2. **사실만 쓴다.** 재지 않은 수치, "~같다"는 쓰지 않는다. 확인하지 못한 것은 "미확인"과 확인 방법으로 적는다. 틀린 말을 했으면 바로 정정한다.
 3. **조사는 의뢰서 하나로 한 번에, 넓게 한다.** 우리 구조를 정답으로 전제하지 않는다("우리는 이렇다, 현업은 어떻냐"). 구조와 스택은 함께 묻는다. 질문 목록은 띄우기 전에 사용자에게 보여 준다. 서브에이전트에게는 도커 실행·격리 컨테이너 exec 금지, 결과 파일 하나만 쓰기, 파일을 먼저 만들고 절마다 덧붙이기를 명시한다.
 4. **조사가 살아 있는지는 결과 파일 수정 시각으로 확인한다.** 사용자가 다른 명령을 끊을 때 백그라운드 조사가 함께 멈출 수 있다. 멈췄으면 묻지 말고 같은 의뢰서로 다시 띄운다.
-5. **조립과 측정은 한 번에 한다.** 후보마다 층별 단독 시험(벤치)은 하지 않는다. 새 측정 도구는 한 번 끝까지 돌려 결과 파일을 확인한 뒤 쓴다.
+5. **조립과 측정은 한 번에 한다.** 후보마다 층별 단독 시험(벤치)은 하지 않는다. 예외는 엣지 한 칸(§2-3 결정 ①, Node-RED·EdgeX 나란히 실측)뿐이다. 새 측정 도구는 한 번 끝까지 돌려 결과 파일을 확인한 뒤 쓴다.
 6. **근본 수정만 한다.** 땜빵은 금지한다: 수동 재시작, 시간 기다리기(sleep)로 순서 맞추기, 검사 건너뛰기, 실패를 통과로 세기, 원인 모르는 설정 덧대기. 원인을 찾아 설정·코드에서 고친다. 하나를 고치면 같은 원인의 땜빵이 다른 곳에 남았는지 같이 본다. "됐다"는 §3-7을 실제로 돌려 확인한 뒤에만 말한다.
 7. **말은 쉽게 한다.** 무엇을 왜 했는지를 말한다. 부품은 실제 이름으로 부른다("중계기" 같은 만든 말을 쓰지 않는다).
 8. PC 자원(이미지 받기·빌드, 컨테이너 기동·삭제, Docker 재시작)은 허락 없이 쓴다. 무거운 측정은 Docker 메모리 7.6 GB 안에서 한 번에 하나씩.
@@ -198,8 +202,8 @@
 **하지 않는 것(이유):**
 - 경량화를 이유로 층을 빼거나 비주류 제품을 고르기 — 현업 기준·기능 보존과 어긋난다.
 - 엔진급 기능(스트림 처리·메시징·저장·탐지)을 직접 짠 코드로 대체하기, AI 규칙 엔진 — 현업 제품을 가르친다.
-- 오토인코더를 배속 설비 데이터로 단순 재학습 — 드리프트·베어링 탐지율이 100 %에서 0 %로 떨어진다(S6). V1 모델을 유지한다.
-- Vector 사용 — Kafka 재조정 뒤 소비가 멈춘다(#22006, 수정판 없음, S19).
+- 오토인코더를 배속 설비 데이터로 단순 재학습 — 드리프트·베어링 탐지율이 100 %에서 0 %로 떨어진다(결함 S6). V1 모델을 유지한다.
+- Vector 사용 — Kafka 재조정 뒤 소비가 멈춘다(#22006, 수정판 없음, 결함 S19).
 
 ## 5. 재사용할 증거 — 다시 재지 않는다
 **V1 기준값**(배속 600 설비; 요약 `experiments/EXP-001/summary_V1_r2_.json` ← `python harness/tools/summarize_baseline.py EXP-001 V1 r2_`; 고장→알람 `experiments/EXP-000/raw/onset_v2sim_600*.json`; 탐지 `experiments/EXP-L4`; 기록 데이터 `experiments/REC-V1/`)
@@ -219,21 +223,21 @@
 
 **제품 사실(1차 출처는 `docs/research/`)**
 - 라이선스·지원: EMQX 5.9+ BSL, 5.8은 2026-02-28 지원 종료. EdgeX 4.0.2가 현재 최신 판(다음 판 Queensland 2027 봄 예정). V1의 Kafka 3.9·InfluxDB 2.7 등은 최신 부 버전으로 올린다. InfluxDB `latest`는 3 Core. TimescaleDB 압축·연속 집계는 TSL. Confluent MQTT 커넥터 독점. Redpanda BSL.
-- Flink 2.2.1 + ZooKeeper HA: 판정 70/70으로 V1 알람과 같고, JobManager 재시작 뒤 잡 4개가 체크포인트에서 스스로 복귀한다(`flink/Dockerfile.v2`, `flink/onnx-job-2x`, `flink/conf/*.v2.yaml`, 이미지 `rot-flink-onnx:v2`). ONNX 잡은 제출 설정에 체크포인트를 따로 켠다(S17).
+- Flink 2.2.1 + ZooKeeper HA: 판정 70/70으로 V1 알람과 같고, JobManager 재시작 뒤 잡 4개가 체크포인트에서 스스로 복귀한다(`flink/Dockerfile.v2`, `flink/onnx-job-2x`, `flink/conf/*.v2.yaml`, 이미지 `rot-flink-onnx:v2`). ONNX 잡은 제출 설정에 체크포인트를 따로 켠다(결함 S17).
 - Bento 1.21.2: V1 Telegraf 3개와 같은 결과(Kafka 재조정 뒤 재개는 미검증).
 - Telegraf 1.40.1 `kafka_consumer`를 Kafka 4.3.1과 쓰려면 `kafka_version = "3.0.0"`이 필요하다.
 - 수집: EdgeX 1356/1356·p95 9.75 ms·컨테이너 10. 저장 24시간 디스크: InfluxDB 19 MB, TimescaleDB·QuestDB 680~1100 MB. 브로커 재시작 중복: Mosquitto 1건(2회), RMQTT 0건.
-- 조립할 때 지킬 것(`reports/STABILITY.md` S1~S22): InfluxDB 설정 볼륨에 이름을 붙인다. Kafka에 `KAFKA_LOG_DIRS`를 지정한다. 설비 전용망에는 별칭을 준다. verify.py는 실패를 실패로 센다.
+- 조립할 때 지킬 것(`reports/STABILITY.md` 결함 S1~S22): InfluxDB 설정 볼륨에 이름을 붙인다. Kafka에 `KAFKA_LOG_DIRS`를 지정한다. 설비 전용망에는 별칭을 준다. verify.py는 실패를 실패로 센다.
 - 측정 함정: EMQX 기본 ACL은 `#` 구독을 거부한다. ONNX 점수는 입력이 멈춰도 나오므로 흐름 확인에 쓰지 않는다. 흐름은 Kafka 원시 토픽 오프셋 증가로 본다(10초 간격 약 144 증가가 정상). Windows 줄끝 때문에 셸 루프에는 `tr -d '\r'`. "거부" 표시가 떠도 명령이 실행됐을 수 있으니 결과를 확인한다.
 
 **안정화 V1 덧씌우기 `docker-compose.stable.yml`:** 원본 V1 compose 위에 같은 제품 수정 다섯 가지를 얹는다(Flink 2.2.1 + ZooKeeper HA, ONNX 체크포인트, `KAFKA_LOG_DIRS`, InfluxDB 설정 이름 볼륨, FUXA 1.3.4 고정). 원본 파일은 그대로다. 재설계 뒤 같은 제품을 쓰면 이 수정을 그대로 가져간다.
 - 기동: `docker compose --env-file .env --env-file .env.rotation -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml -f docker-compose.stable.yml --profile edgex up -d --no-build`(`--no-build`는 원본 이름 `iiot/*` 이미지 빌드를 막는다. 원본 V1 이미지는 다시 받아야 한다).
-- 확인 결과(2026-09-29): 흐름 +144건/10 s, Kafka 데이터가 볼륨에 저장됨, JobManager 재시작 8 s 뒤 잡 4개가 체크포인트에서 복귀. verify.py는 결측 주입 관련 3개 실패(원시 TT-101 결측 구간이 보이지 않음, 보간 0건, 보간값 quality 식별) — **미결**, 원인 미확인, 재설계 때 처리.
+- 확인 결과(2026-09-29): 흐름 +144건/10 s, Kafka 데이터가 볼륨에 저장됨, JobManager 재시작 8 s 뒤 잡 4개가 체크포인트에서 복귀. verify.py 20/23 통과(`experiments/STABLE-V1/verify_1.log`). 통과: EdgeX 정규화, Modbus 코일 쓰기 물리 반응, Kafka 토픽·스키마, Flink 4잡, ONNX 추론 0.221 ms, spike→규칙·bearing_wear→CEP·drift→ML, InfluxDB 적재·quality 태그, Prometheus 역할 분리·대상 7/7, FUXA 프로비저닝·Modbus 읽기·양방향 제어. 실패 3개는 모두 결측 주입 관련(원시 TT-101 결측 구간이 보이지 않음, 보간 0건, 보간값 quality 식별) — **미결**, 원인 미확인, 조립 때 처리.
 
 ## 6. 지금 상태
 - **컨테이너:** SCADA 컨테이너 없음. AI 컨테이너 6개(`rot-ai-*`) 정지, 볼륨 보존.
 - **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`.
-- **이미지:** 직접 빌드한 것(rot-flink-onnx:v2, rot-plant-simulator:v2-ts, e2e-client:1.0, l4bench-tools:1.0), iiot/model-trainer:1.0, AI(rot-ai-*, neo4j, postgres:17, ollama), 베이스 후보(apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, python:3.12-slim).
+- **이미지:** 직접 빌드한 것(rot-flink-onnx:v2, rot-plant-simulator:v2-ts, e2e-client:1.0, l4bench-tools:1.0), iiot/model-trainer:1.0, AI(rot-ai-*, neo4j, postgres:17, ollama), 지금 받아 둔 공개 이미지(권장 판은 §2-3이며 조립 때 권장 판을 받는다: apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, python:3.12-slim).
 - **코드:** V1 원본(`docker-compose.yml`, `docker-compose.edgex.yml`, edgex/·emqx/·telegraf/·kafka/·flink/·fuxa/·grafana/·prometheus/·ml/), 배속 600 가상설비(`simulator/`, `docker-compose.timescale.yml`), Flink 2.2.1 HA 빌드, 측정 도구(`harness/`), AI 층(`ai-layer/compose.v2.yml`, `ontology/v2`, `knowledge-docs`).
 - **git:** 브랜치 `exp/stack-rotation-202609`, 기준 태그 `v1-original`, push 안 함. 옛 문서·V2 구성은 커밋 `bdced23`에 있다.
 
@@ -244,7 +248,7 @@
 
 ## 8. 명령
 - 격리 스택 이름: `.env.rotation`(rot-iiot, rot-ai).
-- V1 격리 기동: `docker compose --env-file .env --env-file .env.rotation -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml up -d --no-build`
+- V1 격리 기동: 원본 이미지 `iiot/flink-onnx:1.0`·`iiot/plant-simulator:1.0`이 없어 원본 compose 그대로는 뜨지 않는다(원본 이름으로 빌드하는 것은 §7 금지). V1과 비교가 필요하면 §5의 안정화 V1 덧씌우기 명령을 쓴다(원본 V1의 공개 이미지는 다시 받는다).
 - AI 기동: `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge up -d --no-build`(V2 AI는 `-f ai-layer/compose.v2.yml` 추가)
 - 측정 도구: `harness/e2e/baseline.sh`(전체), `regression.sh`(회귀), `fault_onset.py`(고장→알람), `completeness.py`, `e1.py`. 요약: `harness/tools/summarize_baseline.py`, `e3_summary.py`, `internal_errors.sh`, `scorecard.py`. 정의: `harness/situations/`(ROBUSTNESS·STRUCTURE·L4·paths.yaml), `scenarios/catalog.yaml`. 새 구조는 `harness/e2e/struct_<이름>.sh`에 컨테이너 이름표를 둔다. 사용법은 각 파일 머리말.
 - 확인 스크립트: `VERIFY_CN_PREFIX=rot- VERIFY_NETWORK=rot-iiot VERIFY_ENV_FILE=.env.rotation python scripts/verify.py`
@@ -258,8 +262,9 @@
 | `reports/REPORT_base_plan.html` | 베이스 설계 보고서(결정 이유·현업 조사 대조·만들 구조·검증 계획). 조립·검증 뒤 같은 틀에 실측 결과를 채운다 |
 | `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서(목표, 우리 구조 요약, 부록 A v3, §6 세부, §7 스택, §8 무료 대체품 비교) |
 | `docs/research/deep-2026-09-29/12`~`15` | 현업 조사 결과(구조·세부·스택·무료 대체품 비교, 모두 완료) |
-| `docs/research/deep-2026-09-29/01`~`11`, `compass_artifact_*` 4개, `AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 정의), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석) | 제품별 사실 자료. `11`은 미완 |
-| `docker-compose.stable.yml` | 안정화 V1 덧씌우기 |
+| `docs/research/deep-2026-09-29/01`~`11` | 제품별 사실 자료(`11`은 미완) |
+| `docs/research/compass_artifact_*` 4개, `docs/research/AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 시나리오 정의), `docs/research/ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석) | 제품별 사실·시나리오 정의 자료 |
+| `docker-compose.stable.yml` · `experiments/STABLE-V1/verify_1.log` | 안정화 V1 덧씌우기와 그 확인 결과 |
 | `시스템구성도_*.pdf`·`.md`, `프로토타입_아키텍처_보고용.*` | V1 구조도(사용자 자료) |
 | `reports/STABILITY.md` | 결함과 교훈 S1~S22 |
 | `reports/decision-log.md` | 실행·판정·경위 기록(추가만) |
