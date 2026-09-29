@@ -140,7 +140,7 @@ td.diff{color:var(--warn);font-weight:600}
   <div class="grid3">
     <div class="card"><b>근거 규칙</b>근거마다 표준·독립 분석·벤더·사례·재단을 표시했다. 벤더 한 곳의 말로 "현업 주류"라고 쓰지 않았다.</div>
     <div class="card"><b>원문 여부</b>원문을 읽었는지, 검색 요약만 봤는지 구분했다. 못 찾은 것은 "찾지 못함"으로 남겼다.</div>
-    <div class="card"><b>조사 범위의 한계</b>한국 법규는 조사하지 않았다. 유료 표준 본문(IEC 62443, ISA-112)은 목차·해설만 봤다. 채택률 수치는 공개 자료에 없다.</div>
+    <div class="card"><b>조사 범위의 한계</b>유료 표준 본문(IEC 62443, ISA-112)은 목차·해설만 봤다. 채택률 수치는 공개 자료에 없다. 적용 법령은 16번에서 확인 중이다.</div>
   </div>
 </section>
 
@@ -187,9 +187,10 @@ td.diff{color:var(--warn);font-weight:600}
     <div><b>설비 추가</b> 층은 그대로. 설비 종류 모델과 설비 목록(등록부)에 더하면 이름·토픽·키·규칙이 같은 ID로 이어진다.</div>
   </div>
   <h3>근거 기준 목록 — 법·표준·지침</h3>
-  <p>위 구조·흐름의 근거가 된 문서다. 조사한 기준 가운데 <b>법령·규제는 21 CFR Part 11(미국 연방 규정) 하나</b>이고, 우리는 "감사 기록은 지우지 않는다"의 근거로만 쓴다. 나머지는 국제 표준, 정부 기관 지침, 업계 단체 권고, 재단 명세다. <b>한국 법규는 조사하지 않았다.</b></p>
+  <p>위 구조·흐름의 근거가 된 문서다. <b>적용되는 규칙(법령·표준·공공 지침)이 있으면 따르고, 없으면 현업이 흔히 하는 방식을 따른다.</b> 아래는 조사에서 확인한 표준·공공 지침이다. 제조 공장의 OT와 외부 연결에 적용되는 법령이 있는지는 조사 16번에서 확인한다.</p>
   <div class="tbl"><table>
     <tr><th>기준</th><th>누가 낸 무엇</th><th>핵심 내용(원문 요지)</th><th>우리 설계에 쓰인 곳</th><th>원문 확인</th><th>조사</th></tr>
+    <tr><td>Secure connectivity principles for OT(2026-01)</td><td>NCSC-UK·CISA·FBI·BSI 등 여러 나라 기관 공동 지침</td><td>"OT와의 모든 연결은 OT 안에서 밖으로 시작"(p.11). OT·IT 데이터 교환은 DMZ로 중개, OPC UA/MQTT over TLS·HTTPS. OT 히스토리언을 DMZ 히스토리언으로 단방향 복제, IT는 DMZ를 HTTP API로 조회(p.19). 분석·업무 시스템은 관찰·분석만, 명령·운전 변경 없음(p.25)</td><td>연결 방향, 사이트 히스토리언 + DMZ 복제, 외부 조치 경로</td><td>원문 확인</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
     <tr><td>NIST SP 800-82r3</td><td>미국 정부 기관(NIST) OT 보안 지침</td><td>"DMZ 망 구조와 방화벽으로 기업망과 OT망 사이에 트래픽이 직접 지나가지 않게 한다"(§1). L2~L3 사이 단방향 게이트웨이(데이터 다이오드)를 방화벽 대안으로 듦(§5.2.3.1). Purdue·ISA-95·IIRA를 인정 모델로 듦</td><td>망 3구역, IT→OT 직접 길 없음</td><td>원문 확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
     <tr><td>CISA Defense in Depth(2016)</td><td>미국 정부 기관(CISA, 당시 DHS ICS-CERT) 권고</td><td>"기업이 접근하는 구성요소를 DMZ에 두면 기업망에서 제어망으로 가는 직접 경로가 필요 없다. 모든 경로는 DMZ에서 끝난다." "제어망 장치가 먼저 연 연결만 허용". "DMZ 없는 2구역 구성은 겨우 허용되는 수준"(§2.4.2). L3에 사이트 히스토리언, DMZ에 복제(§2.4.1~2)</td><td>DMZ 중계, OT가 밀어냄, 히스토리언 배치 설명</td><td>12번에 원문 문장 인용</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
     <tr><td>CISA 등 9개 기관 AI-OT 원칙(2025-12)</td><td>CISA 등 9개 기관 공동 지침</td><td>OT 밖으로 밀어내는(push)·브로커 방식(p.15, p.20). "사람이 개입하지 않는 AI의 OT 능동 제어를 제한하라", "AI·LLM은 OT 안전 결정에 쓰면 안 된다"(p.8, p.16). ML은 주로 L1~L3, LLM은 L4~5(표1). 읽기 전용 예시(p.19). AI 입출력 로그(p.18~19)</td><td>AI 읽기 전용·사람 승인·기록, 탐지 위치 차이 표시</td><td>원문 확인(쪽 인용)</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
@@ -205,7 +206,6 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>IEC 61511</td><td>국제 표준(안전계장)</td><td>BPCS는 SIS 기능을 해치지 않게 분리·독립</td><td>안전계장은 따로 둔다는 설명</td><td>검색 발췌</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
     <tr><td>ISO 14224:2016</td><td>국제 표준(설비 신뢰성·정비 데이터)</td><td>고장 모드·메커니즘·원인과 정비 조치를 구분</td><td>온톨로지 고장 칸</td><td>검색 발췌(원문 접근 거부)</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
     <tr><td>IEC 61131-3</td><td>국제 표준(PLC 프로그래밍 언어)</td><td>PLC 프로그램 언어(ST 등)</td><td>OpenPLC 프로그램을 ST로</td><td>14번 언급</td><td><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14</a></td></tr>
-    <tr><td>21 CFR Part 11</td><td>미국 연방 규정(FDA 전자 기록 규정) — 법령</td><td>시각이 찍힌 감사 추적, 대상 기록과 같은 기간 보존(§11.10(e)(f))</td><td>명령·승인·감사 기록은 지우지 않는다</td><td>규정 조항 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
   </table></div>
 
   <h3>현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h3>
@@ -286,6 +286,7 @@ td.diff{color:var(--warn);font-weight:600}
   <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a>(층 B0~B13·길 목록) · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부) · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a>(제품·버전)</p>
   <p>2장의 현업 구조·흐름과 4장의 칸별 선택을 한 장에 합친 그림이다. 아래 L1 설비에서 위 L10 업무·승인까지 10개 층이고, 색 띠가 망 구역(OT·DMZ·IT)이다. 번호 순서대로 따라가면 흐름이 된다.</p>
   <p><b>구역 뜻:</b> OT(운영 기술)는 공장에서 기계를 실제로 움직이는 쪽(설비·PLC·SCADA 화면)이다. 멈추면 기계가 서므로 안전과 계속 도는 것이 먼저다. IT(정보 기술)는 사무실 쪽(저장·분석·AI·업무)이다. DMZ는 둘 사이 완충지대다. 데이터는 OT가 밀어서 내보내고, IT에서 기계로 바로 가는 명령 길은 없으며, IT가 멈춰도 공장은 돈다.</p>
+  <p class="note">그림의 IoT-SCADA 안쪽(L1~L4)과 제품은 확정이다. <b>외부 시스템과 잇는 부분</b>(DMZ 중계, L6 이후로 데이터가 가는 모양, 명령 C1~C3)은 조사 16번 결과로 정정한다. 이미 정해진 정정: 공장 안에 사이트 히스토리언을 두고 DMZ 히스토리언으로 단방향 복제한다(공공 지침 권고).</p>
   <div class="legend">
     <span><i class="sw d"></i>데이터가 올라가는 길(D)</span>
     <span><i class="sw a"></i>알람·사건(A)</span>
@@ -576,7 +577,7 @@ td.diff{color:var(--warn);font-weight:600}
   <h2>6. 어디까지 확정이고, 어디부터 원칙만 있나</h2>
   <div class="conf">
     <div class="c-ok"><b>L1~L4 · OT(설비·PLC·엣지·허브·화면)</b>구조 확정. 구역·층 구조는 표준 근거 강함(Purdue·NIST·CISA). 단 UNS 허브는 업계 트렌드(채택 통계 없음)이고, 엣지 제품은 조립 때 실측으로 정한다.</div>
-    <div class="c-mid"><b>L5 · DMZ</b>원칙은 표준 권고, 법은 아님(외부 접근은 DMZ에서 끝나고 OT가 밀어낸다, 쓰기 요청은 검증 통로 하나 → PLC 최종 판단). 방법은 표준이 하나로 정하지 않았다.</div>
+    <div class="c-mid"><b>L5 · DMZ</b>공공 지침을 따른다: 연결은 OT가 먼저 연다, 외부는 DMZ에서 끝난다, 운영 데이터는 OT 히스토리언 → DMZ 히스토리언 단방향 복제 후 외부가 DMZ를 조회. 외부 조치가 설비로 가는 길은 조사 16번 결과로 확정한다.</div>
     <div class="c-own"><b>L6~L10 · IT(장부·탐지·저장·AI·업무)</b>제품은 현업 1위 오픈소스. 배치와 연결 방식은 업계 동향과 우리 설계(조사 12번 제안)다.</div>
   </div>
 <h3>층별 근거</h3>
@@ -590,7 +591,7 @@ td.diff{color:var(--warn);font-weight:600}
     <tr><td>L5 DMZ 중계</td><td>L3.5</td><td>DMZ·OT가 밀어냄: 표준(NIST, CISA 2016·2025) — 근거 강함. 검증 통로 하나: NE 178(개념)</td><td>게이트웨이 제품이 없어 자체 코드</td></tr>
     <tr><td>L6 Kafka</td><td>L4 이상</td><td>MQTT→Kafka 연동: 벤더 문서·업계 동향(근거 약함)</td><td>—</td></tr>
     <tr><td>L7 탐지</td><td>IT</td><td>CISA: ML 탐지는 주로 L1~L3(OT 쪽)</td><td class="diff">교육용으로 IT에 둠 — 현업과 다름</td></tr>
-    <tr><td>L8 저장·관제</td><td>IT</td><td>현업은 사이트 히스토리언 OT(L3) + DMZ 복제(CISA 2016, 권장 배치)</td><td class="diff">이력 정본을 IT 한 곳으로 줄임, OT엔 화면 단기 추세만 — 현업과 다름</td></tr>
+    <tr><td>L8 저장·관제</td><td>IT</td><td>공공 지침: 사이트 히스토리언 OT(L3) + DMZ 단방향 복제, 외부는 DMZ 조회(CISA 2016, 2026 공동 지침 p.19)</td><td class="diff">지금 설계(이력 정본 IT 한 곳)는 지침과 다름 → 지침대로 정정, 구체 구성은 조사 16번 후</td></tr>
     <tr><td>L9 지식·AI</td><td>L4~5</td><td>CISA: LLM·에이전트는 OT 밖·읽기 전용. 현장 운영은 연구·초기 제품 단계(설문 수치 없음)</td><td>원본 AI 층 재사용, 도구 읽기 전용</td></tr>
     <tr><td>L10 업무·승인</td><td>L4~5</td><td>CISA(사람 승인), ISA-95 Part 3(정비 요청 → 작업지시)</td><td>자체 코드 + PostgreSQL</td></tr>
   </table></div>
@@ -598,18 +599,18 @@ td.diff{color:var(--warn);font-weight:600}
   <h3>OT 데이터를 밖으로 보내는 현업 패턴</h3>
   <div class="tbl"><table>
     <tr><th>패턴</th><th>흐름</th><th>근거</th></tr>
-    <tr><td>① 히스토리언 복제(전통)</td><td>SCADA → 사이트 히스토리언(OT L3) → DMZ 복제 히스토리언 → 기업 사용자</td><td>표준: CISA Defense in Depth 2016 §2.4.1~2 — 가장 강함</td></tr>
+    <tr><td>① 히스토리언 복제</td><td>SCADA → 사이트 히스토리언(OT L3) → 단방향 → DMZ 복제 히스토리언 → 외부 시스템은 DMZ를 조회</td><td>공공 지침이 이름을 들어 권하는 기본형: CISA 2016 §2.4.1~2, 2026 공동 지침 p.19 — <b>따른다</b></td></tr>
     <tr><td>② 단방향 장치</td><td>L2~L3 사이 데이터 다이오드(방화벽 대안)</td><td>표준: NIST SP 800-82r3 §5.2.3.1</td></tr>
-    <tr><td>③ IIoT(우리)</td><td>엣지 → MQTT 허브(UNS) → DMZ 복제 → Kafka·히스토리언</td><td>현업 추세: 독립 분석 기관 IoT Analytics(2026-01)가 "UNS가 Kafka·NATS 같은 백엔드를 쓰는 쪽으로 성숙"이라고 적음. HiveMQ·Kafka 쪽 저자 등 벤더도 같은 역할 분담. 사용 비율 통계 없음, 이름 있는 제조사 공장 구조 공개 자료 없음</td></tr>
+    <tr><td>③ IIoT(MQTT·UNS → Kafka)</td><td>엣지 → MQTT 허브(UNS) → DMZ 중개 → Kafka·히스토리언</td><td>현업 추세: 독립 분석 기관 IoT Analytics(2026-01)가 "UNS가 Kafka·NATS 같은 백엔드를 쓰는 쪽으로 성숙"이라고 적음. HiveMQ·Kafka 쪽 저자 등 벤더도 같은 역할 분담. 사용 비율 통계 없음, 이름 있는 제조사 공장 구조 공개 자료 없음</td></tr>
   </table></div>
-  <p class="muted">공통 원칙은 "OT가 밖으로 밀어내고, IT에서 OT로 직접 들어오는 길은 없다"(표준, 근거 강함)이다. "UNS는 히스토리언을 대체하지 않는다"(IT/OT Insider). 우리는 규칙을 지키고 방법은 ③을 쓴다(원본 V1 뼈대가 ③이고, 규칙을 지키면 현업과 맞다는 조사 12번 판단, 무료로 구성 가능). ③은 "현업 추세"이지 "주류"로 확인된 것은 아니며, 수업에서 ①이 표준 기본 배치임을 함께 설명한다.</p>
+  <p class="muted">공통 원칙은 "OT가 밖으로 밀어내고, IT에서 OT로 직접 들어오는 길은 없다"이고, 2026 공동 지침은 ①을 기본형으로 이름을 들어 권한다. 그래서 우리는 ①(사이트 히스토리언 + DMZ 단방향 복제)을 따르도록 설계를 정정하고, MQTT·Kafka(③)를 어디에 어떻게 붙일지는 조사 16번 결과로 정한다. "UNS는 히스토리언을 대체하지 않는다"(IT/OT Insider).</p>
 
   <h3>외부에서 설비 쪽으로 보내는 흐름</h3>
   <div class="grid2">
     <div class="card"><b>표준이 정한 것</b>바깥(업무 시스템·AI·최적화)의 쓰기 요청은 검증 통로 하나를 거치고, 받을지는 제어기가 최종 판단한다(NAMUR NE 178). IT에서 OT로 바로 가는 길은 없다(CISA). 사람 없는 AI 제어는 제한한다(CISA 2025).</div>
     <div class="card"><b>우리 설계(표준이 정하지 않은 부분)</b>사람 승인 → Kafka 명령 요청 → DMZ 게이트웨이 검사 → 허브 cmd → 엣지 → PLC 최종 검사(5장 C1~C7). "명령을 Kafka로" 보내는 현업 근거는 아직 찾지 못했다. 게이트웨이 오픈소스 제품도 없어 자체 코드다.</div>
   </div>
-  <p class="note">법으로 "반드시 사본"을 요구하는 것은 아니다. 조사에서 찾은 문서 중 법령은 21 CFR Part 11(감사 기록) 하나이고, 나머지는 표준·지침·권고다. 조사한 범위 안에서는 "사이트 히스토리언을 OT에 꼭 둬야 한다"는 요구 문장도 없었다(13번). 한국 법규와 유료 표준 본문은 조사 범위 밖이다. 외부 연결 방법의 비교·사용 정도와 설비 쪽으로 보내는 방법은 조사 16번(의뢰서 §9) 결과로 이 장을 채운다.</p>
+  <p class="note">규칙: 적용되는 법령·표준·공공 지침이 있으면 따르고, 없으면 현업이 흔히 하는 방식을 따른다. 2026 공동 지침은 분석·업무 시스템이 "관찰·분석만 하고 명령하거나 운전을 바꾸지 않는다"(p.25)고 쓴다. 외부 조치가 설비에 적용되는 현업 경로와 최종 판단 주체, 적용 법령은 조사 16번(의뢰서 §9) 결과로 이 장을 채운다.</p>
 </section>
 
 <section>
@@ -671,7 +672,7 @@ td.diff{color:var(--warn);font-weight:600}
     <li>Node-RED는 읽기 경로만 전에 쟀다(1,356/1,356). 쓰기·단절 복구·등록부 생성은 엣지 실측으로 확인한다.</li>
     <li>원본에 안정화 수정 5가지를 얹어 확인했을 때 결측 주입 관련 검사 3개가 실패했다. 원인 미확인, 조립 때 처리.</li>
       <li>외부 시스템 연결 방법의 비교·사용 정도, 외부에서 설비 쪽으로 보내는 방법, "명령을 Kafka로"의 현업 근거는 조사 16번에서 확인 중이다.</li>
-    <li>한국 법규와 유료 표준 본문(IEC 62443, ISA-112)은 조사 범위 밖이다.</li>
+    <li>유료 표준 본문(IEC 62443, ISA-112)은 목차·해설만 봤다. 적용 법령은 조사 16번에서 확인 중이다.</li>
   </ul>
 </section>
 
