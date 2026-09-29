@@ -50,11 +50,11 @@ groups:
           summary: "MQTT 브로커 컨테이너 없음 — 화면 알람·계측 사본 중단"
 
       - alert: MQTTPublishErrors
-        expr: (sum(increase(internal_write_errors{output="mqtt"}[2m])) or vector(0)) + (sum(increase(vector_component_errors_total{component_id="mqtt_hmi"}[2m])) or vector(0)) > 0
+        expr: (sum(increase(internal_write_errors{output="mqtt"}[2m])) or vector(0)) + (sum(increase(output_error{label="mqtt_hmi"}[2m])) or vector(0)) > 0
         for: 1m
         labels: { severity: warning, tier: "2" }
         annotations:
-          summary: "브로커 쓰기 오류 — 수집기·중계기의 MQTT 연결 단절 의심"
+          summary: "브로커 쓰기 오류 — 수집기·Kafka 커넥터의 MQTT 연결 단절 의심"
 
       # ── (V2) 탐지 잡 정지(JobManager 는 살아 있음) — V1 E11 미탐 수정 (#126) ──
       - alert: FlinkJobsNotRunning

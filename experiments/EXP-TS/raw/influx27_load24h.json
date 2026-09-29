@@ -1,0 +1,33 @@
+{
+  "engine": "influx27",
+  "hours": 24,
+  "range": [
+    1790571600,
+    1790658000
+  ],
+  "rows": {
+    "process_raw": 1031886,
+    "process": 1036800,
+    "anomaly": 86400,
+    "alerts": 288
+  },
+  "rows_total": 2155374,
+  "elapsed_s": 18.4,
+  "rows_per_s": 117039.0,
+  "batch_ms": {
+    "p50": 28.51,
+    "p95": 48.347,
+    "max": 87.458
+  },
+  "batch_size": 5000,
+  "write_errors": 0,
+  "error_samples": [],
+  "marks": {
+    "load_start_epoch": 1790659712.884605,
+    "load_end_epoch": 1790659731.300471
+  },
+  "engine_info": null,
+  "guard": {
+    "forced": false
+  }
+}

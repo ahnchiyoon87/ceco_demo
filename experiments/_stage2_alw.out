@@ -1,0 +1,142 @@
+ Image alwbench-client:1.0 Building 
+ Image alwbench-client:1.0 Built 
+ Image alwbench-kconnect:4.3.1-aivenjdbc6.12.0 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 621B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 916B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/eclipse-temurin:21.0.8_9-jdk
+#3 DONE 0.1s
+
+#4 [internal] load metadata for docker.io/apache/kafka:4.3.1
+#4 DONE 0.1s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 1.75kB done
+#6 DONE 0.0s
+
+#7 [stage-1 1/3] FROM docker.io/apache/kafka:4.3.1@sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837
+#7 resolve docker.io/apache/kafka:4.3.1@sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837 0.1s done
+#7 DONE 0.1s
+
+#8 [build 1/3] FROM docker.io/library/eclipse-temurin:21.0.8_9-jdk@sha256:7d1d666ddafac14da0ded6b4b076becf76cf88b31f9d7953a76555cc82f86511
+#8 resolve docker.io/library/eclipse-temurin:21.0.8_9-jdk@sha256:7d1d666ddafac14da0ded6b4b076becf76cf88b31f9d7953a76555cc82f86511
+#8 resolve docker.io/library/eclipse-temurin:21.0.8_9-jdk@sha256:7d1d666ddafac14da0ded6b4b076becf76cf88b31f9d7953a76555cc82f86511 0.1s done
+#8 DONE 0.2s
+
+#7 [stage-1 1/3] FROM docker.io/apache/kafka:4.3.1@sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837
+#7 CACHED
+
+#9 [build 2/3] ADD https://github.com/Aiven-Open/jdbc-connector-for-apache-kafka/archive/refs/tags/v6.12.0.tar.gz /src.tgz
+#9 DONE 0.8s
+
+#9 [build 2/3] ADD https://github.com/Aiven-Open/jdbc-connector-for-apache-kafka/archive/refs/tags/v6.12.0.tar.gz /src.tgz
+#9 DONE 0.8s
+
+#10 [build 2/3] ADD https://github.com/Aiven-Open/jdbc-connector-for-apache-kafka/archive/refs/tags/v6.12.0.tar.gz /src.tgz
+#10 DONE 0.0s
+
+#11 [build 3/3] RUN mkdir /src && tar -xzf /src.tgz -C /src --strip-components=1 && cd /src && ./gradlew --no-daemon installDist -x test     && mkdir -p /plugins/aiven-jdbc && cp -r build/install/*/* /plugins/aiven-jdbc/
+#11 0.499 Downloading https://services.gradle.org/distributions/gradle-8.6-all.zip
+#11 1.666 ....................10%.....................20%.....................30%.....................40%.....................50%.....................60%.....................70%.....................80%.....................90%.....................100%
+#11 18.58 
+#11 18.58 Welcome to Gradle 8.6!
+#11 18.58 
+#11 18.58 Here are the highlights of this release:
+#11 18.58  - Configurable encryption key for configuration cache
+#11 18.58  - Build init improvements
+#11 18.58  - Build authoring improvements
+#11 18.58 
+#11 18.58 For more details see https://docs.gradle.org/8.6/release-notes.html
+#11 18.58 
+#11 18.78 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.6/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+#11 19.88 Daemon will be stopped at the end of the build 
+#11 45.78 
+#11 45.78 > Configure project :
+#11 45.78 w: file:///src/build.gradle.kts:53:25: 'constructor URL(String!)' is deprecated. Deprecated in Java
+#11 52.48 
+#11 52.48 > Task :compileJava
+#11 52.48 /src/src/main/java/io/aiven/connect/jdbc/dialect/DatabaseDialects.java:79: warning: [removal] AccessController in java.security has been deprecated and marked for removal
+#11 52.48         AccessController.doPrivileged(new PrivilegedAction<Void>() {
+#11 52.48         ^
+#11 52.68 Note: /src/src/main/java/io/aiven/connect/jdbc/sink/JdbcSinkConfig.java uses unchecked or unsafe operations.
+#11 52.68 Note: Recompile with -Xlint:unchecked for details.
+#11 52.68 1 warning
+#11 55.18 
+#11 55.18 > Task :processResources
+#11 55.18 > Task :classes
+#11 55.28 > Task :jar
+#11 62.28 > Task :installDist
+#11 62.28 
+#11 62.28 BUILD SUCCESSFUL in 1m 1s
+#11 62.28 4 actionable tasks: 4 executed
+#11 DONE 62.9s
+
+#12 [stage-1 2/3] COPY --from=build /plugins /opt/connect-plugins
+#12 DONE 0.2s
+
+#13 [stage-1 3/3] COPY worker.properties jdbc-sink.properties /opt/connect/
+#13 DONE 0.0s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 3.2s done
+#14 exporting manifest sha256:faad4f3acb578266a36d657e7ae887a39e2c4992c4dc26b7509a146763056f92 0.0s done
+#14 exporting config sha256:2eb53488b6fac8f9fbc79b3fe2ba46668c14da31d0f2344dc825da725cec8d8e 0.0s done
+#14 exporting attestation manifest sha256:59166517750af61935b282dfd62b2af450894feab3e9aad74ce020b9bcd0d23e 0.0s done
+#14 exporting manifest list sha256:06ef3a5544f75a6c626d3f911a57d775081fe3a1d63a74338e396fe45e63cdf2 0.0s done
+#14 naming to docker.io/library/alwbench-kconnect:4.3.1-aivenjdbc6.12.0 done
+#14 unpacking to docker.io/library/alwbench-kconnect:4.3.1-aivenjdbc6.12.0
+#14 unpacking to docker.io/library/alwbench-kconnect:4.3.1-aivenjdbc6.12.0 0.8s done
+#14 DONE 4.2s
+
+#15 resolving provenance for metadata file
+#15 DONE 0.0s
+ Image alwbench-kconnect:4.3.1-aivenjdbc6.12.0 Built 
+ Network alwbench_default Creating 
+ Network alwbench_default Creating 
+ Network alwbench_default Created 
+ Network alwbench_default Created 
+ Container alwbench-work-db-1 Creating 
+ Container alwbench-kafka-1 Creating 
+ Container alwbench-kafka-1 Created 
+ Container alwbench-kafka-init-1 Creating 
+ Container alwbench-work-db-1 Created 
+ Container alwbench-kafka-init-1 Created 
+ Container alwbench-kconnect-1 Creating 
+ Container alwbench-kconnect-1 Created 
+ Container alwbench-kafka-1 Starting 
+ Container alwbench-work-db-1 Starting 
+ Container alwbench-kafka-1 Started 
+ Container alwbench-kafka-1 Waiting 
+ Container alwbench-work-db-1 Started 
+ Container alwbench-kafka-1 Healthy 
+ Container alwbench-kafka-init-1 Starting 
+ Container alwbench-kafka-init-1 Started 
+ Container alwbench-kafka-init-1 Waiting 
+ Container alwbench-work-db-1 Waiting 
+ Container alwbench-work-db-1 Healthy 
+ Container alwbench-kafka-init-1 Exited 
+ Container alwbench-kconnect-1 Starting 
+ Container alwbench-kconnect-1 Started 
+[alw] ① 시나리오
+ Container alwbench-client-run-eaa9aaf3acfd Creating 
+ Container alwbench-client-run-eaa9aaf3acfd Created 
+%4|1790660880.505|GETPID|rdkafka#producer-1| [thrd:main]: Failed to acquire idempotence PID from broker kafka:9092/1: Broker: Coordinator load in progress: retrying
+{"produced": 50, "producer_errors": 0, "inbox_rows": 50, "processed_in_s": 3.1}
+ Container alwbench-client-run-16ae6894bda0 Creating 
+ Container alwbench-client-run-16ae6894bda0 Created 
+dump /experiments/EXP-ALW/raw/dump1_kconnect.json
+[alw] ② 재전달(오프셋 되감기)
+ Container alwbench-client-run-48a06016df29 Creating 
+ Container alwbench-client-run-48a06016df29 Created 
+dump /experiments/EXP-ALW/raw/dump2_kconnect.json
+[alw] ③ 부하 + 워커 kill

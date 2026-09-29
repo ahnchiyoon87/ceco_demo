@@ -1,0 +1,13 @@
+[15:30:47] == baseline V2 시작
+[15:30:47] P0 V2 기동 확인
+/rot-plant-simulator iiot/plant-simulator:1.0
+/rot-ai-knowledge-1 rot-ai-knowledge
+[15:32:06] Flink 잡 0 개 → 제출기 재실행
+[15:34:42] Flink RUNNING 4
+[15:34:43] P1 정상 3분(E3·R09·E7·E12)
+{"mqtt_emqx_anonymous": true, "mqtt_edgex_internal_anonymous": true, "kafka_plaintext_no_auth": true, "influxdb_query_no_token": false, "fuxa_project_no_login": false, "grafana_no_login": false, "flink_rest_no_auth": true, "edgex_command_no_auth": false, "prometheus_no_auth": true, "alertmanager_no_auth": true, "simulator_api_no_auth": true, "open_count": 7, "absent": ["edgex_command_no_auth", "fuxa_project_no_login", "grafana_no_login"], "probed": 8}
+{"pairs": 120, "within_tolerance": 120, "rate": 1.0}
+{"kafka_raw": {"expected": 1944, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.0}, "influx_process_raw": {"expected": 1944, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.0}}
+[15:37:52] P1 끝
+[15:37:53] P2 E1 알람→화면 10회 × 3
+{"kafka:sensor.alerts": {"n": 0, "missing": 10, "p50": null, "p95": null, "max": null, "mean": null}, "mqtt:scada/alerts/PT-101": {"n": 0, "missing": 10, "p50": null, "p95": null, "max": null, "mean": null}, "mqtt:scada/hmi/latest-alert": {"n": 0, "missing": 10, "p50": null, "p95": null, "max": null, "mean": null}, "incident": {"n": 0, "missing": 10, "p50": null, "p95": null, "max": null, "mean": null}}

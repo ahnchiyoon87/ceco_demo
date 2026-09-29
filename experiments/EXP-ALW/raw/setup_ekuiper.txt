@@ -1,0 +1,7 @@
+ Container alwbench-client-run-78920bfae617 Creating 
+ Container alwbench-client-run-78920bfae617 Created 
+OK  kafka conf 200 
+OK  stream 201 Stream alerts_raw is created.
+ERR rule 400 {"error":1000,"message":"invalid rule json: Parse SQL SELECT \"sensor.alerts\" AS topic, meta(partition) AS partition_id, meta(offset) AS offset_id, self AS raw_payload FROM alerts_raw error: found \"
+eKuiper 설정 실패: rule
+

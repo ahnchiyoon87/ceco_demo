@@ -1,0 +1,19 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "spike": {
+   "reps": [
+    {
+     "kafka": 1.81,
+     "mqtt": 1.82
+    }
+   ],
+   "kafka_max_s": 1.81,
+   "mqtt_max_s": 1.82,
+   "missing": 0,
+   "within_10s": true
+  }
+ },
+ "all_within_10s": true,
+ "physics_time_scale": 600.0
+}

@@ -1,0 +1,145 @@
+{
+ "exp": "EXP-ALW",
+ "profile": "bento",
+ "vs_v1": {
+  "incidents": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "events": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "links": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "inbox": {
+   "a": 50,
+   "b": 50,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": [],
+   "by_label": {}
+  },
+  "equivalent": true,
+  "a": "/repo/experiments/EXP-ALW/dump1_v1.json",
+  "b": "/experiments/EXP-ALW/raw/dump1_bento.json"
+ },
+ "redelivery_idempotent": {
+  "incidents": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "events": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "links": {
+   "a": 24,
+   "b": 24,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": []
+  },
+  "inbox": {
+   "a": 50,
+   "b": 50,
+   "only_a": 0,
+   "only_b": 0,
+   "different": 0,
+   "examples": [],
+   "by_label": {}
+  },
+  "equivalent": true,
+  "a": "/experiments/EXP-ALW/raw/dump1_bento.json",
+  "b": "/experiments/EXP-ALW/raw/dump2_bento.json"
+ },
+ "load_with_worker_kill": {
+  "sent": 600,
+  "rate": 20.0,
+  "inbox_rows_for_load": 600,
+  "lost": 0,
+  "duplicate_events": 0,
+  "drained_in_s": 30.3,
+  "latency_ms(produce_ack→inbox commit)": {
+   "p50": 27385.9,
+   "p95": 40764.7,
+   "max": 42314.4
+  }
+ },
+ "resources": {
+  "per_container": {
+   "alwbench-bento-1": {
+    "cpu_pct_median": 0.03,
+    "cpu_pct_p95": 5.91,
+    "mem_mib_median": 37.8,
+    "mem_mib_max": 39.9,
+    "samples": 24
+   },
+   "alwbench-client-run-1fa5ac56e89a": {
+    "cpu_pct_median": 0.74,
+    "cpu_pct_p95": 0.91,
+    "mem_mib_median": 25.7,
+    "mem_mib_max": 26.4,
+    "samples": 18
+   },
+   "alwbench-client-run-8433ef7871d3": {
+    "cpu_pct_median": 0.34,
+    "cpu_pct_p95": 0.34,
+    "mem_mib_median": 25.4,
+    "mem_mib_max": 25.4,
+    "samples": 1
+   },
+   "alwbench-kafka-1": {
+    "cpu_pct_median": 7.34,
+    "cpu_pct_p95": 204.57,
+    "mem_mib_median": 339.9,
+    "mem_mib_max": 425.9,
+    "samples": 26
+   },
+   "alwbench-work-db-1": {
+    "cpu_pct_median": 0.76,
+    "cpu_pct_p95": 6.41,
+    "mem_mib_median": 37.6,
+    "mem_mib_max": 41.3,
+    "samples": 26
+   }
+  },
+  "total": {
+   "containers": 2,
+   "only": "^alwbench-(bento|work-db)-",
+   "cpu_pct_median": 0.85,
+   "cpu_pct_p95": 9.98,
+   "mem_mib_median": 75.2,
+   "mem_mib_max": 80.7
+  },
+  "stats_csv": "experiments/EXP-ALW/raw/stats_bento.csv",
+  "images_mib": {
+   "ghcr.io/warpstreamlabs/bento:1.21.2": 76.5
+  },
+  "images_total_mib": 76.5
+ }
+}

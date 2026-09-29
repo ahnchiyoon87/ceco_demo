@@ -1,0 +1,13 @@
+{
+  "engine": "influx27",
+  "seconds": 60,
+  "visible_ms": {
+    "p50": 20.006,
+    "p95": 29.949,
+    "max": 45.571
+  },
+  "not_visible_within_s": {
+    "timeout_s": 60,
+    "count": 0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "engine": "questdb",
+  "seconds": 60,
+  "visible_ms": {
+    "p50": 8.908,
+    "p95": 13.969,
+    "max": 19.551
+  },
+  "not_visible_within_s": {
+    "timeout_s": 60,
+    "count": 0
+  }
+}

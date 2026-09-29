@@ -1,0 +1,219 @@
+{
+  "exp": "EXP-TS",
+  "stage": 2,
+  "engine": "victoriametrics",
+  "runs": {
+    "fresh": {
+      "engine": "victoriametrics",
+      "seconds": 60,
+      "visible_ms": {
+        "p50": 3998.139,
+        "p95": 4034.614,
+        "max": 11401.404
+      },
+      "not_visible_within_s": {
+        "timeout_s": 60,
+        "count": 0
+      }
+    },
+    "load24h": {
+      "engine": "victoriametrics",
+      "hours": 24,
+      "range": [
+        1790571600,
+        1790658000
+      ],
+      "rows": {
+        "process_raw": 1031886,
+        "process": 1036800,
+        "anomaly": 86400,
+        "alerts": 288
+      },
+      "rows_total": 2155374,
+      "elapsed_s": 17.1,
+      "rows_per_s": 126192.1,
+      "batch_ms": {
+        "p50": 20.422,
+        "p95": 54.477,
+        "max": 122.126
+      },
+      "batch_size": 5000,
+      "write_errors": 0,
+      "error_samples": [],
+      "marks": {
+        "load_start_epoch": 1790660390.2244236,
+        "load_end_epoch": 1790660407.3045337
+      },
+      "engine_info": null,
+      "guard": {
+        "forced": false
+      }
+    },
+    "query24h": {
+      "engine": "victoriametrics",
+      "hours": 24,
+      "queries": {
+        "evidence": {
+          "correct": true,
+          "detail": {
+            "rows": 179,
+            "want": 179
+          },
+          "error": null,
+          "cold_ms": 13.3,
+          "p50_ms": 3.921,
+          "p95_ms": 4.77,
+          "n": 20
+        },
+        "evidence300": {
+          "correct": true,
+          "detail": {
+            "rows": 1195,
+            "want": 1195
+          },
+          "error": null,
+          "cold_ms": 4.0,
+          "p50_ms": 4.61,
+          "p95_ms": 5.756,
+          "n": 20
+        },
+        "current": {
+          "correct": true,
+          "detail": {
+            "rows": 358,
+            "want": 358
+          },
+          "error": null,
+          "cold_ms": 4.5,
+          "p50_ms": 3.822,
+          "p95_ms": 4.326,
+          "n": 5
+        },
+        "trend_1h": {
+          "correct": false,
+          "detail": {
+            "windows": 720,
+            "want": 720,
+            "missing": 0,
+            "wrong": 34,
+            "extra": 0
+          },
+          "error": null,
+          "cold_ms": 4.0,
+          "p50_ms": 3.757,
+          "p95_ms": 4.677,
+          "n": 5
+        },
+        "trend_24h": {
+          "correct": false,
+          "detail": {
+            "windows": 2880,
+            "want": 2880,
+            "missing": 0,
+            "wrong": 818,
+            "extra": 0
+          },
+          "error": null,
+          "cold_ms": 12.4,
+          "p50_ms": 7.751,
+          "p95_ms": 8.805,
+          "n": 5
+        },
+        "quality_24h": {
+          "correct": true,
+          "detail": {
+            "cells": 2880,
+            "want": 2880,
+            "diff": 0
+          },
+          "error": null,
+          "cold_ms": 13.5,
+          "p50_ms": 10.046,
+          "p95_ms": 13.283,
+          "n": 5
+        },
+        "anomaly_24h": {
+          "correct": true,
+          "detail": {
+            "windows": 2880,
+            "want": 2880,
+            "missing": 0,
+            "wrong": 0,
+            "extra": 0
+          },
+          "error": null,
+          "cold_ms": 11.9,
+          "p50_ms": 12.368,
+          "p95_ms": 13.993,
+          "n": 5
+        },
+        "anomaly_count": {
+          "correct": true,
+          "detail": {
+            "got": 720,
+            "want": 720
+          },
+          "error": null,
+          "cold_ms": 84.2,
+          "p50_ms": 61.95,
+          "p95_ms": 79.055,
+          "n": 5
+        },
+        "alerts_last100": {
+          "correct": false,
+          "detail": null,
+          "error": "RuntimeError('VictoriaMetrics 는 문자열 필드(detail)를 저장하지 않음 — 알람 이력 표 재현 불가')",
+          "cold_ms": null,
+          "p50_ms": null,
+          "p95_ms": null,
+          "n": 0
+        },
+        "alerts_rate": {
+          "correct": true,
+          "detail": {
+            "cells": 288,
+            "want": 288,
+            "diff": 0
+          },
+          "error": null,
+          "cold_ms": 4.3,
+          "p50_ms": 3.381,
+          "p95_ms": 4.419,
+          "n": 5
+        }
+      },
+      "marks": {
+        "query_start_epoch": 1790660470.0491478,
+        "query_end_epoch": 1790660471.5575125
+      },
+      "correct_all": false
+    },
+    "startup": {
+      "engine": "victoriametrics",
+      "state": "running",
+      "startup_s": 1
+    }
+  },
+  "resources": {
+    "stats_victoriametrics_stage2": {
+      "load24h:load": {
+        "tsbench-victoriametrics-1": {
+          "cpu_pct_median": 20.49,
+          "mem_mib_median": 117.0,
+          "mem_mib_max": 151.4
+        }
+      },
+      "query24h:query": {}
+    }
+  },
+  "disk_kib": {
+    "after_load_24h": "376",
+    "after_load_24h_settled": "636",
+    "empty": "68"
+  },
+  "images": [
+    "victoriametrics/victoria-metrics:v1.153.0 linux/amd64"
+  ],
+  "stage2_verdict": "탈락 또는 미완(세부는 runs — 질의별 correct·error)",
+  "note": "판정 규칙 QUESTIONS.md §1. ②(기능·정답) 실측값. ③은 3회 반복 중앙값, ④ R06 은 r06 단계."
+}

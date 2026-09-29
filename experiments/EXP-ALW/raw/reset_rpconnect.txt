@@ -1,0 +1,2 @@
+
+GROUP                          TOPIC                          PARTITION  NEW-OFFSET     alw-rpconnect                  sensor.alerts                  0          0              alw-rpconnect                  sensor.alerts                  1          0              alw-rpconnect                  sensor.alerts                  2          0              

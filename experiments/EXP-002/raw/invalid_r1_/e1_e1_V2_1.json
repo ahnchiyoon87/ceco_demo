@@ -1,0 +1,167 @@
+{
+ "run": "e1_V2_1",
+ "reps": 10,
+ "args": {
+  "exp": "EXP-002",
+  "run": "e1_V2_1",
+  "reps": 10,
+  "sim": "http://plant-simulator:8080",
+  "mqtt": "mqtt",
+  "mqtt_topics": "scada/alerts/PT-101,scada/hmi/latest-alert",
+  "kafka": "kafka:9092",
+  "kafka_topic": "sensor.alerts",
+  "match": "THRESHOLD_USL",
+  "tag": "PT-101",
+  "scenario": "spike",
+  "quiet_s": 3.0,
+  "timeout_s": 60.0,
+  "fault_duration": 2.0,
+  "incident_api": "http://host.docker.internal:38000/api/operations/incidents"
+ },
+ "summary": {
+  "kafka:sensor.alerts": {
+   "n": 0,
+   "missing": 10,
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "mean": null
+  },
+  "mqtt:scada/alerts/PT-101": {
+   "n": 0,
+   "missing": 10,
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "mean": null
+  },
+  "mqtt:scada/hmi/latest-alert": {
+   "n": 0,
+   "missing": 10,
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "mean": null
+  },
+  "incident": {
+   "n": 0,
+   "missing": 10,
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "mean": null
+  }
+ },
+ "reps_detail": [
+  {
+   "i": 0,
+   "t0_ms": 1790663879121.27,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 1,
+   "t0_ms": 1790663939150.7573,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 2,
+   "t0_ms": 1790663999160.531,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 3,
+   "t0_ms": 1790664059191.6438,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 4,
+   "t0_ms": 1790664119228.843,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 5,
+   "t0_ms": 1790664179271.372,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 6,
+   "t0_ms": 1790664239322.513,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 7,
+   "t0_ms": 1790664299360.5115,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 8,
+   "t0_ms": 1790664359395.6094,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  },
+  {
+   "i": 9,
+   "t0_ms": 1790664419447.2878,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:scada/alerts/PT-101",
+    "mqtt:scada/hmi/latest-alert",
+    "incident"
+   ]
+  }
+ ]
+}

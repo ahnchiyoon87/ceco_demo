@@ -42,9 +42,9 @@ scrape_configs:
     metrics_path: /metrics
     static_configs: [{ targets: ["influxdb:8086"] }]
 
-  # (V2) 저장·알람 중계기(Vector) 자체 지표 — 중계기 정지를 up==0(PipelineServiceDown)으로 탐지(V1 E11 에서 저장 중계기 kill 미탐, #124)
+  # (V2) Kafka 커넥터(Bento) 자체 지표 — 정지를 up==0(PipelineServiceDown)으로 탐지(V1 E11 에서 저장 중계기 kill 미탐, #124). Bento 기본 http :4195/metrics
   - job_name: relay
-    static_configs: [{ targets: ["relay:9598"] }]
+    static_configs: [{ targets: ["relay:4195"] }]
 
   # (V2) 수집기(Telegraf) 자체 상태 — 수집기 정지(up==0)·브로커 쓰기 오류(V1 EMQX 지표 대체, #126)
   - job_name: ingest

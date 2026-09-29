@@ -1,0 +1,1 @@
+kafka39(telegraf 단계만)

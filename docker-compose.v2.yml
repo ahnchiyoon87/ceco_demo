@@ -3,7 +3,7 @@
 #
 #   V1 → V2 에서 바뀐 것(근거는 reports/decision-log.md)
 #     · 수집: EdgeX 10개 + EMQX + 중계기#1 → Telegraf 한 대가 설비를 읽어 Kafka 에 바로 씀(구조 재조립 ②, v2/telegraf/ingest.conf)
-#     · 저장·알람 중계: Telegraf #2·#3 → Vector 한 대(v2/vector/vector.yaml)
+#     · 저장·알람 Kafka 커넥터: Telegraf #2·#3 → Bento 한 대(v2/bento/*.yaml) — Vector 0.58 은 소비 재개 버그로 교체(#132)
 #     · 브로커: EMQX(무료판 지원 종료) → Mosquitto 2.1.2 (알람을 FUXA 화면에 보내는 일만 남음)
 #     · 이상탐지: Flink 1.20.1 → 2.2.1 + 재시작 복구(ZooKeeper HA, #94) — 규칙 SQL·ONNX 잡 로직은 V1 그대로
 #     · 같은 제품은 지원되는 최신판으로 고정: Kafka 4.3.1, Telegraf 1.40.1, InfluxDB 2.9.1, Grafana 13.2.2,
@@ -21,11 +21,6 @@ networks:
   field:            # 설비 전용망(설비 ↔ 수집기). 수집기의 백본 쪽 연결만 끊어도 설비 읽기는 계속된다(R02 를 V1 과 같은 의미로)
     name: ${SCADA_NETWORK:-iiot}-field
 
-secrets:                 # 중계기 InfluxDB 접속값(.env) → /run/secrets 파일. Vector 공식 비밀값 기능으로 읽는다(땜빵 점검표 #10)
-  influx_token: { environment: INFLUX_TOKEN }
-  influx_org: { environment: INFLUX_ORG }
-  influx_bucket: { environment: INFLUX_BUCKET }
-
 volumes:
   ingest-buffer-v2:      # 수집기 디스크 버퍼(컨테이너 재생성에도 유지, 땜빵 점검표 #9)
   kafka-data-v2:
@@ -33,6 +28,7 @@ volumes:
   influx-data-v2:
   influx-config-v2:   # /etc/influxdb2(CLI 접속 설정). 이름 없는 볼륨이면 같은 이름 컨테이너 재생성 때 V1 설정이 넘어와 초기 설정이 'config name "default" already exists' 로 실패(#124)
   grafana-data-v2:
+  grafana-data-v3:
   prometheus-data-v2:
   fuxa-appdata-v2:
   fuxa-db-v2:
@@ -125,6 +121,8 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_DIRS: /var/lib/kafka/data   # (대장 S21) 이 줄이 없으면 이미지 기본 /tmp/kafka-logs(컨테이너 쓰기 계층)에 저장돼 재생성 때 Kafka 데이터가 사라짐 — V1 도 같음
+      KAFKA_HEAP_OPTS: "-Xmx256m -Xms256m"   # (경량화 #131) 기본 1G 고정 → 256m. 설정 방법 공식 확인(리서치 09), 값은 실측으로 판정
       CLUSTER_ID: ${KAFKA_CLUSTER_ID_V2:-5L6g3nShT-eMCtK--X86sw}
     volumes:
       - kafka-data-v2:/var/lib/kafka/data
@@ -152,6 +150,8 @@ services:
     image: zookeeper:3.9.5
     container_name: ${CN_PREFIX:-}zookeeper
     hostname: zookeeper
+    environment:
+      JVMFLAGS: "-Xmx128m"   # (경량화 #131) 기본 Xmx1000m → 128m(실측 RSS 99 MiB). 기본값 뒤에 붙어 우선 적용(리서치 09)
     volumes:
       - zookeeper-data-v2:/data
 
@@ -225,7 +225,7 @@ services:
   # ── L5 저장: InfluxDB 2.9 + 저장 중계기 ────────────────────────────────────
   influxdb:
     <<: *restart
-    image: influxdb:2.9.1
+    image: influxdb:2.9.1-alpine   # (경량화 #131) 같은 2.9.1, 이미지 106 → 83 MB
     container_name: ${CN_PREFIX:-}influxdb
     hostname: influxdb
     ports:
@@ -252,18 +252,22 @@ services:
   # V1 Telegraf 3개(710 MiB) 중 #2·#3 을 대신한다(#1 은 수집기가 Kafka 에 바로 써서 없어짐). 중계 벤치 결과 동일·45 MiB(#113)
   relay:
     <<: *restart
-    image: timberio/vector:0.58.0-alpine
+    # Kafka 커넥터: Bento 1.21.2(MIT). V1 Telegraf#2(저장)·#3(알람 → 화면) 역할을 한 대로. 세션 3 중계 벤치 결과 V1 과 동일(#111).
+    # Vector 0.58 에서 교체 — Vector 는 Kafka 중단 뒤 소비 재개 실패 버그(이슈 #22006, 수정판 없음, 대장 S19, #132).
+    image: ghcr.io/warpstreamlabs/bento:1.21.2
     container_name: ${CN_PREFIX:-}relay
     hostname: relay
-    command: ["--config", "/etc/vector/vector.yaml"]
+    command: ["streams", "/streams/storage.yaml", "/streams/alerts.yaml"]
     depends_on:
       kafka: { condition: service_healthy }
       influxdb: { condition: service_healthy }
       mqtt: { condition: service_healthy }
-    # Vector 0.58 은 설정 파일의 ${VAR} 치환이 기본 꺼짐(#124). 치환 플래그 대신 공식 권장인 비밀값(파일)으로 넘긴다(#10)
-    secrets: [influx_token, influx_org, influx_bucket]
+    environment:
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
     volumes:
-      - ./v2/vector/vector.yaml:/etc/vector/vector.yaml:ro
+      - ./v2/bento:/streams:ro
 
   # ── L6 화면·운전: FUXA(설비 직접 폴링·조작) + Grafana ─────────────────────
   fuxa:
@@ -298,7 +302,7 @@ services:
 
   grafana:
     <<: *restart
-    image: grafana/grafana:13.2.2
+    image: grafana/grafana:12.4.12   # (경량화 #131) 13.2.2(이미지 454 MB, 지원 2027-05-18) → 12.4.12(284 MB, 12 마지막 판 연장 지원 2027-05-24)
     container_name: ${CN_PREFIX:-}grafana
     hostname: grafana
     ports:
@@ -315,7 +319,7 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./v2/grafana/dashboards:/var/lib/grafana/dashboards:ro   # V1 대시보드 복사본 + 04 운영 패널의 EMQX 접속 수 → 브로커 상태(#126)
-      - grafana-data-v2:/var/lib/grafana
+      - grafana-data-v3:/var/lib/grafana   # 버전을 내리므로 13.2 가 만든 내부 DB 대신 새 볼륨(대시보드는 파일에서 자동 등록)
     depends_on:
       influxdb: { condition: service_healthy }
 

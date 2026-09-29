@@ -41,7 +41,15 @@
 12. **(09-29) 빠르게·상식적으로.** 틀에 갇히지 말고, 결정을 바꿀 수 있는 측정만 한다. 단 "틀에 갇히지 말라"는 **읽기를 건너뛰라는 뜻이 아니다** — 인계·원문을 다 읽고 나서 상식적으로 판단한다(세션 3 과실, #120).
 13. **(09-29) 측정 도구는 먼저 한 번 끝까지.** 새 벤치·실행기는 후보 1개로 결과 파일까지 한 번 돌려 확인한 뒤 일괄 실행한다(문법 검사로 대신하지 않음). 실패하면 로그를 파일로 남기고 컨테이너를 정리한다(세션 3 에 벤치 결함 약 20건 연쇄, #104~#118).
 
-## 3. 지금 멈춘 지점 (2026-09-29 15:10, 세션 3 종료)
+## 3-0. 세션 4 (2026-09-29 15:13~, 진행 중) — 최신 상태 (아래 세션 3 절보다 우선)
+- **한 일:** 리서치 원문 전부 통독 → 추가 리서치 06(현업 참조 구조)·07(감시 경량화)·08(부품 안정성) `docs/research/deep-2026-09-29/` → **V1 해부(갈래 16개, 누가 받아 쓰는가를 코드로)** → `reports/V2_DESIGN.md`(갈래 판정·층별 판단·재조립 5개·기능 대응표·조합 3안 중 B 선택·리서치 반영 §7-1) → V2 일괄 반영·확정(커밋 `fd8c3a0`, decision-log #124~#126).
+- **고친 내부 오류:** S15 InfluxDB 초기화(이름 없는 `/etc/influxdb2` 볼륨이 V1 설정을 넘겨받음 → `influx-config-v2`), S16 중계기 401 저장 유실(Vector 0.58 환경변수 치환 기본 꺼짐), S17 ONNX 잡 체크포인트 꺼짐(V1 도 같음 → `flink/conf/client-config.v2.yaml`), 수집기 버퍼 경로(`/tmp/telegraf-buffer`), 측정 도구 `baseline.sh` 이름표 덮어쓰기 결함(#125 — 이 결함으로 에이전트 실수 실행 EXP-002 r1_ 이 V1 을 띄움, 무효).
+- **V2 에서 뺀 갈래(받는 곳 없음·중복):** lite 수집 길, 알람 태그별 토픽 `scada/alerts/<tag>`, EdgeX core-command, 수집 6단계의 중간 5단계. **대체한 기능:** 브로커 감시(브로커 생존+쓰기 오류, Grafana 04 V2 사본), verify.py EdgeX 단계 → 수집기 `edgex/telemetry` 확인(격리 스택 환경변수 `VERIFY_CN_PREFIX=rot- VERIFY_NETWORK=rot-iiot VERIFY_ENV_FILE=.env.rotation`).
+- **측정 진행 중:** `STRUCT=V2 sh harness/e2e/run_full.sh EXP-002 V2 r2_`(전체 측정 P0~P3 → 회귀 S25 포함 → 고장→알람 6종×3 → 내부 오류 → E2), 로그 `experiments/EXP-002/run_full_V2_r2_.log`·`baseline_V2.log`. 도구 확인: fault_onset 스파이크 1회 kafka 1.81 s·화면 1.82 s(`raw/onset_tooltest.json`).
+- **다음:** 측정 결과를 V1 기준값(§4)과 대조 → 나빠진 항목·새 내부 오류를 모아 한 번에 수정 → 필요한 항목만 재측정 → `v2` 태그 → REPORT.md(+HTML)·쉬운 설명서 → 작업보고. 그다음 V3 후보는 V2 측정에서 남은 복잡·비효율로 판단.
+- **측정 도구 주의(세션 4):** `fault_onset.py` 는 `--broker mqtt --mqtt-topic scada/hmi/latest-alert`(V2), 잡 취소 루프는 `tr -d '\r'` 필수, Vector 설정은 `vector validate` 통과본만 적용.
+
+## 3. 지금 멈춘 지점 (2026-09-29 15:10, 세션 3 종료) — 세션 4 에서 해결된 항목: InfluxDB 2.9.1 초기화(S15), ingest 버퍼 경로, V2 부분 기동
 - **실행 상태:** 모든 컨테이너 정지(실행 0). 격리 V1(rot-iiot 의 V1 전용 컨테이너 EdgeX·EMQX·Telegraf×3 등)·rot-ai 는 정지 상태로 남아 있음, 볼륨 전부 보존. **V2 스택을 한 번 띄웠다가 멈춤**(아래 "V2 부분 기동"). 층별 시험·재측정 실행기는 모두 중단(사용자 지시 10).
 - **세션 3 에서 끝난 것(근거 decision-log #101~#119, 커밋 `717e0a9`·`ee975be`):**
   - **V1 기준 재측정 완료**(수동 조치 기록 `experiments/EXP-001/manual_actions.log`) — 복구 = 2분 연속 흐름(`harness/e2e/wait_flow.py`). 요약 `experiments/EXP-001/summary_V1_r2_.json`(`harness/tools/summarize_baseline.py EXP-001 V1 r2_`): **R01 브로커 재시작 → 3회 중 2회 수집 스스로 복구 못 함**(Telegraf 1.33 중계기 멈춤, 대장 S2·S12), R02 7.3 s·유실 중앙 120, R03 11.6 s·Kafka 중복 150, R06 3.2 s, R08 유실 0, E11 감지 0/2, E1 p95 FUXA 1.84 s. V1 데이터 기록 `experiments/REC-V1/`.

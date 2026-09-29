@@ -22,6 +22,10 @@ sources:
     type: kafka
     bootstrap_servers: kafka:9092
     group_id: vector-influx
+    # Kafka 재시작 뒤 소비 정지(Vector 이슈 #22006, 수정 버전 없음, 대장 S19)의 계기 제거: 세션 유지 시간을 Vector 기본 10 s 에서
+    # librdkafka 자체 기본값 45 s(KIP-735)로 — 짧은 Kafka 재시작 동안 세션이 끊기지 않아 재조정이 일어나지 않는다. 재조정 대기도 명시.
+    session_timeout_ms: 45000
+    drain_timeout_ms: 5000
     topics: [sensor.telemetry.clean, sensor.telemetry.raw, sensor.anomaly.score, sensor.alerts]
     auto_offset_reset: latest
     topic_key: kafka_topic
@@ -29,6 +33,10 @@ sources:
     type: kafka
     bootstrap_servers: kafka:9092
     group_id: vector-alert-republish
+    # Kafka 재시작 뒤 소비 정지(Vector 이슈 #22006, 수정 버전 없음, 대장 S19)의 계기 제거: 세션 유지 시간을 Vector 기본 10 s 에서
+    # librdkafka 자체 기본값 45 s(KIP-735)로 — 짧은 Kafka 재시작 동안 세션이 끊기지 않아 재조정이 일어나지 않는다. 재조정 대기도 명시.
+    session_timeout_ms: 45000
+    drain_timeout_ms: 5000
     topics: [sensor.alerts]
     auto_offset_reset: latest
 

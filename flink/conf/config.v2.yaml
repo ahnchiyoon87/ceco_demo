@@ -24,7 +24,7 @@ jobmanager:
     port: 6123
   memory:
     process:
-      size: 1600m
+      size: 1024m   # (경량화 #131) 1600m → 1024m. 힙 실측 245 MB. 공식 규칙: 704m 에서 권장 힙 128 MB(리서치 09)
   execution:
     failover-strategy: region
   bind-host: 0.0.0.0
@@ -42,7 +42,9 @@ taskmanager:
   numberOfTaskSlots: 8
   memory:
     process:
-      size: 4608m
+      size: 1536m   # (경량화 #131) 4608m → 1536m. 힙 실측 527 MB. 관리 메모리 0(HashMap 상태) → 힙 약 850 MB
+    managed:
+      fraction: 0.0 # HashMap 상태 저장은 관리 메모리를 쓰지 않음 — 공식 문서 권고(리서치 09)
 
 parallelism:
   default: 2
@@ -61,8 +63,7 @@ execution:
 
 state:
   backend:
-    type: rocksdb                 # PDF p.6 — RocksDB 기반 분산 상태 저장소
-    incremental: true
+    type: hashmap                 # (경량화 #131) rocksdb → hashmap. 12태그 창 상태라 작음. 체크포인트·HA 복구 지원(공식 문서, 리서치 09)
   checkpoints:
     dir: file:///opt/flink/checkpoints
   savepoints:

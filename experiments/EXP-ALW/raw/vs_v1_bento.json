@@ -1,0 +1,38 @@
+{
+ "incidents": {
+  "a": 24,
+  "b": 24,
+  "only_a": 0,
+  "only_b": 0,
+  "different": 0,
+  "examples": []
+ },
+ "events": {
+  "a": 24,
+  "b": 24,
+  "only_a": 0,
+  "only_b": 0,
+  "different": 0,
+  "examples": []
+ },
+ "links": {
+  "a": 24,
+  "b": 24,
+  "only_a": 0,
+  "only_b": 0,
+  "different": 0,
+  "examples": []
+ },
+ "inbox": {
+  "a": 50,
+  "b": 50,
+  "only_a": 0,
+  "only_b": 0,
+  "different": 0,
+  "examples": [],
+  "by_label": {}
+ },
+ "equivalent": true,
+ "a": "/repo/experiments/EXP-ALW/dump1_v1.json",
+ "b": "/experiments/EXP-ALW/raw/dump1_bento.json"
+}

@@ -157,8 +157,8 @@
           "legendFormat": "수집기→브로커 쓰기 오류"
         },
         {
-          "expr": "sum(increase(vector_component_errors_total{component_id=\"mqtt_hmi\"}[2m])) or vector(0)",
-          "legendFormat": "중계기→브로커 쓰기 오류",
+          "expr": "sum(increase(output_error{label=\"mqtt_hmi\"}[2m])) or vector(0)",
+          "legendFormat": "Kafka 커넥터→브로커 쓰기 오류",
           "refId": "B",
           "datasource": null
         },

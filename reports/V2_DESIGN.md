@@ -4,6 +4,45 @@
 근거: 리서치 원문(`docs/research/ARCHITECTURE_SIMPLIFICATION.md`·`AGENT_BRIEF_FINAL.md`·`deep-2026-09-29/01~06`), 층별 실측(`experiments/EXP-*/layer_*.json`, decision-log #101~#119), V1 기준값(`experiments/EXP-001/summary_V1_r2_.json`).
 **실측 칸이 "측정 대기"인 항목은 V2 전체 측정(EXP-002)에서 채운다. 채우기 전에는 확정이 아니다.**
 
+## 0. (세션 4 17:50 재설계) 현업 가정 고정 · 통일 구조 — 아래 §1~§8 보다 우선
+
+**전제(사용자 지시, 고정):** 현업 라인 — 설비 다수, 통신 방식 혼재(Modbus·OPC UA 등), 장치 등록·관리와 명령 통제가 필요. 데모 라인(설비 7대·센서 12개를 Modbus 연결 하나로 읽음)은 이 전제의 한 사례로만 쓴다.
+세션 4 앞부분은 "데모는 Modbus 하나"를 근거로 EdgeX 를 뺐다 — 현업 전제에서 EdgeX 의 장치 등록부·명령 API·관리 화면·다중 통신 통합은 실제 기능이고 Telegraf 가 대신하지 못하므로, 기능 보존 기준으로 **그 판단은 틀렸다**(사용자 지적). 같은 잣대로 알람 태그별 토픽 제거·감시 선택 모듈화도 다시 본다.
+
+**사용자 지시: 읽기·쓰기·전달 길을 하나로 통일.** 지금(V1·초기 V2) 설비를 읽는 곳이 셋(수집기 Modbus, FUXA Modbus 직접, AI 백엔드 HTTP /state), 쓰는 곳이 셋(EdgeX 명령·FUXA Modbus·AI Modbus)이다(코드 확인: `fuxa/build_project.py` devices, `ai-layer/.../actions.py`·`simulation.py`).
+
+### 0-1. 통일 구조 (현업 UNS 참조 구조 — 리서치 06: HiveMQ "MQTT remains the best choice for building a UNS", Kafka 는 스트림 분석용 뒷단)
+
+```
+설비들 ─Modbus/OPC UA…─▶ [장치 계층 하나: EdgeX 4.0.2]  ◀── 명령(권한·인터록·기록 한 창구: EdgeX core-command)
+                              │ 읽기 결과
+                              ▼
+                   [데이터 허브 하나: MQTT(Mosquitto)]  — EdgeX 메시지 버스도 이 브로커(내부 브로커 중복 제거)
+                     │            │                 │
+          FUXA 화면(구독)   AI 층(현재값)      [Kafka 커넥터 하나: Bento]
+                                                 ├─ 허브 → Kafka raw ──▶ Flink(탐지, HA) ──▶ Kafka alerts/clean/score
+                                                 ├─ Kafka → InfluxDB(이력) ──▶ Grafana
+                                                 └─ Kafka alerts → 허브(알람, 설비·태그별 토픽 + 최근알람)
+```
+
+| 층 | 통일 뒤 담당 | V1 | 초기 V2(세션 4 전반) | 바뀌는 이유 |
+|---|---|---|---|---|
+| 장치(읽기) | EdgeX 하나 | EdgeX + FUXA 직접 + AI /state | Telegraf + FUXA 직접 + AI /state | 읽기 창구 하나(PLC 동시 접속·값 일치·장치 추가를 한곳에서) |
+| 장치(쓰기) | EdgeX core-command 하나 | EdgeX 명령 + FUXA + AI | FUXA + AI | 명령 통제 한 창구(권한·인터록·감사) |
+| 허브 | Mosquitto 하나 | EdgeX 내부 브로커 + EMQX | Mosquitto(알람·수업용 사본만) | 브로커 중복 제거, UNS 중심 |
+| 분석 백본 | Kafka(허브 뒤, 다리 하나) | Kafka | Kafka | Flink 가 Kafka 로만 읽고 씀·재처리 |
+| 탐지 | Flink 2.2 + HA | Flink 1.20(HA 없음) | 같음 | 변경 없음 |
+| 커넥터 | Bento 하나(3개 흐름) | Telegraf ×3 | Vector 하나(2흐름) | Vector 소비 재개 버그(#22006) |
+| 화면 | FUXA 가 허브 구독, 명령은 장치 계층으로 | FUXA Modbus 직접 | 같음(직접) | 통일 |
+| 감시 | 기본 켬(현업 전제에서 필요) — 가벼운 설정으로 | 켬 | 선택 모듈 | 전제 재고정 |
+
+### 0-2. 확인해야 할 것(실측 전, 사실 미확인)
+1. FUXA 가 허브(MQTT) 구독만으로 12개 이상 태그를 V1 직접 폴링과 같은 주기로 표시하는가, 허브 장애(브로커 재시작 약 10 s) 때 화면 영향.
+2. FUXA 명령을 장치 계층으로 보내는 방법 — EdgeX core-command 의 외부 MQTT 명령 요청 또는 REST. FUXA 가 지원하는 방식 확인.
+3. EdgeX 메시지 버스를 외부 Mosquitto 로 쓰는 설정(EdgeX 4.0 공식 설정), EdgeX 4.0.2 이미지.
+4. EdgeX 4.0 LTS 지원 2027-03 종료 → 다음 장기지원판(2027 봄 예정)으로 따라가는 계획을 관문 약점으로 명시.
+5. AI 층의 /state 읽기·Modbus 쓰기는 담당 밖 코드 — 기반 쪽 명령 창구를 준비하고 AI 쪽 전환은 별도 과제로 기록.
+
 ## 1. 출발점과 원칙 (한 문단)
 V1 의 흐름(설비 → 수집 → 전달 → 탐지 → 저장 → 화면 → AI)과 기능은 현업에서 컨펌받은 것이라 **그대로 둔다**.
 바꾸는 것은 "어떻게"뿐이다 — 같은 데이터를 두 번 옮기는 길, 되돌아가는 길, 같은 일을 하는 부품, 지원이 끝났거나 12개월 안에 끝나는 판.
@@ -59,7 +98,7 @@ V2  설비 ─Modbus(설비 전용망)─▶ 수집기(Telegraf 1.40) ─▶ Kaf
 
 | 층 | V1 | V2 | 판단(무엇을 잃는가 → 결론) | 근거 |
 |---|---|---|---|---|
-| 수집 | EdgeX 10컨테이너 + Telegraf#1 | 수집기 1 | EdgeX 4.0 LTS 2027-03 종료(12개월 안), 후속 정식판 없음 → **강제 교체**. 장치 추상화(프로파일·메타데이터·명령 API)는 12태그 설비 1대에서 수집 외 사용처 없음 → 수집기 하나로 | 05 §A, #107 |
+| 수집 | EdgeX 10컨테이너 + Telegraf#1 | 수집기 1 | EdgeX 4.0 LTS 2027-03 종료(12개월 안), 후속 정식판 없음 → **강제 교체**. 장치 추상화(프로파일·메타데이터·명령 API)는 설비 7대·센서 12개를 Modbus 연결 하나로 읽는 이 라인에서 수집 외 사용처 없음 → 수집기 하나로(PLC·통신 방식이 늘어도 Telegraf 입력 블록 추가로 대응 — modbus 외 opcua 등 입력 있음). ※ 세션 4 에 "설비 1대"로 잘못 적었던 것을 정정(사용자 지적) | 05 §A, #107 |
 | 수집 우회(lite) | 설비 MQTT 직발행 → Telegraf(lite) | 없음 | 본 경로가 이미 한 단계(설비→수집기→Kafka)라 가벼운 우회 길이 따로 있을 이유가 없음 → **제거**(중복) | `docker-compose.yml` profiles lite |
 | 브로커 | EdgeX 내부 Mosquitto + EMQX | Mosquitto 1 | EMQX 5.8 OSS 2026-02-28 종료·이후 BSL → **강제 교체**. EdgeX 내부 버스는 EdgeX 와 함께 사라짐 → **2 → 1** | #48, 01 §2 |
 | MQTT→Kafka 중계 | Telegraf#1 | 없음 | 수집기가 Kafka 에 바로 씀 → 되돌아가는 길 제거 | 구조 |
@@ -90,7 +129,7 @@ V2  설비 ─Modbus(설비 전용망)─▶ 수집기(Telegraf 1.40) ─▶ Kaf
 | edgex-device-modbus | 12태그 1초 폴링·정규화 | 수집기 inputs.modbus | S01 12태그 저장·raw 600건 표본(중복 0·1초 간격, 세션 4) | 표본 확인됨 · S01 측정 대기 |
 | edgex-core-data·metadata·keeper·common-config | 장치 프로파일·메타데이터·설정 레지스트리(EdgeX 내부) | 수집기 설정 파일의 레지스터 지도(`v2/telegraf/ingest.conf`) | 12태그·단위 일치 | 측정 대기 |
 | edgex-postgres | EdgeX 내부 저장·Store-and-Forward | 수집기 디스크 버퍼(`buffer_strategy = "disk"`) | R02 단절 10 s 유실 ≤ V1(중앙 120) | 측정 대기 |
-| edgex-app-mqtt-export | `edgex/telemetry` MQTT 발행(수업 자료·도구가 구독) | 수집기 outputs.mqtt(같은 토픽·EdgeX Event v3 모양) | 토픽 구독 후 모양 대조 | 측정 대기 |
+| edgex-app-mqtt-export | `edgex/telemetry` MQTT 발행(수업 자료·도구가 구독) | 수집기 outputs.mqtt(같은 토픽·EdgeX Event v3 모양) | 토픽 구독 후 V1 기록(`experiments/REC-V1/mqtt_edgex_telemetry.jsonl`)과 모양 대조 | **확인(세션 4)**: 같은 토픽·장치·프로파일·이벤트당 계측 12개·값 항목(resourceName·value·units·valueType) 동일. 차이 1개: EdgeX 가 붙이던 고유 번호 `id`(이벤트·값) 없음 — 이 토픽을 읽는 코드(`scripts/verify.py`·`reference-style-architecture.py`)와 수업 자료 어디도 `id` 를 읽지 않음 |
 | edgex-mqtt-broker | EdgeX 내부 메시지 버스 | 없음(EdgeX 와 함께 불필요) | — | 해당 없음 |
 | edgex-core-command | 장치 쓰기 REST(사용처 없음, 인증 없음) | 없음 — 제거가 보안 이득 | E12 접점, G7 | 측정 대기 |
 | edgex-ui | EdgeX 장치 화면(장치 목록·현재 값 조회) | 현재 값: FUXA P&ID·Grafana 01 공정 화면. 장치 정의: 수집기 설정(`v2/telegraf/ingest.conf` 레지스터 지도) | verify.py scada·storage 단계 | 측정 대기 |

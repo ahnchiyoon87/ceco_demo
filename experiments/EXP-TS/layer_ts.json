@@ -1,0 +1,98 @@
+{
+ "pgpartman": {
+  "verdict": "통과",
+  "rows_per_s": 93429.8,
+  "write_errors": 0,
+  "visible_p95_ms": 4.082,
+  "correct_all": true,
+  "wrong": [],
+  "query_p95_ms": {
+   "evidence": 1.254,
+   "evidence300": 4.722,
+   "current": 1.984,
+   "trend_1h": 6.08,
+   "trend_24h": 56.233,
+   "quality_24h": 81.543,
+   "anomaly_24h": 17.743,
+   "anomaly_count": 6.147,
+   "alerts_last100": 1.059,
+   "alerts_rate": 2.859
+  },
+  "disk_kib_24h": "681576",
+  "mem_mib_median_sum": null,
+  "containers": 2
+ },
+ "questdb": {
+  "verdict": "통과",
+  "rows_per_s": 81824.1,
+  "write_errors": 0,
+  "visible_p95_ms": 13.969,
+  "correct_all": true,
+  "wrong": [],
+  "query_p95_ms": {
+   "evidence": 13.133,
+   "evidence300": 37.464,
+   "current": 8.61,
+   "trend_1h": 16.359,
+   "trend_24h": 89.164,
+   "quality_24h": 28.492,
+   "anomaly_24h": 60.985,
+   "anomaly_count": 8.824,
+   "alerts_last100": 10.893,
+   "alerts_rate": 15.831
+  },
+  "disk_kib_24h": "1105636",
+  "mem_mib_median_sum": null,
+  "containers": 2
+ },
+ "timescale": {
+  "verdict": "통과",
+  "rows_per_s": 94626.3,
+  "write_errors": 0,
+  "visible_p95_ms": 8.299,
+  "correct_all": true,
+  "wrong": [],
+  "query_p95_ms": {
+   "evidence": 1.318,
+   "evidence300": 5.019,
+   "current": 3.326,
+   "trend_1h": 10.654,
+   "trend_24h": 61.509,
+   "quality_24h": 101.303,
+   "anomaly_24h": 21.387,
+   "anomaly_count": 4.683,
+   "alerts_last100": 1.443,
+   "alerts_rate": 1.961
+  },
+  "disk_kib_24h": "883420",
+  "mem_mib_median_sum": null,
+  "containers": 2
+ },
+ "victoriametrics": {
+  "verdict": "탈락 또는 미완(세부는 runs — 질의별 correct·error)",
+  "rows_per_s": 126192.1,
+  "write_errors": 0,
+  "visible_p95_ms": 4034.614,
+  "correct_all": false,
+  "wrong": [
+   "trend_1h",
+   "trend_24h",
+   "alerts_last100"
+  ],
+  "query_p95_ms": {
+   "evidence": 4.77,
+   "evidence300": 5.756,
+   "current": 4.326,
+   "trend_1h": 4.677,
+   "trend_24h": 8.805,
+   "quality_24h": 13.283,
+   "anomaly_24h": 13.993,
+   "anomaly_count": 79.055,
+   "alerts_last100": null,
+   "alerts_rate": 4.419
+  },
+  "disk_kib_24h": "636",
+  "mem_mib_median_sum": null,
+  "containers": 2
+ }
+}

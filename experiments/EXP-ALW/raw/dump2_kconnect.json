@@ -1,0 +1,1274 @@
+{
+ "events": {
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790000440000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "CT-101 THRESHOLD_USL @440",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "CT-101",
+     "ts": 1790000440000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790004500000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "CT-101 THRESHOLD_USL @4500",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "CT-101",
+     "ts": 1790004500000000000,
+     "value": 1.0
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790000200000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "FT-101 THRESHOLD_USL @200",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "FT-101",
+     "ts": 1790000200000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790004300000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "FT-101 THRESHOLD_USL @4300",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "FT-101",
+     "ts": 1790004300000000000,
+     "value": 12.5
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790000240000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "FT-102 THRESHOLD_USL @240",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "FT-102",
+     "ts": 1790000240000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790004400000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "FT-102 THRESHOLD_USL @4400",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "FT-102",
+     "ts": 1790004400000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"IT-101:THRESHOLD_USL\"]@1790000280000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "IT-101 THRESHOLD_USL @280",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "IT-101",
+     "ts": 1790000280000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"IT-102:ML_AUTOENCODER\"]@1790002004000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "ML_AUTOENCODER",
+     "detail": "IT-102 ML_AUTOENCODER @2004",
+     "detector": "onnx",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "IT-102",
+     "ts": 1790002004000000000,
+     "value": 0.61
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_LSL\"]@1790004100000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_LSL",
+     "detail": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "LT-101",
+     "ts": 1790004100000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_USL\"]@1790000000000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "LT-101 THRESHOLD_USL @0",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "LT-101",
+     "ts": 1790000000000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_LSL\"]@1790004200000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_LSL",
+     "detail": "반응기 레벨 저하",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "LT-102",
+     "ts": 1790004200000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_USL\"]@1790000040000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "LT-102 THRESHOLD_USL @40",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "LT-102",
+     "ts": 1790000040000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790000160000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @160",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790000160000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1000",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001000000000000,
+     "value": 6.1
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1005",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001005000000000,
+     "value": 6.199999999999999
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1010",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001010000000000,
+     "value": 6.3
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1015",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001015000000000,
+     "value": 6.3999999999999995
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1020",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001020000000000,
+     "value": 6.5
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1100",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001100000000000,
+     "value": 6.7
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "PT-101 THRESHOLD_USL @1101",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "CRITICAL",
+     "site": "AR-100",
+     "tag": "PT-101",
+     "ts": 1790001101000000000,
+     "value": 6.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:THRESHOLD_USL\"]@1790000080000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "TT-101 THRESHOLD_USL @80",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "TT-101",
+     "ts": 1790000080000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003000000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "ZSCORE",
+     "detail": "TT-101 ZSCORE @3000",
+     "detector": "flink-zscore",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "TT-101",
+     "ts": 1790003000000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003025000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "ZSCORE",
+     "detail": "TT-101 ZSCORE @3050",
+     "detector": "flink-zscore",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "TT-101",
+     "ts": 1790003050000000000,
+     "value": 9.9
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "ZSCORE",
+     "detail": "TT-101 ZSCORE @3025",
+     "detector": "flink-zscore",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "TT-101",
+     "ts": 1790003025000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"TT-102:THRESHOLD_USL\"]@1790000120000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "TT-102 THRESHOLD_USL @120",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "TT-102",
+     "ts": 1790000120000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000320000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "IT-102 THRESHOLD_USL @320",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "IT-102",
+     "ts": 1790000320000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000360000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "VT-101 THRESHOLD_USL @360",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "VT-101",
+     "ts": 1790000360000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "IT-102 THRESHOLD_USL @2000",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "IT-102",
+     "ts": 1790002000000000000,
+     "value": 9.8
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "ZSCORE",
+     "detail": "VT-101 ZSCORE @2003",
+     "detector": "flink-zscore",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "VT-101",
+     "ts": 1790002003000000000,
+     "value": 7.4
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "CEP_BEARING",
+     "detail": "IT-102 CEP_BEARING @2006",
+     "detector": "flink-cep",
+     "device": "reactor-line-01",
+     "severity": "CRITICAL",
+     "site": "AR-100",
+     "tag": "IT-102",
+     "ts": 1790002006000000000,
+     "value": 9.9
+    }
+   ],
+   [
+    "alarm_correlated",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "VT-101 THRESHOLD_USL @1990",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "VT-101",
+     "ts": 1790001990000000000,
+     "value": 7.2
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790000400000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "pH-101 THRESHOLD_USL @400",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "pH-101",
+     "ts": 1790000400000000000,
+     "value": 9.9
+    }
+   ]
+  ],
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790004600000000000": [
+   [
+    "alarm_received",
+    {
+     "alert_type": "THRESHOLD_USL",
+     "detail": "pH-101 THRESHOLD_USL @4600",
+     "detector": "flink-sql",
+     "device": "reactor-line-01",
+     "severity": "WARNING",
+     "site": "AR-100",
+     "tag": "pH-101",
+     "ts": 1790004600000000000,
+     "value": 9.9
+    }
+   ]
+  ]
+ },
+ "inbox": {
+  "sensor.alerts/0/0": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_USL\"]@1790000000000000000",
+   "raw_len": 221,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/1": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_USL\"]@1790000040000000000",
+   "raw_len": 222,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/10": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790000400000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/11": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790000440000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/12": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/13": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 238,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/14": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/15": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 239,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/16": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/17": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/18": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/19": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000",
+   "raw_len": 225,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/2": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"TT-101:THRESHOLD_USL\"]@1790000080000000000",
+   "raw_len": 222,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/20": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/21": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000",
+   "raw_len": 213,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/22": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"IT-102:ML_AUTOENCODER\"]@1790002004000000000",
+   "raw_len": 222,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/23": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000",
+   "raw_len": 221,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/24": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/25": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003000000000000",
+   "raw_len": 213,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/26": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003025000000000",
+   "raw_len": 213,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/27": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003025000000000",
+   "raw_len": 213,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/28": {
+   "incident": null,
+   "raw_len": 8,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/29": {
+   "incident": null,
+   "raw_len": 0,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/3": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"TT-102:THRESHOLD_USL\"]@1790000120000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/30": {
+   "incident": null,
+   "raw_len": 5,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/31": {
+   "incident": null,
+   "raw_len": 4,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/32": {
+   "incident": null,
+   "raw_len": 184,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/33": {
+   "incident": null,
+   "raw_len": 234,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/34": {
+   "incident": null,
+   "raw_len": 226,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/35": {
+   "incident": null,
+   "raw_len": 208,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/36": {
+   "incident": null,
+   "raw_len": 207,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/37": {
+   "incident": null,
+   "raw_len": 206,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/38": {
+   "incident": null,
+   "raw_len": 218,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/39": {
+   "incident": null,
+   "raw_len": 219,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/4": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790000160000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/40": {
+   "incident": null,
+   "raw_len": 10199,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/41": {
+   "incident": null,
+   "raw_len": 224,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/42": {
+   "incident": null,
+   "raw_len": 226,
+   "status": "rejected"
+  },
+  "sensor.alerts/0/43": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_LSL\"]@1790004100000000000",
+   "raw_len": 10198,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/44": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_LSL\"]@1790004200000000000",
+   "raw_len": 221,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/45": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790004300000000000",
+   "raw_len": 227,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/46": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790004400000000000",
+   "raw_len": 226,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/47": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790004500000000000",
+   "raw_len": 225,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/48": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790004600000000000",
+   "raw_len": 226,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/49": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000",
+   "raw_len": 224,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/5": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790000200000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/6": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790000240000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/7": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"IT-101:THRESHOLD_USL\"]@1790000280000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/8": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000320000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  },
+  "sensor.alerts/0/9": {
+   "incident": "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000360000000000",
+   "raw_len": 223,
+   "status": "accepted"
+  }
+ },
+ "incidents": {
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790000440000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "CT-101 THRESHOLD_USL @440",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "CT-101",
+    "ts": 1790000440000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000440000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790004500000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "CT-101 THRESHOLD_USL @4500",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "CT-101",
+    "ts": 1790004500000000000,
+    "value": 1.0
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004500000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790000200000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "FT-101 THRESHOLD_USL @200",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "FT-101",
+    "ts": 1790000200000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000200000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790004300000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "FT-101 THRESHOLD_USL @4300",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "FT-101",
+    "ts": 1790004300000000000,
+    "value": 12.5
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004300000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790000240000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "FT-102 THRESHOLD_USL @240",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "FT-102",
+    "ts": 1790000240000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000240000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790004400000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "FT-102 THRESHOLD_USL @4400",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "FT-102",
+    "ts": 1790004400000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004400000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"IT-101:THRESHOLD_USL\"]@1790000280000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "IT-101 THRESHOLD_USL @280",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "IT-101",
+    "ts": 1790000280000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000280000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"IT-102:ML_AUTOENCODER\"]@1790002004000000000": {
+   "alarm": {
+    "alert_type": "ML_AUTOENCODER",
+    "detail": "IT-102 ML_AUTOENCODER @2004",
+    "detector": "onnx",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "IT-102",
+    "ts": 1790002004000000000,
+    "value": 0.61
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790002004000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_LSL\"]@1790004100000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_LSL",
+    "detail": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "LT-101",
+    "ts": 1790004100000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004100000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_USL\"]@1790000000000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "LT-101 THRESHOLD_USL @0",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "LT-101",
+    "ts": 1790000000000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000000000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_LSL\"]@1790004200000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_LSL",
+    "detail": "반응기 레벨 저하",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "LT-102",
+    "ts": 1790004200000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004200000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_USL\"]@1790000040000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "LT-102 THRESHOLD_USL @40",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "LT-102",
+    "ts": 1790000040000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000040000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790000160000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "PT-101 THRESHOLD_USL @160",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "PT-101",
+    "ts": 1790000160000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000160000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "PT-101 THRESHOLD_USL @1000",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "PT-101",
+    "ts": 1790001000000000000,
+    "value": 6.1
+   },
+   "alarm_count": 5,
+   "device": "reactor-line-01",
+   "last_ts": 1790001020000000000,
+   "review_revision": 1,
+   "revision": 5,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "PT-101 THRESHOLD_USL @1100",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "PT-101",
+    "ts": 1790001100000000000,
+    "value": 6.7
+   },
+   "alarm_count": 2,
+   "device": "reactor-line-01",
+   "last_ts": 1790001101000000000,
+   "review_revision": 2,
+   "revision": 2,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:THRESHOLD_USL\"]@1790000080000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "TT-101 THRESHOLD_USL @80",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "TT-101",
+    "ts": 1790000080000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000080000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003000000000000": {
+   "alarm": {
+    "alert_type": "ZSCORE",
+    "detail": "TT-101 ZSCORE @3000",
+    "detector": "flink-zscore",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "TT-101",
+    "ts": 1790003000000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790003000000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003025000000000": {
+   "alarm": {
+    "alert_type": "ZSCORE",
+    "detail": "TT-101 ZSCORE @3050",
+    "detector": "flink-zscore",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "TT-101",
+    "ts": 1790003050000000000,
+    "value": 9.9
+   },
+   "alarm_count": 2,
+   "device": "reactor-line-01",
+   "last_ts": 1790003050000000000,
+   "review_revision": 2,
+   "revision": 2,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"TT-102:THRESHOLD_USL\"]@1790000120000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "TT-102 THRESHOLD_USL @120",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "TT-102",
+    "ts": 1790000120000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000120000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000320000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "IT-102 THRESHOLD_USL @320",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "IT-102",
+    "ts": 1790000320000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000320000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000360000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "VT-101 THRESHOLD_USL @360",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "VT-101",
+    "ts": 1790000360000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000360000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "IT-102 THRESHOLD_USL @2000",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "IT-102",
+    "ts": 1790002000000000000,
+    "value": 9.8
+   },
+   "alarm_count": 4,
+   "device": "reactor-line-01",
+   "last_ts": 1790002006000000000,
+   "review_revision": 4,
+   "revision": 4,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790000400000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "pH-101 THRESHOLD_USL @400",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "pH-101",
+    "ts": 1790000400000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790000400000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  },
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790004600000000000": {
+   "alarm": {
+    "alert_type": "THRESHOLD_USL",
+    "detail": "pH-101 THRESHOLD_USL @4600",
+    "detector": "flink-sql",
+    "device": "reactor-line-01",
+    "severity": "WARNING",
+    "site": "AR-100",
+    "tag": "pH-101",
+    "ts": 1790004600000000000,
+    "value": 9.9
+   },
+   "alarm_count": 1,
+   "device": "reactor-line-01",
+   "last_ts": 1790004600000000000,
+   "review_revision": 1,
+   "revision": 1,
+   "site": "AR-100",
+   "status": "received"
+  }
+ },
+ "links": {
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790000440000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"CT-101:THRESHOLD_USL\"]@1790004500000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790000200000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"FT-101:THRESHOLD_USL\"]@1790004300000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790000240000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"FT-102:THRESHOLD_USL\"]@1790004400000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"IT-101:THRESHOLD_USL\"]@1790000280000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"IT-102:ML_AUTOENCODER\"]@1790002004000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_LSL\"]@1790004100000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"LT-101:THRESHOLD_USL\"]@1790000000000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_LSL\"]@1790004200000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"LT-102:THRESHOLD_USL\"]@1790000040000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790000160000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001000000000000": 5,
+  "[\"AR-100\",\"reactor-line-01\",\"PT-101:THRESHOLD_USL\"]@1790001100000000000": 2,
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:THRESHOLD_USL\"]@1790000080000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003000000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"TT-101:ZSCORE\"]@1790003025000000000": 2,
+  "[\"AR-100\",\"reactor-line-01\",\"TT-102:THRESHOLD_USL\"]@1790000120000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000320000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790000360000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"mixer-current-vibration-v1\"]@1790001990000000000": 4,
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790000400000000000": 1,
+  "[\"AR-100\",\"reactor-line-01\",\"pH-101:THRESHOLD_USL\"]@1790004600000000000": 1
+ }
+}

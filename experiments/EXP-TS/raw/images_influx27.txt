@@ -1,0 +1,1 @@
+influxdb:2.7 linux/amd64

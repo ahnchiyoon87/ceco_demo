@@ -1,0 +1,56 @@
+# V2 Kafka 커넥터(Bento 1.21.2, MIT) — 저장: V1 Telegraf#2(telegraf-sink) 역할. 출처: 세션 3 중계 벤치에서 V1 과 결과 동일(harness/pipebench/benthos/relay2.yaml, #111).
+# Vector 0.58 을 대신한다: Vector 는 Kafka 가 멈췄다 돌아오면 소비를 재개하지 못하는 알려진 버그(이슈 #22006, 수정판 없음, 대장 S19). Bento 의 Kafka 연결은 franz-go.
+# 전달: 출력이 성공한 뒤에만 Kafka 위치를 넘긴다(최소 1회) — V1 Telegraf 와 같은 보장.
+# Kafka 4토픽(소비 그룹 하나, newest) → 토픽별 InfluxDB 라인 프로토콜 → HTTP /api/v2/write(precision=ns, 5000건·2s 배치).
+#   sensor.telemetry.clean → process      (tags site,device,tag,quality · field value float)
+#   sensor.telemetry.raw   → process_raw  (같음)
+#   sensor.anomaly.score   → anomaly      (tags site,device,top_contributors · fields reconstruction_error,threshold,inference_ms float, is_anomaly bool)
+#   sensor.alerts          → alerts       (tags site,device,tag,alert_type,severity,detector · fields value float, detail string)
+# Telegraf json_v2 처럼 없는 키의 태그·필드는 뺀다. Influx 출력 컴포넌트가 없어(Apache 번들) http_client 로 쓴다 — 라인 만들기는 Bloblang 설정.
+input:
+  kafka_franz:
+    seed_brokers: ["kafka:9092"]
+    topics: ["sensor.telemetry.clean", "sensor.telemetry.raw", "sensor.anomaly.score", "sensor.alerts"]
+    consumer_group: "bento-influx"
+    start_from_oldest: false      # V1 offset = "newest"
+pipeline:
+  processors:
+    - mapping: |
+        map esc_tag {
+          root = this.string().replace_all("\\", "\\\\").replace_all(",", "\\,").replace_all("=", "\\=").replace_all(" ", "\\ ")
+        }
+        map esc_str {
+          root = "\"" + this.string().replace_all("\\", "\\\\").replace_all("\"", "\\\"") + "\""
+        }
+        let topic = meta("kafka_topic")
+        let spec = match $topic {
+          "sensor.telemetry.clean" => {"m": "process", "tags": ["site","device","tag","quality"], "f": ["value"], "s": [], "b": []},
+          "sensor.telemetry.raw"   => {"m": "process_raw", "tags": ["site","device","tag","quality"], "f": ["value"], "s": [], "b": []},
+          "sensor.anomaly.score"   => {"m": "anomaly", "tags": ["site","device","top_contributors"], "f": ["reconstruction_error","threshold","inference_ms"], "s": [], "b": ["is_anomaly"]},
+          "sensor.alerts"          => {"m": "alerts", "tags": ["site","device","tag","alert_type","severity","detector"], "f": ["value"], "s": ["detail"], "b": []},
+          _ => null
+        }
+        let doc = this
+        let tagstr = $spec.tags.filter(k -> $doc.get(k) != null && $doc.get(k).string() != "").map_each(k -> k + "=" + $doc.get(k).apply("esc_tag")).join(",")
+        let fl = $spec.f.filter(k -> $doc.get(k) != null).map_each(k -> k + "=" + $doc.get(k).number().string())
+        let st = $spec.s.filter(k -> $doc.get(k) != null).map_each(k -> k + "=" + $doc.get(k).apply("esc_str"))
+        let bo = $spec.b.filter(k -> $doc.get(k) != null).map_each(k -> k + "=" + $doc.get(k).bool().string())
+        let fields = ($fl.concat($st).concat($bo)).join(",")
+        root = if $spec == null || $fields == "" { deleted() } else {
+          $spec.m + (if $tagstr != "" { "," + $tagstr } else { "" }) + " " + $fields + " " + this.ts.number().int64().string()
+        }
+output:
+  label: influx_write
+  http_client:
+    url: "http://influxdb:8086/api/v2/write?org=${INFLUX_ORG}&bucket=${INFLUX_BUCKET}&precision=ns"
+    verb: POST
+    headers:
+      Authorization: "Token ${INFLUX_TOKEN}"
+      Content-Type: "text/plain; charset=utf-8"
+    max_in_flight: 4
+    batching:
+      count: 5000
+      period: 2s
+      processors:
+        - archive:
+            format: lines

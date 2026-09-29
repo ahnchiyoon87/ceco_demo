@@ -1,0 +1,729 @@
+kafka-1       | ===> User
+kafka-init-1  | Kafka 토픽 초기화...
+kafka-init-1  |   + sensor.telemetry.raw (파티션 6, 보존 24h)
+kafka-init-1  |   + sensor.telemetry.clean (파티션 6, 보존 24h)
+kafka-init-1  |   + sensor.anomaly.score (파티션 3, 보존 24h)
+kafka-init-1  |   + sensor.alerts (파티션 3, 보존 168h)
+kafka-init-1  | 완료:
+kafka-1       | uid=1000(appuser) gid=1000(appuser) groups=1000(appuser)
+kafka-1       | ===> Setting default values of environment variables if not already set.
+kafka-init-1  |   sensor.alerts
+work-db-1     | The files belonging to this database system will be owned by user "postgres".
+work-db-1     | This user must also own the server process.
+work-db-1     | 
+work-db-1     | The database cluster will be initialized with locale "en_US.utf8".
+work-db-1     | The default database encoding has accordingly been set to "UTF8".
+work-db-1     | The default text search configuration will be set to "english".
+work-db-1     | 
+work-db-1     | Data page checksums are disabled.
+work-db-1     | 
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="set server total memory 8160686080 success" file="memory/mem.go:40"
+work-db-1     | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+kafka-init-1  |   sensor.anomaly.score
+kafka-init-1  |   sensor.telemetry.clean
+kafka-init-1  |   sensor.telemetry.raw
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="Set config 'kuiper.kuiper_home' to '/kuiper' by environment variable" file="conf/load.go:141"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="Set config 'kuiper.basic.consolelog' to 'true' by environment variable" file="conf/load.go:141"
+kafka-1       | ===> Configuring ...
+kafka-1       | Running in KRaft mode...
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source edgex" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source httppull" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source httppush" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source file" file="server/server.go:186"
+kafka-1       | ===> Launching ... 
+kafka-1       | ===> Using provided cluster id alwbench-kraft-cluster01 ...
+kafka-1       | [2026-09-29 05:45:13,134] INFO Registered kafka:type=kafka.Log4jController MBean (kafka.utils.Log4jControllerRegistration$)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source memory" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source neuron" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source websocket" file="server/server.go:186"
+kafka-1       | [2026-09-29 05:45:13,197] INFO Setting -D jdk.tls.rejectClientInitiatedRenegotiation=true to disable client-initiated TLS renegotiation (org.apache.zookeeper.common.X509Util)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source nexmark" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source redisSub" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source mqtt" file="server/server.go:186"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register source simulator" file="server/server.go:186"
+work-db-1     | creating subdirectories ... ok
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink redis" file="server/server.go:189"
+kafka-1       | [2026-09-29 05:45:13,320] INFO Registered signal handlers for TERM, INT, HUP (org.apache.kafka.common.utils.LoggingSignalHandler)
+kafka-1       | [2026-09-29 05:45:13,323] INFO [ControllerServer id=1] Starting controller (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,510] INFO Updated connection-accept-rate max connection creation rate to 2147483647 (kafka.network.ConnectionQuotas)
+kafka-1       | [2026-09-29 05:45:13,536] INFO [SocketServer listenerType=CONTROLLER, nodeId=1] Created data-plane acceptor and processors for endpoint : ListenerName(CONTROLLER) (kafka.network.SocketServer)
+kafka-1       | [2026-09-29 05:45:13,539] INFO CONTROLLER: resolved wildcard host to kafka (org.apache.kafka.metadata.ListenerInfo)
+work-db-1     | selecting dynamic shared memory implementation ... posix
+work-db-1     | selecting default "max_connections" ... 100
+work-db-1     | selecting default "shared_buffers" ... 128MB
+work-db-1     | selecting default time zone ... Etc/UTC
+work-db-1     | creating configuration files ... ok
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink log" file="server/server.go:189"
+kafka-1       | [2026-09-29 05:45:13,543] INFO authorizerStart completed for endpoint CONTROLLER. Endpoint is now READY. (org.apache.kafka.server.network.EndpointReadyFutures)
+kafka-1       | [2026-09-29 05:45:13,544] INFO [SharedServer id=1] Starting SharedServer (kafka.server.SharedServer)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink mqtt" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink rest" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink memory" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink neuron" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink sse" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink edgex" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink redisPub" file="server/server.go:189"
+work-db-1     | running bootstrap script ... ok
+work-db-1     | performing post-bootstrap initialization ... ok
+kafka-1       | [2026-09-29 05:45:13,612] INFO [LogLoader partition=__cluster_metadata-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:13,613] INFO [LogLoader partition=__cluster_metadata-0, dir=/tmp/kafka-logs] Reloading from producer snapshot and rebuilding producer state from offset 0 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:13,613] INFO [LogLoader partition=__cluster_metadata-0, dir=/tmp/kafka-logs] Producer state recovery took 0ms for snapshot load and 0ms for segment recovery from offset 0 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:13,626] INFO Initialized snapshots with IDs SortedSet() from /tmp/kafka-logs/__cluster_metadata-0 (kafka.raft.KafkaMetadataLog$)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink logToMemory" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink nop" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink file" file="server/server.go:189"
+work-db-1     | syncing data to disk ... ok
+work-db-1     | 
+work-db-1     | 
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register sink websocket" file="server/server.go:189"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register lookup source memory" file="server/server.go:192"
+work-db-1     | Success. You can now start the database server using:
+work-db-1     | 
+work-db-1     |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+work-db-1     | 
+work-db-1     | initdb: warning: enabling "trust" authentication for local connections
+work-db-1     | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register lookup source httppull" file="server/server.go:192"
+work-db-1     | waiting for server to start....2026-09-29 05:45:11.486 UTC [47] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+work-db-1     | 2026-09-29 05:45:11.489 UTC [47] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+work-db-1     | 2026-09-29 05:45:11.499 UTC [50] LOG:  database system was shut down at 2026-09-29 05:45:11 UTC
+work-db-1     | 2026-09-29 05:45:11.507 UTC [47] LOG:  database system is ready to accept connections
+work-db-1     |  done
+work-db-1     | server started
+work-db-1     | CREATE DATABASE
+work-db-1     | 
+work-db-1     | 
+kafka-1       | [2026-09-29 05:45:13,637] INFO [raft-expiration-reaper]: Starting (kafka.raft.TimingWheelExpirationService$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,641] INFO [RaftManager id=1] Reading KRaft snapshot and log as part of the initialization (org.apache.kafka.raft.KafkaRaftClient)
+kafka-1       | [2026-09-29 05:45:13,643] INFO [RaftManager id=1] Starting voters are VoterSet(voters={1=VoterNode(voterKey=ReplicaKey(id=1, directoryId=Optional.empty), listeners=Endpoints(endpoints={ListenerName(CONTROLLER)=kafka/172.28.0.2:9093}), supportedKRaftVersion=SupportedVersionRange[min_version:0, max_version:0])}) (org.apache.kafka.raft.KafkaRaftClient)
+kafka-1       | [2026-09-29 05:45:13,644] INFO [RaftManager id=1] Starting request manager with static voters: [kafka:9093 (id: 1 rack: null)] (org.apache.kafka.raft.KafkaRaftClient)
+kafka-1       | [2026-09-29 05:45:13,650] INFO [RaftManager id=1] Attempting durable transition to Unattached(epoch=0, votedKey=null, voters=[1], electionTimeoutMs=1745, highWatermark=Optional.empty) from null (org.apache.kafka.raft.QuorumState)
+kafka-1       | [2026-09-29 05:45:13,679] INFO [RaftManager id=1] Completed transition to Unattached(epoch=0, votedKey=null, voters=[1], electionTimeoutMs=1745, highWatermark=Optional.empty) from null (org.apache.kafka.raft.QuorumState)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register lookup source simulator" file="server/server.go:192"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register lookup source redis" file="server/server.go:192"
+kafka-1       | [2026-09-29 05:45:13,681] INFO [RaftManager id=1] Attempting durable transition to CandidateState(localId=1, localDirectoryId=hDijdHKZP9UCd2g5NZ62EQ,epoch=1, retries=1, voteStates={1=org.apache.kafka.raft.CandidateState$VoterState@5b7a5baa}, highWatermark=Optional.empty, electionTimeoutMs=1446) from Unattached(epoch=0, votedKey=null, voters=[1], electionTimeoutMs=1745, highWatermark=Optional.empty) (org.apache.kafka.raft.QuorumState)
+kafka-1       | [2026-09-29 05:45:13,688] INFO [RaftManager id=1] Completed transition to CandidateState(localId=1, localDirectoryId=hDijdHKZP9UCd2g5NZ62EQ,epoch=1, retries=1, voteStates={1=org.apache.kafka.raft.CandidateState$VoterState@5b7a5baa}, highWatermark=Optional.empty, electionTimeoutMs=1446) from Unattached(epoch=0, votedKey=null, voters=[1], electionTimeoutMs=1745, highWatermark=Optional.empty) (org.apache.kafka.raft.QuorumState)
+kafka-1       | [2026-09-29 05:45:13,690] INFO [RaftManager id=1] Attempting durable transition to Leader(localReplicaKey=ReplicaKey(id=1, directoryId=Optional[hDijdHKZP9UCd2g5NZ62EQ]), epoch=1, epochStartOffset=0, highWatermark=Optional.empty, voterStates={1=ReplicaState(replicaKey=ReplicaKey(id=1, directoryId=Optional.empty), endOffset=Optional.empty, lastFetchTimestamp=-1, lastCaughtUpTimestamp=-1, hasAcknowledgedLeader=true)}) from CandidateState(localId=1, localDirectoryId=hDijdHKZP9UCd2g5NZ62EQ,epoch=1, retries=1, voteStates={1=org.apache.kafka.raft.CandidateState$VoterState@5b7a5baa}, highWatermark=Optional.empty, electionTimeoutMs=1446) (org.apache.kafka.raft.QuorumState)
+kafka-1       | [2026-09-29 05:45:13,696] INFO [RaftManager id=1] Completed transition to Leader(localReplicaKey=ReplicaKey(id=1, directoryId=Optional[hDijdHKZP9UCd2g5NZ62EQ]), epoch=1, epochStartOffset=0, highWatermark=Optional.empty, voterStates={1=ReplicaState(replicaKey=ReplicaKey(id=1, directoryId=Optional.empty), endOffset=Optional.empty, lastFetchTimestamp=-1, lastCaughtUpTimestamp=-1, hasAcknowledgedLeader=true)}) from CandidateState(localId=1, localDirectoryId=hDijdHKZP9UCd2g5NZ62EQ,epoch=1, retries=1, voteStates={1=org.apache.kafka.raft.CandidateState$VoterState@5b7a5baa}, highWatermark=Optional.empty, electionTimeoutMs=1446) (org.apache.kafka.raft.QuorumState)
+kafka-1       | [2026-09-29 05:45:13,720] INFO [kafka-1-raft-outbound-request-thread]: Starting (org.apache.kafka.raft.KafkaNetworkChannel$SendThread)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register format json" file="server/server.go:195"
+kafka-1       | [2026-09-29 05:45:13,720] INFO [kafka-1-raft-io-thread]: Starting (org.apache.kafka.raft.KafkaRaftClientDriver)
+kafka-1       | [2026-09-29 05:45:13,732] INFO [MetadataLoader id=1] initializeNewPublishers: the loader is still catching up because we still don't know the high water mark yet. (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,734] INFO [ControllerServer id=1] Waiting for controller quorum voters future (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,734] INFO [ControllerServer id=1] Finished waiting for controller quorum voters future (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,736] INFO [RaftManager id=1] High watermark set to LogOffsetMetadata(offset=1, metadata=Optional[(segmentBaseOffset=0,relativePositionInSegment=91)]) for the first time for epoch 1 based on indexOfHw 0 and voters [ReplicaState(replicaKey=ReplicaKey(id=1, directoryId=Optional.empty), endOffset=Optional[LogOffsetMetadata(offset=1, metadata=Optional[(segmentBaseOffset=0,relativePositionInSegment=91)])], lastFetchTimestamp=-1, lastCaughtUpTimestamp=-1, hasAcknowledgedLeader=true)] (org.apache.kafka.raft.LeaderState)
+kafka-1       | [2026-09-29 05:45:13,747] INFO [controller-1-ThrottledChannelReaper-Fetch]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register format binary" file="server/server.go:195"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register format delimited" file="server/server.go:195"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register format urlencoded" file="server/server.go:195"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="register format protobuf" file="server/server.go:195"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="maxprocs: Leaving GOMAXPROCS=12: CPU quota undefined" file="maxprocs/maxprocs.go:47"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="use cgo disabled sqlite as store sqliteKV.db" file="sqlite/database.go:38"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="use cgo disabled sqlite as store checkpoint.db" file="sqlite/database.go:38"
+kafka-1       | [2026-09-29 05:45:13,748] INFO [controller-1-ThrottledChannelReaper-Produce]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,748] INFO [RaftManager id=1] Registered the listener org.apache.kafka.image.loader.MetadataLoader@618339807 (org.apache.kafka.raft.KafkaRaftClient)
+work-db-1     | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/10_v1_schema.sql
+work-db-1     | CREATE TABLE
+work-db-1     | CREATE TABLE
+work-db-1     | ALTER TABLE
+work-db-1     | CREATE INDEX
+work-db-1     | ALTER TABLE
+work-db-1     | ALTER TABLE
+work-db-1     | ALTER TABLE
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="use cgo disabled sqlite as store cache.db" file="sqlite/database.go:38"
+kafka-1       | [2026-09-29 05:45:13,749] INFO [RaftManager id=1] Registered the listener org.apache.kafka.controller.QuorumController$QuorumMetaLogListener@50057307 (org.apache.kafka.raft.KafkaRaftClient)
+work-db-1     | ALTER TABLE
+kafka-1       | [2026-09-29 05:45:13,749] INFO [controller-1-ThrottledChannelReaper-Request]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+work-db-1     | UPDATE 0
+work-db-1     | ALTER TABLE
+work-db-1     | ALTER TABLE
+work-db-1     | CREATE TABLE
+work-db-1     | CREATE TABLE
+work-db-1     | 
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="use cgo disabled sqlite as store extState.db" file="sqlite/database.go:38"
+work-db-1     | 
+kafka-1       | [2026-09-29 05:45:13,749] INFO [RaftManager id=1] Setting the next offset of org.apache.kafka.controller.QuorumController$QuorumMetaLogListener@50057307 to 0 since there are no snapshots (org.apache.kafka.raft.KafkaRaftClient)
+kafka-1       | [2026-09-29 05:45:13,751] INFO [RaftManager id=1] Setting the next offset of org.apache.kafka.image.loader.MetadataLoader@618339807 to 0 since there are no snapshots (org.apache.kafka.raft.KafkaRaftClient)
+work-db-1     | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/20_intake_trigger.sql
+work-db-1     | CREATE TABLE
+work-db-1     | CREATE FUNCTION
+work-db-1     | CREATE FUNCTION
+work-db-1     | CREATE FUNCTION
+work-db-1     | CREATE FUNCTION
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="use cgo disabled sqlite as store trace.db" file="sqlite/database.go:38"
+work-db-1     | CREATE FUNCTION
+work-db-1     | DROP TRIGGER
+work-db-1     | psql:/docker-entrypoint-initdb.d/20_intake_trigger.sql:128: NOTICE:  trigger "alw_intake_trg" for relation "alarm_intake" does not exist, skipping
+work-db-1     | CREATE TRIGGER
+work-db-1     | 
+work-db-1     | 
+work-db-1     | waiting for server to shut down...2026-09-29 05:45:11.915 UTC [47] LOG:  received fast shutdown request
+work-db-1     | .2026-09-29 05:45:11.917 UTC [47] LOG:  aborting any active transactions
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="start bump version: 0" file="bump/bump_manager.go:59"
+work-db-1     | 2026-09-29 05:45:11.920 UTC [47] LOG:  background worker "logical replication launcher" (PID 53) exited with exit code 1
+kafka-1       | [2026-09-29 05:45:13,751] INFO [controller-1-ThrottledChannelReaper-ControllerMutation]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,752] INFO [MetadataLoader id=1] maybePublishMetadata(LOG_DELTA): The loader is still catching up because we have not loaded a controller record as of offset 0 and high water mark is 1 (org.apache.kafka.image.loader.MetadataLoader)
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="success bump version: 4" file="bump/bump_manager.go:121"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="load conf key:$$tracer_cfg " file="conf/yaml_config_storage.go:130"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="set tracer success, enableRemote:false, serviceName:kuiperd-service, endpoint:localhost:4318" file="tracer/tracer.go:86"
+ekuiper-1     | time="2026-09-29T05:45:41Z" level=info msg="tracer init successfully" file="server/server.go:225"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component meta" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component plugin" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component portable" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component prometheus" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component schema" file="server/server.go:240"
+kafka-1       | [2026-09-29 05:45:13,759] INFO [ExpirationReaper-1-AlterAcls]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,767] INFO [ControllerServer id=1] Waiting for the controller metadata publishers to be installed (kafka.server.ControllerServer)
+work-db-1     | 2026-09-29 05:45:11.921 UTC [48] LOG:  shutting down
+work-db-1     | 2026-09-29 05:45:11.923 UTC [48] LOG:  checkpoint starting: shutdown immediate
+work-db-1     | 2026-09-29 05:45:12.048 UTC [48] LOG:  checkpoint complete: wrote 943 buffers (5.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.089 s, total=0.128 s; sync files=325, longest=0.003 s, average=0.001 s; distance=4392 kB, estimate=4392 kB; lsn=0/19399A8, redo lsn=0/19399A8
+work-db-1     | 2026-09-29 05:45:12.055 UTC [47] LOG:  database system is shut down
+work-db-1     |  done
+work-db-1     | server stopped
+work-db-1     | 
+work-db-1     | PostgreSQL init process complete; ready for start up.
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=warning msg="cannot read schema directory: cannot read schema directory: open /kuiper/etc/schemas/protobuf: no such file or directory" file="schema/registry.go:92"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=warning msg="cannot read schema directory: cannot read schema directory: open /kuiper/data/schemas/protobuf: no such file or directory" file="schema/registry.go:109"
+kafka-1       | [2026-09-29 05:45:13,768] INFO [ControllerServer id=1] Finished waiting for the controller metadata publishers to be installed (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,768] INFO [MetadataLoader id=1] initializeNewPublishers: The loader finished catching up to the current high water mark of 1 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,769] INFO [SocketServer listenerType=CONTROLLER, nodeId=1] Enabling request processing. (kafka.network.SocketServer)
+work-db-1     | 
+work-db-1     | 2026-09-29 05:45:12.143 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+work-db-1     | 2026-09-29 05:45:12.143 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+work-db-1     | 2026-09-29 05:45:12.143 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+work-db-1     | 2026-09-29 05:45:12.146 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+work-db-1     | 2026-09-29 05:45:12.152 UTC [67] LOG:  database system was shut down at 2026-09-29 05:45:12 UTC
+work-db-1     | 2026-09-29 05:45:12.159 UTC [1] LOG:  database system is ready to accept connections
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=warning msg="cannot read schema directory: cannot read schema directory: open /kuiper/etc/schemas/custom: no such file or directory" file="schema/registry.go:92"
+kafka-1       | [2026-09-29 05:45:13,770] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing SnapshotGenerator with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,770] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing KRaftMetadataCachePublisher with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=warning msg="cannot read schema directory: cannot read schema directory: open /kuiper/data/schemas/custom: no such file or directory" file="schema/registry.go:109"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component service" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register component template" file="server/server.go:240"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="init rules file /kuiper/data/init.json does not exist" file="server/rule_init.go:48"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="init rules file /kuiper/etc/init.json does not exist" file="server/rule_init.go:48"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="Starting rules" file="server/server.go:268"
+kafka-1       | [2026-09-29 05:45:13,771] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing FeaturesPublisher with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="metrics dump disabled" file="metrics/metrics_dump.go:80"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="start patroling schedule rule state" file="server/rule_init.go:168"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component prometheus" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component schema" file="server/rest.go:268"
+kafka-1       | [2026-09-29 05:45:13,771] INFO [ControllerServer id=1] Loaded new metadata Features(metadataVersion=3.0-IV1, finalizedFeatures={metadata.version=1}, finalizedFeaturesEpoch=0). (org.apache.kafka.metadata.publisher.FeaturesPublisher)
+kafka-1       | [2026-09-29 05:45:13,771] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing ControllerRegistrationsPublisher with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,772] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing ControllerRegistrationManager with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,772] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing DynamicConfigPublisher controller id=1 with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,773] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing DynamicClientQuotaPublisher controller id=1 with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component service" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component template" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component meta" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component plugin" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register rest endpoint for component portable" file="server/rest.go:268"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="start service pprof" file="server/server.go:306"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="using ListenMode 'http'" file="server/server.go:76"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="start service prometheus" file="server/server.go:306"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="start service rpc" file="server/server.go:306"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="Run pprof in 127.0.0.1:6060" file="server/pprof_init.go:48"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register conf manager service" file="server/import_export.go:52"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register conf manager plugin" file="server/import_export.go:52"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register conf manager portable" file="server/import_export.go:52"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="register conf manager schema" file="server/import_export.go:52"
+ekuiper-1     | time="2026-09-29T05:45:42Z" level=info msg="Serving kuiper (version - 2.4.2) on port 20498, and restful api on http://0.0.0.0:9081." file="server/server.go:319"
+ekuiper-1     | Serving kuiper (version - 2.4.2) on port 20498, and restful api on http://0.0.0.0:9081.
+ekuiper-1     | time="2026-09-29T05:45:47Z" level=info msg="write conf key:sources.kafka.alw " file="conf/yaml_config_storage.go:139"
+ekuiper-1     | time="2026-09-29T05:45:47Z" level=info msg="Stream alerts_raw is created." file="processor/stream.go:128"
+kafka-1       | [2026-09-29 05:45:13,774] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing ScramPublisher controller id=1 with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,774] INFO Awaiting socket connections on 0.0.0.0:9093. (kafka.network.DataPlaneAcceptor)
+kafka-1       | [2026-09-29 05:45:13,775] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing DelegationTokenPublisher controller id=1 with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+ekuiper-1     | time="2026-09-29T05:45:47Z" level=error msg="invalid rule json: Parse SQL SELECT \"sensor.alerts\" AS topic, meta(partition) AS partition_id, meta(offset) AS offset_id, self AS raw_payload FROM alerts_raw error: found \"PARTITION\", expected expression.." file="server/rest.go:92"
+kafka-1       | [2026-09-29 05:45:13,776] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing ControllerMetadataMetricsPublisher with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,776] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing AclPublisher controller id=1 with a snapshot at offset 0 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,785] INFO [ControllerServer id=1] Loaded new metadata Features(metadataVersion=3.9-IV0, finalizedFeatures={metadata.version=21}, finalizedFeaturesEpoch=4). (org.apache.kafka.metadata.publisher.FeaturesPublisher)
+kafka-1       | [2026-09-29 05:45:13,785] INFO [controller-1-to-controller-registration-channel-manager]: Starting (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,785] INFO [ControllerServer id=1] Waiting for all of the authorizer futures to be completed (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,786] INFO [ControllerRegistrationManager id=1 incarnation=bmPyIxtNSJq5yOnQAIfqGQ] initialized channel manager. (kafka.server.ControllerRegistrationManager)
+kafka-1       | [2026-09-29 05:45:13,786] INFO [ControllerServer id=1] Finished waiting for all of the authorizer futures to be completed (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,786] INFO [ControllerServer id=1] Waiting for all of the SocketServer Acceptors to be started (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,786] INFO [ControllerServer id=1] Finished waiting for all of the SocketServer Acceptors to be started (kafka.server.ControllerServer)
+kafka-1       | [2026-09-29 05:45:13,786] INFO [controller-1-to-controller-registration-channel-manager]: Recorded new KRaft controller, from now on will use node kafka:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,787] INFO [BrokerServer id=1] Transition from SHUTDOWN to STARTING (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,788] INFO [ControllerRegistrationManager id=1 incarnation=bmPyIxtNSJq5yOnQAIfqGQ] sendControllerRegistration: attempting to send ControllerRegistrationRequestData(controllerId=1, incarnationId=bmPyIxtNSJq5yOnQAIfqGQ, zkMigrationReady=false, listeners=[Listener(name='CONTROLLER', host='kafka', port=9093, securityProtocol=0)], features=[Feature(name='kraft.version', minSupportedVersion=0, maxSupportedVersion=1), Feature(name='metadata.version', minSupportedVersion=1, maxSupportedVersion=21)]) (kafka.server.ControllerRegistrationManager)
+kafka-1       | [2026-09-29 05:45:13,788] INFO [BrokerServer id=1] Starting broker (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,795] INFO [broker-1-ThrottledChannelReaper-Fetch]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,797] INFO [broker-1-ThrottledChannelReaper-Produce]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,798] INFO [broker-1-ThrottledChannelReaper-Request]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,799] INFO [broker-1-ThrottledChannelReaper-ControllerMutation]: Starting (kafka.server.ClientQuotaManager$ThrottledChannelReaper)
+kafka-1       | [2026-09-29 05:45:13,813] INFO [BrokerServer id=1] Waiting for controller quorum voters future (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,828] INFO [BrokerServer id=1] Finished waiting for controller quorum voters future (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,831] INFO [broker-1-to-controller-forwarding-channel-manager]: Starting (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,831] INFO [broker-1-to-controller-forwarding-channel-manager]: Recorded new KRaft controller, from now on will use node kafka:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,836] INFO [client-metrics-reaper]: Starting (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+kafka-1       | [2026-09-29 05:45:13,873] INFO Updated connection-accept-rate max connection creation rate to 2147483647 (kafka.network.ConnectionQuotas)
+kafka-1       | [2026-09-29 05:45:13,874] INFO [ControllerRegistrationManager id=1 incarnation=bmPyIxtNSJq5yOnQAIfqGQ] Our registration has been persisted to the metadata log. (kafka.server.ControllerRegistrationManager)
+kafka-1       | [2026-09-29 05:45:13,876] INFO [ControllerRegistrationManager id=1 incarnation=bmPyIxtNSJq5yOnQAIfqGQ] RegistrationResponseHandler: controller acknowledged ControllerRegistrationRequest. (kafka.server.ControllerRegistrationManager)
+kafka-1       | [2026-09-29 05:45:13,877] INFO [SocketServer listenerType=BROKER, nodeId=1] Created data-plane acceptor and processors for endpoint : ListenerName(PLAINTEXT) (kafka.network.SocketServer)
+kafka-1       | [2026-09-29 05:45:13,882] INFO [broker-1-to-controller-alter-partition-channel-manager]: Starting (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,882] INFO [broker-1-to-controller-alter-partition-channel-manager]: Recorded new KRaft controller, from now on will use node kafka:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,885] INFO [broker-1-to-controller-directory-assignments-channel-manager]: Starting (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,886] INFO [broker-1-to-controller-directory-assignments-channel-manager]: Recorded new KRaft controller, from now on will use node kafka:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,890] INFO [ExpirationReaper-1-Produce]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,892] INFO [ExpirationReaper-1-Fetch]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,893] INFO [ExpirationReaper-1-DeleteRecords]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,895] INFO [ExpirationReaper-1-ElectLeader]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,896] INFO [ExpirationReaper-1-RemoteFetch]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,904] INFO [ExpirationReaper-1-Heartbeat]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,905] INFO [ExpirationReaper-1-Rebalance]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,912] INFO Unable to read the broker epoch in /tmp/kafka-logs. (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,913] INFO [broker-1-to-controller-heartbeat-channel-manager]: Starting (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,913] INFO [broker-1-to-controller-heartbeat-channel-manager]: Recorded new KRaft controller, from now on will use node kafka:9093 (id: 1 rack: null) (kafka.server.NodeToControllerRequestThread)
+kafka-1       | [2026-09-29 05:45:13,915] INFO [BrokerLifecycleManager id=1] Incarnation FApnXJXlTDqbzJldVB6mOA of broker 1 in cluster alwbench-kraft-cluster01 is now STARTING. (kafka.server.BrokerLifecycleManager)
+kafka-1       | [2026-09-29 05:45:13,918] INFO [ExpirationReaper-1-AlterAcls]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+kafka-1       | [2026-09-29 05:45:13,933] INFO [BrokerServer id=1] Waiting for the broker metadata publishers to be installed (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,933] INFO [BrokerServer id=1] Finished waiting for the broker metadata publishers to be installed (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,933] INFO [BrokerServer id=1] Waiting for the controller to acknowledge that we are caught up (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:13,933] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing MetadataVersionPublisher(id=1) with a snapshot at offset 5 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,934] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing BrokerMetadataPublisher with a snapshot at offset 5 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:13,934] INFO [BrokerMetadataPublisher id=1] Publishing initial metadata at offset OffsetAndEpoch(offset=5, epoch=1) with metadata.version 3.9-IV0. (kafka.server.metadata.BrokerMetadataPublisher)
+kafka-1       | [2026-09-29 05:45:13,936] INFO Loading logs from log dirs ArrayBuffer(/tmp/kafka-logs) (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,940] INFO No logs found to be loaded in /tmp/kafka-logs (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,948] INFO Loaded 0 logs in 10ms (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,949] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,950] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:13,955] INFO [BrokerLifecycleManager id=1] Successfully registered broker 1 with broker epoch 6 (kafka.server.BrokerLifecycleManager)
+kafka-1       | [2026-09-29 05:45:14,032] INFO [kafka-log-cleaner-thread-0]: Starting (kafka.log.LogCleaner$CleanerThread)
+kafka-1       | [2026-09-29 05:45:14,036] INFO [LogDirFailureHandler]: Starting (kafka.server.ReplicaManager$LogDirFailureHandler)
+kafka-1       | [2026-09-29 05:45:14,037] INFO [AddPartitionsToTxnSenderThread-1]: Starting (kafka.server.AddPartitionsToTxnManager)
+kafka-1       | [2026-09-29 05:45:14,038] INFO [GroupCoordinator 1]: Starting up. (kafka.coordinator.group.GroupCoordinator)
+kafka-1       | [2026-09-29 05:45:14,040] INFO [GroupCoordinator 1]: Startup complete. (kafka.coordinator.group.GroupCoordinator)
+kafka-1       | [2026-09-29 05:45:14,041] INFO [TransactionCoordinator id=1] Starting up. (kafka.coordinator.transaction.TransactionCoordinator)
+kafka-1       | [2026-09-29 05:45:14,044] INFO [TxnMarkerSenderThread-1]: Starting (kafka.coordinator.transaction.TransactionMarkerChannelManager)
+kafka-1       | [2026-09-29 05:45:14,044] INFO [TransactionCoordinator id=1] Startup complete. (kafka.coordinator.transaction.TransactionCoordinator)
+kafka-1       | [2026-09-29 05:45:14,049] INFO [MetadataLoader id=1] InitializeNewPublishers: initializing BrokerRegistrationTracker(id=1) with a snapshot at offset 5 (org.apache.kafka.image.loader.MetadataLoader)
+kafka-1       | [2026-09-29 05:45:14,059] INFO [BrokerLifecycleManager id=1] The broker has caught up. Transitioning from STARTING to RECOVERY. (kafka.server.BrokerLifecycleManager)
+kafka-1       | [2026-09-29 05:45:14,060] INFO [BrokerServer id=1] Finished waiting for the controller to acknowledge that we are caught up (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,060] INFO [BrokerServer id=1] Waiting for the initial broker metadata update to be published (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,060] INFO [BrokerServer id=1] Finished waiting for the initial broker metadata update to be published (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,062] INFO KafkaConfig values: 
+kafka-1       | 	advertised.listeners = PLAINTEXT://kafka:9092
+kafka-1       | 	alter.config.policy.class.name = null
+kafka-1       | 	alter.log.dirs.replication.quota.window.num = 11
+kafka-1       | 	alter.log.dirs.replication.quota.window.size.seconds = 1
+kafka-1       | 	authorizer.class.name = 
+kafka-1       | 	auto.create.topics.enable = false
+kafka-1       | 	auto.include.jmx.reporter = true
+kafka-1       | 	auto.leader.rebalance.enable = true
+kafka-1       | 	background.threads = 10
+kafka-1       | 	broker.heartbeat.interval.ms = 2000
+kafka-1       | 	broker.id = 1
+kafka-1       | 	broker.id.generation.enable = true
+kafka-1       | 	broker.rack = null
+kafka-1       | 	broker.session.timeout.ms = 9000
+kafka-1       | 	client.quota.callback.class = null
+kafka-1       | 	compression.gzip.level = -1
+kafka-1       | 	compression.lz4.level = 9
+kafka-1       | 	compression.type = producer
+kafka-1       | 	compression.zstd.level = 3
+kafka-1       | 	connection.failed.authentication.delay.ms = 100
+kafka-1       | 	connections.max.idle.ms = 600000
+kafka-1       | 	connections.max.reauth.ms = 0
+kafka-1       | 	control.plane.listener.name = null
+kafka-1       | 	controlled.shutdown.enable = true
+kafka-1       | 	controlled.shutdown.max.retries = 3
+kafka-1       | 	controlled.shutdown.retry.backoff.ms = 5000
+kafka-1       | 	controller.listener.names = CONTROLLER
+kafka-1       | 	controller.quorum.append.linger.ms = 25
+kafka-1       | 	controller.quorum.bootstrap.servers = []
+kafka-1       | 	controller.quorum.election.backoff.max.ms = 1000
+kafka-1       | 	controller.quorum.election.timeout.ms = 1000
+kafka-1       | 	controller.quorum.fetch.timeout.ms = 2000
+kafka-1       | 	controller.quorum.request.timeout.ms = 2000
+kafka-1       | 	controller.quorum.retry.backoff.ms = 20
+kafka-1       | 	controller.quorum.voters = [1@kafka:9093]
+kafka-1       | 	controller.quota.window.num = 11
+kafka-1       | 	controller.quota.window.size.seconds = 1
+kafka-1       | 	controller.socket.timeout.ms = 30000
+kafka-1       | 	create.topic.policy.class.name = null
+kafka-1       | 	default.replication.factor = 1
+kafka-1       | 	delegation.token.expiry.check.interval.ms = 3600000
+kafka-1       | 	delegation.token.expiry.time.ms = 86400000
+kafka-1       | 	delegation.token.master.key = null
+kafka-1       | 	delegation.token.max.lifetime.ms = 604800000
+kafka-1       | 	delegation.token.secret.key = null
+kafka-1       | 	delete.records.purgatory.purge.interval.requests = 1
+kafka-1       | 	delete.topic.enable = true
+kafka-1       | 	early.start.listeners = null
+kafka-1       | 	eligible.leader.replicas.enable = false
+kafka-1       | 	fetch.max.bytes = 57671680
+kafka-1       | 	fetch.purgatory.purge.interval.requests = 1000
+kafka-1       | 	group.consumer.assignors = [org.apache.kafka.coordinator.group.assignor.UniformAssignor, org.apache.kafka.coordinator.group.assignor.RangeAssignor]
+kafka-1       | 	group.consumer.heartbeat.interval.ms = 5000
+kafka-1       | 	group.consumer.max.heartbeat.interval.ms = 15000
+kafka-1       | 	group.consumer.max.session.timeout.ms = 60000
+kafka-1       | 	group.consumer.max.size = 2147483647
+kafka-1       | 	group.consumer.migration.policy = disabled
+kafka-1       | 	group.consumer.min.heartbeat.interval.ms = 5000
+kafka-1       | 	group.consumer.min.session.timeout.ms = 45000
+kafka-1       | 	group.consumer.session.timeout.ms = 45000
+kafka-1       | 	group.coordinator.append.linger.ms = 10
+kafka-1       | 	group.coordinator.new.enable = false
+kafka-1       | 	group.coordinator.rebalance.protocols = [classic]
+kafka-1       | 	group.coordinator.threads = 1
+kafka-1       | 	group.initial.rebalance.delay.ms = 0
+kafka-1       | 	group.max.session.timeout.ms = 1800000
+kafka-1       | 	group.max.size = 2147483647
+kafka-1       | 	group.min.session.timeout.ms = 6000
+kafka-1       | 	group.share.delivery.count.limit = 5
+kafka-1       | 	group.share.enable = false
+kafka-1       | 	group.share.heartbeat.interval.ms = 5000
+kafka-1       | 	group.share.max.groups = 10
+kafka-1       | 	group.share.max.heartbeat.interval.ms = 15000
+kafka-1       | 	group.share.max.record.lock.duration.ms = 60000
+kafka-1       | 	group.share.max.session.timeout.ms = 60000
+kafka-1       | 	group.share.max.size = 200
+kafka-1       | 	group.share.min.heartbeat.interval.ms = 5000
+kafka-1       | 	group.share.min.record.lock.duration.ms = 15000
+kafka-1       | 	group.share.min.session.timeout.ms = 45000
+kafka-1       | 	group.share.partition.max.record.locks = 200
+kafka-1       | 	group.share.record.lock.duration.ms = 30000
+kafka-1       | 	group.share.session.timeout.ms = 45000
+kafka-1       | 	initial.broker.registration.timeout.ms = 60000
+kafka-1       | 	inter.broker.listener.name = PLAINTEXT
+kafka-1       | 	inter.broker.protocol.version = 3.9-IV0
+kafka-1       | 	kafka.metrics.polling.interval.secs = 10
+kafka-1       | 	kafka.metrics.reporters = []
+kafka-1       | 	leader.imbalance.check.interval.seconds = 300
+kafka-1       | 	leader.imbalance.per.broker.percentage = 10
+kafka-1       | 	listener.security.protocol.map = PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+kafka-1       | 	listeners = PLAINTEXT://:9092,CONTROLLER://:9093
+kafka-1       | 	log.cleaner.backoff.ms = 15000
+kafka-1       | 	log.cleaner.dedupe.buffer.size = 134217728
+kafka-1       | 	log.cleaner.delete.retention.ms = 86400000
+kafka-1       | 	log.cleaner.enable = true
+kafka-1       | 	log.cleaner.io.buffer.load.factor = 0.9
+kafka-1       | 	log.cleaner.io.buffer.size = 524288
+kafka-1       | 	log.cleaner.io.max.bytes.per.second = 1.7976931348623157E308
+kafka-1       | 	log.cleaner.max.compaction.lag.ms = 9223372036854775807
+kafka-1       | 	log.cleaner.min.cleanable.ratio = 0.5
+kafka-1       | 	log.cleaner.min.compaction.lag.ms = 0
+kafka-1       | 	log.cleaner.threads = 1
+kafka-1       | 	log.cleanup.policy = [delete]
+kafka-1       | 	log.dir = /tmp/kafka-logs
+kafka-1       | 	log.dir.failure.timeout.ms = 30000
+kafka-1       | 	log.dirs = null
+kafka-1       | 	log.flush.interval.messages = 9223372036854775807
+kafka-1       | 	log.flush.interval.ms = null
+kafka-1       | 	log.flush.offset.checkpoint.interval.ms = 60000
+kafka-1       | 	log.flush.scheduler.interval.ms = 9223372036854775807
+kafka-1       | 	log.flush.start.offset.checkpoint.interval.ms = 60000
+kafka-1       | 	log.index.interval.bytes = 4096
+kafka-1       | 	log.index.size.max.bytes = 10485760
+kafka-1       | 	log.initial.task.delay.ms = 30000
+kafka-1       | 	log.local.retention.bytes = -2
+kafka-1       | 	log.local.retention.ms = -2
+kafka-1       | 	log.message.downconversion.enable = true
+kafka-1       | 	log.message.format.version = 3.0-IV1
+kafka-1       | 	log.message.timestamp.after.max.ms = 9223372036854775807
+kafka-1       | 	log.message.timestamp.before.max.ms = 9223372036854775807
+kafka-1       | 	log.message.timestamp.difference.max.ms = 9223372036854775807
+kafka-1       | 	log.message.timestamp.type = CreateTime
+kafka-1       | 	log.preallocate = false
+kafka-1       | 	log.retention.bytes = -1
+kafka-1       | 	log.retention.check.interval.ms = 300000
+kafka-1       | 	log.retention.hours = 168
+kafka-1       | 	log.retention.minutes = null
+kafka-1       | 	log.retention.ms = null
+kafka-1       | 	log.roll.hours = 168
+kafka-1       | 	log.roll.jitter.hours = 0
+kafka-1       | 	log.roll.jitter.ms = null
+kafka-1       | 	log.roll.ms = null
+kafka-1       | 	log.segment.bytes = 1073741824
+kafka-1       | 	log.segment.delete.delay.ms = 60000
+kafka-1       | 	max.connection.creation.rate = 2147483647
+kafka-1       | 	max.connections = 2147483647
+kafka-1       | 	max.connections.per.ip = 2147483647
+kafka-1       | 	max.connections.per.ip.overrides = 
+kafka-1       | 	max.incremental.fetch.session.cache.slots = 1000
+kafka-1       | 	max.request.partition.size.limit = 2000
+kafka-1       | 	message.max.bytes = 1048588
+kafka-1       | 	metadata.log.dir = null
+kafka-1       | 	metadata.log.max.record.bytes.between.snapshots = 20971520
+kafka-1       | 	metadata.log.max.snapshot.interval.ms = 3600000
+kafka-1       | 	metadata.log.segment.bytes = 1073741824
+kafka-1       | 	metadata.log.segment.min.bytes = 8388608
+kafka-1       | 	metadata.log.segment.ms = 604800000
+kafka-1       | 	metadata.max.idle.interval.ms = 500
+kafka-1       | 	metadata.max.retention.bytes = 104857600
+kafka-1       | 	metadata.max.retention.ms = 604800000
+kafka-1       | 	metric.reporters = []
+kafka-1       | 	metrics.num.samples = 2
+kafka-1       | 	metrics.recording.level = INFO
+kafka-1       | 	metrics.sample.window.ms = 30000
+kafka-1       | 	min.insync.replicas = 1
+kafka-1       | 	node.id = 1
+kafka-1       | 	num.io.threads = 8
+kafka-1       | 	num.network.threads = 3
+kafka-1       | 	num.partitions = 1
+kafka-1       | 	num.recovery.threads.per.data.dir = 1
+kafka-1       | 	num.replica.alter.log.dirs.threads = null
+kafka-1       | 	num.replica.fetchers = 1
+kafka-1       | 	offset.metadata.max.bytes = 4096
+kafka-1       | 	offsets.commit.required.acks = -1
+kafka-1       | 	offsets.commit.timeout.ms = 5000
+kafka-1       | 	offsets.load.buffer.size = 5242880
+kafka-1       | 	offsets.retention.check.interval.ms = 600000
+kafka-1       | 	offsets.retention.minutes = 10080
+kafka-1       | 	offsets.topic.compression.codec = 0
+kafka-1       | 	offsets.topic.num.partitions = 50
+kafka-1       | 	offsets.topic.replication.factor = 1
+kafka-1       | 	offsets.topic.segment.bytes = 104857600
+kafka-1       | 	password.encoder.cipher.algorithm = AES/CBC/PKCS5Padding
+kafka-1       | 	password.encoder.iterations = 4096
+kafka-1       | 	password.encoder.key.length = 128
+kafka-1       | 	password.encoder.keyfactory.algorithm = null
+kafka-1       | 	password.encoder.old.secret = null
+kafka-1       | 	password.encoder.secret = null
+kafka-1       | 	principal.builder.class = class org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder
+kafka-1       | 	process.roles = [broker, controller]
+kafka-1       | 	producer.id.expiration.check.interval.ms = 600000
+kafka-1       | 	producer.id.expiration.ms = 86400000
+kafka-1       | 	producer.purgatory.purge.interval.requests = 1000
+kafka-1       | 	queued.max.request.bytes = -1
+kafka-1       | 	queued.max.requests = 500
+kafka-1       | 	quota.window.num = 11
+kafka-1       | 	quota.window.size.seconds = 1
+kafka-1       | 	remote.fetch.max.wait.ms = 500
+kafka-1       | 	remote.log.index.file.cache.total.size.bytes = 1073741824
+kafka-1       | 	remote.log.manager.copier.thread.pool.size = -1
+kafka-1       | 	remote.log.manager.copy.max.bytes.per.second = 9223372036854775807
+kafka-1       | 	remote.log.manager.copy.quota.window.num = 11
+kafka-1       | 	remote.log.manager.copy.quota.window.size.seconds = 1
+kafka-1       | 	remote.log.manager.expiration.thread.pool.size = -1
+kafka-1       | 	remote.log.manager.fetch.max.bytes.per.second = 9223372036854775807
+kafka-1       | 	remote.log.manager.fetch.quota.window.num = 11
+kafka-1       | 	remote.log.manager.fetch.quota.window.size.seconds = 1
+kafka-1       | 	remote.log.manager.task.interval.ms = 30000
+kafka-1       | 	remote.log.manager.task.retry.backoff.max.ms = 30000
+kafka-1       | 	remote.log.manager.task.retry.backoff.ms = 500
+kafka-1       | 	remote.log.manager.task.retry.jitter = 0.2
+kafka-1       | 	remote.log.manager.thread.pool.size = 10
+kafka-1       | 	remote.log.metadata.custom.metadata.max.bytes = 128
+kafka-1       | 	remote.log.metadata.manager.class.name = org.apache.kafka.server.log.remote.metadata.storage.TopicBasedRemoteLogMetadataManager
+kafka-1       | 	remote.log.metadata.manager.class.path = null
+kafka-1       | 	remote.log.metadata.manager.impl.prefix = rlmm.config.
+kafka-1       | 	remote.log.metadata.manager.listener.name = null
+kafka-1       | 	remote.log.reader.max.pending.tasks = 100
+kafka-1       | 	remote.log.reader.threads = 10
+kafka-1       | 	remote.log.storage.manager.class.name = null
+kafka-1       | 	remote.log.storage.manager.class.path = null
+kafka-1       | 	remote.log.storage.manager.impl.prefix = rsm.config.
+kafka-1       | 	remote.log.storage.system.enable = false
+kafka-1       | 	replica.fetch.backoff.ms = 1000
+kafka-1       | 	replica.fetch.max.bytes = 1048576
+kafka-1       | 	replica.fetch.min.bytes = 1
+kafka-1       | 	replica.fetch.response.max.bytes = 10485760
+kafka-1       | 	replica.fetch.wait.max.ms = 500
+kafka-1       | 	replica.high.watermark.checkpoint.interval.ms = 5000
+kafka-1       | 	replica.lag.time.max.ms = 30000
+kafka-1       | 	replica.selector.class = null
+kafka-1       | 	replica.socket.receive.buffer.bytes = 65536
+kafka-1       | 	replica.socket.timeout.ms = 30000
+kafka-1       | 	replication.quota.window.num = 11
+kafka-1       | 	replication.quota.window.size.seconds = 1
+kafka-1       | 	request.timeout.ms = 30000
+kafka-1       | 	reserved.broker.max.id = 1000
+kafka-1       | 	sasl.client.callback.handler.class = null
+kafka-1       | 	sasl.enabled.mechanisms = [GSSAPI]
+kafka-1       | 	sasl.jaas.config = null
+kafka-1       | 	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+kafka-1       | 	sasl.kerberos.min.time.before.relogin = 60000
+kafka-1       | 	sasl.kerberos.principal.to.local.rules = [DEFAULT]
+kafka-1       | 	sasl.kerberos.service.name = null
+kafka-1       | 	sasl.kerberos.ticket.renew.jitter = 0.05
+kafka-1       | 	sasl.kerberos.ticket.renew.window.factor = 0.8
+kafka-1       | 	sasl.login.callback.handler.class = null
+kafka-1       | 	sasl.login.class = null
+kafka-1       | 	sasl.login.connect.timeout.ms = null
+kafka-1       | 	sasl.login.read.timeout.ms = null
+kafka-1       | 	sasl.login.refresh.buffer.seconds = 300
+kafka-1       | 	sasl.login.refresh.min.period.seconds = 60
+kafka-1       | 	sasl.login.refresh.window.factor = 0.8
+kafka-1       | 	sasl.login.refresh.window.jitter = 0.05
+kafka-1       | 	sasl.login.retry.backoff.max.ms = 10000
+kafka-1       | 	sasl.login.retry.backoff.ms = 100
+kafka-1       | 	sasl.mechanism.controller.protocol = GSSAPI
+kafka-1       | 	sasl.mechanism.inter.broker.protocol = GSSAPI
+kafka-1       | 	sasl.oauthbearer.clock.skew.seconds = 30
+kafka-1       | 	sasl.oauthbearer.expected.audience = null
+kafka-1       | 	sasl.oauthbearer.expected.issuer = null
+kafka-1       | 	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+kafka-1       | 	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+kafka-1       | 	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+kafka-1       | 	sasl.oauthbearer.jwks.endpoint.url = null
+kafka-1       | 	sasl.oauthbearer.scope.claim.name = scope
+kafka-1       | 	sasl.oauthbearer.sub.claim.name = sub
+kafka-1       | 	sasl.oauthbearer.token.endpoint.url = null
+kafka-1       | 	sasl.server.callback.handler.class = null
+kafka-1       | 	sasl.server.max.receive.size = 524288
+kafka-1       | 	security.inter.broker.protocol = PLAINTEXT
+kafka-1       | 	security.providers = null
+kafka-1       | 	server.max.startup.time.ms = 9223372036854775807
+kafka-1       | 	socket.connection.setup.timeout.max.ms = 30000
+kafka-1       | 	socket.connection.setup.timeout.ms = 10000
+kafka-1       | 	socket.listen.backlog.size = 50
+kafka-1       | 	socket.receive.buffer.bytes = 102400
+kafka-1       | 	socket.request.max.bytes = 104857600
+kafka-1       | 	socket.send.buffer.bytes = 102400
+kafka-1       | 	ssl.allow.dn.changes = false
+kafka-1       | 	ssl.allow.san.changes = false
+kafka-1       | 	ssl.cipher.suites = []
+kafka-1       | 	ssl.client.auth = none
+kafka-1       | 	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+kafka-1       | 	ssl.endpoint.identification.algorithm = https
+kafka-1       | 	ssl.engine.factory.class = null
+kafka-1       | 	ssl.key.password = null
+kafka-1       | 	ssl.keymanager.algorithm = SunX509
+kafka-1       | 	ssl.keystore.certificate.chain = null
+kafka-1       | 	ssl.keystore.key = null
+kafka-1       | 	ssl.keystore.location = null
+kafka-1       | 	ssl.keystore.password = null
+kafka-1       | 	ssl.keystore.type = JKS
+kafka-1       | 	ssl.principal.mapping.rules = DEFAULT
+kafka-1       | 	ssl.protocol = TLSv1.3
+kafka-1       | 	ssl.provider = null
+kafka-1       | 	ssl.secure.random.implementation = null
+kafka-1       | 	ssl.trustmanager.algorithm = PKIX
+kafka-1       | 	ssl.truststore.certificates = null
+kafka-1       | 	ssl.truststore.location = null
+kafka-1       | 	ssl.truststore.password = null
+kafka-1       | 	ssl.truststore.type = JKS
+kafka-1       | 	telemetry.max.bytes = 1048576
+kafka-1       | 	transaction.abort.timed.out.transaction.cleanup.interval.ms = 10000
+kafka-1       | 	transaction.max.timeout.ms = 900000
+kafka-1       | 	transaction.partition.verification.enable = true
+kafka-1       | 	transaction.remove.expired.transaction.cleanup.interval.ms = 3600000
+kafka-1       | 	transaction.state.log.load.buffer.size = 5242880
+kafka-1       | 	transaction.state.log.min.isr = 1
+kafka-1       | 	transaction.state.log.num.partitions = 50
+kafka-1       | 	transaction.state.log.replication.factor = 1
+kafka-1       | 	transaction.state.log.segment.bytes = 104857600
+kafka-1       | 	transactional.id.expiration.ms = 604800000
+kafka-1       | 	unclean.leader.election.enable = false
+kafka-1       | 	unclean.leader.election.interval.ms = 300000
+kafka-1       | 	unstable.api.versions.enable = false
+kafka-1       | 	unstable.feature.versions.enable = false
+kafka-1       | 	zookeeper.clientCnxnSocket = null
+kafka-1       | 	zookeeper.connect = null
+kafka-1       | 	zookeeper.connection.timeout.ms = null
+kafka-1       | 	zookeeper.max.in.flight.requests = 10
+kafka-1       | 	zookeeper.metadata.migration.enable = false
+kafka-1       | 	zookeeper.metadata.migration.min.batch.size = 200
+kafka-1       | 	zookeeper.session.timeout.ms = 18000
+kafka-1       | 	zookeeper.set.acl = false
+kafka-1       | 	zookeeper.ssl.cipher.suites = null
+kafka-1       | 	zookeeper.ssl.client.enable = false
+kafka-1       | 	zookeeper.ssl.crl.enable = false
+kafka-1       | 	zookeeper.ssl.enabled.protocols = null
+kafka-1       | 	zookeeper.ssl.endpoint.identification.algorithm = HTTPS
+kafka-1       | 	zookeeper.ssl.keystore.location = null
+kafka-1       | 	zookeeper.ssl.keystore.password = null
+kafka-1       | 	zookeeper.ssl.keystore.type = null
+kafka-1       | 	zookeeper.ssl.ocsp.enable = false
+kafka-1       | 	zookeeper.ssl.protocol = TLSv1.2
+kafka-1       | 	zookeeper.ssl.truststore.location = null
+kafka-1       | 	zookeeper.ssl.truststore.password = null
+kafka-1       | 	zookeeper.ssl.truststore.type = null
+kafka-1       |  (kafka.server.KafkaConfig)
+kafka-1       | [2026-09-29 05:45:14,068] INFO [BrokerServer id=1] Waiting for the broker to be unfenced (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,100] INFO [BrokerLifecycleManager id=1] The broker has been unfenced. Transitioning from RECOVERY to RUNNING. (kafka.server.BrokerLifecycleManager)
+kafka-1       | [2026-09-29 05:45:14,101] INFO [BrokerServer id=1] Finished waiting for the broker to be unfenced (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,101] INFO authorizerStart completed for endpoint PLAINTEXT. Endpoint is now READY. (org.apache.kafka.server.network.EndpointReadyFutures)
+kafka-1       | [2026-09-29 05:45:14,101] INFO [SocketServer listenerType=BROKER, nodeId=1] Enabling request processing. (kafka.network.SocketServer)
+kafka-1       | [2026-09-29 05:45:14,101] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.DataPlaneAcceptor)
+kafka-1       | [2026-09-29 05:45:14,103] INFO [BrokerServer id=1] Waiting for all of the authorizer futures to be completed (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,103] INFO [BrokerServer id=1] Finished waiting for all of the authorizer futures to be completed (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,103] INFO [BrokerServer id=1] Waiting for all of the SocketServer Acceptors to be started (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,103] INFO [BrokerServer id=1] Finished waiting for all of the SocketServer Acceptors to be started (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,103] INFO [BrokerServer id=1] Transition from STARTING to STARTED (kafka.server.BrokerServer)
+kafka-1       | [2026-09-29 05:45:14,103] INFO Kafka version: 3.9.0 (org.apache.kafka.common.utils.AppInfoParser)
+kafka-1       | [2026-09-29 05:45:14,103] INFO Kafka commitId: a60e31147e6b01ee (org.apache.kafka.common.utils.AppInfoParser)
+kafka-1       | [2026-09-29 05:45:14,103] INFO Kafka startTimeMs: 1790660714103 (org.apache.kafka.common.utils.AppInfoParser)
+kafka-1       | [2026-09-29 05:45:14,104] INFO [KafkaRaftServer nodeId=1] Kafka Server started (kafka.server.KafkaRaftServer)
+kafka-1       | [2026-09-29 05:45:21,918] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions Set(sensor.telemetry.raw-1, sensor.telemetry.raw-2, sensor.telemetry.raw-3, sensor.telemetry.raw-4, sensor.telemetry.raw-5, sensor.telemetry.raw-0) (kafka.server.ReplicaFetcherManager)
+kafka-1       | [2026-09-29 05:45:21,937] INFO [LogLoader partition=sensor.telemetry.raw-1, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,939] INFO Created log for partition sensor.telemetry.raw-1 in /tmp/kafka-logs/sensor.telemetry.raw-1 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,941] INFO [Partition sensor.telemetry.raw-1 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-1 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,942] INFO [Partition sensor.telemetry.raw-1 broker=1] Log loaded for partition sensor.telemetry.raw-1 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,951] INFO [LogLoader partition=sensor.telemetry.raw-2, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,952] INFO Created log for partition sensor.telemetry.raw-2 in /tmp/kafka-logs/sensor.telemetry.raw-2 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,952] INFO [Partition sensor.telemetry.raw-2 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-2 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,952] INFO [Partition sensor.telemetry.raw-2 broker=1] Log loaded for partition sensor.telemetry.raw-2 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,960] INFO [LogLoader partition=sensor.telemetry.raw-3, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,961] INFO Created log for partition sensor.telemetry.raw-3 in /tmp/kafka-logs/sensor.telemetry.raw-3 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,961] INFO [Partition sensor.telemetry.raw-3 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-3 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,961] INFO [Partition sensor.telemetry.raw-3 broker=1] Log loaded for partition sensor.telemetry.raw-3 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,970] INFO [LogLoader partition=sensor.telemetry.raw-4, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,971] INFO Created log for partition sensor.telemetry.raw-4 in /tmp/kafka-logs/sensor.telemetry.raw-4 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,972] INFO [Partition sensor.telemetry.raw-4 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-4 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,972] INFO [Partition sensor.telemetry.raw-4 broker=1] Log loaded for partition sensor.telemetry.raw-4 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,979] INFO [LogLoader partition=sensor.telemetry.raw-5, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,980] INFO Created log for partition sensor.telemetry.raw-5 in /tmp/kafka-logs/sensor.telemetry.raw-5 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,980] INFO [Partition sensor.telemetry.raw-5 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-5 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,980] INFO [Partition sensor.telemetry.raw-5 broker=1] Log loaded for partition sensor.telemetry.raw-5 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,987] INFO [LogLoader partition=sensor.telemetry.raw-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:21,988] INFO Created log for partition sensor.telemetry.raw-0 in /tmp/kafka-logs/sensor.telemetry.raw-0 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:21,989] INFO [Partition sensor.telemetry.raw-0 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.raw-0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,989] INFO [Partition sensor.telemetry.raw-0 broker=1] Log loaded for partition sensor.telemetry.raw-0 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:21,997] INFO [DynamicConfigPublisher broker id=1] Updating topic sensor.telemetry.raw with new configuration : compression.type -> lz4,retention.ms -> 86400000 (kafka.server.metadata.DynamicConfigPublisher)
+kafka-1       | [2026-09-29 05:45:26,469] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions Set(sensor.telemetry.clean-4, sensor.telemetry.clean-5, sensor.telemetry.clean-2, sensor.telemetry.clean-3, sensor.telemetry.clean-0, sensor.telemetry.clean-1) (kafka.server.ReplicaFetcherManager)
+kafka-1       | [2026-09-29 05:45:26,482] INFO [LogLoader partition=sensor.telemetry.clean-4, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,485] INFO Created log for partition sensor.telemetry.clean-4 in /tmp/kafka-logs/sensor.telemetry.clean-4 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,486] INFO [Partition sensor.telemetry.clean-4 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-4 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,487] INFO [Partition sensor.telemetry.clean-4 broker=1] Log loaded for partition sensor.telemetry.clean-4 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,542] INFO [LogLoader partition=sensor.telemetry.clean-5, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,544] INFO Created log for partition sensor.telemetry.clean-5 in /tmp/kafka-logs/sensor.telemetry.clean-5 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,544] INFO [Partition sensor.telemetry.clean-5 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-5 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,545] INFO [Partition sensor.telemetry.clean-5 broker=1] Log loaded for partition sensor.telemetry.clean-5 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,575] INFO [LogLoader partition=sensor.telemetry.clean-2, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,577] INFO Created log for partition sensor.telemetry.clean-2 in /tmp/kafka-logs/sensor.telemetry.clean-2 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,577] INFO [Partition sensor.telemetry.clean-2 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-2 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,577] INFO [Partition sensor.telemetry.clean-2 broker=1] Log loaded for partition sensor.telemetry.clean-2 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,591] INFO [LogLoader partition=sensor.telemetry.clean-3, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,592] INFO Created log for partition sensor.telemetry.clean-3 in /tmp/kafka-logs/sensor.telemetry.clean-3 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,592] INFO [Partition sensor.telemetry.clean-3 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-3 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,592] INFO [Partition sensor.telemetry.clean-3 broker=1] Log loaded for partition sensor.telemetry.clean-3 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,604] INFO [LogLoader partition=sensor.telemetry.clean-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,605] INFO Created log for partition sensor.telemetry.clean-0 in /tmp/kafka-logs/sensor.telemetry.clean-0 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,605] INFO [Partition sensor.telemetry.clean-0 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,605] INFO [Partition sensor.telemetry.clean-0 broker=1] Log loaded for partition sensor.telemetry.clean-0 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,632] INFO [LogLoader partition=sensor.telemetry.clean-1, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:26,634] INFO Created log for partition sensor.telemetry.clean-1 in /tmp/kafka-logs/sensor.telemetry.clean-1 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:26,634] INFO [Partition sensor.telemetry.clean-1 broker=1] No checkpointed highwatermark is found for partition sensor.telemetry.clean-1 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,634] INFO [Partition sensor.telemetry.clean-1 broker=1] Log loaded for partition sensor.telemetry.clean-1 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:26,643] INFO [DynamicConfigPublisher broker id=1] Updating topic sensor.telemetry.clean with new configuration : compression.type -> lz4,retention.ms -> 86400000 (kafka.server.metadata.DynamicConfigPublisher)
+kafka-1       | [2026-09-29 05:45:32,104] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions Set(sensor.anomaly.score-2, sensor.anomaly.score-1, sensor.anomaly.score-0) (kafka.server.ReplicaFetcherManager)
+kafka-1       | [2026-09-29 05:45:32,113] INFO [LogLoader partition=sensor.anomaly.score-2, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:32,116] INFO Created log for partition sensor.anomaly.score-2 in /tmp/kafka-logs/sensor.anomaly.score-2 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:32,117] INFO [Partition sensor.anomaly.score-2 broker=1] No checkpointed highwatermark is found for partition sensor.anomaly.score-2 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,121] INFO [Partition sensor.anomaly.score-2 broker=1] Log loaded for partition sensor.anomaly.score-2 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,135] INFO [LogLoader partition=sensor.anomaly.score-1, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:32,137] INFO Created log for partition sensor.anomaly.score-1 in /tmp/kafka-logs/sensor.anomaly.score-1 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:32,142] INFO [Partition sensor.anomaly.score-1 broker=1] No checkpointed highwatermark is found for partition sensor.anomaly.score-1 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,142] INFO [Partition sensor.anomaly.score-1 broker=1] Log loaded for partition sensor.anomaly.score-1 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,160] INFO [LogLoader partition=sensor.anomaly.score-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:32,162] INFO Created log for partition sensor.anomaly.score-0 in /tmp/kafka-logs/sensor.anomaly.score-0 with properties {compression.type="lz4", retention.ms=86400000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:32,162] INFO [Partition sensor.anomaly.score-0 broker=1] No checkpointed highwatermark is found for partition sensor.anomaly.score-0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,163] INFO [Partition sensor.anomaly.score-0 broker=1] Log loaded for partition sensor.anomaly.score-0 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:32,170] INFO [DynamicConfigPublisher broker id=1] Updating topic sensor.anomaly.score with new configuration : compression.type -> lz4,retention.ms -> 86400000 (kafka.server.metadata.DynamicConfigPublisher)
+kafka-1       | [2026-09-29 05:45:38,585] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions Set(sensor.alerts-0, sensor.alerts-1, sensor.alerts-2) (kafka.server.ReplicaFetcherManager)
+kafka-1       | [2026-09-29 05:45:38,588] INFO [LogLoader partition=sensor.alerts-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:38,589] INFO Created log for partition sensor.alerts-0 in /tmp/kafka-logs/sensor.alerts-0 with properties {compression.type="lz4", retention.ms=604800000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:38,590] INFO [Partition sensor.alerts-0 broker=1] No checkpointed highwatermark is found for partition sensor.alerts-0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,590] INFO [Partition sensor.alerts-0 broker=1] Log loaded for partition sensor.alerts-0 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,598] INFO [LogLoader partition=sensor.alerts-1, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:38,599] INFO Created log for partition sensor.alerts-1 in /tmp/kafka-logs/sensor.alerts-1 with properties {compression.type="lz4", retention.ms=604800000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:38,599] INFO [Partition sensor.alerts-1 broker=1] No checkpointed highwatermark is found for partition sensor.alerts-1 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,599] INFO [Partition sensor.alerts-1 broker=1] Log loaded for partition sensor.alerts-1 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,611] INFO [LogLoader partition=sensor.alerts-2, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+kafka-1       | [2026-09-29 05:45:38,612] INFO Created log for partition sensor.alerts-2 in /tmp/kafka-logs/sensor.alerts-2 with properties {compression.type="lz4", retention.ms=604800000} (kafka.log.LogManager)
+kafka-1       | [2026-09-29 05:45:38,613] INFO [Partition sensor.alerts-2 broker=1] No checkpointed highwatermark is found for partition sensor.alerts-2 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,613] INFO [Partition sensor.alerts-2 broker=1] Log loaded for partition sensor.alerts-2 with initial high watermark 0 (kafka.cluster.Partition)
+kafka-1       | [2026-09-29 05:45:38,624] INFO [DynamicConfigPublisher broker id=1] Updating topic sensor.alerts with new configuration : compression.type -> lz4,retention.ms -> 604800000 (kafka.server.metadata.DynamicConfigPublisher)

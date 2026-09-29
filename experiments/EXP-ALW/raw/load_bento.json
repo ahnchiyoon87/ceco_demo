@@ -1,0 +1,13 @@
+{
+ "sent": 600,
+ "rate": 20.0,
+ "inbox_rows_for_load": 600,
+ "lost": 0,
+ "duplicate_events": 0,
+ "drained_in_s": 30.3,
+ "latency_ms(produce_ack→inbox commit)": {
+  "p50": 27385.9,
+  "p95": 40764.7,
+  "max": 42314.4
+ }
+}

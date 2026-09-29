@@ -12,7 +12,7 @@ R=experiments/$EXP/raw; mkdir -p $R
 LOG=experiments/$EXP/regression_$NAME.log
 REPO="D:/work/study/scada-rotation"
 CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.0"
-TOOLS="docker run --rm --network rot-iiot -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo l4bench-tools:1.0"
+TOOLS="docker run --rm --network rot-iiot -e BOOTSTRAP=kafka:9092 -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo l4bench-tools:1.0"   # replay.py·evaluate.py 는 BOOTSTRAP 환경변수로 Kafka 를 찾는다(첫 실행에서 KeyError, #130)
 API=http://127.0.0.1:38000/api/operations
 SIM=http://127.0.0.1:37080
 OUT=$R/regression_${NAME}.jsonl
@@ -43,12 +43,7 @@ T0=$(date +%s)
 curl -s -X POST -H 'Content-Type: application/json' -d '{"scenario":"bearing_wear","duration_s":420}' $SIM/fault >> $LOG
 inc=""
 for i in $(seq 1 60); do
-  inc=$(curl -s "$API/incidents" | PYTHONUTF8=1 python -c "
-import json,sys,datetime
-items=json.load(sys.stdin); items=items.get('items',items) if isinstance(items,dict) else items
-for x in items:
-    if 'mixer-current-vibration' in x.get('correlation_key','') and x.get('status') in ('received','awaiting_review','unresolved') and x.get('last_ts',0)/1e9 >= $T0-5:
-        print(x['id']); break" 2>/dev/null)
+  inc=$(curl -s "$API/incidents" | PYTHONUTF8=1 python harness/e2e/find_incident.py $T0 2>/dev/null)
   [ -n "$inc" ] && break; sleep 2
 done
 say "교반기 사건: ${inc:-없음} ($(( $(date +%s) - T0 ))s)"

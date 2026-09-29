@@ -1,0 +1,25 @@
+[17:13:35] == 회귀 V2 (V2) 시작
+[17:17:07] {"s": "S01", "alerts": 146, "by": {"ML_AUTOENCODER:MULTIVARIATE": 63, "ZSCORE:LT-102": 12, "ZSCORE:FT-101": 8, "ZSCORE:IT-101": 10, "ZSCORE:TT-101": 10, "ZSCORE:TT-102": 9, "ZSCORE:IT-102": 9, "ZSCORE:PT-101": 11, "ZSCORE:pH-101": 6, "ZSCORE:CT-101": 4, "ZSCORE:FT-102": 4}, "tags_stored": 12, "store_missing": 0}
+[17:17:30] {"s":"S02-S08","eval":"FileNotFoundError: [Errno 2] No such file or directory: '/experiments/EXP-002/raw/replay_reg_V2_l4_emitted.jsonl'"}
+harness/e2e/regression.sh: line 54: syntax error near unexpected token `)'
+harness/e2e/regression.sh: line 54: `'unresolved') and x.get('last_ts',0)/1e9 >= $T0-5:'
+spike 0 {'kafka': 1.02, 'mqtt': 1.02}
+spike 1 {'kafka': 0.89, 'mqtt': 0.89}
+spike 2 {'kafka': 0.94, 'mqtt': 0.94}
+heater_stuck 0 {'kafka': 3.94, 'mqtt': 3.94}
+heater_stuck 1 {'kafka': 3.93, 'mqtt': 3.93}
+heater_stuck 2 {'kafka': 3.92, 'mqtt': 3.92}
+bearing_wear 0 {'kafka': 8.15, 'mqtt': 8.15}
+bearing_wear 1 {'mqtt': 0.86, 'kafka': 7.87}
+bearing_wear 2 {'mqtt': 0.92, 'kafka': 7.93}
+noise 0 {}
+noise 1 {}
+noise 2 {}
+dropout 0 {'kafka': 4.68}
+dropout 1 {'kafka': 4.68}
+dropout 2 {'kafka': 5.66}
+drift 0 {'kafka': 0.45, 'mqtt': 0.45}
+drift 1 {'kafka': 0.93, 'mqtt': 0.93}
+drift 2 {'kafka': 0.92, 'mqtt': 0.92}
+{"spike": [1.02, 1.02, true], "heater_stuck": [3.94, 3.94, true], "bearing_wear": [8.15, 8.15, true], "noise": [null, null, false], "dropout": [5.66, null, true], "drift": [0.93, 0.93, true]} False
+BUNDLE_DONE
