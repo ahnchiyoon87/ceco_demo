@@ -9,7 +9,7 @@
 ## 0. 처음 읽는 사람을 위한 순서 (20분)
 1. **이 파일 전체**(특히 §1 목표, §2 지시, §3 멈춘 지점). 사용자 원본 목표·DoD 9개는 `D:\work\study\TODO.md`(「SCADA 현업 스택 회전」) — 최종 판정은 그 DoD 로 한다.
 2. `QUESTIONS.md` §1 — **결정 순서(구조 먼저)·기능 보존·구조 판정**, 판정 기준(관문 → 성능·안정성 → 효율 → 운영 참고), 시간 원칙, 후보 원칙, 시험 범위. 기준은 여기에만 있고 이 파일은 가리키기만 한다.
-3. `reports/STABILITY.md` — 기반 내부 오류 대장(병행 과제의 목록).
+3. `reports/STABILITY.md` — 기반 내부 오류 대장(핵심 목표 ② 안정적인 기반의 목록).
 4. `reports/CONFIRMED.md` — 지금까지 원래→바뀜 한 장.
 5. `harness/situations/CANDIDATES.md` 맨 앞 개정 절(#92·#90·#74) — 후보 목록 규칙. 본문 표보다 개정 절이 우선.
 6. `harness/situations/ROBUSTNESS.md`·`STRUCTURE.md` — 비정상(R01~R11)·구조 측정(E1~E12) 목록, 시간 값은 #89 개정.
@@ -18,10 +18,10 @@
 9. 시작 전 반드시 `git status`, `docker ps`, 원시 토픽 흐름(§6 명령)으로 실제 상태 대조.
 
 ## 1. 목표와 우선순위 (사용자 확정 2026-09-29)
-- **메인:** V1(현업 수준 프로토타입)을 여러 회전(V1→V2→…)으로 다듬어 **최종 아키텍처를 고르고**, 무엇을 왜 바꿨고 얼마나 나아졌는지 **실측 궤적**으로 대표님께 보고한다. 한 회전 = 자료 모으기 → **구조 재설계(길·레이어·기능 대응표)** → 남는 층의 제품 조합 선택 → 조립 → 전체 회귀 → 버전 태그(v2, v3…) — 순서의 정본은 `QUESTIONS.md` §1 "결정 순서". 기준은 회전마다 올라가고, 기준을 넘는 개선이 없는 회전에서 멈춘다.
-- **병행(부가):** 매 회전 **안정적으로 도는지·e2e 가 전부 정상인지** 꼼꼼히 확인한다. 돌리면서 드러나는 **내부 오류**(로그 예외, 조용한 정지, 유실·중복, 오경보)를 `reports/STABILITY.md` 에 올리고 고친다.
+- **출발점:** V1 은 현업에서 컨펌받은 원본이다(기능·흐름은 지킴). 그러나 돌아가는 길·중복·비효율·낡은 스택은 검증되지 않았고, 실제로 돌려 보니 내부 오류가 많다(V1 기준 측정 #97·#103, 대장 S1~S14). 정본 서술: `QUESTIONS.md` §1 "출발점 인식".
+- **핵심 목표 두 가지(같은 무게):** ① **효율적인 현업 기준 구조** — 리서치 원문 + 추가 리서치(넓게)를 바탕으로 길·레이어를 다시 설계하고 남는 층의 스택을 조합해, 회전(V1→V2→…)마다 무엇을 왜 바꿨고 얼마나 나아졌는지 **실측 궤적**으로 대표님께 보고. ② **안정적인 기반** — 매 회전 e2e 가 전부 정상이고, 돌리며 드러나는 내부 오류(로그 예외·조용한 정지·유실·중복·오경보)를 `reports/STABILITY.md` 에 올려 **모두 고치거나** 남긴 이유와 재현 근거를 남긴다. 진행 순서의 정본은 `QUESTIONS.md` §1 "결정 순서". 기준을 넘는 개선이 없는 회전에서 멈춘다.
 - **결과:** 온톨로지·시나리오가 바뀌어도 흔들리지 않는 **단단한 기반 틀**.
-- **담당 범위 = 기반**(수집·브로커·중계·백본·탐지·저장·감시·알람 경로). **온톨로지·시나리오 구체화는 담당 밖** — AI 층은 지금까지 만든 것(V2 도구, 비교 측정 #83·#84)에서 멈춘다.
+- **담당 범위 = 기반**(수집·브로커·중계·백본·탐지·저장·감시·알람 경로). **AI 층은 별도 — 온톨로지·시나리오 구체화는 담당 밖** — AI 층은 지금까지 만든 것(V2 도구, 비교 측정 #83·#84)에서 멈춘다.
 - 쓰임: 경남대 제조 AI 실습·시연. 이상→감지→AI 조치가 **수 초~수 분 안에** 이어져야 한다.
 - 원 과제 문서: `docs/research/AGENT_BRIEF_FINAL.md`(절차), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회·구조안). **사용자 지시가 문서보다 우선.**
 
@@ -59,7 +59,7 @@
 - **미적용·미검증 변경:** `v2/telegraf/ingest.conf` 에 기능 보존 두 가지를 넣었으나 **검증 전** — ① V1 과 같은 MQTT 계측 흐름(`edgex/telemetry`, EdgeX 이벤트 모양, processors.clone) ② 디스크 버퍼(`buffer_strategy = "disk"`). **`buffer_directory = "/var/lib/telegraf/buffer"` 는 권한 오류로 수집기가 안 뜸(실측) → `/tmp/telegraf-buffer` 로 바꿔야 함(미적용).**
 - **문제점(사용자 지적, 세션 3):** HANDOFF 순서대로 "층별 후보 시험 → 조립"을 하다 보니 새 구조에서 없어질 층(수집기→MQTT 모양, MQTT→Kafka 중계, 브로커 신규 12종, 백본 대안)까지 시험해 **이중 작업**이 됐다. 리서치 원문(딥리서치 01~04, FINAL 전체)을 덜 읽고 시작한 탓. → 지시 10·11.
 - **바로 다음(새 세션):**
-  1. **리서치 원문 전부 통독**: `docs/research/ARCHITECTURE_SIMPLIFICATION.md`, `AGENT_BRIEF_FINAL.md` 전체, `deep-2026-09-29/01~05`, `harness/situations/CANDIDATES.md`(§11 구조 패턴 포함), compass 4종은 필요한 절만. 층별 실측은 위 `layer_*.json`·decision-log #101~#119.
+  1. **리서치 원문 전부 통독 + 추가 리서치(넓게, `QUESTIONS.md` §1 결정 순서 1-2)**: `docs/research/ARCHITECTURE_SIMPLIFICATION.md`, `AGENT_BRIEF_FINAL.md` 전체, `deep-2026-09-29/01~05`, `harness/situations/CANDIDATES.md`(§11 구조 패턴 포함), compass 4종은 필요한 절만. 층별 실측은 위 `layer_*.json`·decision-log #101~#119.
   2. **레이어 재설계 문서 1장**(예: `reports/V2_DESIGN.md`): 현업 흐름 유지, 길(데이터 경로) 다시 그리기, **기능 대응표**(빼는 부품마다 기능 → 대체 → 확인 방법). 이미 확인된 대응: EdgeX→Telegraf 수집(Modbus 12태그·센티널 제거·V1 raw 모양 확인), EMQX→Mosquitto(알람→FUXA), Telegraf#1 → 없음(수집기가 Kafka 에 바로), Telegraf#2·#3 → Vector(결과 동일), edgex-postgres → 없음(EdgeX 전용). **빠지면 안 되는 것:** MQTT 실시간 계측 흐름(수업·시연 자료가 `edgex/telemetry` 사용 — `ai-web/public/system-guide.html`, `docs/소스코드로_…설명.html`, `docs/journal/07`), 단절 저장 후 재전송(EdgeX 디스크 → Telegraf 디스크 버퍼로, R02·수집기 재시작으로 실측), 브로커 연결 감시(EMQX 지표·규칙 EMQXDisconnectSpike → 목적은 TelemetryIngestStalled 로 대체되는지 확인), 수업 3차시 EdgeX 프로파일·`scripts/verify.py` EdgeX 확인(강제 교체라 불가피 — 대체 안내 기록), EdgeX core-command 쓰기 API(사용처 없음·인증 없는 쓰기 창구 — 제거가 보안상 이득, E12).
   3. **스택 조합안 2~3개**(예: 보수안 = 제품 유지·길만 정리 / 효율안 = Vector·benthos-umh 등 가벼운 제품 통합) — 컨테이너 수·알람→화면 단계·메모리·기능 보존을 **이미 있는 증거**로 비교해 하나 선택. 모자란 수치만 골라 측정.
   4. 선택안으로 V2 기동(InfluxDB 2.9 초기화 문제·ingest 버퍼 경로 먼저) → `STRUCT=V2 RUN=… sh harness/e2e/baseline.sh EXP-002 V2`(P0~P3, R01~R03 3회) + `fault_onset.py`(고장 10 s 이내) + 회귀(`regression.sh`, V1 도 같은 회귀를 먼저 돌려 기준 확보) → 나빠진 항목만 조합 수정 → 태그 `v2`.
