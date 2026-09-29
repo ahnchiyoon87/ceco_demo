@@ -27,8 +27,7 @@ x-common: &common
 services:
   plant-simulator:
     <<: *common
-    build: ../../simulator
-    image: bench-plant-simulator:1.0
+    image: rot-plant-simulator:v2-ts   # 회전 스택과 같은 V2 설비(배속 600 기본값)
     hostname: plant-simulator
     networks: [hmi]
     environment: {SCAN_INTERVAL_MS: "1000", DIRECT_MQTT_ENABLE: "true", MQTT_HOST: mosquitto, MQTT_TOPIC_PREFIX: iiot}

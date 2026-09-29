@@ -41,3 +41,12 @@ bb_down() {
   bb_broker "$1" || return 1
   $BB ${PROFILE:+--profile $PROFILE} rm -s -f -v $SVC >/dev/null 2>&1
 }
+
+# run_all_stage2.sh 가 브로커 이름을 "실행 접두사" 자리에 넘기는 호출(#104 도구 결함) — 그대로면 호출마다 12종 전체를 다시 돈다.
+# 인자가 브로커 이름 하나뿐이면 접두사 b1·목록 = 그 브로커로 바꾸고, 이미 잰(또는 기동 실패 기록이 있는) 브로커는 건너뛴다.
+if [ "${BASH_SOURCE[1]##*/}" = "stage2_new.sh" ] && [ $# -eq 1 ] && case " $BB_NEW " in *" $1 "*) true;; *) false;; esac; then
+  if ls experiments/EXP-130/raw/${1}_normal_*n.json >/dev/null 2>&1 || ls experiments/EXP-130/raw/logs_${1}_up_* >/dev/null 2>&1; then
+    echo "[broker] $1 이미 측정됨 → 건너뜀"; exit 0
+  fi
+  set -- b1 "$1"
+fi

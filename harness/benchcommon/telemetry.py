@@ -2,12 +2,14 @@
 
 레코드는 harness/SCHEMA.md §3 raw 와 같다: {"ts"(ns), "site", "device", "tag", "value", "quality"}.
 측정용 추가 필드(SCHEMA §4, 기존 소비자는 무시): "seq"(태그·장치별 1부터), "emit_ns"(발행 시각 ns).
-값은 plant.yaml 정상 범위 안의 결정적 함수(재현 가능). 이상 주입이 아니라 적재·전달 동작을 재기 위한 값이다.
+값: V1 이 실제로 흘린 raw 기록(harness/tools/record_v1.py → experiments/REC-V1)이 있으면 그 값을 태그별 순서대로 재생한다
+(QUESTIONS §1 시험 범위: 같은 층 후보는 V1 기록 데이터를 같은 입력으로). 기록이 없을 때만 plant.yaml 정상 범위 안의 결정적 함수.
 """
 from __future__ import annotations
 
 import json
 import math
+import os
 
 SITE = "AR-100"
 DEVICE0 = "reactor-line-01"
@@ -27,7 +29,28 @@ def devices(n: int) -> list[str]:
     return [DEVICE0] if n <= 1 else [f"reactor-line-{i:02d}" for i in range(1, n + 1)]
 
 
+def _load_rec():
+    p = os.environ.get("V1_REC", "/repo/experiments/REC-V1/kafka_sensor.telemetry.raw.jsonl")
+    rec: dict[str, list[float]] = {}
+    try:
+        with open(p, encoding="utf-8") as f:
+            for line in f:
+                v = json.loads(json.loads(line)["value"])
+                if v.get("tag") in TAGS and isinstance(v.get("value"), (int, float)):
+                    rec.setdefault(v["tag"], []).append(float(v["value"]))
+    except (OSError, ValueError, KeyError):
+        return {}
+    return rec if all(rec.get(t) for t in TAGS) else {}
+
+
+REC = _load_rec()
+SOURCE = "v1-recording" if REC else "synthetic"
+
+
 def value(tag: str, t_s: float, dev_idx: int = 0) -> float:
+    if REC:
+        s = REC[tag]
+        return s[(int(t_s) + 37 * dev_idx) % len(s)]
     c, a = TAGS[tag]
     k = TAG_NAMES.index(tag)
     return round(c + a * math.sin(t_s / (60.0 + 7 * k) + dev_idx) + 0.1 * a * math.sin(t_s / 3.1 + k), 4)

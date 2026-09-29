@@ -1,0 +1,560 @@
+{
+ "containers": {
+  "rot-ai-alarm-worker-1": {
+   "lines": 5665,
+   "error_like": 18,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "%#|#.#|FAIL|rdkafka#consumer-#| [thrd:GroupCoordinator]: GroupCoordinator: kafka:#: Connect to ipv###.#:# failed: Connection refused (after #ms in state CONNECT",
+     6
+    ],
+    [
+     "%#|#.#|FAIL|rdkafka#consumer-#| [thrd:kafka:#/bootstrap]: kafka:#/bootstrap: Connect to ipv###.#:# failed: Connection refused (after #ms in state CONNECT)",
+     3
+    ],
+    [
+     "%#|#.#|FAIL|rdkafka#consumer-#| [thrd:kafka:#/#]: kafka:#/#: Connect to ipv###.#:# failed: Connection refused (after #ms in state CONNECT)",
+     3
+    ],
+    [
+     "%#|#.#|FAIL|rdkafka#consumer-#| [thrd:kafka:#/#]: kafka:#/#: Connect to ipv###.#:# failed: Connection refused (after #ms in state CONNECT, # identical error(s) ",
+     3
+    ],
+    [
+     "%#|#.#|FAIL|rdkafka#consumer-#| [thrd:kafka:#/bootstrap]: kafka:#/bootstrap: Connect to ipv###.#:# failed: Connection refused (after #ms in state CONNECT, # ide",
+     3
+    ]
+   ]
+  },
+  "rot-ai-embed-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-ai-graph-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-ai-knowledge-1": {
+   "lines": 328,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-ai-web-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-ai-work-db-1": {
+   "lines": 22,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-alert-republisher": {
+   "lines": 173,
+   "error_like": 65,
+   "restarts": 5,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka: error while consuming sensor.alerts/#: kafka: client has run out of available brokers t",
+     32
+    ],
+    [
+     "#-#-#T#:#:#Z E! [agent] Error writing to outputs.mqtt: could not publish message to MQTT server: command timed out",
+     24
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka: error while consuming sensor.alerts/#: EOF",
+     6
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka server: Request was for a consumer group that is not coordinated by this broker",
+     2
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: dial tcp #.#:#: connect: connection refused",
+     1
+    ]
+   ]
+  },
+  "rot-alertmanager": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-cadvisor": {
+   "lines": 1734,
+   "error_like": 11,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "I# #:#:#       # gce.go:#] Error while reading product_name: open /sys/class/dmi/id/product_name: no such file or directory",
+     11
+    ]
+   ]
+  },
+  "rot-edgex-app-mqtt-export": {
+   "lines": 363,
+   "error_like": 363,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=app-mqtt-export source=runtime.go:# msg=\"Pipeline (default-pipeline) function ## resulted in error: in pipeline 'default-pipelin",
+     225
+    ],
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=app-mqtt-export source=messaging.go:# msg=\"MessageBus Trigger: Failed to process message on pipeline(s): # error occurred:\\n\\t* ",
+     69
+    ],
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=app-mqtt-export source=triggermessageprocessor.go:# msg=\"message error in pipeline default-pipeline (#-#a#b-#a#e-#e-#): in pipel",
+     1
+    ],
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=app-mqtt-export source=triggermessageprocessor.go:# msg=\"message error in pipeline default-pipeline (#-#e-#e#-bc#a-#): in pipeli",
+     1
+    ],
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=app-mqtt-export source=triggermessageprocessor.go:# msg=\"message error in pipeline default-pipeline (#-af#-#eab-#c#-#): in pipel",
+     1
+    ]
+   ]
+  },
+  "rot-edgex-common-config": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-edgex-core-command": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-edgex-core-data": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-edgex-core-keeper": {
+   "lines": 3,
+   "error_like": 3,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "level=ERROR ts=#-#-#T#:#:#Z app=core-keeper source=registry.go:# msg=\"Failed to health check service app-mqtt-export: Get \\\"http://edgex-app-mqtt-export:#/api/v",
+     3
+    ]
+   ]
+  },
+  "rot-edgex-core-metadata": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-edgex-device-modbus": {
+   "lines": 79200,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-edgex-mqtt-broker": {
+   "lines": 6,
+   "error_like": 2,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#: Client app-mqtt-export has exceeded timeout, disconnecting.",
+     2
+    ]
+   ]
+  },
+  "rot-edgex-postgres": {
+   "lines": 22,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-edgex-ui": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-emqx": {
+   "lines": 44,
+   "error_like": 8,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-#T#:#:#+#:# [warning] msg: alarm_is_activated, message: <<\"#% mem usage\">>, name: high_system_memory_usage",
+     4
+    ],
+    [
+     "#-#-#T#:#:#+#:# [error] application_master: shutdown_error, emqx_app: {prep_stop,[[]]}, error_info: {noproc,{gen_server,call,[quicer_listener_sup,which_children",
+     3
+    ],
+    [
+     "#-#-#T#:#:#+#:# [warning] msg: alarm_is_deactivated, name: high_system_memory_usage",
+     1
+    ]
+   ]
+  },
+  "rot-flink-job-submitter": {
+   "lines": 28,
+   "error_like": 4,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": [
+    [
+     "WARNING: Unknown module: jdk.compiler specified to --add-exports",
+     4
+    ]
+   ]
+  },
+  "rot-flink-jobmanager": {
+   "lines": 4196,
+   "error_like": 131,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.kafka.shaded.org.apache.kafka.clients.NetworkClient [] - [AdminClient clientId=flink-tier#-enumerator-admin-client] Connect",
+     62
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.kafka.shaded.org.apache.kafka.clients.NetworkClient [] - [AdminClient clientId=flink-tier#-onnx-enumerator-admin-client] Co",
+     21
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.checkpoints.dir' instead o",
+     8
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.backend.incremental' inste",
+     4
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.savepoints.dir' instead of",
+     4
+    ]
+   ]
+  },
+  "rot-flink-taskmanager": {
+   "lines": 6288,
+   "error_like": 2794,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.metrics.MetricGroup                         [] - Name collision: Group already contains a Metric with the name 'pendingComm",
+     1940
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.kafka.shaded.org.apache.kafka.clients.NetworkClient [] - [Producer clientId=producer-#] Connection to node # (kafka/#.#:#) ",
+     259
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.kafka.shaded.org.apache.kafka.clients.NetworkClient [] - [Consumer clientId=flink-tier#-#, groupId=flink-tier#] Connection ",
+     127
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.backend.incremental' inste",
+     84
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.checkpoints.dir' instead o",
+     44
+    ]
+   ]
+  },
+  "rot-fuxa-provisioner": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-fuxa": {
+   "lines": 30,
+   "error_like": 14,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'ALERTS' try to connect error! Error: getaddrinfo ENOTFOUND emqx\u001b[#m",
+     4
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'ALERTS' connect error! Error: getaddrinfo ENOTFOUND emqx (#)\u001b[#m",
+     4
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'ALERTS' try to connect error! Error: connect ECONNREFUSED #.#:#\u001b[#m",
+     3
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'ALERTS' connect error! Error: connect ECONNREFUSED #.#:# (#)\u001b[#m",
+     3
+    ]
+   ]
+  },
+  "rot-grafana": {
+   "lines": 11,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-influxdb": {
+   "lines": 37,
+   "error_like": 1,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "ts=#-#-#T#:#:#Z lvl=warn msg=\"nats-port argument is deprecated and unused\" log_id=#bmp#W#",
+     1
+    ]
+   ]
+  },
+  "rot-kafka-exporter": {
+   "lines": 353,
+   "error_like": 2,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "E# #:#:#       # kafka_exporter.go:#] Cannot get current offset of topic sensor.alerts partition #: kafka: client has run out of available brokers to talk to: d",
+     1
+    ],
+    [
+     "E# #:#:#       # kafka_exporter.go:#] Cannot get current offset of topic sensor.anomaly.score partition #: kafka: client has run out of available brokers to tal",
+     1
+    ]
+   ]
+  },
+  "rot-kafka-init": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-kafka": {
+   "lines": 4996,
+   "error_like": 330,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "[#-#-# #:#:#,#] INFO Loaded member MemberMetadata(memberId=Telegraf-#-#dd-#b#-#a#-#, groupInstanceId=None, clientId=Telegraf, clientHost=/#.#, sessionTimeoutMs=",
+     9
+    ],
+    [
+     "[#-#-# #:#:#,#] INFO Loaded member MemberMetadata(memberId=Telegraf-#-#b-#f-b#f#-#, groupInstanceId=None, clientId=Telegraf, clientHost=/#.#, sessionTimeoutMs=#",
+     6
+    ],
+    [
+     "[#-#-# #:#:#,#] INFO Loaded member MemberMetadata(memberId=Telegraf-#-e#a-#b#c-af#c-#, groupInstanceId=None, clientId=Telegraf, clientHost=/#.#, sessionTimeoutM",
+     6
+    ],
+    [
+     "[#-#-# #:#:#,#] INFO Loaded member MemberMetadata(memberId=Telegraf-#-aa#-#-bac#-#, groupInstanceId=None, clientId=Telegraf, clientHost=/#.#, sessionTimeoutMs=#",
+     6
+    ],
+    [
+     "[#-#-# #:#:#,#] INFO Loaded member MemberMetadata(memberId=Telegraf-#-#ec-#f#-#-#, groupInstanceId=None, clientId=Telegraf, clientHost=/#.#, sessionTimeoutMs=#,",
+     6
+    ]
+   ]
+  },
+  "rot-model-trainer": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-plant-simulator": {
+   "lines": 357,
+   "error_like": 6,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: spike (#s, 대상 ['PT-#'])",
+     5
+    ],
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: dropout (#s, 대상 ['TT-#'])",
+     1
+    ]
+   ]
+  },
+  "rot-prometheus": {
+   "lines": 4,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-telegraf-bridge": {
+   "lines": 194,
+   "error_like": 42,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-#T#:#:#Z E! [agent] Error writing to outputs.kafka: kafka: Failed to produce message to topic sensor.telemetry.raw: circuit breaker is open",
+     10
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.mqtt_consumer] Error in plugin: network Error : dial tcp #.#:#: connect: connection refused",
+     9
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.mqtt_consumer] Error in plugin: network Error : dial tcp: lookup emqx on #.#:#: no such host",
+     6
+    ],
+    [
+     "#-#-#T#:#:#Z E! [telegraf] Error running agent: starting input inputs.mqtt_consumer: network Error : dial tcp #.#:#: connect: connection refused",
+     4
+    ],
+    [
+     "\t* dial tcp #.#:#: connect: connection refused",
+     4
+    ]
+   ]
+  },
+  "rot-telegraf-sink": {
+   "lines": 151,
+   "error_like": 72,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka: error while consuming sensor.telemetry.raw/#: kafka: client has run out of available br",
+     15
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka: error while consuming sensor.telemetry.clean/#: EOF",
+     12
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka: error while consuming sensor.telemetry.clean/#: kafka: client has run out of available ",
+     9
+    ],
+    [
+     "#-#-#T#:#:#Z E! [agent] Error writing to outputs.influxdb_v#: Post \"http://influxdb:#/api/v#/write?bucket=process&org=uengine\": dial tcp: lookup influxdb on #.#",
+     7
+    ],
+    [
+     "#-#-#T#:#:#Z E! [inputs.kafka_consumer] Error in plugin: channel: kafka server: Request was for a consumer group that is not coordinated by this broker",
+     6
+    ]
+   ]
+  }
+ },
+ "flink": {},
+ "flink_jobs": [
+  [
+   "AR100-Tier1-CEP",
+   "CANCELED"
+  ],
+  [
+   "AR100-Tier1-ZScore",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-CEP",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-Threshold",
+   "CANCELED"
+  ],
+  [
+   "AR100-Tier2-OnnxAnomalyDetection",
+   "CANCELED"
+  ],
+  [
+   "AR100-Tier1-Threshold",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-ZScore",
+   "CANCELED"
+  ],
+  [
+   "AR100-Tier2-OnnxAnomalyDetection",
+   "RUNNING"
+  ]
+ ]
+}

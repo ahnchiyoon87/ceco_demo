@@ -1,0 +1,55 @@
+[11:27:59] == baseline V1 시작
+[11:27:59] P3 비정상
+[11:28:00] r01 #1 주입
+[11:30:30] r01 #1 복구 {"recover_s": 16.0, "flaps": 0, "waited_s": 136.5}
+[11:30:31] Flink RUNNING 4
+{"kafka_raw": {"expected": 1932, "missing_s_total": 204, "dup_total": 0, "max_gap_s": 17.0}, "influx_process_raw": {"expected": 1932, "missing_s_total": 204, "dup_total": 0, "max_gap_s": 17.0}}
+[11:30:43] r01 #2 주입
+[11:37:56] r01 #2 복구 {"recover_s": null, "flaps": 1, "waited_s": 421.0}
+[11:37:56] Flink RUNNING 4
+{"kafka_raw": {"expected": 5316, "missing_s_total": 3660, "dup_total": 0, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 5316, "missing_s_total": 3660, "dup_total": 0, "max_gap_s": 1.01}}
+[11:38:01] 수동 조치: 수집·저장 중계기 재시작 (r01 #2)
+[11:40:18] 수동 조치 뒤 {"recover_s": 13.7, "flaps": 0, "waited_s": 134.1}
+[11:40:18] r01 #3 주입
+[11:47:32] r01 #3 복구 {"recover_s": null, "flaps": 1, "waited_s": 420.9}
+[11:47:32] Flink RUNNING 4
+{"kafka_raw": {"expected": 5328, "missing_s_total": 3660, "dup_total": 0, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 5328, "missing_s_total": 3660, "dup_total": 0, "max_gap_s": 1.01}}
+[11:47:37] 수동 조치: 수집·저장 중계기 재시작 (r01 #3)
+[11:49:55] 수동 조치 뒤 {"recover_s": 13.2, "flaps": 0, "waited_s": 133.6}
+[11:49:55] r02 #1 주입
+[11:52:14] r02 #1 복구 {"recover_s": 7.3, "flaps": 0, "waited_s": 127.7}
+[11:52:14] Flink RUNNING 4
+{"kafka_raw": {"expected": 1788, "missing_s_total": 156, "dup_total": 0, "max_gap_s": 14.0}, "influx_process_raw": {"expected": 1788, "missing_s_total": 156, "dup_total": 0, "max_gap_s": 14.0}}
+[11:52:19] r02 #2 주입
+[11:54:38] r02 #2 복구 {"recover_s": 7.4, "flaps": 0, "waited_s": 127.8}
+[11:54:38] Flink RUNNING 4
+{"kafka_raw": {"expected": 1788, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 1788, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}}
+[11:54:54] r02 #3 주입
+[11:57:08] r02 #3 복구 {"recover_s": 3.5, "flaps": 0, "waited_s": 123.9}
+[11:57:08] Flink RUNNING 4
+{"kafka_raw": {"expected": 1728, "missing_s_total": 120, "dup_total": 0, "max_gap_s": 11.0}, "influx_process_raw": {"expected": 1728, "missing_s_total": 120, "dup_total": 0, "max_gap_s": 11.0}}
+[11:57:30] r03 #1 주입
+[11:59:42] r03 #1 복구 {"recover_s": 9.2, "flaps": 1, "waited_s": 129.6}
+[11:59:43] Flink RUNNING 4
+{"kafka_raw": {"expected": 1716, "missing_s_total": 0, "dup_total": 129, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 1716, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}}
+[11:59:56] r03 #2 주입
+[12:02:12] r03 #2 복구 {"recover_s": 12.8, "flaps": 1, "waited_s": 133.3}
+[12:02:13] Flink RUNNING 4
+{"kafka_raw": {"expected": 1764, "missing_s_total": 0, "dup_total": 150, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 1764, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}}
+[12:02:19] r03 #3 주입
+[12:04:34] r03 #3 복구 {"recover_s": 11.6, "flaps": 1, "waited_s": 132.1}
+[12:04:34] Flink RUNNING 4
+{"kafka_raw": {"expected": 1740, "missing_s_total": 0, "dup_total": 248, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 1740, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}}
+[12:04:43] r06 #1 주입
+[12:07:18] r06 #1 복구 {"recover_s": 3.2, "flaps": 0, "waited_s": 123.6}
+[12:07:18] Flink RUNNING 4
+{"kafka_raw": {"expected": 1980, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 1980, "missing_s_total": 0, "dup_total": 0, "max_gap_s": 1.01}}
+[12:07:29] r08 과부하 시작
+{"kafka:sensor.alerts": {"n": 5, "missing": 0, "p50": 1905.8, "p95": 1982.8, "max": 1982.8, "mean": 1890.5}, "mqtt:scada/alerts/PT-101": {"n": 5, "missing": 0, "p50": 2768.4, "p95": 2904.7, "max": 2904.7, "mean": 2764.9}, "mqtt:scada/hmi/latest-alert": {"n": 5, "missing": 0, "p50": 2775.3, "p95": 2945.3, "max": 2945.3, "mean": 2524.3}}
+[12:10:32] r08 끝, 흐름 {"recover_s": 1.3, "flaps": 0, "waited_s": 121.8}
+{"kafka_raw": {"expected": 2196, "missing_s_total": 0, "dup_total": 6480, "max_gap_s": 1.01}, "influx_process_raw": {"expected": 2196, "missing_s_total": 0, "dup_total": 6480, "max_gap_s": 1.01}}
+{"kafka_raw": {"expected": 360, "missing_s_total": 4, "dup_total": 0, "max_gap_s": 5.0}, "influx_process_raw": {"expected": 360, "missing_s_total": 4, "dup_total": 0, "max_gap_s": 5.0}}
+[12:14:13] Flink 잡 3 개 → 제출기 재실행
+[12:14:14] Flink RUNNING 3
+[12:14:14] P3 끝
+[12:14:14] == baseline V1 끝

@@ -3,11 +3,13 @@
 Kafka raw(중복·공백)와 InfluxDB process_raw(저장 공백)를 같은 구간에서 센다. 컨테이너 안(rot-iiot 망)에서 실행.
   docker run --rm --network rot-iiot --env-file .env -v "$PWD:/repo" -w /repo e2e-client:1.0 \
      python harness/e2e/completeness.py --start-ms A --end-ms B --out experiments/EXP-000/raw/x.json
-유실 = 태그별로 한 건도 없는 초(bucket) 수. 중복 = 같은 (tag, ts) 가 두 번 이상. 최대 공백 = 연속 도착 간 최대 간격(초).
+유실 = 태그별로 한 건도 없는 초(bucket) 수. 중복 = 같은 (tag, ts) 가 두 번 이상. 최대 공백 = 연속 도착 간 최대 간격(초, 구간 시작·끝 포함).
+설비 장치(--device, 기본 reactor-line-01)만 센다 — R08 과부하 발생기의 다른 장치 레코드를 같은 태그 중복으로 세지 않게(09-29 #103).
 """
 import argparse, csv, io, json, os, urllib.parse, urllib.request
 from collections import defaultdict
 
+DEVICE = "reactor-line-01"
 TAGS = ["LT-101", "LT-102", "TT-101", "TT-102", "PT-101", "FT-101", "FT-102", "IT-101", "IT-102", "VT-101", "pH-101", "CT-101"]
 
 
@@ -30,7 +32,7 @@ def kafka_rows(bootstrap, topic, start_ms, end_ms):
             done.add(m.partition())
         if start_ms <= m.timestamp()[1] <= end_ms + 60000:
             v = json.loads(m.value())
-            if start_ms * 1_000_000 <= v["ts"] < end_ms * 1_000_000:
+            if start_ms * 1_000_000 <= v["ts"] < end_ms * 1_000_000 and v.get("device", DEVICE) == DEVICE:
                 rows.append((v["tag"], v["ts"]))
     c.close()
     return rows
@@ -38,7 +40,7 @@ def kafka_rows(bootstrap, topic, start_ms, end_ms):
 
 def influx_rows(start_ms, end_ms):
     q = (f'from(bucket:"{os.environ["INFLUX_BUCKET"]}") |> range(start:time(v:{start_ms * 1_000_000}), stop:time(v:{end_ms * 1_000_000})) '
-         '|> filter(fn:(r)=>r._measurement=="process_raw" and r._field=="value") |> keep(columns:["_time","tag"])')
+         f'|> filter(fn:(r)=>r._measurement=="process_raw" and r._field=="value" and (not exists r.device or r.device=="{DEVICE}")) |> keep(columns:["_time","tag"])')
     req = urllib.request.Request("http://influxdb:8086/api/v2/query?" + urllib.parse.urlencode({"org": os.environ["INFLUX_ORG"]}),
                                  json.dumps({"query": q, "type": "flux"}).encode(),
                                  {"Authorization": "Token " + os.environ["INFLUX_TOKEN"], "Content-Type": "application/json", "Accept": "application/csv"})
@@ -65,7 +67,8 @@ def analyse(rows, start_ms, end_ms):
         buckets = {(t // 1_000_000_000) - start_ms // 1000 for t in ts}
         missing = sum(1 for b in range(secs) if b not in buckets)
         dup = len(ts) - len(set(ts))
-        gap = max([(b - a) / 1e9 for a, b in zip(ts, ts[1:])], default=float(secs))
+        edges = [start_ms * 1_000_000] + ts + [end_ms * 1_000_000]
+        gap = max((b - a) / 1e9 for a, b in zip(edges, edges[1:]))
         res[tag] = {"n": len(ts), "missing_s": missing, "dup": dup, "max_gap_s": round(gap, 2)}
         total_missing += missing; total_dup += dup; max_gap = max(max_gap, gap)
     return {"expected": 12 * secs, "seconds": secs, "missing_s_total": total_missing, "dup_total": total_dup,
@@ -79,7 +82,9 @@ if __name__ == "__main__":
     ap.add_argument("--kafka", default="kafka:9092")
     ap.add_argument("--topic", default="sensor.telemetry.raw")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--device", default="reactor-line-01")
     a = ap.parse_args()
+    DEVICE = a.device
     out = {"window_ms": [a.start_ms, a.end_ms],
            "kafka_raw": analyse(kafka_rows(a.kafka, a.topic, a.start_ms, a.end_ms), a.start_ms, a.end_ms),
            "influx_process_raw": analyse(influx_rows(a.start_ms, a.end_ms), a.start_ms, a.end_ms)}

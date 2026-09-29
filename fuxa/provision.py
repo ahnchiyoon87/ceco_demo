@@ -78,6 +78,13 @@ def main() -> int:
     ensure_plugins()
 
     project = json.loads(PROJECT.read_text())
+    # V2: 브로커 주소를 환경변수로 바꿔 넣는다(V1 기본 mqtt://emqx:1883 — 값이 없으면 V1 과 똑같이 동작)
+    mqtt_url = os.getenv("MQTT_URL")
+    if mqtt_url:
+        for dev in project["devices"].values():
+            if dev.get("type") == "MQTTclient":
+                dev["property"]["address"] = mqtt_url
+        print(f"[fuxa-provision] MQTT 브로커 주소 → {mqtt_url}", flush=True)
     views = project["hmi"]["views"]
     print(f"[fuxa-provision] 주입: 디바이스 {len(project['devices'])}개 / "
           f"뷰 {len(views)}개 / 아이템 {len(views[0]['items'])}개", flush=True)

@@ -1,0 +1,18 @@
+{
+ "topics": [
+  "sensor.telemetry.raw",
+  "sensor.telemetry.clean",
+  "sensor.alerts",
+  "sensor.anomaly.score"
+ ],
+ "counts": {
+  "mqtt_edgex_telemetry": 277,
+  "mqtt_scada_alerts": 415,
+  "kafka_sensor.alerts": 407,
+  "kafka_sensor.anomaly.score": 275,
+  "kafka_sensor.telemetry.raw": 3296,
+  "mqtt_scada_hmi": 414,
+  "kafka_sensor.telemetry.clean": 3300
+ },
+ "seconds": 271.5
+}

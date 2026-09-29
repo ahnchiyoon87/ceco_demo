@@ -3,3 +3,14 @@
 {"test":"r03","k":1,"recover_s":10}
 {"test":"r06","k":1,"recover_s":603}
 {"test": "r07", "response": "{\"detail\":\"업무 DB에 연결할 수 없습니다. 사건을 저장하지 못했습니다.\"}", "valve_before": 43.5, "valve_after": 43.5}
+{"test":"r01","run":"r2_","k":1,"flow":{"recover_s": 16.0, "flaps": 0, "waited_s": 136.5}}
+{"test":"r01","run":"r2_","k":2,"flow":{"recover_s": null, "flaps": 1, "waited_s": 421.0}}
+{"test":"r01","run":"r2_","k":3,"flow":{"recover_s": null, "flaps": 1, "waited_s": 420.9}}
+{"test":"r02","run":"r2_","k":1,"flow":{"recover_s": 7.3, "flaps": 0, "waited_s": 127.7}}
+{"test":"r02","run":"r2_","k":2,"flow":{"recover_s": 7.4, "flaps": 0, "waited_s": 127.8}}
+{"test":"r02","run":"r2_","k":3,"flow":{"recover_s": 3.5, "flaps": 0, "waited_s": 123.9}}
+{"test":"r03","run":"r2_","k":1,"flow":{"recover_s": 9.2, "flaps": 1, "waited_s": 129.6}}
+{"test":"r03","run":"r2_","k":2,"flow":{"recover_s": 12.8, "flaps": 1, "waited_s": 133.3}}
+{"test":"r03","run":"r2_","k":3,"flow":{"recover_s": 11.6, "flaps": 1, "waited_s": 132.1}}
+{"test":"r06","run":"r2_","k":1,"flow":{"recover_s": 3.2, "flaps": 0, "waited_s": 123.6}}
+{"test":"r08","run":"r2_","k":1,"flow":{"recover_s": 1.3, "flaps": 0, "waited_s": 121.8}}

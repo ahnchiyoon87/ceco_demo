@@ -1,0 +1,27 @@
+# ═══════════════════════════════════════════════════════════════
+# V2: Flink 2.2.1 + Kafka SQL 커넥터 5.0.0-2.2 + ONNX 이상탐지 잡(V1 과 같은 구성, 같은 제품 최신 지원판 고정 #90·#92)
+# V1 flink/Dockerfile 과 차이: Flink 1.20.1 → 2.2.1, 커넥터 3.3.0-1.20 → 5.0.0-2.2(2.2.x 공식 호환 최신),
+#   ONNX 잡 소스 onnx-job → onnx-job-2x(로직 동일, Flink 2 API 차이만 — EXP-112 에서 정확도 동일 확인 #18)
+# 빌드 컨텍스트: ./flink
+# ═══════════════════════════════════════════════════════════════
+FROM maven:3.9.16-eclipse-temurin-17 AS builder
+WORKDIR /build
+COPY onnx-job-2x/pom.xml .
+RUN mvn -q -B dependency:go-offline
+COPY onnx-job-2x/src ./src
+RUN mvn -q -B clean package -DskipTests
+
+FROM flink:2.2.1-scala_2.12-java17
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+ARG KAFKA_CONNECTOR=5.0.0-2.2
+RUN curl -fsSL -o /opt/flink/lib/flink-sql-connector-kafka-${KAFKA_CONNECTOR}.jar \
+    https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-kafka/${KAFKA_CONNECTOR}/flink-sql-connector-kafka-${KAFKA_CONNECTOR}.jar
+ARG FLINK_VER=2.2.1
+RUN curl -fsSL -o /opt/flink/lib/flink-metrics-prometheus-${FLINK_VER}.jar \
+    https://repo1.maven.org/maven2/org/apache/flink/flink-metrics-prometheus/${FLINK_VER}/flink-metrics-prometheus-${FLINK_VER}.jar
+COPY --from=builder /build/target/anomaly-job-1.0.jar /opt/flink/job/anomaly-job.jar
+COPY onnx-job-2x/job.properties /opt/flink/job/job.properties
+RUN mkdir -p /opt/flink/checkpoints /opt/flink/savepoints /opt/models \
+ && chown -R flink:flink /opt/flink/checkpoints /opt/flink/savepoints /opt/flink/job /opt/models
+USER flink

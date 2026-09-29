@@ -12,7 +12,8 @@ curl -s -m 5 http://127.0.0.1:37081/jobs/overview > "$tmp/_flink_jobs.json" 2>/d
 for j in $(python -c "import json,sys;[print(j['jid']) for j in json.load(open(sys.argv[1]))['jobs']]" "$tmp/_flink_jobs.json" 2>/dev/null); do
   curl -s -m 5 http://127.0.0.1:37081/jobs/$j/exceptions > "$tmp/_flink_exc_$j.json" 2>/dev/null
 done
-PYTHONUTF8=1 python - "$tmp" "$out" <<'PY'
+wtmp=$(cygpath -w "$tmp" 2>/dev/null || echo "$tmp")   # Windows Python 은 Git Bash 의 /tmp 를 못 읽음(09-29 #103)
+PYTHONUTF8=1 python - "$wtmp" "$out" <<'PY'
 import json, re, sys, glob, os
 tmp, out = sys.argv[1], sys.argv[2]
 PAT = re.compile(r"(ERROR|Exception|Traceback|FATAL|panic|OOM|refused|timed? ?out|WARN)", re.I)
@@ -38,6 +39,8 @@ try:
     res["flink_jobs"] = [(j["name"], j["state"]) for j in json.load(open(os.path.join(tmp, "_flink_jobs.json")))["jobs"]]
 except Exception:
     res["flink_jobs"] = None
+if not res["containers"]:
+    sys.exit("수집된 컨테이너 로그 0개 — 경로·이름 정규식 확인")
 json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 bad = {k: (v["error_like"], v["restarts"], v["oom_killed"]) for k, v in res["containers"].items() if v["error_like"] or v["restarts"] or v["oom_killed"]}
 print(json.dumps({"with_errors_or_restarts": bad, "flink_exceptions": {k: v[:80] for k, v in res["flink"].items() if v and v != "None"}}, ensure_ascii=False))

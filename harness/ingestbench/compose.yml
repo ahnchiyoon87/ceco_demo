@@ -30,7 +30,7 @@ x-edgex-env: &edgex-env
 services:
   # ── 공통(모든 프로파일) ──────────────────────────────────────────────
   plant-simulator:
-    image: iiot/plant-simulator:1.0          # V1 로컬 빌드 이미지 그대로(plant.yaml: 12태그 float32 HR 0~22, 1초 스캔)
+    image: rot-plant-simulator:v2-ts        # 회전 스택과 같은 V2 설비(배속 600 기본값, 레지스터 지도는 V1 과 같음: 12태그 float32 HR 0~22, 1초 스캔)
     hostname: plant-simulator
     networks: [field]
     environment:

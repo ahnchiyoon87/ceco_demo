@@ -13,7 +13,7 @@
 
 ## 2. 벤치 구조
 
-- 가상설비: V1 이미지 `iiot/plant-simulator:1.0` 그대로(`simulator/plant.yaml`: 계측 12태그 float32 ABCD, HR 0~23, 1초 스캔, Modbus TCP 502, HTTP `/state`).
+- 가상설비: 회전 스택과 같은 V2 설비 `rot-plant-simulator:v2-ts`(배속 600 기본값, 09-29 #101 교체; 레지스터 지도는 V1 과 같음 — `simulator/plant.yaml`: 계측 12태그 float32 ABCD, HR 0~23, 1초 스캔, Modbus TCP 502, HTTP `/state`).
 - 벤치 브로커: `eclipse-mosquitto:2.1.2-alpine`(브로커 층 측정 완료본, 고정 상수). HiveMQ Edge 만 자체 내장 브로커를 직접 구독(수집+브로커 통합안 P-EB).
 - V1 발행 모양(정답): `edgex/telemetry`, QoS1, EdgeX Event v3 — `{apiVersion:"v3", id, deviceName, profileName, sourceName:"AllSensors", origin(ns), readings:[{origin, deviceName, resourceName, profileName, valueType:"Float32", units, value:"3.1290388e+00"(문자열)}] × 12}`(근거: `docs/journal/logs/02-edgex-bootstrap.txt`, `telegraf/bridge-edgex.conf`).
 - `downstream`: 하류 파서(설정만). EdgeX 모양 후보는 **V1 Telegraf#1 원문**(`downstream/v1-edgex.conf`, telegraf 1.33 — 입력·가공 그대로, 출력만 파일), 모양이 다른 후보는 **후보별 적응 설정**(`downstream/<후보>.conf`, telegraf 1.40.1). 출력은 V1 raw 레코드 `{ts ns, site, device, tag, value, quality}` 와 같은 변환식. 검사기가 후보 reading 과 1:1 대조해 `downstream.equivalent` 를 낸다.

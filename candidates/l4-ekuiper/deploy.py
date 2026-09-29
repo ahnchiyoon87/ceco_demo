@@ -107,29 +107,30 @@ def main():
     sql = (f"SELECT ts, site, device, tag, value, "
            f"CASE WHEN {' OR '.join(usl_c)} THEN \"THRESHOLD_USL\" ELSE \"THRESHOLD_LSL\" END AS alert_type, "
            f"\"CRITICAL\" AS severity, \"TIER1_RULE\" AS detector, "
-           f"concat(tag, \" = \", format(round(value, 3), \"\"), CASE {' '.join(det)} ELSE \"\" END) AS detail "
+           f"concat(tag, \" = \", cast(round(value, 3), \"string\"), CASE {' '.join(det)} ELSE \"\" END) AS detail "
            f"FROM raw WHERE {' OR '.join(conds)}")
     must("POST", "/rules", {"id": "l4_threshold", "sql": sql, "actions": [KAFKA], "options": OPTS})
 
     # ── L4-02 ──
     RULE["current"] = "L4-02 Z-Score"
-    z = "CASE WHEN sd > 0.000000001 THEN abs(value - mu) / sd ELSE 0.0 END"
+    # 1단 규칙은 최신값을 lts·lsite·ldev·ltag·lv 로 낸다(원래 열 이름과 같은 별칭은 열을 가려 집계 인자 오류 — #108)
+    z = "CASE WHEN sd > 0.000000001 THEN abs(lv - mu) / sd ELSE 0.0 END"
     for tag, *_ in lim:
         t = tag.replace("-", "_")
         must("POST", "/rules", {"id": "l4_z1_" + t, "options": OPTS,
                                 "actions": [{"memory": {"topic": "l4/z", "sendSingle": True}}],
-                                "sql": f"SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, "
-                                       f"last_value(device, true) AS device, last_value(tag, true) AS tag, "
-                                       f"last_value(value, true) AS value, count(*) AS n, avg(value) AS mu, "
+                                "sql": f"SELECT last_value(ts, true) AS lts, last_value(site, true) AS lsite, "
+                                       f"last_value(device, true) AS ldev, last_value(tag, true) AS ltag, "
+                                       f"last_value(value, true) AS lv, count(*) AS n, avg(value) AS mu, "
                                        f"stddevs(value) AS sd FROM raw WHERE tag = {q(tag)} GROUP BY COUNTWINDOW(60, 1)"})
         must("POST", "/rules", {"id": "l4_z2_" + t, "options": OPTS, "actions": [KAFKA],
-                                "sql": f"SELECT last_value(ts, true) AS ts, last_value(site, true) AS site, "
-                                       f"last_value(device, true) AS device, last_value(tag, true) AS tag, "
-                                       f"last_value(value, true) AS value, \"ZSCORE\" AS alert_type, "
+                                "sql": f"SELECT last_value(lts, true) AS ts, last_value(lsite, true) AS site, "
+                                       f"last_value(ldev, true) AS device, last_value(ltag, true) AS tag, "
+                                       f"last_value(lv, true) AS value, \"ZSCORE\" AS alert_type, "
                                        f"\"WARNING\" AS severity, \"TIER1_ZSCORE\" AS detector, "
-                                       f"concat(last_value(tag, true), \" 최근5중 \", "
-                                       f"format(sum(CASE WHEN {z} > 3.5 THEN 1 ELSE 0 END), \"\"), \"회 위반\") AS detail "
-                                       f"FROM zmid WHERE tag = {q(tag)} AND n >= 30 GROUP BY COUNTWINDOW(5, 1) "
+                                       f"concat(last_value(ltag, true), \" 최근5중 \", "
+                                       f"cast(sum(CASE WHEN {z} > 3.5 THEN 1 ELSE 0 END), \"string\"), \"회 위반\") AS detail "
+                                       f"FROM zmid WHERE ltag = {q(tag)} AND n >= 30 GROUP BY COUNTWINDOW(5, 1) "
                                        f"HAVING sum(CASE WHEN {z} > 3.5 THEN 1 ELSE 0 END) >= 3"})
 
     # ── L4-03/04 ──
@@ -145,8 +146,8 @@ def main():
     must("POST", "/rules", {"id": "l4_cep2", "options": OPTS, "actions": [KAFKA],
                             "sql": f"SELECT ts, site, device, \"VT-101\" AS tag, value, \"CEP_BEARING\" AS alert_type, "
                                    f"\"CRITICAL\" AS severity, \"TIER1_CEP\" AS detector, "
-                                   f"concat(\"교반기 전류 \", format(round(oc_val, 2), \"\"), \"A (정격 120% 초과) 후 \", "
-                                   f"format((ts - oc_ts) / 1000000000, \"\"), \"초 내 진동 \", format(round(value, 2), \"\"), "
+                                   f"concat(\"교반기 전류 \", cast(round(oc_val, 2), \"string\"), \"A (정격 120% 초과) 후 \", "
+                                   f"cast((ts - oc_ts) / 1000000000, \"string\"), \"초 내 진동 \", cast(round(value, 2), \"string\"), "
                                    f"\"mm/s 상회 → 베어링 열화 의심\") AS detail "
                                    f"FROM cepmid WHERE {m} AND lag(oc_ts, 1, 0) OVER (PARTITION BY device WHEN {m}) != oc_ts"})
 

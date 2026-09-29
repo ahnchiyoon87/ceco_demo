@@ -41,8 +41,29 @@ def pct(v, q):
     return round(v[min(len(v) - 1, int(round(q * (len(v) - 1))))], 2) if v else None
 
 
+def _load_rec():
+    """V1 이 실제로 흘린 EdgeX 이벤트 기록(harness/tools/record_v1.py) — 태그별 reading 값 문자열("%.7e")을 순서대로 재생."""
+    import os
+    p = os.environ.get("V1_REC_EDGEX", "/repo/experiments/REC-V1/mqtt_edgex_telemetry.jsonl")
+    rec = {}
+    try:
+        for line in open(p, encoding="utf-8"):
+            for r in json.loads(json.loads(line)["value"]).get("readings", []):
+                if r.get("resourceName") in TAGS and float(r["value"]) != -999999.0:
+                    rec.setdefault(r["resourceName"], []).append(float(r["value"]))
+    except (OSError, ValueError, KeyError):
+        return {}
+    return rec if all(rec.get(t) for t in TAGS) else {}
+
+
+REC = _load_rec()
+
+
 def val(i, k):
-    """이벤트 i, 태그 k 의 값 — EdgeX "%.7e" 표기로도 정확히 되돌아오는 8자리 이내 수."""
+    """이벤트 i, 태그 k 의 값. V1 기록이 있으면 그 값(EdgeX "%.7e" 원문이라 그대로 되돌아옴), 없으면 8자리 이내 결정적 수."""
+    if REC:
+        s = REC[TAGS[k]]
+        return s[i % len(s)]
     return round(10.0 * (k + 1) + (i % 100) * 0.01, 2)
 
 

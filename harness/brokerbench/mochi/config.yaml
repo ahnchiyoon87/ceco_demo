@@ -21,9 +21,22 @@ hooks:
 # maximum_client_writes_pending 기본 8192 → 65535, 세션 만료 상한은 기본(무제한) 유지, 메시지 만료 2h 이상(86400 기본 유지).
 options:
   inline_client: true
+  # capabilities 는 일부만 적으면 나머지가 0 이 되어(maximum_clients 0 등) 모든 접속을 "server busy" 로 거절(#105 실측) →
+  # 제품 기본값(mochi v2 DefaultServerCapabilities)을 모두 적고 두 값만 바꾼다.
   capabilities:
-    maximum_inflight: 65535
-    maximum_client_writes_pending: 65535
+    maximum_clients: 9223372036854775807
     maximum_message_expiry_interval: 86400
+    maximum_client_writes_pending: 65535
+    maximum_session_expiry_interval: 4294967295
+    maximum_packet_size: 0
+    receive_maximum: 1024
+    maximum_inflight: 65535
+    topic_alias_maximum: 65535
+    shared_sub_available: 1
+    minimum_protocol_version: 3
+    maximum_qos: 2
+    retain_available: 1
+    wildcard_sub_available: 1
+    sub_id_available: 1
 logging:
   level: WARN

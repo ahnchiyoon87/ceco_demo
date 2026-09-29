@@ -1,0 +1,1094 @@
+{
+ "exp": "EXP-001",
+ "name": "V1",
+ "run": "r2_",
+ "robustness": {
+  "r01": {
+   "n": 3,
+   "recover_s": [
+    16.0,
+    null,
+    null
+   ],
+   "recover_median_s": null,
+   "unrecovered": 2,
+   "at_test": {
+    "raw_missing_tag_s": [
+     204,
+     3660,
+     3660
+    ],
+    "raw_dup": [
+     0,
+     0,
+     0
+    ],
+    "store_missing_tag_s": [
+     204,
+     3660,
+     3660
+    ],
+    "max_gap_s": [
+     17.0,
+     1.01,
+     1.01
+    ]
+   },
+   "eventual": {
+    "raw_missing_tag_s": [
+     204,
+     0,
+     0
+    ],
+    "raw_dup": [
+     0,
+     1536,
+     1536
+    ],
+    "store_missing_tag_s": [
+     204,
+     0,
+     0
+    ],
+    "store_dup": [
+     0,
+     0,
+     0
+    ],
+    "max_gap_s": [
+     17.0,
+     1.01,
+     1.01
+    ]
+   }
+  },
+  "r02": {
+   "n": 3,
+   "recover_s": [
+    7.3,
+    7.4,
+    3.5
+   ],
+   "recover_median_s": 7.3,
+   "unrecovered": 0,
+   "at_test": {
+    "raw_missing_tag_s": [
+     156,
+     0,
+     120
+    ],
+    "raw_dup": [
+     0,
+     0,
+     0
+    ],
+    "store_missing_tag_s": [
+     156,
+     0,
+     120
+    ],
+    "max_gap_s": [
+     14.0,
+     1.01,
+     11.0
+    ]
+   },
+   "eventual": {
+    "raw_missing_tag_s": [
+     156,
+     0,
+     120
+    ],
+    "raw_dup": [
+     0,
+     0,
+     0
+    ],
+    "store_missing_tag_s": [
+     156,
+     0,
+     120
+    ],
+    "store_dup": [
+     0,
+     0,
+     0
+    ],
+    "max_gap_s": [
+     14.0,
+     1.01,
+     11.0
+    ]
+   }
+  },
+  "r03": {
+   "n": 3,
+   "recover_s": [
+    9.2,
+    12.8,
+    11.6
+   ],
+   "recover_median_s": 11.6,
+   "unrecovered": 0,
+   "at_test": {
+    "raw_missing_tag_s": [
+     0,
+     0,
+     0
+    ],
+    "raw_dup": [
+     129,
+     150,
+     248
+    ],
+    "store_missing_tag_s": [
+     0,
+     0,
+     0
+    ],
+    "max_gap_s": [
+     1.01,
+     1.01,
+     1.01
+    ]
+   },
+   "eventual": {
+    "raw_missing_tag_s": [
+     0,
+     0,
+     0
+    ],
+    "raw_dup": [
+     129,
+     150,
+     248
+    ],
+    "store_missing_tag_s": [
+     0,
+     0,
+     0
+    ],
+    "store_dup": [
+     0,
+     0,
+     0
+    ],
+    "max_gap_s": [
+     1.01,
+     1.01,
+     1.01
+    ]
+   }
+  },
+  "r06": {
+   "n": 1,
+   "recover_s": [
+    3.2
+   ],
+   "recover_median_s": 3.2,
+   "unrecovered": 0,
+   "at_test": {
+    "raw_missing_tag_s": [
+     0
+    ],
+    "raw_dup": [
+     0
+    ],
+    "store_missing_tag_s": [
+     0
+    ],
+    "max_gap_s": [
+     1.01
+    ]
+   },
+   "eventual": {
+    "raw_missing_tag_s": [
+     0
+    ],
+    "raw_dup": [
+     0
+    ],
+    "store_missing_tag_s": [
+     0
+    ],
+    "store_dup": [
+     0
+    ],
+    "max_gap_s": [
+     1.01
+    ]
+   }
+  },
+  "r08": {
+   "n": 1,
+   "recover_s": [
+    1.3
+   ],
+   "recover_median_s": 1.3,
+   "unrecovered": 0,
+   "at_test": {
+    "raw_missing_tag_s": [
+     0
+    ],
+    "raw_dup": [
+     6480
+    ],
+    "store_missing_tag_s": [
+     0
+    ],
+    "max_gap_s": [
+     1.01
+    ]
+   },
+   "eventual": {
+    "raw_missing_tag_s": [
+     0
+    ],
+    "raw_dup": [
+     0
+    ],
+    "store_missing_tag_s": [
+     0
+    ],
+    "store_dup": [
+     0
+    ],
+    "max_gap_s": [
+     1.01
+    ]
+   }
+  }
+ },
+ "e1_source": "experiments/EXP-001/baseline_V1.log (P2 요약 줄)",
+ "e1_p95_ms": {
+  "incident": {
+   "runs": [
+    1880.0,
+    2058.0,
+    3908.6
+   ],
+   "median": 2058.0
+  },
+  "kafka:sensor.alerts": {
+   "runs": [
+    1655.1,
+    1939.3,
+    1671.5
+   ],
+   "median": 1671.5
+  },
+  "mqtt:scada/alerts/PT-101": {
+   "runs": [
+    1802.6,
+    2078.6,
+    1837.3
+   ],
+   "median": 1837.3
+  },
+  "mqtt:scada/hmi/latest-alert": {
+   "runs": [
+    1942.1,
+    2222.7,
+    1975.1
+   ],
+   "median": 1975.1
+  }
+ },
+ "r09": {
+  "kafka_raw": {
+   "expected": 1932,
+   "missing_s_total": 0,
+   "dup_total": 0,
+   "max_gap_s": 1.02
+  },
+  "influx_process_raw": {
+   "expected": 1932,
+   "missing_s_total": 0,
+   "dup_total": 0,
+   "max_gap_s": 1.02
+  }
+ },
+ "e7": {
+  "pairs": 120,
+  "within_tolerance": 119,
+  "rate": 0.9917,
+  "samples": [
+   {
+    "tag": "LT-101",
+    "screen": 69.9509,
+    "history": 69.9509,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.2262,
+    "history": 62.226177,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 66.1076,
+    "history": 66.10765,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 86.5175,
+    "history": 86.517494,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9025,
+    "history": 3.9025016,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.7131,
+    "history": 6.7130733,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.6485,
+    "history": 6.6485057,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.957,
+    "history": 6.956952,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.8121,
+    "history": 6.8121386,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.0762,
+    "history": 2.0762382,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4813,
+    "history": 7.481315,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3002,
+    "history": 3.3001702,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0567,
+    "history": 70.0567,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.3293,
+    "history": 62.32934,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 66.056,
+    "history": 66.05602,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 86.4328,
+    "history": 86.43283,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9163,
+    "history": 3.9162853,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6855,
+    "history": 6.685475,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.6391,
+    "history": 6.639068,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9861,
+    "history": 6.986127,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.807,
+    "history": 6.8070316,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.0524,
+    "history": 2.0524027,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4794,
+    "history": 7.4793954,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3021,
+    "history": 3.3021276,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0611,
+    "history": 70.06107,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.1855,
+    "history": 62.18553,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 65.9877,
+    "history": 65.98772,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 86.6565,
+    "history": 86.65648,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.8819,
+    "history": 3.8818924,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6505,
+    "history": 6.6504703,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.6566,
+    "history": 6.6566353,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9402,
+    "history": 6.940174,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.8159,
+    "history": 6.8159432,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.159,
+    "history": 2.1589556,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4687,
+    "history": 7.4687243,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.2985,
+    "history": 3.2985346,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0847,
+    "history": 70.08465,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.2485,
+    "history": 62.248486,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 65.9595,
+    "history": 65.95955,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 86.5587,
+    "history": 86.55872,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.884,
+    "history": 3.8839662,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6912,
+    "history": 6.6911545,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.6635,
+    "history": 6.663465,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9385,
+    "history": 6.9384704,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.7798,
+    "history": 6.7798023,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.133,
+    "history": 2.1330037,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4762,
+    "history": 7.476227,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3101,
+    "history": 3.3100576,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0198,
+    "history": 70.019806,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.1995,
+    "history": 62.199474,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 66.0048,
+    "history": 66.00477,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 86.6891,
+    "history": 86.68914,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9113,
+    "history": 3.911346,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6836,
+    "history": 6.68362,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.6222,
+    "history": 6.622189,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 7.0011,
+    "history": 7.001119,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.809,
+    "history": 6.8089547,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.1153,
+    "history": 2.1152875,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4832,
+    "history": 7.4831667,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3014,
+    "history": 3.3013806,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 69.9578,
+    "history": 69.957794,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 62.1941,
+    "history": 62.1941,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 68.4731,
+    "history": 68.47312,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 90.272,
+    "history": 90.272026,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9626,
+    "history": 3.962591,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6075,
+    "history": 6.607542,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.5277,
+    "history": 6.5276933,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9759,
+    "history": 6.9759154,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.7849,
+    "history": 6.7848554,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.1092,
+    "history": 2.1092165,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4452,
+    "history": 7.445224,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3266,
+    "history": 3.3265638,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0051,
+    "history": 70.00511,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 61.9427,
+    "history": 61.942684,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 69.5275,
+    "history": 69.52746,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 91.533,
+    "history": 91.532974,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9511,
+    "history": 3.9511123,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.6604,
+    "history": 6.6603866,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.5444,
+    "history": 6.544375,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9344,
+    "history": 6.9343934,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.676,
+    "history": 6.675963,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.178,
+    "history": 2.1779816,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4301,
+    "history": 7.4300904,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3922,
+    "history": 3.3922193,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 69.9688,
+    "history": 70.018654,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 61.8404,
+    "history": 61.805965,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 70.1496,
+    "history": 70.12321,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 92.4493,
+    "history": 92.419334,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9491,
+    "history": 3.9657009,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.651,
+    "history": 6.556067,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.5922,
+    "history": 6.6114516,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 7.0042,
+    "history": 6.9457426,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.6472,
+    "history": 6.6907163,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.0516,
+    "history": 2.0381157,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4237,
+    "history": 7.4240828,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3779,
+    "history": 3.3658097,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.1175,
+    "history": 69.99716,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 61.7774,
+    "history": 61.8255,
+    "ok": true
+   },
+   {
+    "tag": "TT-101",
+    "screen": 70.0725,
+    "history": 70.03102,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 92.5613,
+    "history": 92.54912,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9762,
+    "history": 3.9596155,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.61,
+    "history": 6.5579977,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.557,
+    "history": 6.517779,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9746,
+    "history": 6.926085,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.6832,
+    "history": 6.6467395,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.174,
+    "history": 2.036653,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4204,
+    "history": 7.4363904,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3605,
+    "history": 3.372514,
+    "ok": true
+   },
+   {
+    "tag": "LT-101",
+    "screen": 70.0047,
+    "history": 69.944695,
+    "ok": true
+   },
+   {
+    "tag": "LT-102",
+    "screen": 61.8683,
+    "history": 61.70595,
+    "ok": false
+   },
+   {
+    "tag": "TT-101",
+    "screen": 70.0996,
+    "history": 70.242546,
+    "ok": true
+   },
+   {
+    "tag": "TT-102",
+    "screen": 92.5215,
+    "history": 92.362625,
+    "ok": true
+   },
+   {
+    "tag": "PT-101",
+    "screen": 3.9687,
+    "history": 3.9662428,
+    "ok": true
+   },
+   {
+    "tag": "FT-101",
+    "screen": 6.5823,
+    "history": 6.5771546,
+    "ok": true
+   },
+   {
+    "tag": "FT-102",
+    "screen": 6.5422,
+    "history": 6.4677606,
+    "ok": true
+   },
+   {
+    "tag": "IT-101",
+    "screen": 6.9815,
+    "history": 6.988829,
+    "ok": true
+   },
+   {
+    "tag": "IT-102",
+    "screen": 6.7033,
+    "history": 6.7134624,
+    "ok": true
+   },
+   {
+    "tag": "VT-101",
+    "screen": 2.1103,
+    "history": 2.159803,
+    "ok": true
+   },
+   {
+    "tag": "pH-101",
+    "screen": 7.4132,
+    "history": 7.421805,
+    "ok": true
+   },
+   {
+    "tag": "CT-101",
+    "screen": 3.3756,
+    "history": 3.3915024,
+    "ok": true
+   }
+  ]
+ },
+ "e12": {
+  "mqtt_emqx_anonymous": {
+   "connack": "Success",
+   "publish_ok": true,
+   "open": true
+  },
+  "mqtt_edgex_internal_anonymous": {
+   "connack": "Success",
+   "publish_ok": true,
+   "open": true
+  },
+  "kafka_plaintext_no_auth": {
+   "open": true,
+   "topics": 5
+  },
+  "influxdb_query_no_token": {
+   "status": 401,
+   "open": false
+  },
+  "fuxa_project_no_login": {
+   "status": 200,
+   "open": true
+  },
+  "grafana_no_login": {
+   "status": 200,
+   "open": true
+  },
+  "flink_rest_no_auth": {
+   "status": 200,
+   "open": true
+  },
+  "edgex_command_no_auth": {
+   "status": 200,
+   "open": true
+  },
+  "prometheus_no_auth": {
+   "status": 200,
+   "open": true
+  },
+  "alertmanager_no_auth": {
+   "status": 200,
+   "open": true
+  },
+  "simulator_api_no_auth": {
+   "status": 200,
+   "open": true
+  },
+  "open_count": 10,
+  "probed": 11
+ },
+ "e11_container": [
+  "KafkaConsumerLagHigh"
+ ],
+ "e11_detector": [
+  "KafkaConsumerLagHigh"
+ ]
+}

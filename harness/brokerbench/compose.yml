@@ -59,7 +59,7 @@ services:
       LISTENER_WS_ENABLED: "true"                        # WS 8084(/mqtt)
       METRICS_ENDPOINTS_EXPOSE: "health,info,prometheus"  # 기본값 명시(HTTP 8083 /actuator/prometheus)
       # V1 보장 맞춤(09-29): DEVICE 영속 세션 보관 상한 기본 1만 → 10만(V1 EMQX max_mqueue_len). TTL 기본 7일 유지(≥ V1 2h)
-      MQTT_PERSISTENT_SESSION_DEVICE_PERSISTED_MESSAGES_LIMIT: "100000"
+      MQTT_PERSISTENT_SESSION_DEVICE_PERSISTED_MESSAGES_LIMIT: "65535"   # 제품 최댓값(2.4.0: "can't be greater than 65535") — V1 EMQX 10만을 못 맞춤(약점, #105)
     volumes:
       - tbmq-data:/data
   tbmq-postgres:
@@ -107,8 +107,8 @@ services:
       #  SessionInboxSize 1000 → 65535(제품 상한, V1 10만 미달 — 약점), MsgPubPerSec 200 → 1000(제품 상한 — 과부하 1200/s 는 연결당 상한 초과),
       #  ReceivingMaximum 200 → 65535, MaxSessionExpirySeconds → 7200 이상 보장
       EXTRA_JVM_OPTS: "-DSessionInboxSize=65535 -DMsgPubPerSec=1000 -DReceivingMaximum=65535 -DMaxSessionExpirySeconds=86400"
-    volumes:
-      - bifromq-data:/home/bifromq/data
+    # 명명 볼륨을 /home/bifromq/data 에 붙이면 root 소유라 브로커가 못 써서 종료(코드 255, #105 실측) → 볼륨 없음.
+    # docker restart 는 컨테이너 쓰기 계층을 유지하므로 재시작 넘어 보존 시험(BR-04·05)은 그대로 성립한다.
 
   rabbitmq:
     image: rabbitmq:4.3.6-management-alpine

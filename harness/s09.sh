@@ -12,7 +12,7 @@ mkdir -p "experiments/$exp/raw"
 $B --profile tools run --rm -T -e FLINK_REST="${FLINK_REST:-http://flink-jobmanager:8081}" tools python /repo/harness/tools/replay.py --exp "$exp" --run "$run" --cases S09 "$@" \
   > "experiments/$exp/raw/replay_${run}.out" 2>&1 &
 rp=$!
-for i in $(seq 1 120); do [ -s "$man" ] && break; sleep 0.5; done
+for i in $(seq 1 480); do [ -s "$man" ] && break; sleep 0.5; done   # 240 s: 도구 컨테이너가 kafka-init 을 다시 띄우면 60 s 를 넘김(#105, R05 kill 미실행 무효)
 [ -s "$man" ] || { echo "manifest 없음 — 리플레이 시작 실패"; cat "experiments/$exp/raw/replay_${run}.out"; exit 1; }
 t0=$(PYTHONUTF8=1 python -c "import json;print(json.load(open('$man',encoding='utf-8'))['t0_event_ns']/1e9)")
 # t0 를 못 얻으면 kill 하지 않는다 (r5: 인코딩 오류로 t0 가 비어 kill 이 즉시 실행돼 무효)
