@@ -22,8 +22,10 @@ ATM_BAR = 1.013
 class Fault:
     """고장 주입 상태.
 
-    지속·지연·상승 시간은 **실제 시간(스캔 시계)** 기준이다. 물리 배속을 올려도
-    고장이 유지되는 시간과 CEP 가 보는 선후 간격(예: 전류 뒤 6초 진동)은 그대로다.
+    시계는 고장의 성질로 정한다(plant.yaml kind):
+      process — 서서히 진행하는 물리 과정(가열·냉각 상실·마모·드리프트). **설비 시계**를 따르므로
+                배속을 올리면 현실의 시간 흐름 그대로 자연스럽게 빨라진다.
+      event   — 순간 사건(계기 튐·결측·잡음). 관측 시계(실제 초)로 지속한다.
     """
 
     scenario: str
@@ -34,6 +36,8 @@ class Fault:
     targets: tuple[str, ...] = ()
     elapsed: float = 0.0
     ramp_s: float = 45.0
+    clock: str = "plant"
+    spec: dict = field(default_factory=dict)
 
 
 class ReactorPlant:
@@ -103,10 +107,11 @@ class ReactorPlant:
         self._manual_until[key] = self.wall_time + hold
 
     def _autopilot(self, dt_s: float) -> None:
+        """생산 스케줄은 설비 시계(dt_s = 설비 시간). 운전원 수동 유지는 사람 행동이라 실제 초."""
         if not self.ap.get("enabled"):
             return
-        if self.wall_time >= self._ap_next:
-            self._ap_next = self.wall_time + float(self.ap["period_s"])
+        if self.sim_time >= self._ap_next:
+            self._ap_next = self.sim_time + float(self.ap["period_s"])
             for key, (lo, hi) in self.ap["ranges"].items():
                 self._ap_target[key] = random.uniform(lo, hi)
         step = dt_s / max(float(self.ap["ramp_s"]), 1.0)
@@ -122,13 +127,19 @@ class ReactorPlant:
             setattr(self, attr, cur + (tgt - cur) * min(step, 1.0))
 
     # ── 고장 주입 ────────────────────────────────────────────────
+    def _clock(self, kind: str) -> float:
+        return self.sim_time if kind == "plant" else self.wall_time
+
     def inject(self, scenario: str, duration_s: float | None = None) -> Fault:
+        """duration_s 는 그 고장의 시계 단위(process = 설비 초, event = 실제 초)."""
         spec = self.cfg["faults"][scenario]
         dur = duration_s if duration_s is not None else spec["default_duration_s"]
+        clock = "plant" if spec.get("kind", "process") == "process" else "wall"
         f = Fault(
             scenario=scenario,
-            started_at=self.wall_time,
-            expires_at=self.wall_time + dur,
+            started_at=self._clock(clock),
+            expires_at=self._clock(clock) + dur,
+            clock=clock, spec=spec,
             magnitude=float(spec.get("magnitude", 0.0)),
             lag_s=float(spec.get("lag_s", 0.0)),
             targets=tuple(spec.get("target", [])),
@@ -143,10 +154,9 @@ class ReactorPlant:
         self.vib_wear = 0.0
 
     def _expire_faults(self) -> None:
-        now = self.wall_time
         for f in self.faults.values():
-            f.elapsed = now - f.started_at
-        for k in [k for k, f in self.faults.items() if f.expires_at <= now]:
+            f.elapsed = self._clock(f.clock) - f.started_at
+        for k in [k for k, f in self.faults.items() if f.expires_at <= self._clock(f.clock)]:
             del self.faults[k]
             if k == "bearing_wear":
                 self.bearing_wear = 0.0
@@ -229,23 +239,24 @@ class ReactorPlant:
         # 전류는 즉시, 진동은 lag_s 경과 후부터 그리고 더 느리게 누적된다.
         if "bearing_wear" in self.faults:
             f = self.faults["bearing_wear"]
-            self.bearing_wear = min(1.0, self.bearing_wear + dt_s / 25.0)
+            self.bearing_wear = min(1.0, self.bearing_wear + dt_s / float(f.spec.get("wear_ramp_s", 25.0)))
             if f.elapsed >= f.lag_s:
-                self.vib_wear = min(1.0, self.vib_wear + dt_s / 23.0)
+                self.vib_wear = min(1.0, self.vib_wear + dt_s / float(f.spec.get("vib_ramp_s", 23.0)))
 
         return q_in, q_out, pump_active, rx_level_frac
 
     def step(self, dt_s: float) -> dict[str, float]:
         """스캔 1회: 실제 dt_s 초. 물리는 dt_s × 배속만큼 소구간으로 적분한다."""
         self.wall_time += dt_s
-        self._expire_faults()
-        self._autopilot(dt_s)
         self.seq = (self.seq + 1) & 0xFFFFFFFF
         phys = dt_s * self.time_scale
         n = max(1, math.ceil(phys / self.max_substep))
         for _ in range(n):
-            q_in, q_out, pump_active, rx_level_frac = self._integrate(phys / n)
-        self.sim_time += phys
+            h = phys / n
+            self.sim_time += h
+            self._expire_faults()
+            self._autopilot(h)
+            q_in, q_out, pump_active, rx_level_frac = self._integrate(h)
         fd_area = self.p_feed["area_m2"]
         fd_h = self.p_feed["height_m"]
 

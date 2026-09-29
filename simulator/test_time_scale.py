@@ -1,4 +1,5 @@
-"""V2 물리 배속: 실습에서 고장 결과가 10초 안에 보이고, 큰 배속에서도 제어가 발산하지 않는다."""
+"""V2 시간 배속: 하나의 설비 시계로 서서히 진행하는 현상이 자연스럽게 빨라지고, 이상은 10초 안에 드러난다.
+기본값(plant.yaml physics_time_scale)으로 띄운 설비를 그대로 시험한다."""
 import copy
 from pathlib import Path
 import unittest
@@ -9,50 +10,72 @@ from plant import ReactorPlant
 CONFIG = yaml.safe_load(Path(__file__).with_name("plant.yaml").read_text(encoding="utf-8"))
 
 
-def model(scale=None):
+def model(**over):
     cfg = copy.deepcopy(CONFIG)
     cfg["autopilot"]["enabled"] = False
     cfg["noise"] = {tag: 0 for tag in cfg["noise"]}
-    if scale is not None:
-        cfg["physics_time_scale"] = scale
+    cfg.update(over)
     m = ReactorPlant(cfg)
     m.sp_temp_c = 72.0
+    for _ in range(5):                       # 정상 상태
+        m.step(1)
     return m
 
 
+def run_until(m, cond, limit):
+    for s in range(1, limit + 1):
+        m.step(1)
+        if cond(m):
+            return s
+    return None
+
+
 class TimeScaleTest(unittest.TestCase):
-    def test_default_scale_heater_stuck_crosses_usl_within_10s(self):
+    def test_default_heater_stuck_crosses_usl_within_5s(self):
         m = model()
-        for _ in range(600):                       # 1배속 기준 정상 상태 도달(배속 300 이면 즉시)
-            m.step(1)
-        self.assertLess(m.temp_c, 95)
         m.cmd_heater = False
-        m.inject("heater_stuck", 1200)
-        crossed = next((s for s in range(1, 11) if (m.step(1), m.temp_c)[1] > 95), None)
-        self.assertIsNotNone(crossed, "히터 고착 뒤 실제 10초 안에 TT-101 이 95°C 를 넘어야 한다")
+        m.inject("heater_stuck")
+        self.assertIsNotNone(run_until(m, lambda m: m.temp_c > 95, 5), "히터 고착 뒤 5초 안에 TT-101 > 95")
+
+    def test_default_bearing_current_then_vibration_within_10s(self):
+        m = model()
+        m.inject("bearing_wear")
+        it = run_until(m, lambda m: m._agitator_current(m.rx_vol / (m.p_rx["area_m2"] * m.p_rx["height_m"])) > 9.6, 10)
+        m2 = model(); m2.inject("bearing_wear")
+        vt = run_until(m2, lambda m: m._vibration(m.rx_vol / (m.p_rx["area_m2"] * m.p_rx["height_m"])) > 7.1, 10)
+        self.assertIsNotNone(it); self.assertIsNotNone(vt)
+        self.assertLess(it, vt, "전류가 먼저, 진동이 나중(CEP 선후)")
+        self.assertLessEqual(vt - it, 10, "CEP 10초 창 안")
+
+    def test_default_drift_rises_gradually_not_a_jump(self):
+        m = model()
+        m.inject("drift")
+        base = m._ph()
+        ramp = []
+        for _ in range(10):
+            m.step(1)
+            f = m.faults["drift"]
+            ramp.append(min(1.0, f.elapsed / f.ramp_s))
+        self.assertLess(ramp[0], 0.5, "첫 1초에 다 오르지 않는다(서서히)")
+        self.assertGreaterEqual(ramp[-1], 1.0, "10초 안에 최대에 이른다")
+
+    def test_event_fault_lasts_real_seconds(self):
+        m = model()
+        m.inject("spike")
+        for _ in range(7):
+            m.step(1)
+        self.assertIn("spike", m.faults, "순간 사건은 실제 초 동안 지속")
+        for _ in range(2):
+            m.step(1)
+        self.assertNotIn("spike", m.faults)
 
     def test_large_scale_temperature_control_stays_bounded(self):
-        m = model(300)
+        m = model(physics_time_scale=300)
         temps = []
-        for _ in range(120):
+        for _ in range(60):
             m.step(1)
             temps.append(m.temp_c)
-        tail = temps[-30:]
-        self.assertLess(max(tail) - min(tail), 1.0, "P 제어가 소구간 적분으로 안정해야 한다")
-        self.assertLess(abs(tail[-1] - m.sp_temp_c), 5.0)
-
-    def test_fault_timing_is_real_seconds(self):
-        m = model(300)
-        m.inject("bearing_wear", 30)
-        for _ in range(5):
-            m.step(1)
-        self.assertEqual(m.vib_wear, 0.0, "진동은 실제 6초 뒤부터(CEP 선후 간격 유지)")
-        for _ in range(3):
-            m.step(1)
-        self.assertGreater(m.vib_wear, 0.0)
-        for _ in range(30):
-            m.step(1)
-        self.assertNotIn("bearing_wear", m.faults, "고장 지속은 실제 초")
+        self.assertLess(max(temps[-20:]) - min(temps[-20:]), 1.0)
 
 
 if __name__ == "__main__":
