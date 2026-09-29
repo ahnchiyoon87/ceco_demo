@@ -143,6 +143,27 @@ td.diff{color:var(--warn);font-weight:600}
     <div><b>저장</b> 이력 정본은 IT 한 곳, OT에는 화면용 단기 추세만. 명령·승인·감사 기록은 추가만 한다.</div>
     <div><b>설비 추가</b> 층은 그대로. 설비 종류 모델과 설비 목록(등록부)에 더하면 이름·토픽·키·규칙이 같은 ID로 이어진다.</div>
   </div>
+  <h3>근거 기준 목록 — 법·표준·지침</h3>
+  <p>위 구조·흐름의 근거가 된 문서다. 조사한 기준 가운데 <b>법령·규제는 21 CFR Part 11(미국 연방 규정) 하나</b>이고, 우리는 "감사 기록은 지우지 않는다"의 근거로만 쓴다. 나머지는 국제 표준, 정부 기관 지침, 업계 단체 권고, 재단 명세다. <b>한국 법규는 조사하지 않았다.</b></p>
+  <div class="tbl"><table>
+    <tr><th>기준</th><th>누가 낸 무엇</th><th>핵심 내용(원문 요지)</th><th>우리 설계에 쓰인 곳</th><th>원문 확인</th><th>조사</th></tr>
+    <tr><td>NIST SP 800-82r3</td><td>미국 정부 기관(NIST) OT 보안 지침</td><td>"DMZ 망 구조와 방화벽으로 기업망과 OT망 사이에 트래픽이 직접 지나가지 않게 한다"(§1). L2~L3 사이 단방향 게이트웨이(데이터 다이오드)를 방화벽 대안으로 듦(§5.2.3.1). Purdue·ISA-95·IIRA를 인정 모델로 듦</td><td>망 3구역, IT→OT 직접 길 없음</td><td>원문 확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
+    <tr><td>CISA Defense in Depth(2016)</td><td>미국 정부 기관(CISA, 당시 DHS ICS-CERT) 권고</td><td>"기업이 접근하는 구성요소를 DMZ에 두면 기업망에서 제어망으로 가는 직접 경로가 필요 없다. 모든 경로는 DMZ에서 끝난다." "제어망 장치가 먼저 연 연결만 허용". "DMZ 없는 2구역 구성은 겨우 허용되는 수준"(§2.4.2). L3에 사이트 히스토리언, DMZ에 복제(§2.4.1~2)</td><td>DMZ 중계, OT가 밀어냄, 히스토리언 배치 설명</td><td>12번에 원문 문장 인용</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
+    <tr><td>CISA 등 9개 기관 AI-OT 원칙(2025-12)</td><td>CISA 등 9개 기관 공동 지침</td><td>OT 밖으로 밀어내는(push)·브로커 방식(p.15, p.20). "사람이 개입하지 않는 AI의 OT 능동 제어를 제한하라", "AI·LLM은 OT 안전 결정에 쓰면 안 된다"(p.8, p.16). ML은 주로 L1~L3, LLM은 L4~5(표1). 읽기 전용 예시(p.19). AI 입출력 로그(p.18~19)</td><td>AI 읽기 전용·사람 승인·기록, 탐지 위치 차이 표시</td><td>원문 확인(쪽 인용)</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
+    <tr><td>NAMUR NE 178(2025-03) · NE 175·177·179</td><td>화학·제약 업계 사용자 단체(NAMUR) 권고</td><td>바깥 앱의 설비 쓰기 요청을 검증해 IT/OT 경계를 넘게 하고, 최종 권한은 제어 쪽에 남긴다(NE 178). 감시·최적화 데이터는 두 번째 채널로(NE 175), 보안 게이트웨이(NE 177)</td><td>명령 게이트웨이 하나, PLC 최종 판단</td><td>발행 공지·해설로 확인, 본문 미확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
+    <tr><td>ISA-95 / IEC 62264</td><td>국제 표준</td><td>기능 층 L0~L4, 설비 계층 Enterprise→Site→Area→Work center→Work unit(5.3절). Part 3: 정비 요청→작업지시→실행→추적</td><td>설비 이름·토픽·등록부, 승인 흐름</td><td>미리보기 범위만 · Part 3는 검색 발췌</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
+    <tr><td>ISA-18.2 / IEC 62682</td><td>국제 표준(알람 관리)</td><td>알람은 "대응을 요구하는" 것만. 철학→합리화→운영→감사 수명주기. 권장 부하 운전원 1명당 10분에 약 1건</td><td>공정 알람과 분석 경고 분리, 경고 상태표</td><td>ISA 페이지·해설</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
+    <tr><td>EEMUA 191</td><td>업계 지침(EEMUA)</td><td>알람 폭주 = 10분에 새 알람 10건 초과</td><td>10분당 건수 감시 지표</td><td>검색 발췌(원문 접근 거부)</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
+    <tr><td>ANSI/ISA-112.00.01-2025</td><td>ANSI/ISA 표준(SCADA), 2026-02 발행</td><td>SCADA 수명주기·기능 아키텍처. 공개 초안 그림(2022): HMI·알람·히스토리언은 OT 응용층, 원격 앱 직결은 강하게 말림</td><td>층 설명, 외부 직결 금지 설명</td><td>본문 유료 — 초안 그림만</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
+    <tr><td>IEC 62443(-3-2, -3-3)</td><td>국제 표준(산업 보안)</td><td>zone(같은 보안 요구 자산 묶음)과 conduit(zone 사이 통신). 감사 요구 SR 2.8~2.11</td><td>망 구역, 감사 기록 추가만</td><td>목차·해설(검색 발췌)</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
+    <tr><td>Sparkplug 3.0 (ISO/IEC 20237:2023)</td><td>Eclipse 재단 명세 · ISO/IEC 표준</td><td>명령 NCMD·DCMD는 "QoS 0, retain=false로 발행해야 한다(MUST)". 엣지는 끊기면 저장 후 전달. 모든 값에 시각 필수, 품질 GOOD/BAD/STALE</td><td>명령 retain 금지, 시각·품질·STALE</td><td>명세 본문 확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
+    <tr><td>OPC UA Part 4·8</td><td>OPC Foundation 명세</td><td>값의 출처 시각(sourceTimestamp)과 품질 3값. "쓰기 성공 ≠ 설비 반영" 구분</td><td>시각·품질, 명령 확인 두 겹</td><td>명세 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
+    <tr><td>IEC 61850 · IEC 104 운영 지침</td><td>전력 원격제어 표준 · Svenska kraftnät 운영 지침</td><td>명령 선택 시간 초과(만료)·순번 대조·실행 결과 보고. 인터록 검사는 명령을 받는 현장 제어기가 한다</td><td>게이트웨이·PLC의 만료·중복·인터록 검사(제조 표준엔 해당 문장 없음)</td><td>지침 조항 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
+    <tr><td>IEC 61511</td><td>국제 표준(안전계장)</td><td>BPCS는 SIS 기능을 해치지 않게 분리·독립</td><td>안전계장은 따로 둔다는 설명</td><td>검색 발췌</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
+    <tr><td>ISO 14224:2016</td><td>국제 표준(설비 신뢰성·정비 데이터)</td><td>고장 모드·메커니즘·원인과 정비 조치를 구분</td><td>온톨로지 고장 칸</td><td>검색 발췌(원문 접근 거부)</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
+    <tr><td>IEC 61131-3</td><td>국제 표준(PLC 프로그래밍 언어)</td><td>PLC 프로그램 언어(ST 등)</td><td>OpenPLC 프로그램을 ST로</td><td>14번 언급</td><td><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14</a></td></tr>
+    <tr><td>21 CFR Part 11</td><td>미국 연방 규정(FDA 전자 기록 규정) — 법령</td><td>시각이 찍힌 감사 추적, 대상 기록과 같은 기간 보존(§11.10(e)(f))</td><td>명령·승인·감사 기록은 지우지 않는다</td><td>규정 조항 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
+  </table></div>
 </section>
 
 <section>
