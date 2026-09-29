@@ -468,7 +468,7 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
 <text class="bs" x="580" y="84">승인 / 반려</text>
 <rect class="bx it" x="990" y="34" width="190" height="64" rx="7"/>
 <text class="bt" x="1000" y="53">작업 요청 발행</text>
-<text class="bs" x="1000" y="70">요청ID·작업·설비·만료</text>
+<text class="bs" x="1000" y="70">요청ID·작업·설비·파라미터</text>
 <text class="bs" x="1000" y="84">→ Kafka에 사본</text>
 <line class="l-data" x1="440" y1="934" x2="440" y2="898" marker-end="url(#m-data)"/>
 <circle class="n-data" cx="456" cy="916.0" r="10.5"/>
@@ -608,14 +608,14 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
       </ol></div>
     <div><b>요청 ↓</b>
       <ol class="steps c">
-        <li><b>C1</b>담당자가 승인하면 작업 요청 발행(요청 ID·작업 정의·설비·파라미터·만료)</li>
+        <li><b>C1</b>담당자가 승인하면 작업 요청 발행(요청 ID·작업 정의·설비·파라미터. 만료 시각은 게이트웨이가 붙임)</li>
         <li><b>C2</b>IT 발송기로. 정본은 PostgreSQL, Kafka에는 사본</li>
         <li><b>C3·C4</b>IT가 DMZ 게이트웨이에 HTTP로 넣고, 1차 검사(형식·허용·요청자·승인자·요청 나이·중복, 공장 상태는 안 봄) 뒤 만료 시각(30초)을 붙여 뒤 DMZ 브로커 요청 토픽으로</li>
         <li><b>C5</b>공장 허브가 브리지로 가져온다</li>
         <li><b>C6·C7</b>공장 안 수신기가 받을지 정한다: 형식·허용 범위·만료 재검사, 자동 수용 모드면 자동, 수동 모드면 운전원 확인, 현장·정비 모드면 거절</li>
         <li><b>C8</b>PLC가 물리적으로 되는지 마지막 검사(인터록·범위·모드·정비 모드) 후 설비에 쓴다</li>
         <li><b>M</b>운전원 조작은 FUXA → 허브 → 엣지 → PLC(IT·DMZ 무관)</li>
-        <li><b>확인</b>"받음·거절"과 결과·새 상태가 데이터 길로 올라와 A1에서 요청 ID로 대조 → 담당자 화면. 첫 답은 게이트웨이 즉시 응답 → 공장 수신기의 "받음·운전원 대기·거절"(5초 안, 없으면 "결과 모름"이고 다시 보내지 않으며 늦은 답을 같은 ID로 받아 고친다. 만료까지 답이 없으면 "미실행 확정") → 운전원 대기였다면 60초 안의 수락·거절 순이다, 운전원 대기 60초를 넘기면 OPERATOR_TIMEOUT 거절. PLC가 받은 뒤 10초 안에 새 상태가 안 보이면 명령 불일치 경고</li>
+        <li><b>확인</b>"받음·거절"과 결과·새 상태가 데이터 길로 올라와 A1에서 요청 ID로 대조 → 담당자 화면. 첫 답은 게이트웨이 즉시 응답 → 공장 수신기의 "받음·운전원 대기·거절"(5초 안, 없으면 "결과 모름"이고 다시 보내지 않으며 늦은 답을 같은 ID로 받아 고친다. 만료 시각 + 5초까지 답이 없으면 "만료(결과 미확인)", 늦은 답이 오면 고친다) → 운전원 대기였다면 60초 안의 수락·거절 순이다, 운전원 대기 60초를 넘기면 OPERATOR_TIMEOUT 거절. PLC가 받은 뒤 10초 안에 새 상태가 안 보이면 명령 불일치 경고</li>
       </ol></div>
   </div>
   <p class="muted">그림의 경계선: 구역 사이는 <b>라우터 컨테이너</b> 하나가 공장·IT가 먼저 연 연결만 통과시킨다. 감시 지표는 공장 쪽 Prometheus agent → DMZ 수신 Prometheus → IT 본 Prometheus가 가져간다(그림에서는 Prometheus 상자 안에 적음). 장치 통신 상태는 엣지가 대신 알린다.</p>
@@ -677,7 +677,7 @@ td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
     <div class="card"><b>바뀌는 것</b><ul>
       <li>구역 셋(공장·DMZ·IT)과 공장이 먼저 여는 연결(DMZ Mosquitto + 브리지), 구역 경계는 라우터 컨테이너 규칙으로 강제</li>
       <li>PLC 층 추가: 설비에 쓰는 것은 PLC 하나, 정비 모드(원격 금지)</li>
-      <li>설비 쓰기 길 3개(FUXA 직접·EdgeX·AI 조치 코드) → 운전원 한 길 + 외부 요청 한 길</li>
+      <li>설비 쓰기 길 4개(FUXA 직접·EdgeX·AI 조치 코드·AI 대시보드 직접 조작) → 운전원 한 길 + 외부 요청 한 길</li>
       <li>AI 조치: Modbus 직접 쓰기 → 담당자 승인 뒤 작업 요청, 결과는 PLC 응답으로 확인</li>
       <li>이력: 공장 안 기록 + DMZ 사본(공장 원시값), Flink 결과는 IT의 InfluxDB·PostgreSQL</li>
       <li>요청·승인·감사의 정본은 PostgreSQL 추가 전용 표, AI 업무 DB도 PostgreSQL 18.6으로 합침</li>
