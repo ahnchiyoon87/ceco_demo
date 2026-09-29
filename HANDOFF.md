@@ -7,7 +7,7 @@
 ---
 
 ## 0. 처음 읽는 사람을 위한 순서 (20분)
-1. **이 파일 전체**(특히 §1 목표, §2 지시, §3 멈춘 지점).
+1. **이 파일 전체**(특히 §1 목표, §2 지시, §3 멈춘 지점). 사용자 원본 목표·DoD 9개는 `D:\work\study\TODO.md`(「SCADA 현업 스택 회전」) — 최종 판정은 그 DoD 로 한다.
 2. `QUESTIONS.md` §1 — 판정 기준(관문 → 성능·안정성 → 효율 → 운영 참고), 시간 원칙, 후보 원칙, 시험 범위.
 3. `reports/STABILITY.md` — 기반 내부 오류 대장(병행 과제의 목록).
 4. `reports/CONFIRMED.md` — 지금까지 원래→바뀜 한 장.
@@ -31,8 +31,8 @@
 3. **후보 = 다른 제품만**(A 제품 대 B 제품). 같은 제품은 판·설정 모두 후보가 아니다 → 가장 좋은 지원 판을 번호로 고정(회귀에서 한 번에 확인). 판 얘기는 보고에서도 하지 않는다(#90·#92).
 4. **보강 없음**, 예외 하나: **Flink 재시작 복구(HA, Flink 내장 기능 — 설정만)는 켠다**(V1 은 이 기능을 꺼 둔 채 운영해 재시작 때 탐지 잡이 사라짐, #93·#94).
 5. **관찰된 내부 오류는 고친다**(근거 있는 수정). 관찰 없이 미리 하는 설정 보강은 하지 않는다(#96).
-6. **시험 범위 = 그 제품이 닿는 앞뒤 구간.** 같은 층 후보는 같은 입력으로 나란히(두 줄 동시 실행), 전체 스택 측정은 V1 기준 1회·버전 확정 1회(#91).
-7. 효율 우선, 되돌릴 수 있는 일은 묻지 않고 한다. 넘으면 안 되는 선은 §8.
+6. **시험 범위 = 그 제품이 닿는 앞뒤 구간.** 같은 층 후보는 같은 입력으로 나란히(두 줄 동시 실행). 입력은 V1 이 실제로 흘린 데이터(Kafka·MQTT 메시지)를 파일로 한 번 **기록해 재생**(영상 녹화 아님). 전체 스택 측정은 V1 기준 1회·버전 확정 1회(#91).
+7. **권한과 작업 방식(처음 지시 + 오늘 확정):** 모든 결정 권한을 위임받았다 — 묻지 말고 QUESTIONS §1 로 스스로 판단·실행·판정하고 근거를 decision-log 에 남긴다. 이 PC 자원은 허락 없이 쓴다: 이미지 받기·빌드, 벤치 기동·삭제, 격리 스택(`.env.rotation` 의 rot-iiot·rot-ai) 기동·정지, Docker 재시작, 서브에이전트 병렬. 효율·상식 우선: 측정 전에 도구·경로를 한 번 확인해 무효 실행을 줄이고, 후보는 빠르게 거르고, 쓰지 않는 벤치는 바로 정리하고, 무거운 측정이 도는 동안 가벼운 일(문서·설계)을 병행한다. 맥락이 차기 전에 이 파일을 최신으로 유지한다. 넘으면 안 되는 선은 §8.
 8. **사실 기반, 추론 금지.** 모든 판단·수치는 실행 결과·로그·파일·1차 출처로 증명 가능해야 한다. "~같다·~로 보인다"로 결론 내리지 않는다 — 확인 못 한 것은 "미확인"과 확인 방법으로 쓴다. 바꾸기 전에 그 변경이 닿는 문서·설정·측정을 모두 찾아 영향을 파악한다(예: #97 은 짐작으로 원인을 잘못 짚었다가 로그·Kafka 오프셋으로 정정).
 
 ## 3. 지금 멈춘 지점 (2026-09-29 11:15)
@@ -41,12 +41,12 @@
   - **유효:** E3 메모리 합계 5,918 MiB·CPU 51.2 % · R09(3분) 유실 0·중복 0 · E7 99.17 % · E12 인증 없이 열린 접점 10/11 · E1 30회 p95 중앙값 Kafka 1.67 s·FUXA 태그 1.84 s·AI 사건 2.06 s · R01 브로커 10 s 정지 유실 0·복구 14 s · **R02 단절 10 s 유실 132·공백 12 s** · R07 업무 DB 다운 시 명령 거부·설비 불변.
   - **무효:** R03 이후(R03·R06·R08) — **Kafka 재시작 뒤 수집 중계기(Telegraf#1)가 로그 없이 정지**(대장 S2)해 오염. 11:08:39 중계기 수동 재시작(`experiments/EXP-001/manual_actions.log`).
 - **바로 다음(순서대로):**
-  1. `harness/e2e/baseline.sh` 의 `wait_flow` 를 **"2분 연속 흐름"** 으로 고친다(지금은 Influx 최근 3초만 봐서 잠깐 흘렀다 멈추는 것을 복구로 오판). R01·R02·R07 은 유효하므로 건너뛰는 인자를 넣고 **R03·R06·R08·R11·E11 만** `PHASES=3` 으로 다시(EXP-001 에 새 실행 ID, 분리 실행). S2 가 재현되면 그것이 V1 기준값이다(복구 안 됨 = 수동 필요).
+  1. `harness/e2e/baseline.sh` 의 `wait_flow` 를 **"2분 연속 흐름"** 으로 고친다(지금은 Influx 최근 3초만 봐서 잠깐 흘렀다 멈추는 것을 복구로 오판). R07 은 유효하므로 건너뛰는 인자를 넣고 **R01·R02·R03 은 3회**(복구 시간은 QUESTIONS §1 "3회 이상 중앙값" — 1회로 줄였던 것은 충돌), **R06·R08·R11·E11 은 1회** 다시(EXP-001 에 새 실행 ID, 분리 실행). S2 가 재현되면 그것이 V1 기준값이다(복구 안 됨 = 수동 필요).
   2. `sh harness/tools/internal_errors.sh 30m experiments/EXP-001/internal_errors_V1.json` → 새 오류를 `reports/STABILITY.md` 에 추가.
   3. EXP-001 최종 결과를 decision-log 에 기록.
   4. 격리 스택 내림: `docker compose --env-file .env --env-file .env.rotation stop` / `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge stop`(볼륨 보존).
-  5. **층별 후보 ② 실행:** PowerShell `Start-Process D:\dev\Git\bin\bash.exe -ArgumentList '-c "cd /d/work/study/scada-rotation && sh harness/run_lanes.sh"'` — 무거운 줄(l4·backbone·ts)과 가벼운 줄(broker·ingest·pipe·alw·mon·alarm·hmi) 동시, 메모리 4.5 GB 대기 장치. 결과 `experiments/EXP-*/stage2_*.json`, 요약 `experiments/STAGE2_RUNS.log`(실행 시 생성). 첫 몇 후보의 실제 소요를 재고 병목부터 줄인다. 각 후보 뒤 내부 오류 수집. ②에서 떨어지면 뒤 단계 생략, 살아남은 1~2개만 ③ 성능·④ 비정상(`stage4*`). 각 벤치 `STAGE2.md` 에 판정 항목.
-  6. 층 승자 + 대장 해결 + 구조 패턴(`CANDIDATES.md` §11: 브로커 Kafka 브리지로 Telegraf#1 제거, HMI 브로커 직접 구독, 저장소 3→2, 명령 경로 일원화 등)으로 **V2 조립** → EXP-001 과 같은 전체 측정 + S01~S25·G0~G10 회귀 → 통과 시 태그 `v2`. Flink HA 설정은 여기서 켠다(`harness/l4bench` profile `flinkha` 로 먼저 확인).
+  5. **층별 후보 ② 실행:** PowerShell `Start-Process D:\dev\Git\bin\bash.exe -ArgumentList '-c "cd /d/work/study/scada-rotation && sh harness/run_lanes.sh"'` — 무거운 줄(l4·backbone·ts)과 가벼운 줄(broker·ingest·pipe·alw·mon·alarm·hmi) 동시, 메모리 4.5 GB 대기 장치. 결과 `experiments/EXP-*/stage2_*.json`, 요약 `experiments/STAGE2_RUNS.log`(실행 시 생성). 첫 몇 후보의 실제 소요를 재고 병목부터 줄인다. 각 후보 뒤 내부 오류 수집. ②에서 떨어지면 뒤 단계 생략, 살아남은 1~2개만 ③ 성능·④ 비정상(`stage4*`). 각 벤치 `STAGE2.md` 에 판정 항목. 브로커는 Mosquitto 조건부 4항목(단절·과부하·느린 구독자·장시간, `harness/brokerbench/stage4_mosq.sh`)도 여기서 끝낸다(`harness/situations/BROKER.md`).
+  6. 층 승자 + 대장 해결 + **구조 재조립 대상 5개**(원 지시): ① 알람 되돌림(알람이 Kafka→Telegraf#3→EMQX 로 되돌아가 화면에 오는 12단계) ② 중계 5중(EMQX·Telegraf×3·Kafka) ③ EdgeX·FUXA 설비 이중 폴링 ④ 설비 쓰기 경로 3개(FUXA·EdgeX 명령·AI 조치) ⑤ 저장소 3개(InfluxDB·PostgreSQL·Neo4j) — 각각 제거하거나 남긴 이유를 실측으로. 패턴 후보는 `CANDIDATES.md` §11. 이것으로 **V2 조립** → EXP-001 과 같은 전체 측정 + S01~S25·G0~G10 회귀 → 통과 시 태그 `v2`. Flink HA 설정은 여기서 켠다(`harness/l4bench` profile `flinkha` 로 먼저 확인).
   7. 다음 회전은 대장 "열림"·조건부 층만. 개선 없는 회전에서 멈춤.
   8. 보고 문서 2개(§9).
 
@@ -90,6 +90,7 @@
 ## 9. 보고 문서 2개 (실측이 끝난 뒤, 사양 09-29 확정)
 - **문서 1 `reports/REPORT.md`(+HTML) 대표님 보고서 — 짧게, 대조 중심:** ① 한 장 요약(무엇을 바꿨고·얼마나 나아졌고·무엇을 잃었나) ② 변경 전후 아키텍처 그림 두 장을 같은 L1~L9 틀로 나란히(제거 부품은 흐린 점선, 새 부품 강조, 알람→화면 경로를 같은 색으로 따라가 단계 수 비교) ③ 층별 대조표(원래 → 바뀐 것 → 왜 → 실측, 유지한 층도 이유) ④ 안정성 궤적(대장의 열림→닫힘, 회전별) ⑤ 엑셀형 점수표(`harness/tools/scorecard.py`, 미측정 표시, 증거에서 재계산) 부록. AI 층 표는 `harness/tools/report_ai.py`.
 - **문서 2 쉬운 시스템 설명서(최종 버전):** `docs/소스코드로_확인한_아주쉬운_시스템설명.html`(V1판, 보존)과 같은 순서(① 설비 → ② 전체 아키텍처 한 장 → ③ "교반기의 떨림 하나가 화면의 경고가 되기까지")와 문체로 새 파일. 바뀐 단계마다 "V1에서는 → 이제는" 상자, L1~L9 가로 레이어, 색 규칙(파랑 데이터·보라 AI·주황 명령), 화살표 교차 없이, 모든 화살표를 실제 코드·설정과 대조.
+- 사용자 TODO DoD 8(배속 결과 = 배속 도입 전 결과)은 새로 느린 실행을 하지 않고 배속 도입 전 기록(`experiments/EXP-AI` 저속 회차, `EXP-000`)과 같은 시나리오를 대조해 판정한다.
 - STUDY 규칙: 작업을 마치면 `D:/work/작업보고/<날짜>.md` 갱신 — 세션 2(2026-09-29) 분은 아직 안 함.
 
 ## 10. 자산 지도
