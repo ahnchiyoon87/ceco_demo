@@ -1,0 +1,250 @@
+<title>SCADA 베이스 설계</title>
+<style>
+:root{
+  --bg:#f6f7f5; --panel:#ffffff; --ink:#1d2320; --muted:#5b645f; --line:#d9ddd8;
+  --ot:#b8452f; --ot-bg:#fbeee9; --dmz:#9a6b12; --dmz-bg:#fbf3e2; --it:#1f6f8b; --it-bg:#e8f3f7;
+  --ok:#2f7a4a; --warn:#a15c07; --accent:#1f6f8b; --code:#eef1ee;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
+    --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
+    --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
+  --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
+  --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header .kicker{font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-size:28px;line-height:1.3;margin:4px 0 8px;text-wrap:balance}
+h2{font-size:20px;margin:0 0 12px;text-wrap:balance;border-bottom:2px solid var(--line);padding-bottom:6px}
+h3{font-size:16px;margin:16px 0 6px}
+p{margin:0 0 10px;max-width:72ch}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+.lead{font-size:16px;max-width:75ch}
+.muted{color:var(--muted)}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:13px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:760px){.grid3,.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.card b{display:block;margin-bottom:4px}
+.zone{border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.zone h4{margin:0 0 4px;font-size:14px;letter-spacing:.04em}
+.z-ot{background:var(--ot-bg);border:1px solid var(--ot)} .z-ot h4{color:var(--ot)}
+.z-dmz{background:var(--dmz-bg);border:1px solid var(--dmz)} .z-dmz h4{color:var(--dmz)}
+.z-it{background:var(--it-bg);border:1px solid var(--it)} .z-it h4{color:var(--it)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:13.5px}
+.box small{color:var(--muted);display:block}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+td.same{color:var(--ok);font-weight:600}
+td.swap{color:var(--warn);font-weight:600}
+ul{margin:0;padding-left:20px} li{margin:3px 0}
+.flow{font-size:14px;display:flex;flex-direction:column;gap:8px}
+.flow div{padding:8px 10px;border-left:4px solid var(--accent);background:var(--code);border-radius:4px}
+.tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--muted);margin-left:4px}
+footer{font-size:13px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">경남대 제조 AI 과정 · IIoT·SCADA 실습 시스템 · 2026-09-29</div>
+  <h1>SCADA 베이스 설계 — 현업 조사로 정한 구조와 스택</h1>
+  <p class="lead">학생이 배우는 시스템을 <b>2026년 제조 현업에서 주로 쓰는 구조와 스택</b>에 맞춘다. 현업 조사 네 건(구조·세부·스택·무료 대체품)으로 무엇을 왜 쓰는지 정했고, 조립과 검증은 다음 단계에서 한 번에 한다. 이 문서는 <b>계획과 근거</b>다. 새 베이스의 실측 결과는 아직 없다.</p>
+</header>
+
+<section>
+  <h2>한눈에</h2>
+  <div class="grid3">
+    <div class="card"><b>기준</b>① 현업에서 주로 쓰는 것 ② 비용 0·라이선스·도커 ③ 경량화(현업 수준은 유지). 학생 PC 한 대(도커 7.6 GB)에서 돈다.</div>
+    <div class="card"><b>원본은 그대로</b>원본 폴더 <code>lecture-iiot-scada</code>는 고치지 않는다. 복사본에서 원본 V1 코드를 출발점으로 바꾸며, 원본 기능은 잃지 않는 것이 기준이다.</div>
+    <div class="card"><b>순서</b>베이스(구조·스택 확정 → 조립 → 검증) → 설비 확장(다수·OPC UA) → 시나리오·온톨로지. 이후 피지컬 AI에 쓴다.</div>
+  </div>
+</section>
+
+<section>
+  <h2>1. 현업은 어떤 구조인가</h2>
+  <p>공공 표준 원문(NIST SP 800-82r3, CISA 망 분리 권고 2016, CISA 등 9개 기관 AI-OT 지침 2025, NAMUR NE 178, Sparkplug 3.0)으로 확인한 공통 모양이다.</p>
+  <div class="grid3">
+    <div class="zone z-ot"><h4>OT · 공장</h4>
+      <div class="box">설비 · 센서</div>
+      <div class="box">PLC(제어기)<small>인터록·운전 모드·명령 최종 판단</small></div>
+      <div class="box">엣지 연결<small>프로토콜 변환, 끊기면 저장 후 전송</small></div>
+      <div class="box">MQTT 허브(UNS)<small>모든 설비의 "지금 상태"</small></div>
+      <div class="box">SCADA 화면<small>IT가 멈춰도 동작</small></div>
+    </div>
+    <div class="zone z-dmz"><h4>DMZ · 완충지대</h4>
+      <div class="box">위로 복제<small>OT 데이터를 IT로 밀어냄</small></div>
+      <div class="box">명령 검증 통로<small>IT→OT 명령은 여기 하나로</small></div>
+      <div class="box">감시 수집</div>
+    </div>
+    <div class="zone z-it"><h4>IT · 분석</h4>
+      <div class="box">Kafka형 장부<small>보관·다시 읽기·여러 소비자</small></div>
+      <div class="box">실시간 탐지</div>
+      <div class="box">이력 저장 · 대시보드</div>
+      <div class="box">플랫폼 감시<small>공정 알람과 분리</small></div>
+      <div class="box">AI<small>읽고 추천만, 설비 직접 쓰기 없음</small></div>
+    </div>
+  </div>
+  <h3>현업 원칙</h3>
+  <ul>
+    <li>IT에서 OT로 바로 가는 길은 없다. 명령은 사람 승인 → 검증 통로 하나 → 제어기가 최종 판단한다.</li>
+    <li>설비가 늘어도 층은 그대로다. 설비 이름 체계(ISA-95), 토픽 규칙, 설비 종류별 모델, 엣지 노드로 흡수한다.</li>
+    <li>2026 흐름: UNS와 Kafka의 결합, 설비 모델·맥락화(DataOps), 에이전트형 AI 시작, AI는 OT 밖 읽기 전용.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2. 현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h2>
+  <div class="tbl"><table>
+    <tr><th>항목</th><th>현업</th><th>참조 v3</th><th>우리 원본 V1</th></tr>
+    <tr><td>망 구분</td><td>OT·DMZ·IT</td><td>있음</td><td>없음(망 하나)</td></tr>
+    <tr><td>PLC 층</td><td>있음(최종 판단)</td><td>soft-PLC</td><td>없음(가상설비가 쓰기를 직접 받음)</td></tr>
+    <tr><td>명령(쓰기) 길</td><td>수동 하나 + 검증 통로 하나</td><td>같음</td><td>3개(FUXA 직접, EdgeX, AI 조치)</td></tr>
+    <tr><td>화면이 값을 읽는 길</td><td>한 곳에서</td><td>MQTT 구독</td><td>Modbus 직접 + EdgeX 따로(이중)</td></tr>
+    <tr><td>AI 권한</td><td>읽기·추천만</td><td>명령 권한 없음</td><td>조치 코드가 설비에 직접 씀</td></tr>
+    <tr><td>설비 등록부</td><td>설비 모델 정본</td><td>없음</td><td>없음</td></tr>
+    <tr><td>알람</td><td>공정 알람과 분석 경고 분리, 수명주기</td><td>경보 분리</td><td>Flink 알람을 화면에 바로 표시</td></tr>
+    <tr><td>MQTT → Kafka 분리</td><td>있음</td><td>있음</td><td class="same">있음</td></tr>
+    <tr><td>엣지 연결 층</td><td>있음</td><td>있음</td><td class="same">있음(EdgeX)</td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:10px">v3와 우리 구조도는 비교 대상이고, 판단은 현업 조사로 했다. 원본 V1의 뼈대(엣지 → MQTT → Kafka → Flink)는 현업과 맞다. 고칠 곳은 망·PLC·명령 길·등록부다.</p>
+</section>
+
+<section>
+  <h2>3. 우리가 만들 베이스</h2>
+  <div class="grid3">
+    <div class="zone z-ot"><h4>OT · ot-net</h4>
+      <div class="box">가상설비 7대 · 배속 600<small>나중에 OPC UA 설비 추가</small></div>
+      <div class="box">OpenPLC v4 <span class="tag">새로</span><small>설비에 붙는 것은 PLC 하나</small></div>
+      <div class="box">엣지: Node-RED 또는 EdgeX<small>조립 때 실측으로 결정</small></div>
+      <div class="box">Mosquitto 하나<small>브로커 2개 → 1개</small></div>
+      <div class="box">FUXA 화면<small>허브 구독 + cmd 발행</small></div>
+    </div>
+    <div class="zone z-dmz"><h4>DMZ · dmz-net</h4>
+      <div class="box">Bento<small>MQTT → Kafka 복제, 알람 표시용 전달</small></div>
+      <div class="box">명령 게이트웨이 <span class="tag">새로</span><small>만료·중복·모드·범위 검사</small></div>
+    </div>
+    <div class="zone z-it"><h4>IT · it-net</h4>
+      <div class="box">Kafka · Flink(HA)</div>
+      <div class="box">InfluxDB · Grafana</div>
+      <div class="box">Prometheus<small>공정 알람과 분리</small></div>
+      <div class="box">설비 등록부 <span class="tag">새로</span><small>토픽·키·규칙·온톨로지의 같은 ID</small></div>
+      <div class="box">AI(Neo4j·LangGraph) · 승인 흐름<small>AI 도구는 읽기 전용</small></div>
+    </div>
+  </div>
+  <h3>흐름</h3>
+  <div class="flow">
+    <div><b>데이터 ↑</b> 설비 → PLC → 엣지 → Mosquitto → DMZ 복제 → Kafka → Flink 탐지·InfluxDB 저장 → Grafana·AI. 값마다 시각과 품질(끊기면 STALE)을 붙인다. 토픽은 <code>공장/구역/라인/설비/종류/태그</code>.</div>
+    <div><b>명령 ↓</b> 운전원: FUXA → <code>cmd</code> → 엣지 → PLC 검사 → 설비. AI 제안: 사람 승인 → Kafka 명령 → 게이트웨이 검사 → 엣지 → PLC 최종 검사. 확인은 PLC 응답과 바뀐 값 두 겹. AI·화면의 직접 쓰기는 없다.</div>
+    <div><b>알람</b> 공정 알람은 PLC·화면이 만들고, Flink 결과는 "분석 경고"로 따로 보여 준다. 반복 경고는 사건 하나로 묶어 AI가 원인을 본다. 서버 이상은 인프라 담당에게만 간다.</div>
+    <div><b>설비 추가</b> 층은 그대로. 설비 등록부(종류 모델 + 설비 목록)에 한 줄 더하면 엣지 설정·토픽·Kafka 키·탐지 범위·온톨로지 노드가 함께 만들어진다.</div>
+  </div>
+</section>
+
+<section>
+  <h2>4. 칸별 스택 — 현업은 주로 무엇, 우리는 무엇, 왜</h2>
+  <div class="tbl"><table>
+    <tr><th>칸</th><th>현업에서 주로</th><th>우리</th><th>왜</th></tr>
+    <tr><td>PLC</td><td>제조사 PLC, CODESYS 등(상용)</td><td class="swap">OpenPLC v4.2.4</td><td>상용은 유료·체험판(CODESYS 2시간 데모). 무료 중 공식 도커 이미지가 있는 유일한 후보, IEC 61131-3 다섯 언어, 논문 138편, 대학 PLC 과목</td></tr>
+    <tr><td>엣지 연결</td><td>Kepware·Ignition Edge·Litmus(상용)</td><td class="swap">Node-RED 또는 EdgeX</td><td>상용은 유료. Node-RED는 무료 중 사용 근거가 더 많고(산업 논문 486편 대 33편) 가볍다. EdgeX는 장치 등록·명령·끊김 시 저장을 기본 제공. 조립 때 나란히 재서 정한다</td></tr>
+    <tr><td>MQTT 브로커</td><td>EMQX·HiveMQ·Mosquitto</td><td class="same">Mosquitto 2.1.2</td><td>현업에서 널리 씀. EMQX는 5.9부터 BSL 라이선스</td></tr>
+    <tr><td>MQTT→Kafka</td><td>브로커 확장(상용), Kafka Connect(독점 커넥터 많음)</td><td class="swap">Bento 1.21.2</td><td>상용·독점 제외. MIT이고 원본과 같은 결과를 냈다</td></tr>
+    <tr><td>이벤트 장부</td><td>Kafka</td><td class="same">Kafka 4.3.1</td><td>현업과 같음</td></tr>
+    <tr><td>실시간 탐지</td><td>Flink</td><td class="same">Flink 2.2.1 + HA</td><td>현업과 같음. 원본과 판정 70/70 같고 재시작 자동 복구 실측</td></tr>
+    <tr><td>이력 저장</td><td>상용 히스토리언(AVEVA PI 등)</td><td class="swap">InfluxDB 2.9.1</td><td>상용은 유료. 무료 시계열 DB 1위(DB-Engines)</td></tr>
+    <tr><td>화면</td><td>WinCC·FactoryTalk·Ignition(상용)</td><td class="swap">FUXA 1.3.4</td><td>상용은 유료(Ignition 무료판은 비상업만). 무료로 MQTT·OPC UA·Modbus를 모두 갖춘 유일한 공정 HMI</td></tr>
+    <tr><td>대시보드</td><td>Grafana</td><td class="same">Grafana 13.2</td><td>현업과 같음</td></tr>
+    <tr><td>플랫폼 감시</td><td>Prometheus</td><td class="same">Prometheus 3.13 LTS</td><td>현업과 같음</td></tr>
+    <tr><td>지식 그래프</td><td>Neo4j</td><td class="same">Neo4j 5.26 CE</td><td>현업과 같음(무료판)</td></tr>
+    <tr><td>업무 DB</td><td>PostgreSQL</td><td class="same">PostgreSQL 18.6</td><td>현업과 같음</td></tr>
+    <tr><td>설비 등록부·승인·알람 관리</td><td>상용 플랫폼(AAS 기반, Camunda, 알람 관리 제품)</td><td class="swap">자체 + PostgreSQL</td><td>맞는 무료 제품이 없다(Camunda 8 운영 유료, BaSyx 정식판 없음). 속성 이름은 AAS·ISA-95·ISA-18.2를 따른다</td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:10px">초록 = 현업과 같은 제품. 주황 = 현업 주류가 상용이라 무료 제품으로 대신한 칸(학생에게 "현업은 보통 상용"이라고 설명).</p>
+</section>
+
+<section>
+  <h2>5. 주요 결정과 이유</h2>
+  <div class="grid2">
+    <div class="card"><b>엣지는 실측으로 정한다</b>Node-RED와 EdgeX를 같은 설비에 붙여 12태그 누락, 명령→PLC→응답, 10초 단절 복구·유실, 메모리, 설비 자동 추가를 잰다. 둘 다 합격이면 Node-RED(가볍고 더 많이 쓰임), 하나만이면 그쪽.</div>
+    <div class="card"><b>버전 규칙</b>제품을 빼는 경우는 개발이 멈췄거나 라이선스가 유료·제한형으로 바뀐 경우뿐이다. 판마다 있는 지원 종료일은 이유가 아니다. 학기마다 같은 메이저 안 최신 부 버전으로 올린다.</div>
+    <div class="card"><b>경량화의 뜻</b>현업 수준을 유지한 채 가벼운 판·설정 조정·선택 기능 프로필·중복 합치기로 줄인다. 층을 빼지 않는다. 성능·안정성이 원본보다 나빠지면 쓰지 않는다.</div>
+    <div class="card"><b>피지컬 AI</b>이 시스템은 이후 피지컬 AI(AI가 설비·로봇을 보고 움직이게 함)에 쓴다. 필요한 것(로봇 층, 카메라, AI의 설비 조작)은 다음 조사로 정한다. 승인 → 검증 → PLC 최종 판단 길과 설비 등록부가 받침이다.</div>
+  </div>
+</section>
+
+<section>
+  <h2>6. 원본에서 바뀌는 것 · 그대로인 것</h2>
+  <div class="grid2">
+    <div class="card"><b>바뀌는 것</b><ul>
+      <li>망 3구역(ot·dmz·it)</li>
+      <li>PLC 층 추가, 설비에 붙는 것은 PLC 하나</li>
+      <li>쓰기 길 3개 → 수동 하나 + 검증 통로 하나</li>
+      <li>결과 확인을 시뮬레이터 API 대신 PLC 응답으로</li>
+      <li>설비 등록부 추가</li>
+      <li>MQTT 브로커 2개 → Mosquitto 하나, Telegraf 3개 → Bento</li>
+      <li>Kafka·Flink·InfluxDB·Grafana·Prometheus를 지원되는 판으로</li>
+      <li>엣지가 Node-RED로 정해지면 수업의 EdgeX 차시가 바뀐다</li>
+    </ul></div>
+    <div class="card"><b>그대로인 것</b><ul>
+      <li>원본 폴더 <code>lecture-iiot-scada</code>(수정하지 않음)</li>
+      <li>가상설비 7대·센서 12개·고장 시나리오·배속 600</li>
+      <li>탐지 규칙(임계치·Z-Score·CEP)과 학습된 오토인코더 모델</li>
+      <li>AI 층(에이전트·온톨로지·매뉴얼 검색)</li>
+      <li>수업 자료가 쓰는 계측 토픽 <code>edgex/telemetry</code></li>
+      <li>확인 스크립트 <code>scripts/verify.py</code></li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>7. 검증 계획 — 원본(V1) 기준값과 비교</h2>
+  <div class="tbl"><table>
+    <tr><th>항목</th><th>원본 V1 실측(배속 600)</th><th>새 베이스 합격선</th></tr>
+    <tr><td>탐지 정확도</td><td>판정 70/70</td><td>같음(조금도 나빠지면 안 됨)</td></tr>
+    <tr><td>고장 → 알람</td><td>최대 8.1초(베어링)</td><td>모든 고장 10초 안</td></tr>
+    <tr><td>알람 → 화면 지연 p95</td><td>FUXA 1.84초</td><td>+5% 이내</td></tr>
+    <tr><td>브로커 10초 정지</td><td>3회 중 2회 스스로 복구 못 함</td><td>3회 모두 스스로 복구</td></tr>
+    <tr><td>수집기 10초 단절</td><td>복구 7.3초 · 유실 120</td><td>더 나쁘지 않음</td></tr>
+    <tr><td>탐지기 재시작</td><td>잡 소멸 · 알람 유실</td><td>스스로 복구(HA)</td></tr>
+    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29</td><td>도커 7.6 GB 안</td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:10px">과부하·장시간 시험은 개인 실습 목적에 과해서 하지 않는다. 성능·복구 시간은 3회 중앙값.</p>
+</section>
+
+<section>
+  <h2>8. 근거가 약한 곳 · 확인 못 한 것</h2>
+  <ul>
+    <li>"현업 주류"의 근거는 표준·독립 분석·설문이다. 이름 있는 공장의 내부 구성과 채택률 수치는 공개 자료에 없다.</li>
+    <li>무료 제품끼리의 점유율 설문은 없다. 논문 수·대학 수업·재단·개발 활동으로 비교했다.</li>
+    <li>세부 결정 조사는 출처 90개 중 62곳이 검색 요약만 본 것이다. 채택 전에 핵심 근거는 원문으로 확인한다.</li>
+    <li>새 베이스의 메모리 합계는 재지 않았다. 잰 칸만 약 4,960 MiB, 미측정 5칸(PLC·엣지·게이트웨이·AI 백엔드·승인).</li>
+    <li>Node-RED는 아직 우리 설비에서 재 본 적이 없다(엣지 실측으로 확인).</li>
+    <li>원본에 안정화 수정 5가지를 얹어 확인했을 때 결측 주입 관련 검사 3개가 실패했다. 원인 미확인, 조립 때 처리.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>9. 다음 단계</h2>
+  <div class="flow">
+    <div><b>1</b> 피지컬 AI 조사(질문 목록을 먼저 보여 드린 뒤)</div>
+    <div><b>2</b> 구조 확정 보고(한 장)</div>
+    <div><b>3</b> 조립: 엣지 나란히 실측 → 선택 → 전체 조립, 기능 대응표 작성</div>
+    <div><b>4</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
+    <div><b>5</b> 결과 보고서(이 틀에 실측 결과를 채움) → 설비 확장 → 시나리오·온톨로지</div>
+  </div>
+</section>
+
+<footer>근거 원문: <code>scada-rotation/docs/research/deep-2026-09-29/12~15</code> · 기준·상태 정본: <code>HANDOFF.md</code> · 질문과 답: <code>reports/QA.md</code> · 결정 경위: <code>reports/decision-log.md</code></footer>
+</div>
