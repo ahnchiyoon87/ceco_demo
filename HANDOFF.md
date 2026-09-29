@@ -7,7 +7,7 @@
 
 ## 0. 새 세션이 처음 할 일
 1. 실제 상태를 대조한다: `git status`, `docker ps -a`(§6과 다르면 실제가 우선이고 이 파일을 고친다).
-2. 이 파일을 끝까지 읽는다. 이어서 `reports/QA.md`(사용자 질문과 확정 답)를 끝까지 읽는다 — 같은 질문에는 그 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
+2. 이 파일을 끝까지 읽는다. 이어서 `reports/QA.md`(사용자 지시 원문과 질문·확정 답)를 끝까지 읽는다. 사용자 발화 전체와 반영 위치는 `reports/사용자발화_2026-09-29.md` — 같은 질문에는 그 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
 3. 조사 결과를 끝까지 읽는다(모두 `docs/research/deep-2026-09-29/`). 구조와 스택은 함께 본다.
    - `12-industry-structure.md` — 현업 구조, v3·우리 비교, 권장 베이스 (요지 §2-1)
    - `13-industry-detail.md` — 세부 결정 29줄 (요지 §2-2)
@@ -96,7 +96,7 @@
 | 이력 | InfluxDB 2.9.1 | 버전만 |
 | 화면 | FUXA 1.3.4(UNS 구독 + `cmd` 발행) | 유지, 구성 변경 |
 | 대시보드 | Grafana 13.2.3 | 버전만 |
-| 감시 | Prometheus 3.13 LTS, Alertmanager(플랫폼 경보 전달, V1 기능 보존. 14번에 판이 없으므로 조립 때 최신 부 버전으로), cAdvisor 0.60.6, kafka-exporter 1.10.0 | 버전만 |
+| 감시 | Prometheus 3.13 LTS, Alertmanager(플랫폼 경보 전달, V1 기능 보존. 14번에 판이 없으므로 조립 때 최신 부 버전으로). 감시는 기본으로 켠다, cAdvisor 0.60.6, kafka-exporter 1.10.0 | 버전만 |
 | 설비 등록부 | 자체(YAML/JSON → PostgreSQL 표·Neo4j 노드). 정본 파일은 저장소에 두고, 생성 스크립트가 각 망의 설정(엣지·토픽·키·규칙 범위)을 배포 전에 만든다 | 추가 |
 | AI·지식 | Neo4j 5.26 LTS CE, LangGraph, LiteLLM(1.82.7·1.82.8 금지) | 유지, 도구 읽기 전용 |
 | 승인 흐름 | 자체(PostgreSQL). 승인·ACK 대기·재관측 타이머를 자체 코드로 감당하기 어려우면(단계 4에서 판단) Operaton 2.1.5 | 유지 |
@@ -244,7 +244,7 @@
 - **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`.
 - **이미지:** 직접 빌드한 것(rot-flink-onnx:v2, rot-plant-simulator:v2-ts, e2e-client:1.0, l4bench-tools:1.0), iiot/model-trainer:1.0, AI(rot-ai-*, neo4j, postgres:17, ollama), 지금 받아 둔 공개 이미지(권장 판은 §2-3이며 조립 때 권장 판을 받는다: apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, python:3.12-slim).
 - **코드:** V1 원본(`docker-compose.yml`, `docker-compose.edgex.yml`, edgex/·emqx/·telegraf/·kafka/·flink/·fuxa/·grafana/·prometheus/·ml/), 배속 600 가상설비(`simulator/`, `docker-compose.timescale.yml`), Flink 2.2.1 HA 빌드, 측정 도구(`harness/`), AI 층(`ai-layer/compose.v2.yml`, `ontology/v2`, `knowledge-docs`).
-- **다른 프로젝트:** 같은 도커에 다른 프로젝트 컨테이너(예: `capstone-luna-guide-*`)가 떠 있을 수 있다. 건드리지 않는다. 메모리 측정은 이 프로젝트(`rot-*`) 합계로 세고, 도커 전체 여유가 부족하면 사용자에게 알린다.
+- **다른 프로젝트·다른 세션:** 같은 도커에 다른 프로젝트 컨테이너(예: `capstone-luna-guide-*`)나 다른 세션의 작업이 있을 수 있다. 평소에는 건드리지 않고, 사용자가 정리하라고 하면 정리한다(자동 권한 판정기가 막으면 사용자가 수동 승인). 측정은 이 프로젝트(`rot-*`) 합계로 세고, 도커 전체 여유가 부족하면 사용자에게 알린다.
 - **git:** 브랜치 `exp/stack-rotation-202609`, 기준 태그 `v1-original`, push 안 함. 옛 문서·V2 구성은 커밋 `bdced23`에 있다.
 
 ## 7. 넘으면 안 되는 선
@@ -264,7 +264,8 @@
 | 위치 | 역할 |
 |---|---|
 | `HANDOFF.md` | 유일한 정본 |
-| `reports/QA.md` | 사용자 질문과 확정 답(이유를 쉬운 말로). 대화 원문 위치도 적혀 있다 |
+| `reports/QA.md` | 사용자 지시 원문(핵심)과 질문·확정 답(이유를 쉬운 말로). 대화 원문 위치도 적혀 있다 |
+| `reports/사용자발화_2026-09-29.md` | 이 세션 사용자 발화 전부(원문)와 인계 반영 위치 |
 | `reports/REPORT_base_plan.html` | 베이스 설계 보고서(결정 이유·현업 조사 대조·만들 구조·검증 계획). 조립·검증 뒤 같은 틀에 실측 결과를 채운다 |
 | `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서(목표, 우리 구조 요약, 부록 A v3, §6 세부, §7 스택, §8 무료 대체품 비교) |
 | `docs/research/deep-2026-09-29/12`~`15` | 현업 조사 결과(구조·세부·스택·무료 대체품 비교, 모두 완료) |
