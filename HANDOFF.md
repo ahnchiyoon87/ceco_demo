@@ -14,7 +14,8 @@
 4. **관찰된 내부 오류는 고친다**(안정성 대장), 관찰 없는 설정 보강은 안 한다(#96).
 5. 시험 범위 = 그 제품이 닿는 앞뒤 구간. 같은 층 후보는 같은 입력으로 나란히(두 줄 동시 `harness/run_lanes.sh`), 전체 스택 측정은 V1 기준·버전 확정 때만(#91).
 6. 효율 우선, 되돌릴 수 있는 일은 묻지 않고. 소요 시간은 짐작 말고 첫 실행을 재서 말한다.
-**지금 단계(11:0x):** EXP-001 V1 기준 전체 측정(V2 설비) 진행 중 — P1·E1·R01~R03 ✓, R06 에서 S2(저장 재개 안 됨) 발견·대기 한도 600 s. 끝나면 → `docker restart rot-telegraf-sink` 로 저장기를 살리고 기록(수동 조치) → R07·R08·R11·E11 이 이어짐(스크립트 자동) → 끝나면 `sh harness/tools/internal_errors.sh 30m experiments/EXP-001/internal_errors_V1.json`.
+**지금 단계(2026-09-29 11:10, 세션 2 종료):** EXP-001 V1 기준 전체 측정(V2 설비) — **유효:** P1 정상 3분(E3 5,918 MiB·CPU 51 %, R09 유실 0, E7 99.17 %, E12 열린 접점 10/11), E1 30회(p95 중앙값 Kafka 1.67 s·FUXA 1.84 s·AI 사건 2.06 s), R01(브로커 10 s 정지: 유실 0·복구 14 s), R02(단절 10 s: **유실 132·공백 12 s**), R07(업무 DB 다운: 명령 거부·설비 불변). **무효:** R03 이후 전부 — Kafka 재시작 뒤 수집 중계기가 조용히 멈춤(안정성 대장 S2, #97)으로 R03 "복구 10 s"·R06 "복구 안 됨"·R08 은 오염. 중계기 11:08:39 수동 재시작(흐름 재개 **미확인**).
+**바로 다음:** ① 원시 토픽 흐름 확인(`kafka-get-offsets.sh` 10초 증가) ② `harness/e2e/baseline.sh` 의 `wait_flow` 를 "2분 연속 흐름"으로 고쳐(잠깐 흘렀다 멈추는 것을 복구로 오판했음) R03·R06·R08·R11·E11 만 다시(`PHASES=3`, r01·r02·r07 은 유효하므로 건너뛰는 인자 추가) ③ 내부 오류 수집 `sh harness/tools/internal_errors.sh 30m experiments/EXP-001/internal_errors_V1.json` ④ decision-log 에 EXP-001 결과 기록 → 그다음 아래 "다음".
 **다음:** ① EXP-001 결과를 decision-log 에 기록 ② 격리 스택 내림(`docker compose --env-file .env --env-file .env.rotation stop`, `docker compose -p rot-ai ... stop`) ③ `sh harness/run_lanes.sh`(분리 실행: PowerShell `Start-Process D:\dev\Git\bin\bash.exe`) → 층별 ② 결과·내부 오류 수집 ④ 층 승자 + 안정성 대장 해결 + 구조 패턴으로 V2 조립 → 같은 측정 → 회귀 → `v2` 태그 ⑤ 대장이 줄지 않을 때까지 회전 ⑥ 보고 문서 2개.
 **작업 요령:** Git Bash 컨테이너 경로 인자 `MSYS_NO_PATHCONV=1`. 긴 작업은 PowerShell `Start-Process` 로 분리(백그라운드 셸은 10분에 죽음). 모니터는 5~30분에 만료 → 다시 건다. Kafka 콘솔 소비기는 `--max-messages` 없이 쓰면 끝나지 않는다. Python 문자열에 Windows 경로는 raw 로. 서브에이전트에 격리 컨테이너 exec 금지를 명시.
 
