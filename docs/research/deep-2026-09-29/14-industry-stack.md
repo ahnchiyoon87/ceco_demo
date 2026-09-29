@@ -1,0 +1,503 @@
+# 14 · 칸마다 현업 주류 제품과 도커 버전 (스택 조사)
+
+- 의뢰서: `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` §1·§3·§5·§7 (전문 읽음)
+- 칸 목록: 1차 결과 `12-industry-structure.md` §4-5 권장 베이스 B0~B13 (전문 읽음). 우리 V1 칸 목록에 기대지 않았다.
+- 세부 질문(§6)은 13번 파일 담당이라 여기서는 제품·버전만 다룬다.
+- 확인일: 모든 출처 2026-09-29.
+- 방식: 문헌 조사만. docker·컨테이너는 건드리지 않았다. 기존 파일은 고치지 않았다.
+- 근거 종류: [독립 설문] / [공개 사례] / [재단·저장소 지표] / [벤더 홍보]. 공식 문서(릴리스 노트·지원 정책·라이선스 파일)는 [공식 문서]로 적는다.
+- 표기: 확인 못 한 것 `[미확인]`. 검색 요약에서만 본 것 "(검색 발췌)". 추정은 쓰지 않는다. 우리 판단은 "판단"이라고 적는다.
+- 관문(§1): 비용 0 / BSL·SSPL·TSL·RCL·체험판 금지 / 2027-09-29 이후까지 지원(12개월) / `latest` 태그 금지 / PC 한 대 Docker 7.6 GB.
+
+---
+
+## 최종 권장 스택 표
+
+표기: **고정** = 이 판이 2027-09-29 이후까지 지원. **롤링** = 공식 정책이 최신(또는 최근 N개) 마이너만 지원 → 같은 메이저 안에서 따라 올려야 관문 통과(§0). **조건부** = 지금 관문을 완전히 통과하는 판이 없어 사람 승인이 필요. 메모리는 "공식 문서 값 / 우리 기존 실측(프로젝트 기록)"이다. 순위 근거가 약하면 (약함).
+
+| 칸 | 제품 | 버전 | 이미지 태그 | 라이선스 | 지원 종료 | 메모리 | 현업 주류 순위 | 선택 이유 |
+|---|---|---|---|---|---|---|---|---|
+| B0 설비 시뮬레이터 | pymodbus(자체 시뮬레이터) / OPC UA 단계: Microsoft OPC PLC | 3.15.0 / 2.15.4 | 자체 이미지(`python:3.12-slim` 기반) / `mcr.microsoft.com/iotedge/opc-plc:2.15.4` | BSD-3-Clause / MIT | 정책 없음 [미확인] → 롤링 | 문서 없음 / V1 실측 38 MiB | 교육·시험 도구라 순위 자료 없음 (약함) | V1 물리 모델 유지. 붙는 것은 B1 하나로 |
+| B1 soft-PLC | OpenPLC Runtime v4 (2안: 자체 Python 제어기) | v4.2.4 | `ghcr.io/autonomy-logic/openplc-runtime:v4.2.4` | MIT | 정책 없음 → 롤링 | 문서 예시 한도 1 GB / 미측정 | 주류 CODESYS·벤더 vPLC는 유료·2시간 데모(관문 제외). OpenPLC는 무료 중 1위 (약함) | Modbus 마스터 지원 확인. 운전 모드·인터록·ACK를 제어기가 갖는 현업 모양 |
+| B2 엣지 연결 | **Node-RED** (2안: EdgeX 4.0.2 조건부) | 5.0.7 | `nodered/node-red:5.0.7` | Apache-2.0 | 5.x Active(EOL 미공표), 4.x는 2026-12-31 EOL → 롤링 | 문서 없음 / 미측정 (EdgeX 문서 최소 1 GB, 실측 158 MiB) | 상용(Kepware 등) 수치 [미확인]. OSS 내려받기 Node-RED 3.2억 > EdgeX 6만 (약함) | EdgeX 4.0 LTS 2027-03 종료로 관문 탈락. 읽기+쓰기+MQTT 무료. HiveMQ Edge는 쓰기가 유료 |
+| B3 MQTT 브로커(UNS) | Eclipse Mosquitto | 2.1.2 | `eclipse-mosquitto:2.1.2-alpine` | EPL-2.0 / EDL-1.0 | 정책 없음 [미확인] → 롤링 | 문서 없음 / 실측 약 5 MiB | 1위(내려받기 6.9억, EMQX 4,700만). MQTT 자체는 Eclipse 설문 49~56% 1위 | EMQX 5.9+ BSL, 5.8 EOL → 교체. 브로커 1개로 통합 |
+| B5 DMZ 중계 | Bento(상향 복제·알람 하향 표시) + 자체 명령 게이트웨이 | 1.21.2 | `ghcr.io/warpstreamlabs/bento:1.21.2` | MIT | 정책 없음 → 롤링 | 문서 없음 / 실측 85 MiB(1개) | 현업은 브로커 내장 Kafka 확장(상용·BSL)이 흔함 (약함) | V1 Telegraf 3대와 같은 결과, 710→85 MiB. Vector는 #22006 미해결 |
+| B6 이벤트 장부 | Apache Kafka (KRaft 단일) | 4.3.1 (4.3.2 나오면 올림) | `apache/kafka:4.3.1` | Apache-2.0 | 공식: "최근 3개 릴리스" → 롤링. (endoflife.date 2028-06-17은 Confluent 날짜) | 기본 힙 1 GB / 실측 839 MiB | 1위(SO 2024 설문 9.4%, IoT Analytics "Kafka·NATS") | 3.9는 지원 목록 밖. V1 경로 그대로 |
+| B7 스트림 처리·CEP·ML | Apache Flink + Kafka 커넥터 + ZooKeeper HA | 2.2.1 / 커넥터 5.0.0-2.2 / ZK 3.9.5 | `flink:2.2.1-java17`, `zookeeper:3.9.5` | Apache-2.0 | **조건부**: 2.4(목표 2026-11-20) 출시 뒤 2.2 지원 종료, 2.3은 Kafka 커넥터 없음 | 기본 JM 1600m·TM 1728m / 실측 Flink+ZK 1,581 MiB | 1위(관리형 서비스 다수가 Flink 제공, 내려받기 9,700만) — 독립 설문 수치 없음 | V1과 알람 같음 + JM 재시작 자동 복구 실측. 커넥터 2.3 나오면 2.3.x로 |
+| B8 공정 이력 | InfluxDB 2.x (2안: TimescaleDB Apache판) | 2.9.1 | `influxdb:2.9.1-alpine` | MIT | "current and previous minor"만, 2.x EOL 미공표 [미확인] | 캐시 기본 1 GiB / 실측 140 MiB | DB-Engines 시계열 1위(TimescaleDB 4위) | V1 2.7은 지원 밖. `latest`는 3 Core로 바뀜 → 태그 고정 |
+| B4 SCADA·HMI | FUXA | 1.3.4 | `frangoteam/fuxa:1.3.4` | MIT | 정책 없음 → 롤링. 1.3.4 이후 새 권고 없음 | 문서 없음 / 실측 83 MiB | 주류는 Siemens·GE·Rockwell 등 상용(ABI 2023). 무료 중 FUXA 1위 (약함) | 유지. Modbus 직접 접속 끊고 UNS 구독 + `cmd` 발행. 알람 확인(ack) 상태는 소스에 있음, 셸빙 없음 |
+| B9 대시보드 | Grafana | 13.2.3 | `grafana/grafana:13.2.3` | AGPL-3.0 | 13.2.x 2027-05-18 → 롤링(두 달마다 마이너) | 최소 512 MB / 실측 476 MiB | 1위(내려받기 53억) | V1 11.4는 2025-09 지원 종료 |
+| B10 플랫폼 감시 | Prometheus LTS + cAdvisor + kafka-exporter (Alertmanager는 선택) | 3.13.3 / v0.60.6 / v1.10.0 | `prom/prometheus:v3.13.3`, `ghcr.io/google/cadvisor:v0.60.6`, `danielqsj/kafka-exporter:v1.10.0` | Apache-2.0 | LTS 3.13은 2027-07-31 → 다음 LTS(2027-06 예정)로 롤링 | 공식 RAM 값 없음 / 실측 감시 4종 약 830 MiB | 1위(벤더 설문 67%, 내려받기 20억) | V1 Alertmanager 0.28·cAdvisor 0.49는 18개월+ 무패치. 공정 알람과 분리 |
+| B11 설비 등록부 | 자체 등록부(YAML/JSON → PostgreSQL 표·Neo4j 노드 생성) | — | (X3 PostgreSQL 사용) | — | — | — | 현업 표준은 AAS(IEC 63278-1)·OPC UA 정보 모델. BaSyx Java v2는 정식판 없음 (약함) | 컨테이너를 늘리지 않고 확장 계획의 받침을 만든다. 속성 이름은 AAS·ISA-95에 맞춤 |
+| B12 AI·지식 그래프 | Neo4j Community + LangGraph + LiteLLM | 5.26.31 / 1.2.12 / 1.103.0 | `neo4j:5.26.31-community`, `ghcr.io/berriai/litellm:v1.103.0` | GPLv3 / MIT / MIT(+`enterprise/` 별도) | Neo4j LTS 2028-06(Enterprise 기준, CE 보장 아님) / 나머지 롤링 | Neo4j 최소 2 GB(권장 16 GB) / 실측 742 MiB | Neo4j DB-Engines 그래프 1위 | 유지. 도구 읽기 전용, AI의 Modbus 직접 쓰기 제거. LiteLLM 1.82.7·1.82.8 금지 |
+| B13 승인·업무 흐름 | 자체 승인 흐름(PostgreSQL) — BPMN 선택 시 Operaton | — / 2.1.5 | `operaton/operaton:2.1.5`(선택) | Apache-2.0 | Operaton 2.1.x "Fully maintained", 날짜 없음 → 롤링 | 미측정 | 주류 Camunda는 7 CE EOL·8 운영 유료(관문 제외) (약함) | 필요한 것은 "승인→명령→ACK→재관측" 길. 엔진은 선택 |
+| X2 알람 수명주기 | FUXA 알람(공정) + PostgreSQL ISA-18.2 상태표(분석 alert) | — | — | — | — | — | 현업 주류는 Hexagon·Honeywell·Yokogawa 등 상용 (벤더 홍보) | Alerta는 상류 유지 중단 신호 → 서버 대신 상태 모델만 차용 |
+| X3 공통 업무 DB | PostgreSQL | 18.6 | `postgres:18.6-alpine` | PostgreSQL License | 2030-11-14 → 고정 | 기본 shared_buffers 128MB / 실측 54 MiB | 내려받기 116억 | B11·B13·X2·감사를 한 DB에. EdgeX 전용 DB 제거 |
+| X1 스키마 관리 | 넣지 않음(JSON Schema 파일 + 검사) | — | — | — | — | — | Confluent Schema Registry는 Confluent Community License(관문 제외), Apicurio 3.3.3 Apache-2.0 (약함) | 1차 5-C "줄여도 되는 것". 설명만 |
+
+**메모리 합계 추정 (실측 아님)**
+- **우리 기존 실측 기준 추정:** 값이 있는 칸만 더하면 시뮬레이터 38 + Mosquitto 약 6 + Bento 85×2(상향·하향) + Kafka 839 + Flink·ZK 1,581 + InfluxDB 140 + FUXA 83 + Grafana 476 + 감시 약 830 + Neo4j 742 + PostgreSQL 54 = **약 4,960 MiB**. 여기에 **미측정 칸**(OpenPLC, Node-RED, 명령 게이트웨이, AI 백엔드·LiteLLM, 승인 백엔드)이 더해진다. 참고로 V1 전체 실측은 29컨테이너 5,647~5,918 MiB였다(`reports/decision-log.md` #85·#97).
+- **문서 기준 추정:** 공식 문서 기본값만 더하면 Kafka 힙 1 GB + Flink JM 1,600m + TM 1,728m + Neo4j 최소 2 GB + Grafana 최소 512 MB = **약 6.8 GB**로, 이 다섯만으로 7.6 GB에 가깝다. → 판단: Kafka 힙·Flink 메모리·Neo4j 힙과 페이지캐시를 **명시적으로 줄여 고정**해야 한 PC에 들어간다(09번 경량화 후보 참고).
+
+**핵심 주의(관문)**
+1. 고정판으로 2027-09-29를 넘기는 것은 PostgreSQL 18과 Neo4j 5.26 LTS(Enterprise 기준)뿐이다. 나머지는 **롤링**이다 → 학기마다 재패키징하며 마이너를 올리는 절차를 인계에 넣어야 한다.
+2. **B7 Flink는 조건부**다. 2.2는 2.4 출시(목표 2026-11-20) 뒤 지원이 끝나고, 2.3용 Kafka 커넥터가 아직 없다.
+3. **B2 EdgeX는 관문 탈락**(4.0 LTS 2027-03). Node-RED로 바꾸는 것은 우리 측정이 없는 교체라 먼저 실측해야 한다.
+4. InfluxDB 2.x·Mosquitto·FUXA·OpenPLC·Bento는 지원 기간 문서 자체가 없다 → [미확인]으로 남기고 릴리스 활동으로 판단했다.
+
+---
+
+## 칸별 절
+
+### 0. 읽는 법 — "12개월 지원" 관문의 두 가지 해석
+
+기존 조사(05·06번 파일)에서 이미 확인된 사실이다. 이번 파일의 모든 칸이 이 해석을 따른다.
+
+| 해석 | 뜻 | 이 해석에서 통과하는 제품 | 근거 |
+|---|---|---|---|
+| **고정판** | 고른 판(예: 13.2.x) 자체가 2027-09-29 이후까지 지원된다 | Neo4j 5.26 LTS(2028-06), PostgreSQL 18(2030-11), Kafka 4.2/4.3(endoflife.date 계산값) 등 | 06번 §3 |
+| **롤링** | 공식 정책이 "최신 마이너(또는 최근 N개)만 지원"이고, 우리가 **같은 메이저 안에서 마이너를 따라 올린다** | Grafana, Prometheus, Telegraf, Vector, Node-RED 등 | 06번 §3 관문 요약 |
+
+- 고정판 해석으로는 Grafana 전 버전이 탈락한다. 13.2.x는 2027-05-18, 13.3.x는 2027-07-20, 12.4.x는 2027-05-24에 지원이 끝난다. [공식 문서] https://grafana.com/docs/grafana/latest/upgrade-guide/when-to-upgrade/ (확인 2026-09-29, 05·06번에서 확인)
+- Prometheus도 LTS 3.13이 2027-07-31에 끝난다. 다음 LTS는 표에 "2027-06 예정 → 2028-07-31"로만 있다. [공식 문서] https://prometheus.io/docs/introduction/release-cycle/ (확인 2026-09-29)
+- 그래서 이 파일은 **"롤링 칸"을 따로 표시**한다. 롤링 칸은 판 번호를 박제하지 않고 "배포 시점 최신 패치를 명시 태그로 고정"한다. `latest`는 쓰지 않는다.
+- 판단: 교육 패키지는 학기마다 한 번 다시 묶는다. 롤링 칸은 그때 마이너를 올리는 절차를 인계 문서에 넣어야 관문을 지킨다.
+
+### 0-1. 근거 종류 약속
+
+- [독립 설문] 제품 회사와 무관한 조사·설문·순위(예: DB-Engines, CNCF 설문, Stack Overflow 설문).
+- [공개 사례] 이름 있는 회사·공장이 스스로 밝힌 사용 사례.
+- [재단·저장소 지표] 재단 발표, GitHub 별 수, Docker Hub 내려받기 수, 릴리스 주기.
+- [벤더 홍보] 제품 회사가 자기 제품에 대해 한 말.
+- [공식 문서] 릴리스 노트, 지원 정책, LICENSE 원문. 순위 근거가 아니라 버전·관문 근거로만 쓴다.
+- 순위는 **근거가 겹치는 정도**로 매긴다. 벤더 홍보 하나만으로는 1위로 두지 않는다. 근거가 약하면 순위 옆에 "(약함)"을 붙인다.
+
+> 절 순서 안내: 부분 저장을 위해 조사가 끝난 칸부터 이어 붙였다. 칸 번호(B0~B13, 추가 칸 X1~)로 찾는다.
+
+### X1. 스키마 관리(추가 칸 — 1차 결과 §1-F "스키마 관리"가 현업 층으로 적은 것)
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Confluent Schema Registry | Kafka 쪽 "데이터 계약"의 기본 예로 1차 결과가 인용한 해설이 이 제품 계열을 전제로 한다. 사용률 수치는 찾지 못함 [미확인]. | [벤더 홍보] 성향(1차 §1-F Kai Waehner) — **(약함)** |
+| 2 | Apicurio Registry | GitHub 별 940, 저장소 활발(마지막 push 2026-09-29), Apache-2.0. https://api.github.com/repos/Apicurio/apicurio-registry (확인 2026-09-29) | [재단·저장소 지표] |
+| 3 | Karapace(Aiven) | 6.2.3(2026-09-15) 릴리스. https://api.github.com/repos/Aiven-Open/karapace/releases (확인 2026-09-29) | [재단·저장소 지표] |
+
+- 독립 설문으로 스키마 레지스트리 점유율을 적은 자료는 찾지 못했다 [미확인]. 위 순위는 **(약함)**.
+
+**(b) 비용·라이선스**
+- Confluent Schema Registry: 저장소 LICENSE 원문 "The project is licensed under the **Confluent Community License**, except some modules such as the client-* and avro-* libs, which are licensed under the Apache 2.0 license." https://github.com/confluentinc/schema-registry/blob/master/LICENSE (확인 2026-09-29). Confluent Community License는 OSI 승인이 아니다(판단: 관문 "비OSI 소스 공개 라이선스"와 같은 부류) → **관문 제외**.
+- Apicurio Registry: Apache-2.0(GitHub API spdx). 무료판 잠금 없음 [미확인: 잠금 기능 목록을 따로 찾지 않음].
+
+**(c) 도커 권장 판**
+- Apicurio Registry **3.3.3**(2026-09-08). 이미지 `apicurio/apicurio-registry:3.3.3`(Docker Hub 2026-09-08). https://hub.docker.com/v2/repositories/apicurio/apicurio-registry/tags (확인 2026-09-29)
+- 지원 정책: "latest and latest-1" 두 마이너만 보안 패치(검색 발췌, 출처 https://github.com/Apicurio/apicurio-registry). → **롤링 칸**.
+- 메모리: 공식 최소값 [미확인].
+
+**(d) 가장 가까운 무료 대안:** Apicurio Registry(Confluent API 호환 모드 제공 여부는 이번에 원문 확인 못 함 [미확인]).
+
+**(e) 우리 권고:** V1에는 이 칸이 없다. 1차 5-C 결론대로 **교육용은 "JSON Schema 파일 + 검사"로 줄여도 된다.** 스키마 레지스트리 컨테이너는 넣지 않는다(메모리 절약). 학생에게 "현업은 레지스트리(예: Apicurio, Confluent)를 둔다"고 설명한다. → **추가 안 함(설명만)**.
+
+### B0. 설비 시뮬레이터 (Modbus 서버 → 이후 OPC UA 서버)
+
+**(a) 현업 주류 순위** — 이 칸은 "현장 설비 대신 쓰는 교육·시험 도구"라 현업 점유율 조사가 없다 [미확인].
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | pymodbus(Modbus, Python) | PyPI 3.15.0(2026-08-13) 활발. 교육 랩 GRFICS도 시뮬레이터를 Modbus 서버로 둔다(13번 B4). | [재단·저장소 지표] **(약함)** |
+| 2 | Microsoft OPC PLC(OPC UA 서버 시뮬레이터) | MIT, GitHub 별 297, 마지막 push 2026-09-29, 공식 이미지 MCR 제공. | [재단·저장소 지표] · [벤더 홍보](Microsoft 샘플) |
+| 3 | asyncua / open62541 / Eclipse Milo | 라이브러리. 라이선스는 compass 파일에 [미검증] 상태로만 있음. | — |
+
+**(b) 비용·라이선스**
+- pymodbus: `BSD-3-Clause`, `requires_python >=3.10.0`. https://pypi.org/pypi/pymodbus/json (확인 2026-09-29)
+- Microsoft OPC PLC: GitHub API `MIT`. https://api.github.com/repos/Azure-Samples/iot-edge-opc-plc (확인 2026-09-29)
+
+**(c) 도커 권장 판**
+- pymodbus **3.15.0**. 공식 이미지 없음 → 자체 이미지(베이스는 `python:3.12-slim` 같은 명시 태그). 지원 정책 문서 [미확인].
+- OPC PLC: GitHub 릴리스 최신 **2.15.4**(2026-09-14), MCR에는 `2.15.5`·`2.15.7` 태그도 있다(릴리스 노트보다 앞섬). 릴리스가 확인된 `mcr.microsoft.com/iotedge/opc-plc:2.15.4`를 권한다. Azure IoT Operations 입문서가 이 시뮬레이터를 쓴다("This quickstart uses the OPC PLC simulator", [벤더 홍보], https://learn.microsoft.com/en-us/azure/iot-operations/get-started-end-to-end-sample/quickstart-configure). https://api.github.com/repos/Azure-Samples/iot-edge-opc-plc/releases · https://mcr.microsoft.com/v2/iotedge/opc-plc/tags/list (확인 2026-09-29). 지원 정책 [미확인].
+- 메모리: 공식 값 없음 [미확인]. 우리 V1 실측 plant-simulator 38 MiB(`docs/journal/09-metrics.md` §9.2).
+
+**(d) 가까운 무료 대안:** OPC UA를 붙일 때 V1 시뮬레이터에 asyncua 서버를 덧붙이는 방식(라이선스 LGPL-3.0 [미검증], compass 파일).
+
+**(e) 권고: 유지(pymodbus 3.15.0) + OPC UA 단계에서 OPC PLC 2.15.4 추가 검토.** 판단: 우리 시뮬레이터는 물리 모델(배속 600)이 핵심이라 바꿀 이유가 없다. 다만 13번 B4 결론대로 **시뮬레이터에 붙는 것은 B1 제어기 하나**가 되게 한다.
+
+### B1. soft-PLC 제어기
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | CODESYS Control(SL, Virtual Control) | 많은 PLC 제조사가 쓰는 런타임이라는 설명은 벤더 자료뿐. 점유율 독립 수치는 못 찾음. | [벤더 홍보] **(약함)** |
+| 2 | Siemens S7-1500V 등 벤더 vPLC | 상용. 수치 [미확인]. | [벤더 홍보] **(약함)** |
+| 3 | OpenPLC Runtime v4 | MIT, GitHub 별 378, 2026-09 한 달에 릴리스 5회(v4.2.0~v4.2.4). OpenPLC는 산업 보안 연구에 많이 쓰였다고 스스로 적음(13번 B4). | [재단·저장소 지표] |
+
+- PLC·soft-PLC 점유율을 적은 독립 설문은 찾지 못했다 [미확인].
+
+**(b) 비용·라이선스**
+- CODESYS Control for Linux SL: 라이선스가 없으면 2시간 뒤 멈추는 데모 모드. "If no valid license is found, it will automatically terminate after a runtime of 2 hours."(검색 발췌) 컨테이너·VM용으로 "Not released"라는 데이터시트 문구도 검색 요약에 있음(검색 발췌). https://store.codesys.com/en/codesys-control-linux-sl-1.html · https://forge.codesys.com/forge/talk/Runtime/thread/6801be5d9c/ → **관문 제외(체험판·유료)**.
+- OpenPLC v3: EOL, 저장소 archived(13번 B4) → **쓰면 안 된다.**
+- OpenPLC Runtime v4: GitHub API `MIT`. https://api.github.com/repos/Autonomy-Logic/openplc-runtime (확인 2026-09-29)
+
+**(c) 도커 권장 판**
+- OpenPLC Runtime **v4.2.4**(2026-09-23). https://api.github.com/repos/Autonomy-Logic/openplc-runtime/releases (확인 2026-09-29)
+- 이미지 **`ghcr.io/autonomy-logic/openplc-runtime:v4.2.4`**. GHCR 태그 목록(`?n=2000`, 확인 2026-09-29)에 `v4.0.6`~`v4.2.4` 버전 태그가 있다. (첫 조회는 100개에서 잘려 버전 태그가 안 보였다 — 정정.) DOCKER.md: 이미지는 "tagged vX.Y.Z and (for a stable release) latest", 포트 8443은 REST 전용 "there is no web interface", 예시 제한 `--memory="1g"`. https://github.com/Autonomy-Logic/openplc-runtime/blob/main/docs/DOCKER.md (하위 조사자 원문 확인)
+- 프로그램 올리기: "The Editor uploads the ZIP file to the runtime via HTTPS POST to `/api/upload-file` with JWT authentication." → **데스크톱 편집기(Editor v4)가 필요**하다. https://github.com/Autonomy-Logic/openplc-runtime (확인 2026-09-29)
+- Modbus 마스터: "Modbus remote devices are gated to Runtime v4 and the Simulator … your vPLC becomes the master"(TCP/IP·RTU). https://edge.autonomylogic.com/docs/openplc-editor/communication/modbus/client/ (하위 조사자 원문 확인) → 시뮬레이터를 PLC가 읽는 GRFICS 모양이 가능하다.
+- 지원 정책: 문서 없음 [미확인]. 메모리: 공식 최소값 없음, DOCKER.md 예시 한도 1 GB.
+
+**(d) 가까운 무료 대안:** 자체 Python 교육용 제어기(인터록·운전 모드·명령 수용·ACK만 구현). Eclipse 4diac FORTE(IEC 61499, EPL-2.0 [미검증]).
+
+**(e) 권고: 새로 둔다(V1에 없는 칸).** 1안 OpenPLC Runtime v4.2.4(`:v4.2.4` 고정), 2안 자체 Python 제어기. 판단: 현업 주류(CODESYS·벤더 vPLC)는 유료·체험판이라 관문 밖이다. 학생에게는 "현업은 CODESYS·벤더 PLC"라고 설명한다. 독립 시장 보고서(IoT Analytics, 유료)는 soft/virtual PLC 선두로 "Beckhoff, CODESYS, Phoenix Contact, Schneider Electric, Siemens"를 든다(검색 발췌: https://iot-analytics.com/product/virtual-plc-and-soft-plc-market-2024-2030/). OpenPLC v4는 **편집기 없이(패키지에 미리 컴파일한 ZIP을 넣어) 프로그램을 올리는 방법**과 운전 모드·명령 만료 같은 논리를 IEC 61131 프로그램으로 짤 수 있는지 먼저 실측해야 한다. 안 되면 2안으로 간다. 지원 정책이 없으므로 관문은 **롤링(최신 v4.x 추종)** 으로 본다. 운전 모드는 13번 B3 결론대로 MTP식 3상태(Offline/Operator/Automatic) + 출처 채널로 설명한다.
+
+### B2. 엣지 연결·프로토콜 변환
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| — | Kepware, Ignition Edge, Litmus Edge 등 상용 | 현업에서 흔하다는 해설은 많지만 독립 점유율 수치를 찾지 못함 [미확인] | — |
+| 1 | Node-RED | Docker Hub `nodered/node-red` 내려받기 324,649,015회. OpenJS 재단 프로젝트. | [재단·저장소 지표] |
+| 2 | Telegraf(수집 전용) | `library/telegraf` 644,720,818회. IT 지표 수집 용도가 섞여 있어 산업 엣지 비중은 [미확인]. | [재단·저장소 지표] |
+| 3 | EdgeX Foundry | `edgexfoundry/core-data` 60,435회, `edgexfoundry/device-modbus` 14,068회. LF Edge 재단. | [재단·저장소 지표] |
+| 참고 | HiveMQ Edge / Neuron | `hivemq/hivemq-edge` 167,477회, `emqx/neuron` 74,277회 | [재단·저장소 지표] |
+
+(내려받기 수 출처: https://hub.docker.com/v2/repositories/<저장소>/ 의 `pull_count`, 확인 2026-09-29. CI·재시도가 섞인 지표라 사용 기업 수가 아니다. 순위는 **(약함)**.)
+
+**(b) 비용·라이선스**
+- EdgeX: Apache-2.0(01번).
+- Node-RED: Apache-2.0. Modbus 노드 node-red-contrib-modbus 5.60.2는 BSD-3-Clause(01번). OPC UA 노드의 라이선스·유지 상태 [미확인].
+- HiveMQ Edge: Apache-2.0이지만 **오프라인 버퍼와 Data Policy Engine은 상용**, 문서 원문 "Writing to any tag needs a southbound mapping, which is a commercial feature." https://www.hivemq.com/products/hivemq-edge/ · https://docs.hivemq.com/hivemq-edge/protocol-adapters.html (하위 조사자 원문 확인) → 명령 쓰기가 유료라 B2 **관문 제외**.
+- EdgeX는 공식 OPC UA 장치 서비스(`edgexfoundry/device-opc-ua`, Apache-2.0, 마지막 push 2026-08-17)가 있다(하위 조사자 GitHub API 확인).
+- Neuron: OSS는 Modbus·MQTT 등만, **OPC UA 등은 상용**(compass 파일) → OPC UA 확장 계획과 맞지 않다.
+- Telegraf: MIT. **쓰기(명령) 경로가 없다**(compass 파일 "EdgeX 명령(쓰기) API를 잃음").
+
+**(c) 도커 권장 판과 관문**
+- EdgeX **4.0.2**(`edgexfoundry/core-data:4.0.2`, 2026-05-29 푸시). 공식 Releases 페이지: "Odesa (4.0) - March 2025 - Long Term Support Release", "Palau (4.0.2) - June 2026 - Standard Release", 다음은 "Queensland - Expected Spring 2027", "Rizhao - Expected Spring 2028". https://lf-edgexfoundry.atlassian.net/wiki/display/FA/Releases (확인 2026-09-29). 4.0 LTS는 **2027-03까지**: Palau 페이지 원문 "EdgeX 4.0's Long Term Support (LTS) coverage continues until March 2027." LTS 정책 원문 "24 months by default", "Support may be extended at TSC discretion", "a release is not LTS by default extension of the prior release." https://lf-edgexfoundry.atlassian.net/wiki/display/FA/Long+Term+Support (하위 조사자 원문 확인). 연장 결정은 찾지 못함 → **관문 탈락.** 4.1은 문서(docs.edgexfoundry.org/4.1)만 있고 정식 릴리스는 없다: Docker Hub `edgexfoundry/core-data` 태그 최고는 `4.0.2`, 4.1·5.x 태그 없음(확인 2026-09-29), GitHub에는 `v4.1.0-dev` 개발 태그만(01번). 참고: EdgeX 4.0 기본 compose는 4.0.1·mosquitto 2.0.22·postgres 16.3·eKuiper 2.3.1을 쓴다(13번 조사 결과). Queensland가 LTS인지, 4.1인지 5.0인지 [미확인]. 공식 최소 사양 "minimum of 1 GB" 메모리(https://docs.edgexfoundry.org/4.0/general/PlatformRequirements/ , 하위 조사자 원문 확인).
+- Node-RED **5.0.7**(`nodered/node-red:5.0.7`, 2026-09-08). 공식 정책: 5.x Active(2026-06-09 출시), 4.x Maintenance, **4.x EOL 2026-12-31**. https://nodered.org/about/releases/ (확인 2026-09-29) → 5.x 안에서 **롤링 칸**. 4.x는 쓰면 안 된다.
+- Telegraf **1.40.1**(`telegraf:1.40.1-alpine`) — 롤링 칸(06번: 고정판은 탈락).
+- 메모리: 공식 최소값 [미확인]. 우리 실측: EdgeX 10컨테이너 158 MiB(`reports/decision-log.md` #107), Telegraf 1.40.1 136 MiB(09번 측정 배경). Node-RED는 우리 측정 없음 [미확인].
+- 알려진 문제: Telegraf `outputs.kafka` 영구 멈춤 #19446 열림, 1.40.1은 시간 제한 기본값만 들어감(08번).
+
+**(d) 가까운 무료 대안:** 읽기만이면 Telegraf 1.40.x(modbus·opcua 입력). 읽기+쓰기+MQTT를 한 컨테이너로 하려면 Node-RED 5.0.x.
+
+**(e) 권고: 교체(EdgeX 4.0 → Node-RED 5.0.x, 1안).** 이유: EdgeX 4.0 LTS가 관문 날짜 전에 끝나고 다음 판은 2027 봄 "예정"뿐이다. B2는 1차 권고의 수동 명령 길(B3 `cmd` → B2 → B1)에서 **쓰기**를 맡으므로 Telegraf만으로는 안 된다. Node-RED는 Modbus 읽기·쓰기와 MQTT가 무료이고 5.x가 Active다. 주의: ① 흐름을 손으로 그리면 1차의 "설비 정의는 자산 레지스트리에서 생성" 원칙이 깨진다 → 흐름(JSON)을 B11에서 생성해야 한다(판단). ② OPC UA 노드는 [미확인]. ③ 수집 품질(지연·끊김 복구)은 우리 측정이 없다. **2안:** EdgeX 4.0.2 조건부 유지 — Queensland 출시·LTS 여부를 확인해 넘어간다(관문 예외를 사람이 승인해야 함).
+
+### B3. MQTT 브로커(UNS)
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Eclipse Mosquitto | `library/eclipse-mosquitto` 내려받기 685,073,825회(Docker Hub 별 1,392). GitHub 별 약 11.2k(페이지 반올림 값). | [재단·저장소 지표] |
+| 2 | EMQX | `emqx/emqx` 47,228,253회. GitHub 별 약 16.8k(별은 EMQX가 더 많다). | [재단·저장소 지표] |
+| 3 | HiveMQ(CE·상용) | `hivemq/hivemq-ce` 6,718,632회. | [재단·저장소 지표] |
+
+- 프로토콜 수준 독립 설문: Eclipse Foundation 2023 IoT & Edge Developer Survey(1,037명, 2023-04-04~07-05) 원문 "MQTT is the top IIoT communication protocol. Nearly half of developers (49%) indicate a preference for MQTT for IIoT communications, with MQTT + Sparkplug checking in at 8%." https://newsroom.eclipse.org/news/announcements/eclipse-foundation-releases-2023-iot-edge-developer-survey-results (확인 2026-09-29) — [독립 설문](재단 주관, Mosquitto도 Eclipse 프로젝트라는 점은 감안). 2024 판(약 750명, 2024-12-03 발표): "MQTT leads as the preferred IIoT communication protocol with 56% adoption". https://newsroom.eclipse.org/news/announcements/eclipse-foundation-unveils-2024-iot-embedded-developer-survey-results (하위 조사자 원문 확인) **브로커 제품별 점유율 문항은 찾지 못했다 [미확인].**
+
+**(b) 비용·라이선스**
+- Mosquitto: EPL-2.0 OR EDL-1.0(BSD-3)(01·06번). **Kafka 브리지는 Cedalo Pro(상용) 전용**(01번) → B5에서 채운다.
+- EMQX: 5.9부터 BSL 1.1, 5.8 OSS는 2026-02-28 EOL(01번, compass) → **관문 제외**.
+- HiveMQ CE: Apache-2.0, 클러스터·Kafka 확장은 Enterprise(compass).
+
+**(c) 도커 권장 판**
+- Mosquitto **2.1.2**(2026-02-09). ChangeLog 맨 위가 여전히 "2.1.2 - 2026-02-09" → 2.1.3 미출시. https://mosquitto.org/ChangeLog.txt (확인 2026-09-29)
+- 이미지 **`eclipse-mosquitto:2.1.2-alpine`**(2026-09-18 재빌드). 접미사 없는 `2.1.2` 태그는 없다. https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags (확인 2026-09-29)
+- 지원 정책: 공식 문서 없음(05번) [미확인]. 2.1에서 `acl_file`·`password_file`·`per_listener_settings`는 3.0에서 제거 예고(compass) → ACL은 dynsec 플러그인으로(판단).
+- 메모리: 공식 값 없음. 우리 실측 평균 5.6·4.4 MiB(decision-log #47).
+- 알려진 문제: 영속 세션 미전달 #3202 열림(2.0.x 보고, 2.1 재현 [미확인]). 2.1.3에 패킷 크기 제한 오류 수정 대기(08번).
+
+**(d) 가까운 무료 대안:** HiveMQ CE 2026.5(Apache-2.0) 또는 NanoMQ(MIT). 둘 다 우리 이전 시험에서 실패 기록이 있다(01번).
+
+**(e) 권고: 교체(EMQX 5.8.6 → Mosquitto 2.1.2-alpine).** EMQX는 관문 밖이다. 1차 권고대로 브로커는 **1개**로 두고(EdgeX 내부 Mosquitto 제거), 명령 토픽 retain 금지·토픽 ACL을 건다.
+
+
+### B5. DMZ 중계 (① MQTT→Kafka 상향 복제 ② 명령 게이트웨이 ③ 감시 수집)
+
+**(a) 현업 주류 순위(① 복제 방식)** — 13번 A6에서 "브로커 안 확장 / 별도 커넥터 / 엣지 게이트웨이 브리지 세 가지가 공존"으로 이미 확인했다. 제품 점유율 독립 수치는 없다 [미확인].
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | 브로커 내장 Kafka 확장(HiveMQ Enterprise Extension for Kafka, EMQX Kafka Sink) | 두 브로커 벤더 모두 문서화(13번 A6, 06번 §1). 둘 다 상용 또는 BSL. | [벤더 홍보] |
+| 2 | Kafka Connect MQTT Source(Confluent·Lenses Stream Reactor) | Confluent 판은 독점, Stream Reactor 12.x는 Apache-2.0·Kafka 4.0 이상 필요(01번). | [벤더 홍보]·[재단·저장소 지표] |
+| 3 | 파이프 도구(Bento·Redpanda Connect·benthos-umh) | UMH가 benthos-umh로 MQTT↔Kafka 브리지를 둔다(13번 A6). | [재단·저장소 지표] |
+
+**(b) 비용·라이선스**
+- Bento: MIT, 엔터프라이즈 잠금 없음(01번).
+- Redpanda Connect: 무료 번들 Apache-2.0, 엔터프라이즈 커넥터는 RCL(01·compass) → 쓸 수는 있으나 커넥터마다 확인이 필요해 2순위(판단).
+- Confluent MQTT 커넥터: 독점·체험 후 구독 → **관문 제외**(01번).
+- 명령 게이트웨이: 이 칸의 **오픈소스 제품은 찾지 못했다** [미확인]. 현업 근거는 NAMUR NE 177(보안 게이트웨이)·NE 178(요청 검증) 개념 수준(1차 §1-C). → 자체 코드.
+
+**(c) 도커 권장 판**
+- Bento **1.21.2**, 이미지 `ghcr.io/warpstreamlabs/bento:1.21.2`(GHCR 매니페스트 조회 HTTP 200, 확인 2026-09-29). 지원 정책 문서 [미확인].
+- 메모리: 공식 값 [미확인]. 우리 실측 1컨테이너 85 MiB, V1 Telegraf 3대 710 MiB와 같은 결과(decision-log #111).
+- Vector 0.58.0은 우리 시험에서 통과했지만 **Kafka 재조정 뒤 소비 정지 #22006이 열려 있고 수정 PR #26438 미병합**(10번). 지원도 "최신 마이너만"(06번). → 2순위로 둔다.
+- ③ 감시 수집: 제품을 따로 두지 않는다(판단). Prometheus가 dmz 망에도 붙어 OT 쪽 지표를 읽는 구성이 가장 적다. 단 이것은 1차가 지적한 "DMZ가 OT로 연결을 연다"와 같은 방향이라, **방향 규칙을 문서로 적는다**(1차 §4-4 표1 ①).
+
+**(d) 가까운 무료 대안:** Redpanda Connect(Apache 구성요소만), Vector 0.58(위 결함 감수).
+
+**(e) 권고: 교체(V1 Telegraf 3대 → Bento 1.21.2 한 종류로 상향 복제·알람 하향 표시).** 명령 게이트웨이는 **자체 코드**(스키마·화이트리스트·만료·중복·모드 검사, 1차 B5)로 새로 둔다.
+
+### B6. 이벤트 장부
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Apache Kafka | Stack Overflow 2024 설문 "Other frameworks and libraries"에서 Kafka 9.4%(전문가 10.9%). https://survey.stackoverflow.co/2024/technology (확인 2026-09-29, 하위 조사자 원문 확인). 2025 설문에는 항목 없음. 독립 분석가 IoT Analytics(2026-01-28)도 UNS 백엔드로 "Kafka·NATS"를 적음(1차 §1-F). Kafka 홈페이지 "More than 80% of all Fortune 100 companies trust, and use Apache Kafka."는 [벤더 홍보] 성격. | [독립 설문] + [독립] |
+| 2 | NATS JetStream | IoT Analytics가 함께 거명(1차). 점유율 수치 없음. | [독립] **(약함)** |
+| 3 | Apache Pulsar / RabbitMQ Streams | RabbitMQ는 SO 2024에서 10.9%지만 로그형 장부 용도 비중은 [미확인]. | [독립 설문] (약함) |
+
+**(b) 비용·라이선스**
+- Kafka: Apache-2.0. 무료판 잠금 없음.
+- Redpanda: BSL 1.1 "you may not use the Licensed Work for a Streaming or Queuing Service" → **관문 제외**. https://raw.githubusercontent.com/redpanda-data/redpanda/dev/licenses/bsl.md (하위 조사자 원문 확인)
+- NATS: 2025-05-01 CNCF 합의로 Apache-2.0 유지. https://www.cncf.io/announcements/2025/05/01/cncf-and-synadia-align-on-securing-the-future-of-the-nats-io-project/
+
+**(c) 도커 권장 판**
+- **Kafka 4.3.1**(2026-06-25), 이미지 `apache/kafka:4.3.1`. 공식 지원 목록 "4.3.1 (June 25, 2026), 4.2.1 (May 30, 2026), 4.1.2 (March 17, 2026)". 정책 원문 "The project goal is to have 3 releases a year … Bugfix releases are made as needed for supported releases only." https://kafka.apache.org/community/downloads/ (확인 2026-09-29) / "bugfix releases as needed for the last 3 releases" https://cwiki.apache.org/confluence/display/KAFKA/Time+Based+Release+Plan
+- 관문: Apache는 날짜를 공표하지 않는다. endoflife.date의 4.3 종료 "2028-06-17"은 **Confluent Community 지원 종료일 열**이다(하위 조사자 원문 확인 — 벤더 날짜). 계산: 4개월 주기면 4.6이 나올 때(2027 중후반) 4.3은 목록에서 빠질 수 있다. → **롤링 칸(4.x 안에서 따라 올림).**
+- 4.4.0은 **아직 출시 전**: Docker Hub에 `4.4.0-rc1`(2026-09-22)·`4.4.0-rc2`만, 다운로드 페이지에 없음. https://hub.docker.com/v2/repositories/apache/kafka/tags (확인 2026-09-29). 4.3.2는 `4.3.2-rc0`만, 4.2.2는 투표 통과·이미지 `4.2.2`(2026-09-28) 있음, 공지 전.
+- 알려진 문제: KAFKA-20416 "RocksDB loses entries during broker patches"(Critical, 수정 4.3.2·4.4.0) — Streams용 RocksDB라 브로커만 쓰는 우리와의 관련은 [미확인]. 4.2.2에 jackson-databind CVE 수정(CVE-2026-54512·54513 등); 4.3.1에도 같은 의존성이 있는지는 [미확인]. https://downloads.apache.org/kafka/4.2.2/RELEASE_NOTES.html (하위 조사자 원문 확인)
+- 메모리: 기본 힙 `-Xmx1G -Xms1G`(09번). Apache 공식 최소값 없음 [미확인]. 우리 실측 4.3.1 RSS 839 MiB(09번 측정 배경), V1 3.9 977 MiB(decision-log #85). 유휴 CPU 178~205%(V1 3.9) 원인은 미확인(08번).
+
+**(d) 가까운 무료 대안:** NATS JetStream(Apache-2.0). Flink 커넥터가 제3자(Synadia)·최소 1회(02번).
+
+**(e) 권고: 버전만 올림(3.9.0 → 4.3.1).** 3.9는 지원 목록에서 빠졌다(목록은 4.3·4.2·4.1). 4.3.2가 나오면 바로 올린다(판단).
+
+### B7. 스트림 처리·CEP·ML 추론
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Apache Flink | 관리형 서비스(AWS Managed Flink, Confluent Cloud for Flink, Alibaba)가 모두 Flink를 제공(compass §2). Docker Hub `library/flink` 97,278,683회. 독립 설문 수치는 못 찾음(SO 2024·2025에 항목 없음). | [벤더 홍보] 다수 겹침 + [재단·저장소 지표] |
+| 2 | Kafka Streams | Kafka에 포함. 점유율 [미확인]. | (약함) |
+| 3 | 스트리밍 SQL(RisingWave 등) | RisingWave 629,800회. | [재단·저장소 지표] (약함) |
+
+- 1차 결과: ML 탐지는 현업에서 주로 L1–L3(엣지)에 둔다(CISA). IT 쪽 Flink는 "교육용으로 가능, 차이는 설명"(1차 표1 ③).
+
+**(b) 비용·라이선스:** Flink Apache-2.0, 잠금 없음. ONNX Runtime Java 1.30.0(2026-09-14) MIT(하위 조사자 원문 확인).
+
+**(c) 도커 권장 판과 관문**
+- 지원 정책 원문: "support the current and previous minor release with bugfixes", 새 마이너가 나오면 빠지는 판에 마지막 패치 한 번. https://flink.apache.org/downloads/ (확인 2026-09-29)
+- 현재: 2.3.0(2026-06-25) 최신, 2.2.1(2026-05-15) 이전 판. **2.4.0 목표일 2026-11-20**(기능 동결 2026-10-20). https://cwiki.apache.org/confluence/display/FLINK/2.4+Release (하위 조사자 원문 확인) → 2.4가 나오면 2.2는 지원 밖.
+- **Kafka 커넥터가 2.3을 지원하지 않는다.** Maven Central 최신은 `5.0.0-2.1/`, `5.0.0-2.2/`(2026-05-12)뿐. https://repo1.maven.org/maven2/org/apache/flink/flink-connector-kafka/ (확인 2026-09-29). 2.3 문서 원문 "There is no connector (yet) available for Flink version 2.3." FLINK-40121은 Open·담당자 없음.
+- 1.20 LTS: FLIP-458 "2 years", 시작일 미기재 → 종료일 [미확인](05번).
+- → **이 칸은 지금 관문을 완전히 통과하는 판이 없다.** 2.2.1은 2026-11 무렵 지원 밖, 2.3은 커넥터 없음.
+- 이미지: `flink:2.2.1-java17`(= `2.2.1`), 기반 `eclipse-temurin:17-jre-noble`, 2026-09-26 재빌드. 커넥터 `flink-sql-connector-kafka 5.0.0-2.2`.
+- 메모리: 기본 설정 JM 1600m·TM 1728m(09번). 우리 실측 Flink 2.2.1 + ZooKeeper HA 평균 1,581 MiB(decision-log #107), V1 TM 1,534 + JM 800 MiB(#85).
+- 알려진 문제: 2.2.1에서 "Name collision" 경고 원인 코드 남음(수정은 master만, 08번). 2.2.1은 44건 수정, "highly recommend all users upgrade to Flink 2.2.1 or higher"(릴리스 공지).
+- HA용 ZooKeeper: 3.9.6이 현재판이지만 **공식 이미지에 3.9.6 태그 없음** → `zookeeper:3.9.5`(09번, 하위 조사자 재확인).
+
+**(d) 가까운 무료 대안:** Kafka Streams(Kafka와 같은 수명, SQL·CEP 없음), Python 상태 기계(우리 시험에서 같은 알람, decision-log #23). 둘 다 Flink SQL 규칙을 다시 짜야 한다.
+
+**(e) 권고: 버전만 올림(1.20.1 → 2.2.1 + 커넥터 5.0.0-2.2 + ZooKeeper 3.9.5 HA), 조건부.** 우리 시험에서 V1과 알람이 같았다(decision-log #107). **관문 조건:** Flink 2.3용 Kafka 커넥터가 나오면 2.3.x로 올린다. 2.4 출시(목표 2026-11-20) 전에 커넥터가 없으면 사람에게 예외 승인을 받거나 1.20 LTS 종료일 공지를 다시 확인한다.
+
+### B8. 공정 이력 저장(히스토리언)
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| — | AVEVA PI 등 상용 히스토리언 | 공정 산업 표준 제품이라는 해설이 많음. 독립 점유율 수치는 못 찾음 [미확인]. | — |
+| 1 | InfluxDB | DB-Engines 시계열 DBMS 순위 2026-09 **1위**(점수 22.30). | [독립 설문](웹 언급량 기반 순위) |
+| 2 | TimescaleDB | 같은 순위 4위(2위 Prometheus, 3위 Kdb). | [독립 설문] |
+| 3 | QuestDB / Apache IoTDB | 같은 순위 8위 / 10위. | [독립 설문] |
+
+(출처: https://db-engines.com/en/ranking/time+series+dbms , 2026-09 순위, 확인 2026-09-29. DB-Engines는 검색·구인·토론 언급량으로 매기므로 "사용 대수"가 아니다.)
+
+**(b) 비용·라이선스**
+- InfluxDB 2.x: MIT(06번). 3 Core: MIT/Apache(검색 발췌), 쿼리당 파일 432개(약 72시간) 한도, Flux 없음(03번, 하위 조사자 원문 확인).
+- TimescaleDB: `-oss` 이미지만 Apache-2.0. 압축·연속 집계·보존 정책·잡은 TSL → **TSL 기능 관문 제외**(03번, compass).
+- QuestDB: Apache-2.0, RBAC·TLS·HA는 Enterprise(03번). 공식 권장 "at least 8GB of RAM for basic workloads"(하위 조사자 원문 확인) → 7.6 GB PC에 맞지 않는다.
+
+**(c) 도커 권장 판**
+- **InfluxDB 2.9.1**(2.x 최신, 2.9.2 없음), 이미지 `influxdb:2.9.1-alpine`(2026-09-18) 또는 `influxdb:2.9.1`. https://hub.docker.com/v2/repositories/library/influxdb/tags (확인 2026-09-29)
+- 지원: "current and previous minor release"(OSS에는 법적 지원 정책 비적용). 2.x EOL 공지 없음 → 관문 날짜 **[미확인]**(06번, 하위 조사자 재확인).
+- `latest` 주의: 공식 문서는 "On September 15, 2026, the `latest` tag … will point to InfluxDB 3 Core." 그런데 하위 조사자가 본 Docker Hub에서는 `latest` 다이제스트가 2.9.1과 같았다(원문 확인 보고). 어느 쪽이든 **명시 태그로 고정**한다.
+- 메모리: 공식 최소값 [미확인]. `storage-cache-max-memory-size` 기본 1 GiB(09번). 우리 실측 2.9.1 140 MiB, V1 2.7 106 MiB.
+- 알려진 문제: 2.9.0부터 토큰 해시 저장 기본(되돌릴 수 없음), `config name "default" already exists` 재기동 문제(06번).
+
+**(d) 가까운 무료 대안:** PostgreSQL 18 + TimescaleDB Apache판(`timescale/timescaledb:2.30.1-pg18-oss`, 2026-09-17) — 압축·연속 집계 없이 hypertable·`drop_chunks`만. 1차 5-C의 "정본 한 곳" 목표로 알람·감사와 한 DB에 둘 수 있다.
+
+**(e) 권고: 버전만 올림(2.7 → 2.9.1-alpine).** 이유: DB-Engines 1위, 우리 V1 경로·Grafana 화면을 그대로 쓴다. 2.x 종료일이 공표되지 않은 점은 관문 [미확인]으로 남긴다. 2.x가 끝난다는 공지가 나오면 2안(TimescaleDB Apache판)으로 간다.
+
+
+### B4. SCADA·HMI
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Siemens(WinCC), GE Digital, Rockwell(FactoryTalk), Hitachi Vantara | ABI Research SCADA/HMI 공급사 경쟁 순위(2023-05-24) "Leaders: Siemens, GE Digital, Rockwell Automation, and Hitachi Vantara". https://www.abiresearch.com/press/siemens-ge-digital-and-rockwell-automation-take-the-lead-in-abi-researchs-scadahmi-software-competitive-ranking (확인 2026-09-29) | [독립](분석 회사, 2023년 자료) |
+| 2 | Emerson, Yokogawa, Honeywell, ABB, Inductive Automation(Ignition), AVEVA 등 | 같은 자료 "Mainstream" 목록. | [독립] |
+| — | 무료·오픈소스 중: FUXA > Scada-LTS | Docker Hub `frangoteam/fuxa` 196,056회, `scadalts/scadalts` 86,861회. | [재단·저장소 지표] (약함) |
+
+**(b) 비용·라이선스**
+- 상용 주류는 모두 유료. Ignition Maker Edition은 "strictly used for non-commercial and personal educational use"이고 교육기관은 다른 방법을 안내한다. 체험판은 "two hours at a time"(하위 조사자 원문 확인: https://www.docs.inductiveautomation.com/docs/8.1/other-editions/ignition-maker-edition , https://www.docs.inductiveautomation.com/docs/8.1/platform/licensing-and-activation) → **관문 제외**.
+- FUXA: MIT. Scada-LTS: GPL-2.0(05번). OpenRemote: AGPL-3.0.
+- **ThingsBoard(오늘 발표):** 4.4부터 BUSL 1.1로 전환, "The latest ThingsBoard CE LTS release (v4.3) stays on Apache 2.0 and keeps getting security updates until July 20, 2027." https://thingsboard.io/blog/one-thingsboard-source-available/ (하위 조사자 원문 확인, 게시 2026-09-29) → 4.4는 BSL, 4.3은 2027-07-20 종료 → **관문 제외**.
+
+**(c) 도커 권장 판**
+- **FUXA 1.3.4**(2026-08-12), 이미지 `frangoteam/fuxa:1.3.4`(2026-08-13). `latest`는 2026-09-28 재푸시(릴리스 안 된 빌드로 보임) → 쓰지 않는다. https://hub.docker.com/v2/repositories/frangoteam/fuxa/tags (확인 2026-09-29)
+- 보안: 1.3.3 미만에 High 권고 다수, 가장 최근 권고는 2026-07-22, **1.3.4 이후 새 권고 없음**(06번, 하위 조사자 재확인). 최소선 `secureEnabled=true` + 내장 Node-RED 끔(03번).
+- 지원 정책: 없음(단일 라인) [미확인] → 롤링 칸.
+- MQTT 구독: 공식 문서 "Add a MQTT connection and a topic subscription". https://frangoteam.github.io/FUXA/HowTo-Devices-and-Tags/ → 1차 권고의 "데이터는 UNS에서" 구성이 가능하다.
+- 알람: 4조건(High High, High, Low, Message), 활성·이력 표시(공식 문서). 문서에는 확인(ack) 설명이 없다. **소스 코드 확인(master 브랜치, 2026-09-29):** 서버 상태 기계 `AlarmStatusEnum = { VOID: '', ON: 'N', OFF: 'NF', ACK: 'NA' }`, 확인 방식 `AlarmAckMode { float, ack-active, ack-passive }`, 기록 칸 `acktime`·`userack`. https://raw.githubusercontent.com/frangoteam/FUXA/master/server/runtime/alarms/index.js · https://raw.githubusercontent.com/frangoteam/FUXA/master/client/src/app/_models/alarm.ts → ISA-18.2의 **발생·해제·확인(미확인 복귀 포함)** 에 해당하는 상태는 있다. **셸빙·설계 억제·서비스 중지는 소스에서 찾지 못했다**("shelv" 0건). 1.3.4 태그 소스와 같은지는 [미확인].
+- 메모리: 공식 값 없음. 우리 V1 실측 83 MiB.
+
+**(d) 가까운 무료 대안:** Node-RED Dashboard 2(`@flowfuse/node-red-dashboard` 1.32.0, Apache-2.0) — B2를 Node-RED로 바꾸면 같은 런타임에 둘 수 있으나, 1차 5-C "IT가 멈춰도 HMI는 돈다"를 지키려면 엣지와 HMI는 따로 두는 편이 낫다(판단). Scada-LTS v2.8.0(GPL-2.0, 2025-10-17 이후 이미지 없음).
+
+**(e) 권고: 유지(FUXA 1.3.4), 설정 변경.** Modbus 직접 읽기·쓰기를 끊고 B3 토픽 구독 + `cmd` 토픽 발행으로 바꾼다(1차 표2). 학생에게 "현업 주류는 WinCC·FactoryTalk·Ignition 같은 상용"이라고 설명한다.
+
+### B9. 대시보드
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Grafana | Docker Hub `grafana/grafana` 5,339,541,270회. 벤더 설문(Grafana Labs 2026, 1,363명)은 Grafana 사용률을 따로 내지 않음. | [재단·저장소 지표] + [벤더 홍보] |
+| 2 | 상용 히스토리언 내장 화면(PI Vision 등) | 수치 [미확인]. | (약함) |
+
+**(b) 비용·라이선스:** AGPL-3.0(무수정 내부 사용은 의무 없음, 03번). RBAC·리포팅·SAML은 Enterprise.
+
+**(c) 도커 권장 판과 관문**
+- **Grafana 13.2.3**(2026-09-29 출시), 이미지 `grafana/grafana:13.2.3`. https://hub.docker.com/v2/repositories/grafana/grafana/tags (확인 2026-09-29)
+- 지원: 13.2.x **2027-05-18 종료**, 13.3.x(2026-10-20 예정) 2027-07-20, 12.4.x 2027-05-24. "Each minor release is supported for 9 months". https://grafana.com/docs/grafana/latest/upgrade-guide/when-to-upgrade/ (확인 2026-09-29) → **고정판 관문 탈락, 롤링 칸**(마이너를 두 달마다 따라 올림).
+- 메모리: 공식 "Minimum recommended memory: 512 MB", CPU 1 core. https://grafana.com/docs/grafana/latest/setup-grafana/installation/ (확인 2026-09-29). 우리 실측 13.2.2 476 MiB(09번 배경), V1 80 MiB.
+- 경량화: `-slim` 이미지(번들 플러그인 없음), InfluxDB 플러그인은 preinstall(09번).
+
+**(d) 가까운 무료 대안:** Perses(Apache-2.0, 정식판 없음 — 0.55 베타, 05번).
+
+**(e) 권고: 버전만 올림(11.4.0 → 13.2.3), 롤링.** V1 11.4는 2025-09-05에 지원 종료(05번).
+
+### B10. 플랫폼 감시·경보
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Prometheus(+Alertmanager·익스포터) | Grafana Labs 설문 2025(1,255명, 2024-09-18~2025-01-02) "More than two-thirds of organizations (67%) use Prometheus in production in some capacity". https://grafana.com/observability-survey/2025/ (확인 2026-09-29). CNCF 2025 설문 77%는 검색 발췌뿐. Docker Hub `prom/prometheus` 2,019,675,625회. CNCF 졸업 프로젝트. | [벤더 홍보](설문 주체가 벤더) + (검색 발췌) + [재단·저장소 지표] |
+| 2 | VictoriaMetrics | DB-Engines 시계열 12위. LTS는 엔터프라이즈 전용(07번). | [독립 설문] |
+| 3 | Grafana Alloy·OpenTelemetry Collector(수집기) | 07번. | (약함) |
+
+**(b) 비용·라이선스:** Prometheus·Alertmanager·cAdvisor·kafka-exporter 모두 Apache-2.0(07번).
+
+**(c) 도커 권장 판과 관문**
+- **Prometheus 3.13.3(LTS)**, 이미지 `prom/prometheus:v3.13.3`(2026-09-07). LTS 3.13 종료 **2027-07-31**, 다음 LTS "TBD 2027-06 → 2028-07-31". https://prometheus.io/docs/introduction/release-cycle/ (확인 2026-09-29) → 고정판 관문 탈락, **LTS 롤링**(2027-06 새 LTS로 이동). 최신 3.15.0은 6주 뒤 수정이 끊겨 더 나쁘다.
+- Alertmanager `prom/alertmanager:v0.34.1`, cAdvisor `ghcr.io/google/cadvisor:v0.60.6`, kafka-exporter `danielqsj/kafka-exporter:v1.10.0` — 모두 지원 정책 문서 없음(05·07번). V1의 Alertmanager 0.28·cAdvisor 0.49는 18개월 이상 패치 없음 → 강제 교체(05번).
+- 메모리: Prometheus 공식 RAM 최소값 없음(저장만 "1-2 bytes per sample"). 우리 V2 실측 감시 4종 합 약 830 MiB(decision-log #129), V1 Prometheus 211·cAdvisor 207 MiB.
+
+**(d) 가까운 무료 대안:** Alertmanager를 빼고 Grafana 알림(내장 Alertmanager)을 쓰는 구성(07번 권고, 컨테이너 1개 감소).
+
+**(e) 권고: 버전만 올림(Prometheus LTS 3.13.3, cAdvisor v0.60.6, kafka-exporter v1.10.0).** Alertmanager는 07번 권고대로 빼고 Grafana 알림으로 인프라 담당에게 보낸다(선택). 1차 원칙대로 **공정 알람 목록과 섞지 않는다.**
+
+### B11. 설비 등록부(자산 모델)
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품·방식 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | 상용 산업 데이터 플랫폼의 자산 모델(AWS IoT SiteWise, Cognite, HighByte 등) | 1차 §4-2 2-A ③. 점유율 수치 없음. | [벤더 홍보] **(약함)** |
+| 2 | AAS(자산관리셸) — IEC 63278-1:2023 | 국제 표준(2023-12-14 발행). 구현 Eclipse BaSyx. | [표준] + [재단·저장소 지표] |
+| 3 | OPC UA 정보 모델(Companion Spec) | 표준. 개수 [미확인]. | [표준] |
+
+**(b) 비용·라이선스:** Eclipse BaSyx(Java·Go 모두) MIT(하위 조사자 GitHub API 확인).
+
+**(c) 도커 권장 판과 관문**
+- BaSyx Java v2: **정식판 없음**. 이미지 `eclipsebasyx/aas-environment`는 `2.0.0-milestone-15`와 SNAPSHOT뿐(Docker Hub, 확인 2026-09-29). README는 "For up-to-date, ready-to-run server components, use BaSyx Go"(하위 조사자 원문 확인) → **관문 제외(정식판 없음)**.
+- BaSyx Go **1.1.0**(2026-09-28), 이미지 `eclipsebasyx/aasenvironment-go:1.1.0`, PostgreSQL 16 이상 필요, 지원 기간 공표 없음(https://github.com/eclipse-basyx/basyx-go-components , 하위 조사자 원문 확인). 메모리 [미확인].
+
+**(d) 가까운 무료 대안:** 자체 등록부 — 설비 계층·태그·설비 종류 모델을 YAML/JSON 파일 하나로 두고, PostgreSQL 표와 Neo4j 노드를 여기서 생성(1차 B11). 13번 결론대로 **설비 종류 모델 표 + 설비 인스턴스 표**로 나눈다(AWS SiteWise 자산 모델과 같은 모양, 1차 §4-2).
+
+**(e) 권고: 새로 둔다(자체 등록부 파일 + PostgreSQL 18.6).** 판단: AAS 서버를 넣으면 컨테이너가 여럿 늘고(BaSyx Go는 서비스 7종), 지원 기간도 공표되지 않았다. 교육에서는 "현업 표준은 AAS·OPC UA 정보 모델"이라고 설명하고, 등록부의 속성 이름을 AAS 서브모델·ISA-95 계층에 맞춘다. AAS는 확장 3단계에서 BaSyx Go 1.x로 재검토한다.
+
+### B12. AI 에이전트·지식 그래프
+
+**(a) 현업 주류 순위(그래프 DB)**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Neo4j | DB-Engines 그래프 DBMS 2026-09 **1위**(점수 47.17, 2위 Azure Cosmos DB는 멀티모델). https://db-engines.com/en/ranking/graph+dbms (확인 2026-09-29) | [독립 설문] |
+| 2 | JanusGraph / TigerGraph | 같은 순위 그래프 전용 10·11위(1.95). | [독립 설문] |
+| — | 에이전트 프레임워크 | 산업용 점유율 자료 없음 [미확인]. 1차 §4-3: 지식 그래프 RCA는 "연구에서 빠르게 늘고 제품은 공정 산업 중심". | — |
+
+**(b) 비용·라이선스:** Neo4j Community GPLv3(04번), Enterprise 기능(클러스터·RBAC) 유료. Memgraph BSL·FalkorDB SSPL → 관문 제외(04번). LangGraph MIT, LiteLLM MIT(단 `enterprise/`는 별도 라이선스).
+
+**(c) 도커 권장 판**
+- **Neo4j 5.26.31**(LTS), 이미지 `neo4j:5.26.31-community`(2026-09-26). https://hub.docker.com/v2/repositories/library/neo4j/tags?name=5.26 (확인 2026-09-29). LTS "supported until June 2028"(Neo4j 블로그), endoflife.date 2028-06-06. **주의:** endoflife.date 원문 "This page tracks End-of-Life as per the Neo4j Enterprise Edition. Support or fixes are not guaranteed for the Community Edition."(하위 조사자 원문 확인) → Community도 같은 5.26.x 패치 이미지가 나오고 있으나 보장은 아니다.
+- 메모리: 공식 "Personal Use & Software Development: 2GB minimum, 16GB or more recommended". https://neo4j.com/docs/operations-manual/5/installation/requirements/ (확인 2026-09-29). 우리 V1 실측 742 MiB(decision-log #85). 권장치 16 GB는 이 PC에 불가 → 힙·페이지캐시를 작게 고정해야 한다(판단).
+- LangGraph **1.2.12**(2026-09-21), LiteLLM **1.103.0**(2026-09-27, 이미지 `ghcr.io/berriai/litellm:v1.103.0`). LiteLLM 1.82.7·1.82.8은 악성 배포본(2026-03-24), 권고 "≤1.82.6 or ≥1.83.0", 공식 Docker 이미지는 영향 없음. https://docs.litellm.ai/blog/security-update-march-2026 (하위 조사자 원문 확인). 둘 다 지원 정책 없음 → 롤링.
+
+**(d) 가까운 무료 대안:** PostgreSQL + Apache AGE(그래프 기능 좁음, 04번).
+
+**(e) 권고: 유지(Neo4j 5.26 LTS, LangGraph, LiteLLM) — 버전만 고정.** 1차 원칙대로 **도구는 읽기 전용, 명령 권한 없음**, AI의 Modbus 직접 쓰기 제거.
+
+### B13. 승인·업무 흐름
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| — | MES·CMMS의 작업 지시·변경 관리 | 1차 §4-3: 현업은 AI 권고를 "기존 변경 관리 절차"에 넣는다(CISA). 제품 점유율 없음. | [표준] |
+| 1 | Camunda | 널리 쓰인 BPMN 엔진이지만 7 CE는 **2025-10 EOL**(7.24, 2025-10-14 마지막), 8.6부터 운영 사용에 유료 라이선스(2024-10-08). https://forum.camunda.io/t/important-update-camunda-7-community-edition-end-of-life-announced/50921 · https://camunda.com/blog/2024/04/licensing-update-camunda-8-self-managed/ (하위 조사자 원문 확인) | [벤더 홍보] |
+| 2 | Flowable | Gartner MQ 2026-09-14 언급은 Flowable 자체 페이지(금융·보험·의료 중심). 제조 근거 없음. | [벤더 홍보] (약함) |
+| 3 | Temporal(내구 실행) | `temporalio/server` 48,207,959회. BPMN 아님. | [재단·저장소 지표] |
+
+**(b) 비용·라이선스:** Camunda 7 CE(EOL)·Camunda 8(운영 유료) → **관문 제외**. Flowable OSS Apache-2.0. Operaton(Camunda 7 포크) Apache-2.0 "No open-core model"(하위 조사자 원문 확인). Temporal MIT.
+
+**(c) 도커 권장 판**
+- Flowable **8.0.0**(2026-02-27), 이미지 `flowable/flowable-rest:8.0.0`. OSS 지원 정책 없음 [미확인], 릴리스 간격 약 6~12개월. https://hub.docker.com/v2/repositories/flowable/flowable-rest/tags (확인 2026-09-29)
+- Operaton **2.1.5**(2026-09-18), 이미지 `operaton/operaton:2.1.5`. SECURITY.md "2.1.x Fully maintained", 1.1.x EOL(하위 조사자 원문 확인). 날짜 있는 지원 기간 [미확인].
+- 메모리: 공식 값 [미확인].
+
+**(d) 가까운 무료 대안:** 지금처럼 자체 승인 흐름(PostgreSQL 표 + 백엔드). v3 참조 설계서도 "Process GPT 또는 Flowable"로 둘을 같이 적는다(의뢰서 부록 A L9).
+
+**(e) 권고: 유지(자체 승인 흐름 + PostgreSQL 18.6), BPMN 엔진은 선택.** 판단: 1차가 요구하는 것은 "승인 → Kafka 명령 → 게이트웨이 → 제어기 → ACK 대조 → 재관측 → 기록"의 **길**이지 BPMN 엔진 자체가 아니다. BPMN을 보여 주려면 Camunda 7 사용자에게 익숙한 Operaton 2.1.5가 1안(Apache-2.0, 유지 중), Flowable 8.0.0이 2안이다. 둘 다 메모리 실측이 먼저다.
+
+### X2. 알람 수명주기 관리(ISA-18.2)
+
+**(a) 현업 주류 순위**
+
+| 순위 | 제품 | 근거 | 근거 종류 |
+|---|---|---|---|
+| 1 | Hexagon(PAS) PlantState·AlarmManagement | ARC 분석이라며 "the leading supplier of alarm management software … larger market share than the next three competitors combined"를 Hexagon 보도자료가 인용(2023-02-21). | [벤더 홍보](분석가 인용) |
+| 2 | Honeywell DynAMo, Yokogawa Exaquantum/ARA, Emerson DeltaV Analyze | 모두 ISA-18.2·IEC 62682·EEMUA 191 대응을 자기 문서에 적음(검색 발췌). | [벤더 홍보] |
+| — | 오픈소스 | Alerta(ISA-18.2 상태 모델 내장, 13번 C2). `alerta/alerta-web` 9,596,138회. | [재단·저장소 지표] |
+
+**(b)·(c)** Alerta 9.1.0(`alerta/alerta-web:9.1.0`, 2026-03-28), Apache-2.0. 그러나 포크 alerta-ng 원문 "The upstream project is no longer actively maintained — issues and pull requests are not being reviewed or released."(하위 조사자 원문 확인) → 유지 위험. alerta-ng는 공식 이미지 없음.
+
+**(d)·(e) 권고: 새로 둔다 — 제품이 아니라 역할 분리로.** 공정 알람 상태는 FUXA(OT)가 들고(13번 C2; FUXA는 발생·해제·확인 상태가 있고 셸빙은 없음 — B4 소스 확인), 분석 alert·사건의 ISA-18.2 상태(UNACK·ACKED·RTNUN·SHLVD 등)는 **B13과 같은 PostgreSQL 표**에 Alerta `isa_18_2.py` 상태 기계를 참조해 구현한다(03번 패턴 C). 외부 알람 서버 컨테이너는 넣지 않는다(유지 위험·메모리).
+
+### X3. 공통 업무 DB — PostgreSQL
+
+- **PostgreSQL 18.6**, 이미지 `postgres:18.6-alpine`. 지원 종료 **2030-11-14**. https://www.postgresql.org/support/versioning/ (하위 조사자 원문 확인). DB-Engines·Stack Overflow 순위는 이번에 따로 보지 않았다. Docker Hub `library/postgres` 11,663,218,690회.
+- 용도: B11 등록부, B13 승인·명령 기록, X2 알람 상태, 감사 로그. V1의 EdgeX 전용 PostgreSQL은 B2 교체와 함께 없어진다.
+- 메모리: 기본 `shared_buffers` 128MB(하위 조사자 원문 확인). 우리 V1 실측 edgex-postgres 54 MiB.
+
+
+---
+
+## 조사 방법 메모
+
+- 1차 사실은 기존 01~13번 파일과 compass 파일에서 가져오고, 날짜가 바뀔 수 있는 값(최신 판, 태그, 지원 표)은 2026-09-29에 다시 조회했다.
+- 일부는 하위 조사자(문헌 전용, docker 금지) 네 명이 조회했다. 그들이 원문을 연 것은 "(하위 조사자 원문 확인)"으로 적었다. 하위 조사자가 쓴 도구는 원문을 요약해 돌려주므로 따옴표 안이 원문과 글자 단위로 같지 않을 수 있다.
+- 첫 GHCR 조회에서 OpenPLC 태그가 100개에서 잘려 버전 태그가 없다고 잘못 읽었다. `?n=2000`으로 다시 조회해 `v4.2.4`를 확인하고 B1을 고쳤다.
+- 오늘(2026-09-29) 새로 나온 사실: ThingsBoard가 4.4부터 BUSL 1.1로 전환 발표(B4). Grafana 13.2.3 출시(B9).
+
+## 확인 못 한 것
+
+1. **B1** OpenPLC Runtime v4의 지원 정책, 실제 메모리, 편집기 없이 프로그램을 넣는 방법, IEC 61131 프로그램으로 운전 모드·명령 만료를 짤 수 있는지. soft-PLC 점유율 독립 수치(IoT Analytics 보고서는 유료, 선두 목록만 검색 발췌).
+2. **B2** EdgeX Queensland의 LTS 여부·판 번호, 4.0 LTS 연장 결정. Node-RED 5.x의 EOL 날짜, OPC UA 노드의 라이선스·유지 상태, Node-RED 메모리. 상용 엣지 제품(Kepware·Ignition Edge·Litmus·HighByte) 점유율.
+3. **B3** Mosquitto 지원 기간 정책(문서 없음). Eclipse 설문의 브로커 제품별 문항.
+4. **B5** Bento·Redpanda Connect 지원 정책. 명령 게이트웨이 오픈소스 제품(찾지 못함). Stream Reactor 공식 이미지.
+5. **B6** Apache Kafka 공식 종료 날짜(정책은 "최근 3개"뿐). Kafka 4.3.1이 4.2.2에서 고친 jackson-databind CVE에 해당하는지. 4.4.0 정식 출시일. Apache가 적은 소규모 최소 메모리.
+6. **B7** Flink 1.20 LTS 종료일(FLIP-458 시작일 미기재). Flink 2.3용 Kafka 커넥터 출시일(FLINK-40121 담당자 없음). Flink 독립 설문 수치. ZooKeeper 3.9.6 공식 이미지 태그.
+7. **B8** InfluxDB 2.x 종료 계획. Docker Hub `influxdb:latest`가 지금 2.9.1인지 3 Core인지(문서와 하위 조사자 관찰이 다름). InfluxDB 2.x·TimescaleDB 공식 최소 메모리.
+8. **B4** FUXA 1.3.4 태그 소스의 알람 상태가 master와 같은지(확인·해제는 master 소스로 확인, 셸빙은 없음), 권고별 정확한 수정 판. 최신 독립 HMI/SCADA 점유율(ABI 2023이 최신으로 확인한 것, Control Engineering 조사는 403).
+9. **B9·B10** CNCF 2025 설문의 Prometheus 수치 원문(검색 발췌 77%만). Alertmanager·cAdvisor·kafka-exporter 지원 정책. kafka-exporter의 Kafka 4.3 공식 호환.
+10. **B11** BaSyx Go 1.x 지원 기간·메모리. OPC UA Companion Spec 개수.
+11. **B12** Neo4j Community에 LTS 패치가 보장되는지(endoflife.date는 "보장 아님"). LangGraph·LiteLLM 지원 정책. AI 백엔드 메모리(V1 합계에 포함, 따로 안 잼).
+12. **B13** Flowable·Operaton·CIB seven 무료판 지원 기간, 메모리. 제조업 BPMN 사용 독립 근거.
+13. **X1** Apicurio 지원 정책 원문(검색 발췌만), Confluent 호환 API 여부.
+14. **메모리 합계** — 실측 없음(docker 금지). 미측정 칸이 5개 있다. 새 구성은 한 번에 조립해 실측해야 한다.
