@@ -22,8 +22,8 @@ ATM_BAR = 1.013
 class Fault:
     """고장 주입 상태.
 
-    타이밍은 벽시계가 아니라 플랜트의 **시뮬레이션 시간**을 기준으로 한다.
-    그래야 1 Hz 실시간 구동과 가속 배속 테스트가 동일하게 재현된다.
+    지속·지연·상승 시간은 **실제 시간(스캔 시계)** 기준이다. 물리 배속을 올려도
+    고장이 유지되는 시간과 CEP 가 보는 선후 간격(예: 전류 뒤 6초 진동)은 그대로다.
     """
 
     scenario: str
@@ -33,6 +33,7 @@ class Fault:
     lag_s: float = 0.0
     targets: tuple[str, ...] = ()
     elapsed: float = 0.0
+    ramp_s: float = 45.0
 
 
 class ReactorPlant:
@@ -65,7 +66,12 @@ class ReactorPlant:
         self.vib_wear = 0.0
         self.interlocked = False
         self.seq = 0
-        self.sim_time = 0.0          # 적분된 시뮬레이션 시각 [s]
+        self.sim_time = 0.0          # 적분된 물리 시각 [s] (= 실제 시간 × 배속)
+        self.wall_time = 0.0         # 스캔 시계 [s]: 고장·autopilot·수동 유지는 이 시계로 센다
+        # 물리 배속: 온도·액위·마모 같은 공정 변화만 빨라진다(실습에서 결과가 수 초 안에 보이도록).
+        # 큰 배속에서도 적분이 안정하도록 스캔 한 번을 max_substep 이하 소구간으로 나눠 푼다.
+        self.time_scale = float(cfg.get("physics_time_scale", 1.0))
+        self.max_substep = float(cfg.get("physics_max_substep_s", 5.0))
         self.measured_pressure = 0.0  # 인터록이 참조하는 '트랜스미터 지시값' 
 
         # ── 명령 (Modbus 로부터 매 스캔 갱신) ──
@@ -94,13 +100,13 @@ class ReactorPlant:
     # ── 운전원 수동 조작 등록 (해당 설정치를 일시적으로 autopilot 에서 제외) ──
     def note_manual(self, key: str) -> None:
         hold = float(self.ap.get("hold_after_manual_s", 300))
-        self._manual_until[key] = self.sim_time + hold
+        self._manual_until[key] = self.wall_time + hold
 
     def _autopilot(self, dt_s: float) -> None:
         if not self.ap.get("enabled"):
             return
-        if self.sim_time >= self._ap_next:
-            self._ap_next = self.sim_time + float(self.ap["period_s"])
+        if self.wall_time >= self._ap_next:
+            self._ap_next = self.wall_time + float(self.ap["period_s"])
             for key, (lo, hi) in self.ap["ranges"].items():
                 self._ap_target[key] = random.uniform(lo, hi)
         step = dt_s / max(float(self.ap["ramp_s"]), 1.0)
@@ -109,7 +115,7 @@ class ReactorPlant:
             ("valve_open_sp", "sp_valve_open"),
             ("temp_sp_c", "sp_temp_c"),
         ):
-            if self.sim_time < self._manual_until.get(key, 0.0):
+            if self.wall_time < self._manual_until.get(key, 0.0):
                 continue
             cur = getattr(self, attr)
             tgt = self._ap_target[key]
@@ -121,11 +127,12 @@ class ReactorPlant:
         dur = duration_s if duration_s is not None else spec["default_duration_s"]
         f = Fault(
             scenario=scenario,
-            started_at=self.sim_time,
-            expires_at=self.sim_time + dur,
+            started_at=self.wall_time,
+            expires_at=self.wall_time + dur,
             magnitude=float(spec.get("magnitude", 0.0)),
             lag_s=float(spec.get("lag_s", 0.0)),
             targets=tuple(spec.get("target", [])),
+            ramp_s=float(spec.get("ramp_s", 45.0)),
         )
         self.faults[scenario] = f
         return f
@@ -136,7 +143,7 @@ class ReactorPlant:
         self.vib_wear = 0.0
 
     def _expire_faults(self) -> None:
-        now = self.sim_time
+        now = self.wall_time
         for f in self.faults.values():
             f.elapsed = now - f.started_at
         for k in [k for k, f in self.faults.items() if f.expires_at <= now]:
@@ -146,12 +153,8 @@ class ReactorPlant:
                 self.vib_wear = 0.0
 
     # ── 1 스캔 적분 ──────────────────────────────────────────────
-    def step(self, dt_s: float) -> dict[str, float]:
-        self.sim_time += dt_s
-        self._expire_faults()
-        self._autopilot(dt_s)
-        self.seq = (self.seq + 1) & 0xFFFFFFFF
-
+    def _integrate(self, dt_s: float):
+        """물리 소구간 적분(질량·에너지 수지, 인터록, 마모). dt_s 는 물리 시간."""
         rx_area = self.p_rx["area_m2"]
         rx_h = self.p_rx["height_m"]
         fd_area = self.p_feed["area_m2"]
@@ -229,6 +232,22 @@ class ReactorPlant:
             self.bearing_wear = min(1.0, self.bearing_wear + dt_s / 25.0)
             if f.elapsed >= f.lag_s:
                 self.vib_wear = min(1.0, self.vib_wear + dt_s / 23.0)
+
+        return q_in, q_out, pump_active, rx_level_frac
+
+    def step(self, dt_s: float) -> dict[str, float]:
+        """스캔 1회: 실제 dt_s 초. 물리는 dt_s × 배속만큼 소구간으로 적분한다."""
+        self.wall_time += dt_s
+        self._expire_faults()
+        self._autopilot(dt_s)
+        self.seq = (self.seq + 1) & 0xFFFFFFFF
+        phys = dt_s * self.time_scale
+        n = max(1, math.ceil(phys / self.max_substep))
+        for _ in range(n):
+            q_in, q_out, pump_active, rx_level_frac = self._integrate(phys / n)
+        self.sim_time += phys
+        fd_area = self.p_feed["area_m2"]
+        fd_h = self.p_feed["height_m"]
 
         pressure = self._pressure(rx_level_frac, self.temp_c)
 
@@ -310,7 +329,7 @@ class ReactorPlant:
             elif f.scenario == "noise":
                 value += random.gauss(0.0, self.noise.get(tag, 0.05) * f.magnitude)
             elif f.scenario == "drift":
-                ramp = min(1.0, f.elapsed / 45.0)
+                ramp = min(1.0, f.elapsed / max(f.ramp_s, 1e-9))
                 # 정상 상태에서 pH↑ ⇒ CT↓ 이지만, 이 고장은 둘을 동시에 상승시켜
                 # 센서 간 상관 구조를 붕괴시킨다. 각 태그는 규격 내에 머무른다.
                 scale = 1.0 if tag == "pH-101" else 1.6

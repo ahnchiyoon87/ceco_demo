@@ -60,8 +60,9 @@ class Simulator:
     def __init__(self, cfg: dict):
         self.cfg = cfg
         self.plant = ReactorPlant(cfg)
-        # 물리 시간 배율(측정 단축용). 스캔·발행 간격은 그대로, 물리 적분만 배율배 진행. 기본 1 = V1 과 동일
-        self.dt = cfg["scan_interval_ms"] / 1000.0 * float(os.environ.get("PHYSICS_TIME_SCALE", "1"))
+        if os.getenv("PHYSICS_TIME_SCALE"):
+            self.plant.time_scale = float(os.environ["PHYSICS_TIME_SCALE"])
+        self.dt = cfg["scan_interval_ms"] / 1000.0
         self.tags = cfg["tags"]
         self.coils = cfg["commands"]["coils"]
         self.holding = cfg["commands"]["holding"]
@@ -183,6 +184,7 @@ class Simulator:
             "device": self.cfg["device"],
             "uptime_s": round(time.time() - self.started, 1),
             "sim_time_s": round(p.sim_time, 1),
+            "physics_time_scale": p.time_scale,
             "seq": p.seq,
             "readings": {
                 k: (None if v == BAD_QUALITY else round(v, 4)) for k, v in p.readings.items()

@@ -13,6 +13,7 @@ def plant():
     cfg = copy.deepcopy(CONFIG)
     cfg["autopilot"]["enabled"] = False
     cfg["noise"] = {tag: 0 for tag in cfg["noise"]}
+    cfg["physics_time_scale"] = 1   # 물리 모델 검증은 실시간 배속 1 에서(V1 과 같은 시간 축)
     model = ReactorPlant(cfg)
     model.temp_c = model.jacket_c = 100.0
     model.sp_temp_c = 70.0

@@ -5,6 +5,11 @@
 site: AR-100
 device: reactor-line-01
 scan_interval_ms: 1000
+# 물리 배속(V2): 온도·액위·마모 등 공정 변화만 빨라진다. 스캔·발행은 1초 그대로.
+# 실습에서 고장 결과가 10초 안에 보이도록 기본 300배(히터 고착 약 5초에 상한 초과).
+# 고장 지속·지연·autopilot 주기는 실제 초. 1 = V1 과 같은 실시간. 환경변수 PHYSICS_TIME_SCALE 로 덮어쓴다.
+physics_time_scale: 300
+physics_max_substep_s: 5
 
 # ── 계측 태그 (12점) ───────────────────────────────────────────
 #  hr: float32 가 기록될 홀딩 레지스터 시작 주소 (2 워드 소비)
@@ -143,6 +148,7 @@ faults:
     default_duration_s: 90
     target: [pH-101, CT-101]
     magnitude: 0.55
+    ramp_s: 8                # 드리프트가 최대로 오르는 실제 초(V1 45초 → 실습 10초 안)
   # netdown 은 시뮬레이터가 아니라 compose 레벨에서 수행합니다 (EMQX 일시정지).
   #   → make fault-netdown
   # EdgeX app-service 의 Store-and-Forward 가 Redis 에 적재 후 재전송하는지 검증합니다.
