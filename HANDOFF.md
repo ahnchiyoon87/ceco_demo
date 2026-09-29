@@ -8,9 +8,10 @@
 
 ## 0. 새 세션이 처음 할 일
 1. 이 파일을 끝까지 읽는다.
-2. 구조 조사 결과를 확인한다: `docs/research/deep-2026-09-29/12-industry-structure.md`.
-   - 세션 4 마지막에 띄운 조사다. 파일이 없거나 끝이 "확인 못 한 것"으로 끝나지 않았으면 미완이다. 그러면 의뢰서 `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md`로 **조사 하나**를 다시 돌린다(도커 금지 명시).
-3. 조사 결과를 사용자에게 **쉬운 말 한 장**으로 보고한다. 담을 것: 현업 구조, 우리와 다른 곳, 권장 베이스 구조. 그다음 §2 순서로 진행한다.
+2. 조사 결과 두 개를 끝까지 읽는다.
+   - **1차(완료):** `docs/research/deep-2026-09-29/12-industry-structure.md` — 현업 구조, v3·우리 비교, 권장 베이스. 요지는 §2-1.
+   - **2차(세션 4 끝에 진행 중):** `docs/research/deep-2026-09-29/13-industry-detail.md` — 세부 질문 A~J(의뢰서 §6). 파일이 없거나 "확인 못 한 것"으로 끝나지 않았으면 미완이다. 그러면 의뢰서 §6으로 **조사 하나**를 다시 돌린다(1차 결과를 같이 넘기고, 도커 금지를 명시한다).
+3. 두 결과를 합쳐 사용자에게 **쉬운 말 한 장**으로 보고한다. 담을 것: 확정할 베이스 구조(층·길·망), 우리 구조에서 바꿀 것, 세부 결정표. 사용자 확인 뒤 §2 단계 2로 간다.
 4. 시작 전에 실제 상태를 대조한다: `git status`, `docker ps -a`.
 
 ## 1. 목표와 방향 (사용자 확정 2026-09-29, 최신)
@@ -43,13 +44,32 @@
 ## 2. 진행 순서와 지금 위치
 | 단계 | 내용 | 상태 |
 |---|---|---|
-| 1 | 현업 구조 조사: 층·길·망 구분·확장 방식·AI 연결, v3와 우리 구조 비교 | **진행 중**(결과 파일 `12-industry-structure.md`) |
+| 1 | 현업 구조 조사: 층·길·망 구분·확장 방식·AI 연결, v3와 우리 구조 비교 | **1차 완료**(`12-industry-structure.md`, 요지 §2-1) · **2차 세부 진행 중**(`13-industry-detail.md`) |
 | 2 | 구조 확정: 현업 구조를 뼈대로 우리 베이스의 층과 길 목록을 확정하고 사용자에게 한 장으로 보고 | 대기 |
 | 3 | 칸별 제품·버전 조사 **한 번에**: 칸마다 현업 순위(근거 종류 표시), 비용·라이선스, 도커 판(버전·이미지 태그·지원 종료·메모리·치명 버그), 비슷한 대안, V1 대비 유지·교체 권고 → 최종 스택 표 | 대기 |
 | 4 | 조립 **한 번에**: V1 코드에서 출발해 확정 구조·스택으로 바꾼다. 기능 대응표(§3-4)를 채운다 | 대기 |
 | 5 | 검증 **한 번에**(§3-5 묶음) → 나빠진 곳만 고침 → 태그 | 대기 |
 | 6 | 보고서(대표님용 짧은 대조 보고 + 쉬운 설명서) → 작업보고 | 대기 |
 | 7 | 설비 확장 → 시나리오·온톨로지 | 이후 |
+
+### 2-1. 1차 조사 요지 (근거·출처는 12번 파일)
+- **현업 구조:**
+  - 망은 OT(L0~L3), 산업 DMZ(L3.5), IT(L4~5) 세 구역이다. IT에서 OT로 바로 가는 길은 없다. OT와 DMZ 사이 연결은 OT 쪽이 먼저 연다(CISA Defense in Depth 2016).
+  - 층은 아래부터 이렇게 쌓인다: 현장 장치 → 제어기(PLC: 인터록·운전 모드·명령 수용 최종 판단, SIS는 따로) → SCADA/HMI → 엣지 연결·프로토콜 변환(끊겼을 때 저장 후 전송) → 사이트 브로커(UNS) → 맥락화·설비 모델 → 히스토리언(OT, 복제본은 DMZ) → DMZ 중계 → Kafka형 장부 → 탐지 → 플랫폼 감시 → AI(OT 밖, 읽기 전용) → MES·CMMS·ERP.
+  - **설비가 늘어도 층은 그대로다.** 늘어나는 것은 ISA-95 설비 이름, 토픽 규칙, 설비 종류별 모델, 엣지 노드로 흡수한다.
+  - 명령: 운전원은 HMI → 제어기로 보낸다. 외부·AI 명령은 사람 승인 → 검증 통로 하나 → 제어기가 최종 판단한다(NAMUR NE 178). Sparkplug 명령은 QoS 0, retain=false다.
+  - AI는 읽고 추천만 한다. AI가 제어기에 직접 쓰기를 권하는 표준은 찾지 못했다.
+- **우리(V1)에 없는 것:** 망 구분, 제어기(PLC) 층, 하나로 모인 명령 검증 길(지금 쓰기 길 3개), 설비 등록부, 알람 수명주기.
+- **현업 근거가 없는 것:** AI 코드가 설비에 Modbus로 직접 쓰기, FUXA와 EdgeX의 이중 폴링, 결과 확인을 시뮬레이터 전용 HTTP `/state`로 하기.
+- **잘 맞춘 것:** EdgeX 엣지 층, MQTT→Kafka 분리, 사람 승인과 실행 직전 재확인, 허용 조치 목록.
+- **권장 베이스로 가려면 바꿀 다섯 가지:**
+  1. 망 3구역
+  2. soft-PLC 층 추가
+  3. 쓰기 길을 수동 하나 + 검증 통로 하나로
+  4. 결과 확인을 제어기 ACK·상태 토픽으로
+  5. 설비 등록부 하나를 정본으로 두고 토픽·Kafka 키·Flink 규칙·온톨로지가 같은 ID를 쓰게 함
+- **v3와의 차이:** v3는 망·명령 게이트웨이·경보 분리가 현업과 맞는다. 다만 DMZ가 OT로 먼저 연결을 열고(현업 권장과 반대), OT 이력 저장·설비 모델 층·알람 수명주기가 없다.
+- **확인 못 한 것:** UNS 채택 통계, 명령 만료·중복 방지를 요구하는 표준, ISA-112 원문, 권장 구조의 메모리 합계. 2차에서 다시 찾는다.
 
 ## 3. 기준 (이것만 쓴다 — 서로 충돌 없음)
 ### 3-1. 관문 (하나라도 걸리면 쓰지 않음)
@@ -141,9 +161,32 @@
   - Windows 줄끝 때문에 셸 루프에는 `tr -d '\r'`을 쓴다.
   - "거부" 표시가 떠도 명령이 실행됐을 수 있다. 결과를 확인한다.
 
+## 5-1. 안정화 V1 (세션 4 끝, 재설계 때 참고)
+V2 설정에만 있던 "같은 제품이면 어디서나 필요한 수정"을 원본 V1 위에 얹는 덧씌우기 `docker-compose.stable.yml` 하나로 모았다. 원본 파일은 고치지 않았다. 담긴 수정은 다섯 가지다.
+- Flink 2.2.1 + ZooKeeper HA(S1)
+- ONNX 잡 체크포인트(S17)
+- `KAFKA_LOG_DIRS`(S21)
+- InfluxDB 설정 이름 볼륨(S15)
+- FUXA 1.3.4 태그 고정
+
+기동 명령: `docker compose --env-file .env --env-file .env.rotation -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml -f docker-compose.stable.yml --profile edgex up -d --no-build`
+(`--no-build`는 원본 이름 `iiot/*` 이미지 빌드를 막는다.)
+
+**2026-09-29 1회 확인 결과**
+| 확인 | 결과 |
+|---|---|
+| 기동 | SCADA 27개 + ZooKeeper 기동, 일회성 3개 정상 종료, Flink 잡 4개 RUNNING |
+| 계측 흐름 | Kafka 원시 토픽 +144건/10 s(정상값과 같음) |
+| Kafka 데이터 위치 | `/var/lib/kafka/data`(볼륨)에 저장, `/tmp`에는 없음 → S21 수정 확인 |
+| JobManager 재시작 | 8 s 만에 잡 4개 자동 복귀, 로그 "Restoring SplitEnumerator … from checkpoint". 제출기는 재실행하지 않음 → S1 수정 확인 |
+| verify.py | 대부분 통과(EdgeX 정규화, 코일 쓰기 물리 반응, Kafka 토픽, 스키마, ONNX 추론 0.252 ms, spike→규칙, bearing_wear→CEP). **실패 3개: 결측 주입 관련**(원시 TT-101 결측 구간이 보이지 않음, 보간 0건, 보간값 quality 식별). 원인 미확인. 원본 V1에서도 같은지, 배속 설비의 결측 사건(실제 초) 때문인지 확인이 필요하다(사용자 지시: 재설계 때 참고해 처리). 출력 뒷부분은 시간 제한으로 잘려 보지 못했다 |
+
+재설계 뒤 같은 제품(Kafka·Flink·InfluxDB)을 쓰면 이 수정을 그대로 가져간다.
+
 ## 6. 지금 상태 (2026-09-29 세션 4 종료)
-- **컨테이너:** 실행 중인 것은 없다. SCADA 컨테이너는 전부 삭제했다. AI 컨테이너 6개(`rot-ai-*`)는 정지 상태이고 볼륨은 보존했다.
-- **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`와 `rot-iiot_model-store-v2`만 남아 있다.
+- **컨테이너:** 실행 중인 것은 없다. 안정화 V1(§5-1)을 확인한 뒤 멈췄다(`stop`, 컨테이너·볼륨 보존). AI 컨테이너 6개(`rot-ai-*`)도 정지 상태이고 볼륨은 보존했다.
+- **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`, 안정화 V1 데이터(`rot-iiot_*`: kafka·influx·zookeeper 등).
+- **원본 V1 이미지:** 확인을 위해 다시 받았다(kafka 3.9.0, emqx 5.8.6, telegraf 1.33, influxdb 2.7, grafana 11.4.0, prometheus v3.1.0, alertmanager v0.28.0, kafka-exporter, cadvisor v0.49.1, mosquitto 2.0.21).
 - **이미지(남긴 것):** apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, rot-flink-onnx:v2, rot-plant-simulator:v2-ts, iiot/model-trainer:1.0, e2e-client:1.0, l4bench-tools:1.0, python:3.12-slim, AI 이미지(rot-ai-*, neo4j, postgres:17, ollama).
 - **코드:**
   - V1 원본 코드: `docker-compose.yml`, `docker-compose.edgex.yml`, edgex/·emqx/·telegraf/·kafka/·flink/·fuxa/·grafana/·prometheus/·ml/
@@ -193,7 +236,9 @@
 | 위치 | 역할 |
 |---|---|
 | `HANDOFF.md` | 유일한 정본(기준·방향·상태) |
-| `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서(목표, 우리 구조 요약, v3 옮겨 적기). 단계 3 조사도 이 틀로 쓴다 |
+| `docs/research/DEEP_RESEARCH_BRIEF_2026-09-29.md` | 조사 의뢰서(목표, 우리 구조 요약, v3 옮겨 적기, §6 2차 세부 질문). 단계 3 조사도 이 틀로 쓴다 |
+| `docs/research/deep-2026-09-29/12-industry-structure.md` · `13-industry-detail.md` | 현업 구조 조사 1차(완료)·2차(진행 중) |
+| `docker-compose.stable.yml` | 안정화 V1 덧씌우기(§5-1) |
 | `docs/research/deep-2026-09-29/01~12`, compass 4종, `AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 정의), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석) | 1차 출처 사실. `11-unified-hub-feasibility.md`는 중단된 조사라 미완 |
 | `시스템구성도_*.pdf`·`.md`, `프로토타입_아키텍처_보고용.*` | 우리 V1 구조도(사용자 자료) |
 | `reports/STABILITY.md` | 결함과 교훈 S1~S22 |
