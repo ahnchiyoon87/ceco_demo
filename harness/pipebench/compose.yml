@@ -194,12 +194,14 @@ services:
   nifi:
     image: apache/nifi:2.12.0
     profiles: [nifi]
+    hostname: nifi                    # 없으면 인증서·허용 호스트가 컨테이너 ID 로 만들어져 https://nifi:8443 로그인 거부(#118)
     depends_on: *pipe-deps
     ports: ["39443:8443"]
     environment:
       SINGLE_USER_CREDENTIALS_USERNAME: bench
       SINGLE_USER_CREDENTIALS_PASSWORD: pipebench-nifi-12345
-      NIFI_WEB_PROXY_HOST: "localhost:39443"
+      NIFI_WEB_HTTPS_HOST: nifi
+      NIFI_WEB_PROXY_HOST: "nifi:8443,localhost:39443"
 
   # ── P2 Kafka Connect + Lenses Stream Reactor 12.1.2 MQTT source (P-D, 중계 ① 대체). Kafka ≥4.0 → KAFKA_IMAGE=apache/kafka:4.3.1 ──
   # 중계 ②·③ 은 relay23.conf(Telegraf 1.40.1, single.conf 에서 ②③만)가 맡는다 — 중계 ① 비교가 목적.
@@ -252,7 +254,7 @@ services:
       TB_KAFKA_SERVERS: kafka:9092                           # 벤치 Kafka 를 TBMQ 내부 저장에도 공유(TBMQ 토픽은 tbmq.* 접두)
       REDIS_HOST: tbmq-pc-valkey
       SECURITY_MQTT_BASIC_ENABLED: "false"
-      MQTT_PERSISTENT_SESSION_DEVICE_PERSISTED_MESSAGES_LIMIT: "100000"   # V1 큐 10만에 맞춤(09-29)
+      MQTT_PERSISTENT_SESSION_DEVICE_PERSISTED_MESSAGES_LIMIT: "65535"    # 제품 최댓값 — V1 10만 못 맞춤(약점, #105·#118)
   tbmq-pc-ie:
     image: thingsboard/tbmq-integration-executor:2.4.0
     profiles: [tbmq-pc]

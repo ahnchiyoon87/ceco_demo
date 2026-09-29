@@ -18,3 +18,18 @@ V1:
     relays: [edgex-app-mqtt-export, telegraf-bridge, telegraf-sink, alert-republisher]
     device_polling: [edgex-device-modbus, fuxa]
     stores: [influxdb, work-db(postgres), graph(neo4j), edgex-postgres]
+V2:
+  alarm_to_hmi:
+    - {hop: plant-simulator, via: "Modbus TCP 폴링(설비 전용망 field)", evidence: "docker-compose.v2.yml ingest·plant-simulator networks [iiot, field]"}
+    - {hop: ingest, via: "Telegraf inputs.modbus → outputs.kafka(V1 raw 레코드 모양)", evidence: "v2/telegraf/ingest.conf inputs.modbus·outputs.kafka"}
+    - {hop: kafka, via: "sensor.telemetry.raw", evidence: "v2/telegraf/ingest.conf topic"}
+    - {hop: flink, via: "SQL 규칙·CEP·ONNX(V1 SQL 그대로, Flink 2.2.1+HA)", evidence: "flink/sql/*.sql, flink/conf/config.v2.yaml high-availability"}
+    - {hop: kafka, via: "sensor.alerts", evidence: "flink/sql/02~04"}
+    - {hop: relay, via: "Vector kafka 소스 sensor.alerts → mqtt 싱크", evidence: "v2/vector/vector.yaml mqtt_alerts·mqtt_hmi"}
+    - {hop: mqtt, via: "Mosquitto scada/alerts/<tag>, scada/hmi/latest-alert", evidence: "v2/mosquitto/mosquitto.conf, v2/telegraf/alert-republish.conf servers"}
+    - {hop: fuxa, via: "MQTT 구독 scada/hmi/latest-alert. 계측은 Modbus 직접 폴링(plant-simulator:502)", evidence: "fuxa/provision.py MQTT_URL=mqtt://mqtt:1883"}
+  duplicates:
+    brokers: [mqtt]
+    relays: [ingest, relay]
+    device_polling: [ingest, fuxa]
+    stores: [influxdb, work-db(postgres), graph(neo4j)]

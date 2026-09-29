@@ -335,7 +335,8 @@ class Influx2(Engine):
     def q_trend(self, tags, a, b, every):
         f = " or ".join(f'r["tag"] == "{t}"' for t in tags)
         q = (self._range(a, b) + ' |> filter(fn: (r) => r._measurement == "process") |> filter(fn: (r) => r._field == "value")'
-             f' |> filter(fn: (r) => {f}) |> aggregateWindow(every: {every}s, fn: mean, createEmpty: false)'
+             f' |> filter(fn: (r) => {f}) |> group(columns: ["tag"])'   # 태그 단위로 묶은 뒤 창 평균(SQL 후보와 같은 질문, #117)
+             f' |> aggregateWindow(every: {every}s, fn: mean, createEmpty: false)'
              ' |> keep(columns: ["_time", "_value", "tag"])')
         return {(r["tag"], sec_of(r["_time"]) - every): float(r["_value"]) for r in self.flux(q)}
 

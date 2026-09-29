@@ -3,6 +3,7 @@
 #
 #   V1 → V2 에서 바뀐 것(근거는 reports/decision-log.md)
 #     · 수집: EdgeX 10개 + EMQX + 중계기#1 → Telegraf 한 대가 설비를 읽어 Kafka 에 바로 씀(구조 재조립 ②, v2/telegraf/ingest.conf)
+#     · 저장·알람 중계: Telegraf #2·#3 → Vector 한 대(v2/vector/vector.yaml)
 #     · 브로커: EMQX(무료판 지원 종료) → Mosquitto 2.1.2 (알람을 FUXA 화면에 보내는 일만 남음)
 #     · 이상탐지: Flink 1.20.1 → 2.2.1 + 재시작 복구(ZooKeeper HA, #94) — 규칙 SQL·ONNX 잡 로직은 V1 그대로
 #     · 같은 제품은 지원되는 최신판으로 고정: Kafka 4.3.1, Telegraf 1.40.1, InfluxDB 2.9.1, Grafana 13.2.2,
@@ -232,32 +233,24 @@ services:
       retries: 15
       start_period: 15s
 
-  telegraf-sink:
+  # ── L5 저장·L6 알람 중계: Vector 한 대(Kafka → InfluxDB, Kafka 알람 → MQTT) ─────────────────
+  # V1 Telegraf 3개(710 MiB) 중 #2·#3 을 대신한다(#1 은 수집기가 Kafka 에 바로 써서 없어짐). 중계 벤치 결과 동일·45 MiB(#113)
+  relay:
     <<: *restart
-    image: telegraf:1.40.1-alpine
-    container_name: ${CN_PREFIX:-}telegraf-sink
-    hostname: telegraf-sink
+    image: timberio/vector:0.58.0-alpine
+    container_name: ${CN_PREFIX:-}relay
+    hostname: relay
+    command: ["--config", "/etc/vector/vector.yaml"]
     depends_on:
-      influxdb: { condition: service_healthy }
       kafka: { condition: service_healthy }
+      influxdb: { condition: service_healthy }
+      mqtt: { condition: service_healthy }
     environment:
       INFLUX_TOKEN: ${INFLUX_TOKEN}
       INFLUX_ORG: ${INFLUX_ORG}
       INFLUX_BUCKET: ${INFLUX_BUCKET}
     volumes:
-      - ./v2/telegraf/sink.conf:/etc/telegraf/telegraf.conf:ro   # V1 원문 + Kafka 4.3.1 호환 한 줄(#114)
-
-  # ── L6 알람 → 화면: 알람 재발행(Kafka → MQTT) ──────────────────────────────
-  alert-republisher:
-    <<: *restart
-    image: telegraf:1.40.1-alpine
-    container_name: ${CN_PREFIX:-}alert-republisher
-    hostname: alert-republisher
-    depends_on:
-      kafka: { condition: service_healthy }
-      mqtt: { condition: service_healthy }
-    volumes:
-      - ./v2/telegraf/alert-republish.conf:/etc/telegraf/telegraf.conf:ro
+      - ./v2/vector/vector.yaml:/etc/vector/vector.yaml:ro
 
   # ── L6 화면·운전: FUXA(설비 직접 폴링·조작) + Grafana ─────────────────────
   fuxa:

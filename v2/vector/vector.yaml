@@ -1,0 +1,110 @@
+# V2 저장·알람 중계: Vector 0.58.0 한 대가 V1 Telegraf#2(Kafka→InfluxDB)와 #3(Kafka 알람→MQTT)을 대신한다.
+# 출처: 중계 벤치에서 V1 과 결과 동일로 확인된 설정(harness/pipebench/vector/vector.yaml, #113)에서
+#   중계 ①(MQTT→Kafka)만 뺐다 — V2 는 수집기가 Kafka 에 바로 쓴다. InfluxDB 접속값은 .env 환경변수, 브로커는 mqtt(Mosquitto).
+sources:
+  kafka_sink_in:                                # 중계 ② 입력(V1 sink.conf 4토픽, 그룹 하나)
+    type: kafka
+    bootstrap_servers: kafka:9092
+    group_id: vector-influx
+    topics: [sensor.telemetry.clean, sensor.telemetry.raw, sensor.anomaly.score, sensor.alerts]
+    auto_offset_reset: latest
+    topic_key: kafka_topic
+  kafka_alerts_in:                              # 중계 ③ 입력
+    type: kafka
+    bootstrap_servers: kafka:9092
+    group_id: vector-alert-republish
+    topics: [sensor.alerts]
+    auto_offset_reset: latest
+
+transforms:
+  relay2_parse:
+    type: remap
+    inputs: [kafka_sink_in]
+    source: |
+      t = string!(.kafka_topic)
+      d = object!(parse_json!(string!(.message)))
+      d.measurement = if t == "sensor.telemetry.clean" { "process" } else if t == "sensor.telemetry.raw" { "process_raw" } else if t == "sensor.anomaly.score" { "anomaly" } else { "alerts" }
+      d.timestamp = from_unix_timestamp!(to_int!(d.ts), unit: "nanoseconds")
+      del(d.ts)
+      . = d
+  relay2_route:
+    type: route
+    inputs: [relay2_parse]
+    route:
+      process: '.measurement == "process"'
+      process_raw: '.measurement == "process_raw"'
+      anomaly: '.measurement == "anomaly"'
+      alerts: '.measurement == "alerts"'
+  relay3_json:
+    type: remap
+    inputs: [kafka_alerts_in]
+    source: |
+      d = object!(parse_json!(string!(.message)))
+      . = {"fields": {"detail": d.detail, "value": to_float(d.value) ?? null}, "name": "alert",
+           "tags": {"alert_type": d.alert_type, "detector": d.detector, "device": d.device, "severity": d.severity,
+                    "site": d.site, "tag": d.tag},
+           "timestamp": to_int!(d.ts)}
+  relay3_hmi:
+    type: remap
+    inputs: [kafka_alerts_in]
+    source: |
+      d = object!(parse_json!(string!(.message)))
+      t = from_unix_timestamp!(to_int!(d.ts), unit: "nanoseconds")
+      .tag = d.tag
+      .message = format_timestamp!(t, format: "%m-%d %H:%M:%S", timezone: "UTC") + " UTC | " + string!(d.severity) + " | " + string!(d.tag) + " | " + string!(d.alert_type)
+
+sinks:
+  influx_process:
+    type: influxdb_logs
+    inputs: [relay2_route.process]
+    endpoint: http://influxdb:8086
+    org: "${INFLUX_ORG}"
+    bucket: "${INFLUX_BUCKET}"
+    token: "${INFLUX_TOKEN}"
+    measurement: process
+    tags: [site, device, tag, quality]
+  influx_process_raw:
+    type: influxdb_logs
+    inputs: [relay2_route.process_raw]
+    endpoint: http://influxdb:8086
+    org: "${INFLUX_ORG}"
+    bucket: "${INFLUX_BUCKET}"
+    token: "${INFLUX_TOKEN}"
+    measurement: process_raw
+    tags: [site, device, tag, quality]
+  influx_anomaly:
+    type: influxdb_logs
+    inputs: [relay2_route.anomaly]
+    endpoint: http://influxdb:8086
+    org: "${INFLUX_ORG}"
+    bucket: "${INFLUX_BUCKET}"
+    token: "${INFLUX_TOKEN}"
+    measurement: anomaly
+    tags: [site, device, top_contributors]
+  influx_alerts:
+    type: influxdb_logs
+    inputs: [relay2_route.alerts]
+    endpoint: http://influxdb:8086
+    org: "${INFLUX_ORG}"
+    bucket: "${INFLUX_BUCKET}"
+    token: "${INFLUX_TOKEN}"
+    measurement: alerts
+    tags: [site, device, tag, alert_type, severity, detector]
+  mqtt_alerts:
+    type: mqtt
+    inputs: [relay3_json]
+    host: mqtt
+    port: 1883
+    client_id: vector-alert-republisher
+    topic: "scada/alerts/{{ tags.tag }}"
+    quality_of_service: atleastonce
+    encoding: {codec: json}
+  mqtt_hmi:
+    type: mqtt
+    inputs: [relay3_hmi]
+    host: mqtt
+    port: 1883
+    client_id: vector-alert-republisher-hmi
+    topic: scada/hmi/latest-alert
+    quality_of_service: atleastonce
+    encoding: {codec: text}

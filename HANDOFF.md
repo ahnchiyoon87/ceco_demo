@@ -1,6 +1,6 @@
 # HANDOFF — V1 IoT·SCADA 기반을 회전으로 안정적인 시스템으로 (scada-rotation)
 
-최종 갱신 2026-09-29 14:55 · 작성 Claude Code(세션 3 진행 중)
+최종 갱신 2026-09-29 15:10 · 작성 Claude Code(세션 3 종료, 새 세션으로 넘김 — 맥락 한계)
 **이 문서만 읽고 이 작업을 이어갈 수 있게 쓴다.** 실제 파일·실행 상태·사용자 지시와 다르면 실제가 우선이고 이 파일을 고친다.
 **판정 기준의 정본은 `QUESTIONS.md` §1 하나다.** 이 파일은 기준을 복제하지 않고 가리킨다.
 
@@ -13,7 +13,7 @@
 4. `reports/CONFIRMED.md` — 지금까지 원래→바뀜 한 장.
 5. `harness/situations/CANDIDATES.md` 맨 앞 개정 절(#92·#90·#74) — 후보 목록 규칙. 본문 표보다 개정 절이 우선.
 6. `harness/situations/ROBUSTNESS.md`·`STRUCTURE.md` — 비정상(R01~R11)·구조 측정(E1~E12) 목록, 시간 값은 #89 개정.
-7. **리서치 원문(`docs/research/`)** — 반드시: `AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 정의·절차), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석·구조안 = 구조 재조립 근거), `deep-2026-09-29/01~05`(후보별 라이선스·지원 종료 사실과 출처). 참고만: `AGENT_BRIEF.md`·`AGENT_BRIEF_v2.md`(FINAL 에 흡수된 옛 판)·compass 4종 — 충돌하면 FINAL·사용자 지시가 이긴다.
+7. **리서치 원문(`docs/research/`) — 이번에는 전부 끝까지 읽는다(세션 3 은 01~04·FINAL 을 덜 읽고 층별 시험부터 해 이중 작업이 됨).** 반드시: `AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 정의·절차), `ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석·구조안 = 구조 재조립 근거), `deep-2026-09-29/01~05`(후보별 라이선스·지원 종료 사실과 출처). 참고만: `AGENT_BRIEF.md`·`AGENT_BRIEF_v2.md`(FINAL 에 흡수된 옛 판)·compass 4종 — 충돌하면 FINAL·사용자 지시가 이긴다.
 8. 필요할 때만 `reports/decision-log.md` 해당 번호(#1~#98, 추가만). 이 문서가 인용한 번호부터 본다.
 9. 시작 전 반드시 `git status`, `docker ps`, 원시 토픽 흐름(§6 명령)으로 실제 상태 대조.
 
@@ -36,18 +36,33 @@
 8. **사실 기반, 추론 금지.** 모든 판단·수치는 실행 결과·로그·파일·1차 출처로 증명 가능해야 한다. "~같다·~로 보인다"로 결론 내리지 않는다 — 확인 못 한 것은 "미확인"과 확인 방법으로 쓴다. 바꾸기 전에 그 변경이 닿는 문서·설정·측정을 모두 찾아 영향을 파악한다(예: #97 은 짐작으로 원인을 잘못 짚었다가 로그·Kafka 오프셋으로 정정).
 9. **말은 쉽게.** 사용자·대표님에게는 어려운 용어 없이 무엇을 왜 했는지 쉬운 말로 답한다(예: "Flink 재시작 복구"를 약점처럼 어렵게 설명했다가 지적받음). 결론 먼저, 짧게.
 
-## 3. 지금 멈춘 지점 (2026-09-29 14:55, 세션 3 진행 중)
-- **실행 중:** 층별 ② 두 줄(`run_lanes.sh`, 12:26~). 무거운 줄은 ts(시계열 저장), 가벼운 줄은 중계 끝 → 알람 워커·감시·알람·HMI. 요약 `experiments/STAGE2_RUNS.log`. 격리 스택 정지(볼륨 보존).
-- **다음 실행:** 두 줄이 끝나면 `sh harness/run_retry.sh`(PowerShell Start-Process) — 벤치 결함 수정 뒤 재측정·중계 ④·수집 R02·백본 8개(목록은 스크립트 안, 근거 #105~#116).
-- **층 결과(증거 재계산 도구 `harness/tools/layer_{broker,ingest,l4,pipe,backbone}.py` → `experiments/EXP-*/layer_*.json`):**
-  - 이상탐지: **Flink 2.2.1+HA 채택 후보**(70/70·V1 동일·JM kill 자동 복귀, 약점 CEP 중복 1) — Quix·Kafka Streams·Storm·Beam·Proton·Arroyo ② 탈락(엔진이 CEP·Z-Score 거부 원문), eKuiper·RisingWave·StreamPipes 재측정.
-  - 브로커: Mosquitto 재시작 중복 1 vs RMQTT·LavinMQ·ActiveMQ 0 → 3회 채우기(재측정). RobustMQ 탈락.
-  - 수집: EdgeX 기준·benthos-umh·Node-RED 통과, Telegraf·HiveMQ Edge·Neuron·TB GW·OpenRemote·StreamPipes 재측정, R02 선별(재측정).
-  - 중계: V1 710 MiB/3 → **Vector 45 MiB/1·지연 대폭↓·결과 동일**(④ 대기), Bento(타임스탬프 반올림 약점), Kafka Connect·RMQTT 내장 탈락, 나머지 재측정.
-  - 백본: Kafka 3.9 기준선 유효, 대안 8개 재측정.
-- **중요 사실:** Kafka 4.3.1 에서 Telegraf 1.40.1 소비는 `kafka_version = "3.0.0"` 없이는 0건(#114) → V2 Telegraf 소비 설정에 반영. S6(ML 오경보)은 재학습하면 탐지율 100→0 % 라 V1 모델 유지(#109).
-- **V2 조립 준비 완료:** `docker-compose.v2.yml`(설비 전용망 field, 서비스 이름 V1 과 같음, 볼륨 -v2), `v2/`(ingest·sink·republish·mosquitto·prometheus), `rot-flink-onnx:v2` 빌드됨, 측정 도구 `STRUCT=V2`(`harness/e2e/struct_V2.sh`), 회귀 `harness/e2e/regression.sh`(+`regression_control.py`, `alerts_window.py`) — V1 에서 먼저 돌려 기준을 만든다.
-- **이후 순서:** ① 재측정 ② 층 승자 확정·decision-log ③ V1 스택 기동 → `STRUCT=V1 sh harness/e2e/regression.sh EXP-001 V1`(S25=1) ④ V1 내림 → V2 기동·디버그 → `STRUCT=V2 RUN=… baseline.sh EXP-002 V2`(P0~P3, R01~R03 3회) + 회귀 + fault_onset → 태그 `v2` ⑤ 보고 문서 2개(§9)·작업보고.
+10. **(09-29 세션 3) 구조 먼저, 부품은 그 다음.** "부품만 바꿔 끼워 봐야 지저분하고 돌아가는 건 여전하면 두 번 일하는 것." → 리서치 원문·후보표·실측 결과를 모두 모아 **길 흐름과 레이어를 먼저 재설계**하고, **남는 층에서만** 제품 조합을 고른다. 없어질 층의 부품 단독 시험은 하지 않는다. 현업 흐름(설비 → 수집 → 전달 → 탐지 → 저장 → 화면 → AI)은 유지한다.
+11. **(09-29) 기능 보존.** 부품을 빼서 기능이 같이 빠지면 안 된다. 빼는 것은 **중복·돌아가는 길·대체가 확인된 것**만. 빼는 부품마다 "그 기능을 누가 대신하는가" 대응표를 만들고 실측으로 확인한다(신중하게).
+12. **(09-29) 빠르게·상식적으로.** 틀에 갇히지 말고, 결정을 바꿀 수 있는 측정만 한다.
+
+## 3. 지금 멈춘 지점 (2026-09-29 15:10, 세션 3 종료)
+- **실행 상태:** 모든 컨테이너 정지(실행 0). 격리 V1(rot-iiot 의 V1 전용 컨테이너 EdgeX·EMQX·Telegraf×3 등)·rot-ai 는 정지 상태로 남아 있음, 볼륨 전부 보존. **V2 스택을 한 번 띄웠다가 멈춤**(아래 "V2 부분 기동"). 층별 시험·재측정 실행기는 모두 중단(사용자 지시 10).
+- **세션 3 에서 끝난 것(근거 decision-log #101~#119, 커밋 `717e0a9`·`ee975be`):**
+  - **V1 기준 재측정 완료** — 복구 = 2분 연속 흐름(`harness/e2e/wait_flow.py`). 요약 `experiments/EXP-001/summary_V1_r2_.json`(`harness/tools/summarize_baseline.py EXP-001 V1 r2_`): **R01 브로커 재시작 → 3회 중 2회 수집 스스로 복구 못 함**(Telegraf 1.33 중계기 멈춤, 대장 S2·S12), R02 7.3 s·유실 중앙 120, R03 11.6 s·Kafka 중복 150, R06 3.2 s, R08 유실 0, E11 감지 0/2, E1 p95 FUXA 1.84 s. V1 데이터 기록 `experiments/REC-V1/`.
+  - **층별 ② 1차**(요약 `experiments/STAGE2_RUNS.log`, 층 결과 재계산 도구 `harness/tools/layer_{broker,ingest,l4,pipe,backbone,ts}.py` → `experiments/EXP-*/layer_*.json`):
+    - 이상탐지: **Flink 2.2.1 + ZooKeeper HA** 70/70·V1 알람과 완전 동일·JobManager kill 뒤 잡 4개 자동 복귀(S1 해결), 약점 CEP 중복 1. Quix·Kafka Streams·Storm·Beam·Proton·Arroyo 는 엔진이 CEP·Z-Score 를 거부해 탈락(원문 #109~#113).
+    - 중계: V1 Telegraf×3 = 710 MiB → **Vector 0.58 1개 45 MiB·결과 동일·알람 전달 p95 793→37 ms**(④ 미측정). Bento 는 알람 timestamp 반올림 약점. Kafka Connect·RMQTT 내장 탈락.
+    - 수집: EdgeX 기준 1356/1356·p95 9.75 ms·10 컨테이너, **benthos-umh 1356/1356·p95 1.36 ms·1 컨테이너**, Node-RED 통과(JS 어댑터 코드). Telegraf 는 벤치 결함으로 미측정(고침).
+    - 저장: InfluxDB 기준(질의 결함 고쳐 재측정 필요), TimescaleDB·pg_partman·QuestDB 질의 정답이나 **디스크 24h 680~1100 MB vs InfluxDB 19 MB**(Timescale 압축은 TSL), VictoriaMetrics 문자열 저장 불가 탈락.
+    - 브로커: Mosquitto 재시작 중복 1(2회), RMQTT·LavinMQ·ActiveMQ 0 — 새 구조에서 브로커는 알람→화면만 담당.
+    - 알람 워커: V1·Bento·Redpanda Connect 결과 동일, 효율 이득 미미 → V1 워커 유지(#119).
+    - 백본: Kafka 3.9 기준선만 유효(모든 부하·재시작 유실 0), 대안 8개는 실행기 결함으로 미측정(#116).
+  - **중요 사실:** ① Kafka 4.3.1 에서 Telegraf 1.40.1 `kafka_consumer` 는 `kafka_version = "3.0.0"` 없이는 0건(#114). ② S6(배속 설비 ML 오경보): 재학습하면 드리프트·베어링 탐지율 100→0 % → V1 모델 유지(#109). ③ 벤치 결함 약 20건 수정(실패 뒤 컨테이너 미정리로 연쇄 거부, CRLF, 설정 문법 등 #104~#118).
+  - **V2 조립 초안**(검증 안 됨): `docker-compose.v2.yml`(수집 Telegraf 1대 → Kafka 4.3.1 → Flink 2.2.1+HA → Vector(저장·알람 중계) → Mosquitto → FUXA, InfluxDB 2.9.1, 설비 전용망 field, 서비스 이름 V1 과 같음, 볼륨 -v2), `v2/`(telegraf·vector·mosquitto·prometheus), `flink/Dockerfile.v2`(이미지 `rot-flink-onnx:v2` 빌드됨)·`onnx-job-2x`·`conf/config.v2.yaml`. 측정 도구 `STRUCT=V2`(`harness/e2e/struct_V2.sh`), 회귀 `harness/e2e/regression.sh`+`regression_control.py`+`alerts_window.py`(**한 번도 실행 안 함**).
+- **V2 부분 기동 결과(15:0x, 1회):** Kafka·Flink(HA)·ZooKeeper·Mosquitto·설비·수집·FUXA·Prometheus 는 기동. **InfluxDB 2.9.1 이 "Error: config name \"default\" already exists" 로 초기 설정 반복·재시작 루프** → Grafana·Vector 는 생성만 됨. 원인 미확인(첫 실행 로그 확인 필요, `/etc/influxdb2` 설정 경로 볼륨 여부 점검).
+- **미적용·미검증 변경:** `v2/telegraf/ingest.conf` 에 기능 보존 두 가지를 넣었으나 **검증 전** — ① V1 과 같은 MQTT 계측 흐름(`edgex/telemetry`, EdgeX 이벤트 모양, processors.clone) ② 디스크 버퍼(`buffer_strategy = "disk"`). **`buffer_directory = "/var/lib/telegraf/buffer"` 는 권한 오류로 수집기가 안 뜸(실측) → `/tmp/telegraf-buffer` 로 바꿔야 함(미적용).**
+- **문제점(사용자 지적, 세션 3):** HANDOFF 순서대로 "층별 후보 시험 → 조립"을 하다 보니 새 구조에서 없어질 층(수집기→MQTT 모양, MQTT→Kafka 중계, 브로커 신규 12종, 백본 대안)까지 시험해 **이중 작업**이 됐다. 리서치 원문(딥리서치 01~04, FINAL 전체)을 덜 읽고 시작한 탓. → 지시 10·11.
+- **바로 다음(새 세션):**
+  1. **리서치 원문 전부 통독**: `docs/research/ARCHITECTURE_SIMPLIFICATION.md`, `AGENT_BRIEF_FINAL.md` 전체, `deep-2026-09-29/01~05`, `harness/situations/CANDIDATES.md`(§11 구조 패턴 포함), compass 4종은 필요한 절만. 층별 실측은 위 `layer_*.json`·decision-log #101~#119.
+  2. **레이어 재설계 문서 1장**(예: `reports/V2_DESIGN.md`): 현업 흐름 유지, 길(데이터 경로) 다시 그리기, **기능 대응표**(빼는 부품마다 기능 → 대체 → 확인 방법). 이미 확인된 대응: EdgeX→Telegraf 수집(Modbus 12태그·센티널 제거·V1 raw 모양 확인), EMQX→Mosquitto(알람→FUXA), Telegraf#1 → 없음(수집기가 Kafka 에 바로), Telegraf#2·#3 → Vector(결과 동일), edgex-postgres → 없음(EdgeX 전용). **빠지면 안 되는 것:** MQTT 실시간 계측 흐름(수업·시연 자료가 `edgex/telemetry` 사용 — `ai-web/public/system-guide.html`, `docs/소스코드로_…설명.html`, `docs/journal/07`), 단절 저장 후 재전송(EdgeX 디스크 → Telegraf 디스크 버퍼로, R02·수집기 재시작으로 실측), 브로커 연결 감시(EMQX 지표·규칙 EMQXDisconnectSpike → 목적은 TelemetryIngestStalled 로 대체되는지 확인), 수업 3차시 EdgeX 프로파일·`scripts/verify.py` EdgeX 확인(강제 교체라 불가피 — 대체 안내 기록), EdgeX core-command 쓰기 API(사용처 없음·인증 없는 쓰기 창구 — 제거가 보안상 이득, E12).
+  3. **스택 조합안 2~3개**(예: 보수안 = 제품 유지·길만 정리 / 효율안 = Vector·benthos-umh 등 가벼운 제품 통합) — 컨테이너 수·알람→화면 단계·메모리·기능 보존을 **이미 있는 증거**로 비교해 하나 선택. 모자란 수치만 골라 측정.
+  4. 선택안으로 V2 기동(InfluxDB 2.9 초기화 문제·ingest 버퍼 경로 먼저) → `STRUCT=V2 RUN=… sh harness/e2e/baseline.sh EXP-002 V2`(P0~P3, R01~R03 3회) + `fault_onset.py`(고장 10 s 이내) + 회귀(`regression.sh`, V1 도 같은 회귀를 먼저 돌려 기준 확보) → 나빠진 항목만 조합 수정 → 태그 `v2`.
+  5. 보고 문서 2개(§9)·작업보고(`D:/work/작업보고/2026-09-29.md`, 세션 2·3 분).
 
 ## 4. 확정 사실 — 다시 조사하지 마라
 - **V1 구성:** 34서비스(SCADA 29 + AI 5, 일회성 4). 흐름: 설비 → EdgeX(Modbus 폴링, 내부 MQTT) → EMQX(`edgex/telemetry`) → Telegraf#1 → Kafka(`sensor.telemetry.raw`) → Flink(규칙 SQL 3 + ONNX 잡) → Kafka(`sensor.alerts`) → Telegraf#3 → EMQX(`scada/alerts/*`) → FUXA / Telegraf#2 → InfluxDB / 알람 워커 → PostgreSQL. FUXA 는 설비를 Modbus 로 직접도 폴링. **알람→화면 12단계**, 브로커 2·중계 4·저장소 4(E2, `harness/situations/paths.yaml`, `experiments/EXP-000/e2_V1.json`).
@@ -68,6 +83,9 @@
 | AI 규칙 엔진(`candidates/ai-ontology/`, 순환 평가), 급진안 C(Kafka·Flink 를 직접 짠 탐지기로), 직접 짠 Python 탐지기 | 순환 평가·엔진급 기능 직접 대체 금지 |
 | 온톨로지·시나리오 확장, 임베딩 후보 비교를 이 작업에서 계속 | 담당 밖(#96) |
 | "InfluxDB 재시작 뒤 저장기 멈춤" 진단 | 오판 — 실제는 Kafka 재시작 뒤 수집 중계기 정지(#97) |
+| 층별 후보를 모든 층에서 먼저 단독 시험하고 나중에 조립(HANDOFF 옛 §3 순서) | 사용자: 없어질 층까지 시험하는 이중 작업. 구조 먼저·남는 층만(지시 10, #120) |
+| 재측정 대상 중 선택 가능성 없는 무거운 후보(StreamPipes·OpenRemote·NiFi·TBMQ 통합·Neuron·TB GW·AutoMQ·Pulsar·RocketMQ) | 컨테이너 3~9개라 ③ 에서 1컨테이너 후보를 못 이김(#119) |
+| 오토인코더를 배속 설비로 단순 재학습(S6 해결책으로) | 드리프트·베어링 탐지율 100→0 %(#109) |
 | 이전 설비·긴 시간 값으로 잰 EXP-000 P1·E1 일부, EXP-AI 의 저속 회차 | 참고 기록만, 판정에 쓰지 않음 |
 
 ## 6. 실행 환경·명령
@@ -77,7 +95,7 @@
 - **환경 함정:** 호스트 RAM 15.7 GB·Docker VM 7.6 GB — 전체 스택+AI 로 엔진 500 오류 사례(#81). Docker Desktop 경로 `C:\Users\roede\AppData\Local\Programs\DockerDesktop\Docker Desktop.exe`. 긴 작업은 PowerShell `Start-Process D:\dev\Git\bin\bash.exe`(system32 bash 는 WSL, 도구 백그라운드는 10분에 죽음). Git Bash 에서 컨테이너 경로 인자는 `MSYS_NO_PATHCONV=1`. 모니터는 5~30분에 만료되니 다시 건다. Kafka 콘솔 소비기는 `--max-messages` 없이 쓰면 끝나지 않는다. Python 안 Windows 경로는 raw 문자열. 출력 래퍼(rtk)가 grep 결과를 변형하니 파일은 Python 으로 읽는다. 벤치용 이미지 약 60 GB(C: 여유 약 78 GB) — 층 끝나면 정리.
 
 ## 7. 미결정·외부 대기
-- 층별 승자(§3 다음 5), 구조안(§3 다음 6), 오토인코더 재학습 방법(대장 S6), S2 원인 확정(재현 필요), S8 보안(기반 확정 때 판단), S11 Kafka 유휴 CPU.
+- 레이어 재설계안·스택 조합 선택(§3 다음 2~3), InfluxDB 2.9.1 초기화 오류, ingest 디스크 버퍼 경로, V1·V2 회귀(한 번도 안 돌림), 알람 수명주기(E10: V1 공백 — alarmbench 미실행), 감시 층(monbench 미실행, V1 E11 0/2), S2·S12(Telegraf 1.40.1 에서 해결 여부 — V2 R01·R03 로 확인), S13·S14 확인, 브로커 3회(Mosquitto 중복 1 vs RMQTT 0).
 - 사람 답 대기: `QUESTIONS.md` §3(LiteLLM 버전, 원본 Flink 잡, Docker Desktop 유료 조건, 기준선 재동결).
 
 ## 8. 넘으면 안 되는 선

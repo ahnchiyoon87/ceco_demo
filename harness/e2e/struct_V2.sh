@@ -1,8 +1,8 @@
 # [측정 도구] baseline.sh 의 V2 이름표(docker-compose.v2.yml). 같은 시험을 같은 방법으로, 대상 컨테이너 이름만 다름.
 BROKER_C=rot-mqtt; BROKER_H=mqtt
 UPLINK_C=rot-ingest          # R02: 수집기의 백본 쪽 망(rot-iiot)만 끊음 — 설비 전용망(rot-iiot-field)으로 읽기는 계속(V1 R02 와 같은 의미)
-KAFKA_C=rot-kafka; TS_C=rot-influxdb; SINK_C=rot-telegraf-sink
-FIX_C="rot-ingest rot-telegraf-sink"; SUBMIT_C=rot-flink-job-submitter
+KAFKA_C=rot-kafka; TS_C=rot-influxdb; SINK_C=rot-relay
+FIX_C="rot-ingest rot-relay"; SUBMIT_C=rot-flink-job-submitter
 SCADA="docker compose --env-file .env --env-file .env.rotation -f docker-compose.v2.yml"
 phase0_V2(){
   say "P0 V2 기동 확인"
