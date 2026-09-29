@@ -1,13 +1,13 @@
 # HANDOFF — V1 IoT·SCADA·AI 현업 스택 다듬기 (scada-rotation)
 
-최종 갱신 2026-09-29 · 작성 Claude Code(세션 2: 딥리서치·AI 병행 진행 중)
+최종 갱신 2026-09-29 · 작성 Claude Code(세션 2 종료 — 사용자 급한 인계 요청)
 **재개용 기록이다. 현재 사용자 지시·실제 파일·실행 상태와 대조하고, 다르면 실제가 우선이며 이 파일을 고친다.**
 **판정 기준의 정본은 `QUESTIONS.md` §1 하나다. 이 파일은 기준을 복제하지 않는다.**
 
 ## 0. 30초 브리핑
-V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 중복·빙빙 도는 경로가 있고, 낡은 스택이 섞여 있다. 여러 회전(V1→V2→…, 횟수는 정하지 않음)으로 **전부 검증된 최선 버전**을 만들어 대표님께 실측 근거로 보고한다.
-세션 2 진행(09-29): §9-1 ✓ · §9-2 딥리서치 ✓(`CANDIDATES.md` #69·개정 #74) · §9-3 AI **LLM 비교 거의 끝**(A·B·C 팔, 남은 것 C-SC2 3회 → 채점·CQ15) · §9-4 층별 벤치 **준비만 완료**(f83197f·fe5c9e6, 실행 0건 — 격리 스택 내린 뒤 한 번에 하나씩, `harness/*bench/STAGE2.md`) · E2 V1 값 ✓. 강제 교체 확정: EMQX·Kafka 3.9·InfluxDB 2.7·Telegraf 1.33·Prometheus 3.1·EdgeX 4.0·Grafana 11.4·Alertmanager 0.28·cAdvisor 0.49(#69·#74).
-시간 교훈: SC2(히터 고착)는 실시간 가열로 회차당 약 35분 — 다음 회귀에서는 모든 팔에 같은 예열 조건(시작 온도 약 90 °C)을 적용해 단축.
+V1은 현업 수준 시스템이지만 약간 비효율적이고, 중복·빙빙 도는 경로·낡은 스택이 섞여 있다. 여러 회전(V1→V2→…)으로 **전부 검증된 최선 버전**을 만들어 대표님께 실측 근거로 보고한다. 목적(사용자 TODO): 경남대 제조 AI 실습용 — **시연·실습에서 이상→감지→AI 조치가 수 초~수 분 안에** 이어져야 한다.
+**끝난 것(세션 2):** 딥리서치·후보표 결과 전 고정(#69·#74) · AI 층 비교 측정 완료(#83·#84, SC3 코드 0줄 #73) · 층별 직접 시험 벤치 10종 **준비만**(실행 0건) · E2(V1 34서비스·알람→화면 12단계) · V2 가상설비 시간 배속 재설계(#88, 단위 시험 통과, 전 파이프라인 실측 전).
+**안 끝난 것:** 층별 ② 실행 → 기준 V1 전체 측정(E1·R 시험, 새 배속 설비·수 분 안 설계로 다시) → 구조 재조립 → 회전 확정 v2 → 보고 문서 2개.
 
 ## 1. 배경
 - 의뢰: 대표님. "사전 스펙이 아니라 빠르게 구현해 모듈별로 실측·비교, 최신 트렌드, 기술선정·온톨로지·시나리오가 개선된 궤적을 가져와라."
@@ -35,11 +35,11 @@ V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 �
 | # | 축 | 어떻게 | 상태 |
 |---|---|---|---|
 | 1 | **기준 버전 측정** | 층별 기준은 층 벤치에서 후보와 동시에 잰다(축 2). 전체 기준은 구조 비교 직전에 기준 버전 전체 스택(1회전은 격리 V1, §6)으로 정상 E1~E12(`harness/situations/STRUCTURE.md` §3) + 비정상 R01~R11(`ROBUSTNESS.md`)을 잰다 | 스택 기동 검증까지 완료. **측정값 없음**(E3 30분이 중간에 멈춤, 부분 데이터는 사용하지 않음) |
-| 2 | **대안 조사·직접 시험(부품)** | 후보표 `harness/situations/CANDIDATES.md`. 2026 기준 딥리서치로 후보 확장(§9-2 방법) → 문헌 제외는 ① 관문(라이선스·약관·EOL·컨테이너)뿐 → 나머지는 층 벤치에서 기준 버전 부품과 함께 직접 ① 기동·기능 → ② 정상 성능 → ③ 비정상, 앞 단계 탈락 시 생략 | 후보표 재고정 ✓(#69). 브로커 완료, 이상탐지 일부. 나머지 층 **미시험** — `CANDIDATES.md` 층별 P1부터 |
+| 2 | **대안 조사·직접 시험(부품)** | 후보표 `harness/situations/CANDIDATES.md`. 2026 기준 딥리서치로 후보 확장(§9-2 방법) → 문헌 제외는 ① 관문(라이선스·약관·EOL·컨테이너)뿐 → 나머지는 층 벤치에서 기준 버전 부품과 함께 직접 ① 기동·기능 → ② 정상 성능 → ③ 비정상, 앞 단계 탈락 시 생략 | 후보표 재고정 ✓(#69·#74). 10개 층 벤치 준비 ✓(f83197f·fe5c9e6, `harness/*bench/STAGE2.md`), **실행 0건** — `harness/run_all_stage2.sh` |
 | 3 | **레이어 재조립(구조)** | V1의 빙빙 도는 경로·중복(알람 되돌림 약 8단계, 중계 5중 EMQX·Telegraf×3·Kafka, EdgeX·FUXA 이중 폴링, 설비 쓰기 경로 3개, 저장소 3개)을 줄인 조립안을 실제 전체 스택으로 조립해 축 1과 같은 측정. 검토서 A(보수적)부터, 축 2 승자로 조립 | 미착수. 검토서 C(Kafka·Flink 제거 + 직접 짠 탐지기)는 직접 제작 금지로 본안 제외(#57) |
 | 4 | **교체 없는 보강·빈 기능** | Flink HA(JobManager 재시작 시 잡 소멸 = V1 최대 약점), FUXA 보안 버전(1.3.4 이상) 확인, 기본 보안(인증·접근 제어), 이미지 버전 고정, 알람 수명주기(ISA-18.2), 설비 쓰기를 Pilot 관문으로 일원화 | Flink HA 벤치 구성만 커밋(`harness/l4bench` profile `flinkha`), 미실행 |
 | 5 | **회전마다 합쳐 전체 회귀 → 버전 확정** | 축 2~4 승자 조립 → S01~S25 + G0~G10 + 축 1 측정 전부 → 통과 시 태그 `v2`, 약해진 수정은 되돌림. 다음 회전 V2→V3 | 미착수 |
-| 6 | **AI 온톨로지·시나리오 진화 + 궤적 보고** | V1 에이전트(LLM+LangGraph+가드레일) 유지 + 온톨로지 그래프 원인분석 도구 + 매뉴얼 의미검색(임베딩+그래프). CQ 응답 수 기준 버전 대비, 회전 실패 유형을 시나리오로 추가. 점수표 → `reports/REPORT.md` | 진행 중: V1 구조 확인 ✓, 프로토콜 고정 ✓(#68), V2 코드·지식·게시 ✓, 검색 r1 0/3(#70). 남음: 온톨로지 개정(비맹검 표시)·임베딩 후보 비교·LLM 시나리오 24회·CQ15·SC3 코드 0줄 |
+| 6 | **AI 온톨로지·시나리오 진화 + 궤적 보고** | V1 에이전트(LLM+LangGraph+가드레일) 유지 + 온톨로지 그래프 원인분석 도구 + 매뉴얼 의미검색(임베딩+그래프). CQ 응답 수 기준 버전 대비, 회전 실패 유형을 시나리오로 추가. 점수표 → `reports/REPORT.md` | **측정 완료:** 프로토콜 #68 · 세 팔 채점 #83(`experiments/EXP-AI/score.json`) · CQ15 #84 · SC3 코드 0줄 #73 · 검색 Recall@3 약점 #70·#72. 남음: 임베딩 후보(KURE·e5·Qwen3·TEI·재순위기) 비교, V2 조립 때 두 입구 연결, 새 배속 설비에서 재확인(DoD 8) |
 
 ## 3. 판정 기준 → `QUESTIONS.md` §1 (유일한 정본)
 한 줄 요약: ① 쓸 수 있는가(비용 0·상용화 문제 없음·도커·보안 패치·기본 보안·안전)로 거르고, ② 성능·안정성(기준 버전이 하던 일 전부·정확도·속도·복구·비정상 상황, **기준 버전보다** 나빠지면 탈락, 해피패스만 가능 = 무너짐, 3회 이상 중앙값)으로 탈락시키고, ③ 효율(메모리·CPU·용량·복잡도 = 아키텍처가 빙빙 도는 정도·중복)로 고르고, ④ 운영·유지보수는 참고. 예외: ① 관문에 걸리거나 12개월 안 지원 종료 예정인 부품은 강제 교체(가장 덜 나빠지는 후보 + 약점 명시). 직접 짠 코드로 엔진급 기능 대체 금지. 대안은 추론 말고 직접 시험. 개선 없으면 유지도 결과. 판정은 스스로 내리고 기록(사용자 위임). **자세한 규칙은 QUESTIONS §1만 본다.**
@@ -66,13 +66,13 @@ V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 �
 | 질문에 답보다 작업을 앞세움, HANDOFF·기준을 조각으로 덧대 모순 발생 | 질문엔 먼저 답. 기준은 QUESTIONS §1 한 곳, HANDOFF는 §11 규칙으로 절 단위 교체 |
 | 폐기: AI 규칙 엔진(`candidates/ai-ontology/`, 순환 평가), 급진안 C 본안, ML 알람을 규칙 비교에 포함, S13 순차 창 방식 | 되살리지 않는다 |
 
-## 6. 현재 실행 상태
-- **실행 중:** 격리 V1 SCADA(`rot-iiot`, 단 grafana·edgex-ui·cadvisor·prometheus·alertmanager·kafka-exporter 는 #81 로 정지) + `rot-ai`(C팔 = v2-ai 이미지 + 그래프 C3 복사본) + EXP-AI 배치 `batch3.log`(C-SC2 4~6, 회차당 약 35분, 분리 프로세스 — `Get-CimInstance Win32_Process` 에서 run_batch/run_scenario 로 찾음).
-- **배치 끝나면:** `python harness/aibench/score.py` → CQ15(`harness/aibench/cq_eval.py A|C`, 그래프를 snap-A / snap-C3 로 바꿔 각각) → 격리 스택 기준 전체 측정(E1·E3~E12, R01~R11) → 스택 내림 → 층별 ② 실행.
-- **그래프 스냅샷 볼륨:** `rot-ai_graph-snap-A`(원본 V1 복사) · `-snap-B`(A+고장 지식 문서) · `-snap-C`(B+온톨로지) · `-snap-C3`(C+SC3 과압 데이터). 팔 전환은 `harness/aibench/run_batch.sh` 의 switch_arm 참고.
-- **재기동 명령:** SCADA `docker compose --env-file .env --env-file .env.rotation up -d --no-build`(재기동 후 Flink 잡 0개 → `docker start -a rot-flink-job-submitter`). AI `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml [-f ai-layer/compose.v2.yml] --profile knowledge up -d --no-build`.
-- **환경 주의:** 호스트 RAM 15.7 GB, Docker VM 7.6 GB. 전체 스택+AI 로 호스트 여유 0.5 GB 까지 떨어져 엔진 500 오류(#81). Docker Desktop 경로 `C:\Users\roede\AppData\Local\Programs\DockerDesktop\Docker Desktop.exe`. 분리 실행은 `D:\dev\Git\bin\bash.exe`(system32 bash 는 WSL). Git Bash 컨테이너 경로 인자 `MSYS_NO_PATHCONV=1`.
-- **이미지:** 벤치용 약 60 GB 추가(C: 여유 78 GB). 층 시험 끝날 때마다 해당 벤치 이미지·볼륨 정리.
+## 6. 현재 실행 상태 (세션 2 종료 시점)
+- **떠 있음:** 격리 V1 SCADA `rot-iiot`(시뮬레이터만 V2 배속 이미지 `rot-plant-simulator:v2-ts`로 교체돼 있음, 감시 서비스 포함 29개) + `rot-ai`(V1 이미지·그래프 snap-A). 이어받는 사람이 바로 층별 벤치를 돌리려면 먼저 내린다: `docker compose --env-file .env --env-file .env.rotation stop` / `docker compose -p rot-ai ... stop`(볼륨 보존). 벤치 가드가 rot-* 실행 중이면 거부한다.
+- **배치·측정 프로세스 없음**(모두 정지).
+- **그래프 스냅샷:** `rot-ai_graph-snap-A`(원본 V1) · `-snap-B` · `-snap-C` · `-snap-C3`(V2 + 과압). 팔 전환은 `harness/aibench/run_batch.sh` switch_arm.
+- **가상설비(#87·#88):** 기본 `simulator/plant.yaml physics_time_scale: 600` — 서서히 진행하는 현상은 설비 시계, 순간 사건만 실제 초. 기동: `docker compose --env-file .env --env-file .env.rotation -f docker-compose.yml -f docker-compose.edgex.yml -f docker-compose.timescale.yml up -d --no-deps plant-simulator`. **원본 이미지 `iiot/plant-simulator:1.0` 은 V1 참고 기록용일 뿐 새 측정에 쓰지 않는다(사용자: 저배속 실행 금지).**
+- **재기동 주의:** Docker 재시작 뒤 V1 Flink 잡 0개(V1 약점) → `docker start -a rot-flink-job-submitter`. 호스트 RAM 15.7 GB·Docker VM 7.6 GB, 전체 스택+AI 로 엔진 500 오류 사례(#81). Docker Desktop 경로 `C:\Users\roede\AppData\Local\Programs\DockerDesktop\Docker Desktop.exe`, 분리 실행 bash `D:\dev\Git\bin\bash.exe`, Git Bash 컨테이너 경로 인자 `MSYS_NO_PATHCONV=1`.
+- **이미지 디스크:** 벤치용 약 60 GB 추가(C: 여유 약 78 GB).
 
 ## 7. 미결정 — 무엇을 보고 정하나
 - 이상탐지 버전(1.20 vs 2.2.1)과 HA: Flink HA로 JobManager kill 3시점(`harness/s09*.sh` 방식) 유실 실측 → V1(11~12) 대비.
@@ -88,17 +88,16 @@ V1은 현업 수준 시스템이지만 약간 비효율적이고, 쓸데없는 �
 - `latest` 태그·BSL·SSPL·TSL·RCL·체험판·상용 금지. 시뮬레이터 `active_faults`·`thermal_model`을 AI에 넘기지 않음. `ai-layer/.env.local` 커밋·출력 금지.
 - 무거운 측정은 한 번에 하나. 쓰지 않는 벤치·스택은 바로 정리(벤치 볼륨만 삭제).
 
-## 9. 다음 행동 — 순서대로 (09-29 사용자 확정)
-1. **상태 확인:** `git status`, `docker ps`(비어 있어야 함). 완료 판정: 실행 중 컨테이너 0, 미커밋 증거 커밋.
-2. **딥리서치(그물망 넓게), 층 4묶음 병렬:** 수집·브로커·파이프 / 백본·스트림 처리·HA / 저장·감시·HMI·알람 / AI(그래프 DB·GraphRAG·임베딩·에이전트). 후보 이름을 미리 주지 말고 **목록 밖에서 찾게** 한다: Apache 프로젝트 목록·CNCF 랜드스케이프·LF Edge·Eclipse IoT·Awesome 목록·GitHub 토픽·2025~2026 업계 자료·UNS 커뮤니티 채택 사례, 한·영 질의와 "alternative/vs/migration from/replaced" 변형. 제품뿐 아니라 경로를 줄이는 구조 패턴도. 각 후보는 ① 관문(버전·날짜·라이선스·가둬진 기능·공식 이미지·EOL)을 1차 출처+날짜로. 결과로 `harness/situations/CANDIDATES.md` 확장, 결과 보기 전 커밋. 완료 판정: 층마다 직접 시험 목록 + ① 관문 제외(사실+출처).
-3. **AI 층 병행 시작(축 6):** V1 `ai-layer/knowledge/backend/src/modules/{operations,ontology,ontology_mcp}` 구조 확인 → 온톨로지(증상→고장모드→원인→확인 관측·조치 절차) 설계 → 정답(주입 고장 사실만) 고정·커밋 → 그래프 원인분석·매뉴얼 의미검색 도구 → CQ15 V1 대 V2, 베어링·히터 고착, 새 고장 코드 0줄. 벤치 측정과 겹치지 않는 시간에.
-4. **층별 직접 시험(축 2·4):** 층 벤치마다 V1 부품 + 후보 전부를 같은 입력으로 ① 기동·기능 → ② 정상 성능 → ③ 비정상(`ROBUSTNESS.md` 해당 행) 순서. 순서: 이상탐지(Flink HA로 JobManager kill 3시점 포함) → 수집 → 파이프·알람 경로 → 백본 → 저장 → 감시. 브로커는 Mosquitto 조건부 항목(단절·과부하·느린 구독자·장시간) 추가. 완료 판정: 층마다 후보별 ①②③ 칸과 판정.
-5. **기준 버전 전체 측정 → 구조 재조립(축 1·3):** 기준 버전 전체 스택(1회전은 격리 V1)으로 E1~E12·R01~R11 전체 기준 → 축 2·4 승자로 경로·중복을 줄인 조립안 → 같은 측정. 완료 판정: STRUCTURE.md·ROBUSTNESS.md 각 행에 기준 버전 대 조립안 값.
-6. **회전 확정(축 5):** 승자 조립 → S01~S25 + G0~G10 + 전체 측정 → 통과 시 태그 `v2`(AI 두 입구 연결 포함). 다음 회전은 멈춤 조건(§2)까지.
-7. **보고 산출물 두 문서(09-29 사용자 확정):**
-   - **문서 1 `reports/REPORT.md`(+HTML) 대표님 보고서 — 짧게, 대조 중심:** ① 한 장 요약(무엇을 바꿨고·얼마나 나아졌고·무엇을 잃었나) ② 변경 전후 아키텍처 그림 두 장을 같은 L1~L9 틀로 나란히(제거 부품은 V1 그림에 흐린 점선, 새 부품은 강조, 알람→화면 경로를 같은 색으로 따라가 경유 단계 수 비교) ③ 층별 대조표(원래 → 바뀐 것 → 왜: 지원 종료·중복·우회·장애 약점 → 실측 결과. 유지한 층도 "시험했고 유지, 이유") ④ 엑셀형 점수표(`harness/tools/scorecard.py`, 실측값·5점·약점·판정, 미측정 표시, 수치는 증거 파일에서 재계산)는 부록.
-   - **문서 2 쉬운 시스템 설명서(최종 버전) — V1판과 같은 틀:** 원본 틀 `docs/소스코드로_확인한_아주쉬운_시스템설명.html`(V1판, 보존)과 같은 순서(① 설비 → ② 전체 아키텍처 한 장 → ③ "교반기의 떨림 하나가 화면의 경고가 되기까지" 단계별)와 문체로 새 파일을 만든다. 바뀐 단계마다 "V1에서는 → 이제는" 상자. 그림은 L1~L9 가로 레이어, 색 규칙 유지(파랑 데이터·보라 AI·주황 명령), **화살표 교차 없이** 배치, 모든 화살표 방향·연결을 실제 코드·설정과 대조해 확인("소스코드로 확인한" 수준).
-   - 두 문서는 서로 연결(보고서 끝에 설명서 링크). 실측·판정이 끝난 뒤 작성.
+## 9. 다음 행동 — 순서대로 (세션 2 종료 시점)
+1. **가상설비 실측:** 격리 스택 위에서 `docker run --rm --network rot-iiot -v <repo>:/repo -w /repo e2e-client:1.0 python harness/e2e/fault_onset.py --reps 3 --out /repo/experiments/EXP-000/raw/onset_v2sim_600.json` → 고장 6종 주입→알람 10 s 이내 확인. 넘는 고장은 plant.yaml 의 그 과정의 현실 설비 시간 정의를 점검(배속 손잡이는 하나만). 오토인코더 오경보 증가 여부도 정상 3분 관찰로 확인 → 늘면 model-trainer 재학습이 V2 과제.
+2. **측정 재설계(수 분 안, #88):** `harness/e2e/baseline.sh` 의 60분·5분·10분·E1 300회를 판정에 필요한 최소로(정상 3분, E1 20회×3묶음·조용 구간 3 s, 브로커 정지 10 s·단절 10 s·DB 다운 30 s·과부하 60 s). ROBUSTNESS·STRUCTURE 시간 값 변경은 측정 전에 decision-log 에 기록. 그다음 **V1 기준 전체 측정을 V2 배속 설비로** 다시(비교 대상은 같은 배속 설비).
+3. **층별 ② 실행(§2 축 2):** 격리 스택 내리고 `sh harness/run_all_stage2.sh`(층 인자 가능: l4 ingest broker pipe alw backbone ts mon alarm hmi). 결과 `experiments/EXP-*/stage2_*.json`, 요약 `experiments/STAGE2_RUNS.log`. 각 벤치 `STAGE2.md` 에 후보·판정 항목. 결정 #77~#80 적용(Feldera 관문 제외, RisingWave 는 ②에서 판정, 문헌으로 닫지 않음 등). 통과 후보만 ③ 정상 성능·④ 비정상(`stage4*`).
+4. **구조 재조립(§2 축 3):** 층 승자 + `CANDIDATES.md` §11 구조 패턴(브로커 Kafka 브리지로 Telegraf#1 제거, HMI 직접 구독, 저장소 3→2, 명령 경로 일원화 등)으로 조립 → 같은 측정.
+5. **회전 확정(§2 축 5):** S01~S25 + G0~G10 + E·R → 태그 `v2`. AI 두 입구(알람→사건, 센서 이력) 연결 포함. V2 AI 는 `ai-layer/compose.v2.yml`(`rot-ai-knowledge:v2-ai`).
+6. **보고 문서 2개(09-29 사양 그대로, 아래 원문 유지):** REPORT(+HTML) 대조 중심 · 쉬운 설명서 최종판. AI 층 표는 `python harness/tools/report_ai.py` 로 증거에서 생성(`reports/_gen/ai_layer.md`).
+   - **문서 1 `reports/REPORT.md`(+HTML) 대표님 보고서 — 짧게, 대조 중심:** ① 한 장 요약(무엇을 바꿨고·얼마나 나아졌고·무엇을 잃었나) ② 변경 전후 아키텍처 그림 두 장을 같은 L1~L9 틀로 나란히(제거 부품은 V1 그림에 흐린 점선, 새 부품은 강조, 알람→화면 경로를 같은 색으로 따라가 경유 단계 수 비교) ③ 층별 대조표(원래 → 바뀐 것 → 왜 → 실측, 유지한 층도 이유) ④ 엑셀형 점수표(`harness/tools/scorecard.py`, 미측정 표시, 증거 파일에서 재계산)는 부록.
+   - **문서 2 쉬운 시스템 설명서(최종 버전):** `docs/소스코드로_확인한_아주쉬운_시스템설명.html`(V1판, 보존)과 같은 순서(① 설비 → ② 전체 아키텍처 한 장 → ③ "교반기의 떨림 하나가 화면의 경고가 되기까지")와 문체로 새 파일. 바뀐 단계마다 "V1에서는 → 이제는" 상자, L1~L9 가로 레이어, 색 규칙(파랑 데이터·보라 AI·주황 명령), 화살표 교차 없이, 모든 화살표를 실제 코드·설정과 대조.
+7. `D:/work/작업보고/2026-09-29.md` 갱신(STUDY 규칙) — 세션 2 에서 아직 안 함.
 
 ## 10. 자산 지도
 | 위치 | 역할 | 언제 |
