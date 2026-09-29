@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>SCADA 베이스 설계</title>
 <style>
 :root{
@@ -165,7 +166,7 @@ footer{font-size:13px;color:var(--muted)}
     <tr><td>실시간 탐지</td><td>Flink</td><td class="same">Flink 2.2.1 + HA</td><td>현업과 같음. 원본과 판정 70/70 같고 재시작 자동 복구 실측</td></tr>
     <tr><td>이력 저장</td><td>상용 히스토리언(AVEVA PI 등)</td><td class="swap">InfluxDB 2.9.1</td><td>상용은 유료. 무료 시계열 DB 1위(DB-Engines)</td></tr>
     <tr><td>화면</td><td>WinCC·FactoryTalk·Ignition(상용)</td><td class="swap">FUXA 1.3.4</td><td>상용은 유료(Ignition 무료판은 비상업만). 무료로 MQTT·OPC UA·Modbus를 모두 갖춘 유일한 공정 HMI</td></tr>
-    <tr><td>대시보드</td><td>Grafana</td><td class="same">Grafana 13.2</td><td>현업과 같음</td></tr>
+    <tr><td>대시보드</td><td>Grafana</td><td class="same">Grafana 13.2.3</td><td>현업과 같음</td></tr>
     <tr><td>플랫폼 감시</td><td>Prometheus</td><td class="same">Prometheus 3.13 LTS</td><td>현업과 같음</td></tr>
     <tr><td>지식 그래프</td><td>Neo4j</td><td class="same">Neo4j 5.26 CE</td><td>현업과 같음(무료판)</td></tr>
     <tr><td>업무 DB</td><td>PostgreSQL</td><td class="same">PostgreSQL 18.6</td><td>현업과 같음</td></tr>
@@ -193,7 +194,7 @@ footer{font-size:13px;color:var(--muted)}
       <li>쓰기 길 3개 → 수동 하나 + 검증 통로 하나</li>
       <li>결과 확인을 시뮬레이터 API 대신 PLC 응답으로</li>
       <li>설비 등록부 추가</li>
-      <li>MQTT 브로커 2개 → Mosquitto 하나, Telegraf 3개 → Bento</li>
+      <li>MQTT 브로커 2개 → Mosquitto OT 허브 하나(DMZ 중계 방식에 따라 구역마다 하나), Telegraf 3개 → Bento</li>
       <li>Kafka·Flink·InfluxDB·Grafana·Prometheus를 지원되는 판으로</li>
       <li>엣지가 Node-RED로 정해지면 수업의 EdgeX 차시가 바뀐다</li>
     </ul></div>
