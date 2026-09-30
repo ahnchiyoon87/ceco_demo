@@ -1,0 +1,30 @@
+[16:54:19] == 재시작 복구 시작 (othub dmzb kafka coll flink itinflux dmzinflux pg)
+[16:54:19] othub #1 주입: docker stop rot-fresh-ot-hub-1
+rot-fresh-ot-hub-1
+rot-fresh-ot-hub-1
+[16:56:37] othub #1 복구 DMZ {"recover_s": 4.0, "flaps": 0, "waited_s": 124.7} | IT {"recover_s": 4.0, "flaps": 0, "waited_s": 124.7} | Flink RUNNING 4
+[16:56:54] dmzb #1 주입: docker stop rot-fresh-dmz-broker-1
+rot-fresh-dmz-broker-1
+rot-fresh-dmz-broker-1
+[16:59:14] dmzb #1 복구 DMZ {"recover_s": 6.7, "flaps": 0, "waited_s": 127.4} | IT {"recover_s": 6.7, "flaps": 0, "waited_s": 127.3} | Flink RUNNING 4
+[16:59:31] kafka #1 주입: docker restart rot-fresh-kafka-1
+rot-fresh-kafka-1
+[17:02:34] kafka #1 복구 DMZ {"recover_s": 8.7, "flaps": 0, "waited_s": 129.4} | IT {"recover_s": 57.1, "flaps": 0, "waited_s": 177.7} | Flink RUNNING 4
+[17:02:52] coll #1 주입: docker network disconnect rot-fresh_it-net rot-fresh-it-collector-1
+[17:05:52] coll #1 복구 DMZ {"recover_s": 5.3, "flaps": 0, "waited_s": 125.9} | IT {"recover_s": 47.5, "flaps": 0, "waited_s": 168.1} | Flink RUNNING 4
+[17:06:09] flink #1 주입: docker restart rot-fresh-flink-jobmanager-1
+rot-fresh-flink-jobmanager-1
+[17:08:35] flink #1 복구 DMZ {"recover_s": 6.4, "flaps": 0, "waited_s": 127.3} | IT {"recover_s": 18.8, "flaps": 0, "waited_s": 139.3} | Flink RUNNING 4
+[17:08:58] itinflux #1 주입: docker stop rot-fresh-it-influx-1
+rot-fresh-it-influx-1
+rot-fresh-it-influx-1
+[17:11:39] itinflux #1 복구 DMZ {"recover_s": 7.0, "flaps": 0, "waited_s": 127.8} | IT {"recover_s": 6.8, "flaps": 0, "waited_s": 127.6} | Flink RUNNING 4
+[17:11:57] dmzinflux #1 주입: docker stop rot-fresh-dmz-influx-1
+rot-fresh-dmz-influx-1
+rot-fresh-dmz-influx-1
+[17:14:35] dmzinflux #1 복구 DMZ {"recover_s": 5.1, "flaps": 0, "waited_s": 125.7} | IT {"recover_s": 5.1, "flaps": 0, "waited_s": 125.7} | Flink RUNNING 4
+[17:14:52] pg #1 주입: docker stop rot-fresh-postgres-1
+rot-fresh-postgres-1
+rot-fresh-postgres-1
+[17:17:33] pg #1 복구 DMZ {"recover_s": 6.4, "flaps": 0, "waited_s": 127.1} | IT {"recover_s": 6.4, "flaps": 0, "waited_s": 127.1} | Flink RUNNING 4
+[17:17:51] == 재시작 복구 끝

@@ -1,0 +1,483 @@
+{
+ "containers": {
+  "rot-fresh-alertmanager-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-business-1": {
+   "lines": 1,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-cadvisor-1": {
+   "lines": 20,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-dispatcher-1": {
+   "lines": 1,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-dmz-broker-1": {
+   "lines": 71,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-dmz-gateway-1": {
+   "lines": 1,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-dmz-influx-1": {
+   "lines": 15,
+   "error_like": 3,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "ts=#-#-#T#:#:#Z lvl=warn msg=\"nats-port argument is deprecated and unused\" log_id=#dK#sSW#",
+     1
+    ],
+    [
+     "ts=#-#-#T#:#:#Z lvl=error msg=\"api error encountered\" log_id=#dK#sSW# error=\"authorization not found\"",
+     1
+    ],
+    [
+     "ts=#-#-#T#:#:#Z lvl=warn msg=\"nats-port argument is deprecated and unused\" log_id=#dK#j#",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-dmz-loader-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-dmz-prom-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-edge-1": {
+   "lines": 22,
+   "error_like": 2,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "# Sep #:#:# - [warn] Projects disabled : editorTheme.projects.enabled=false",
+     1
+    ],
+    [
+     "# Sep #:#:# - [warn] Using unencrypted credentials",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-flink-job-submitter-1": {
+   "lines": 20,
+   "error_like": 4,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": [
+    [
+     "WARNING: Unknown module: jdk.compiler specified to --add-exports",
+     4
+    ]
+   ]
+  },
+  "rot-fresh-flink-jobmanager-1": {
+   "lines": 1027,
+   "error_like": 59,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.checkpoints.dir' instead o",
+     8
+    ],
+    [
+     "WARNING: Unknown module: jdk.compiler specified to --add-exports",
+     5
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.savepoints.dir' instead of",
+     5
+    ],
+    [
+     "\tdefault.api.timeout.ms = #",
+     4
+    ],
+    [
+     "\trequest.timeout.ms = #",
+     4
+    ]
+   ]
+  },
+  "rot-fresh-flink-taskmanager-1": {
+   "lines": 1831,
+   "error_like": 128,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.checkpoints.dir' instead o",
+     22
+    ],
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.configuration.Configuration                 [] - Config uses deprecated configuration key 'state.savepoints.dir' instead of",
+     11
+    ],
+    [
+     "\trequest.timeout.ms = #",
+     10
+    ],
+    [
+     "\tsasl.login.connect.timeout.ms = null",
+     10
+    ],
+    [
+     "\tsasl.login.read.timeout.ms = null",
+     10
+    ]
+   ]
+  },
+  "rot-fresh-fuxa-1": {
+   "lines": 77,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-fuxa-provisioner-1": {
+   "lines": 5,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-fresh-grafana-1": {
+   "lines": 14,
+   "error_like": 14,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "logger=migrator t=#-#-#T#:#:#Z level=warn msg=\"Skipping migration: Already executed, but not recorded in migration log\" id=\"drop my_row_id and add primary key t",
+     2
+    ],
+    [
+     "logger=secrets t=#-#-#T#:#:#Z level=error msg=\"Failed to get current data key\" error=\"database is locked (#) (SQLITE_BUSY)\" label=#-#-#/root@secretKey.v#",
+     2
+    ],
+    [
+     "logger=migrator t=#-#-#T#:#:#Z level=warn msg=\"Skipping migration: Already executed, but not recorded in migration log\" id=\"drop unique orgID index on alert_con",
+     1
+    ],
+    [
+     "logger=migrator t=#-#-#T#:#:#Z level=warn msg=\"Skipping migration: Already executed, but not recorded in migration log\" id=\"drop index UQE_dashboard_public_conf",
+     1
+    ],
+    [
+     "logger=migrator t=#-#-#T#:#:#Z level=warn msg=\"Skipping migration: Already executed, but not recorded in migration log\" id=\"drop index IDX_dashboard_public_conf",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-graph-1": {
+   "lines": 13,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-graph-seed-1": {
+   "lines": 4,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-fresh-it-collector-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-it-influx-1": {
+   "lines": 12,
+   "error_like": 2,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "ts=#-#-#T#:#:#Z lvl=warn msg=\"nats-port argument is deprecated and unused\" log_id=#dK#sS#",
+     1
+    ],
+    [
+     "ts=#-#-#T#:#:#Z lvl=warn msg=\"nats-port argument is deprecated and unused\" log_id=#dK#",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-kafka-1": {
+   "lines": 1825,
+   "error_like": 116,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "\tgroup.consumer.max.session.timeout.ms = #",
+     5
+    ],
+    [
+     "\tgroup.consumer.min.session.timeout.ms = #",
+     5
+    ],
+    [
+     "\tgroup.consumer.session.timeout.ms = #",
+     5
+    ],
+    [
+     "\tgroup.max.session.timeout.ms = #",
+     5
+    ],
+    [
+     "\tgroup.min.session.timeout.ms = #",
+     5
+    ]
+   ]
+  },
+  "rot-fresh-kafka-exporter-1": {
+   "lines": 20,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-kafka-init-1": {
+   "lines": 11,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-fresh-knowledge-1": {
+   "lines": 16,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-model-trainer-1": {
+   "lines": 23,
+   "error_like": 1,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": [
+    [
+     "/app/train.py:#: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch #, the new torch.export-based ONNX exporter wil",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-ot-agent-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-ot-hub-1": {
+   "lines": 62,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-ot-hub-exporter-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-plant-sim-1": {
+   "lines": 2,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-plc-1": {
+   "lines": 223,
+   "error_like": 11,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "[#-#-# #:#:#] [ERROR] Failed to connect to runtime socket: Socket not found: /run/runtime/plc_runtime.socket",
+     2
+    ],
+    [
+     "[#-#-# #:#:#] [WARNING] 'execute_command' function not found in native plugin './build/plugins/libs#comm_plugin.so' (optional)",
+     2
+    ],
+    [
+     "[#-#-# #:#:#] [WARNING] 'cycle_start' function not found in native plugin './build/plugins/libethercat_plugin.so' (optional)",
+     2
+    ],
+    [
+     "[#-#-# #:#:#] [WARNING] 'cycle_end' function not found in native plugin './build/plugins/libethercat_plugin.so' (optional)",
+     2
+    ],
+    [
+     "[#-#-# #:#:#] [WARN] [ETHERCAT] runtime_args is NULL, logging will fall back to printf",
+     2
+    ]
+   ]
+  },
+  "rot-fresh-postgres-1": {
+   "lines": 132,
+   "error_like": 3,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:# UTC [#] WARNING:  no usable system locales were found",
+     1
+    ],
+    [
+     "initdb: warning: enabling \"trust\" authentication for local connections",
+     1
+    ],
+    [
+     "#-#-# #:#:# UTC [#] FATAL:  the database system is shutting down",
+     1
+    ]
+   ]
+  },
+  "rot-fresh-prometheus-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-router-1": {
+   "lines": 2,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-web-1": {
+   "lines": 27,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-fresh-zookeeper-1": {
+   "lines": 127,
+   "error_like": 12,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# [myid:] - ERROR [main:o.a.z.s.q.QuorumPeerConfig@#] - Invalid configuration, only one server specified (ignoring)",
+     1
+    ],
+    [
+     "#-#-# #:#:#,# [myid:#] - WARN  [main:o.a.z.s.q.QuorumPeerMain@#] - Either no config or no quorum defined in config, running in standalone mode",
+     1
+    ],
+    [
+     "#-#-# #:#:#,# [myid:#] - ERROR [main:o.a.z.s.q.QuorumPeerConfig@#] - Invalid configuration, only one server specified (ignoring)",
+     1
+    ],
+    [
+     "#-#-# #:#:#,# [myid:#] - INFO  [main:o.a.z.s.ZooKeeperServer@#] - minSessionTimeout set to # ms",
+     1
+    ],
+    [
+     "#-#-# #:#:#,# [myid:#] - INFO  [main:o.a.z.s.ZooKeeperServer@#] - maxSessionTimeout set to # ms",
+     1
+    ]
+   ]
+  }
+ },
+ "flink": {},
+ "flink_jobs": [
+  [
+   "AR100-Tier2-OnnxAnomalyDetection",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-CEP",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-ZScore",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-Threshold",
+   "RUNNING"
+  ]
+ ]
+}

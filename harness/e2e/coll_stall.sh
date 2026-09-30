@@ -8,7 +8,8 @@ D=experiments/$EXP/coll_stall; mkdir -p $D; LOG=$D/run.log
 say(){ echo "[$(date +%T)] $*" | tee -a $LOG; }
 off(){ docker exec $K /opt/kafka/bin/kafka-get-offsets.sh --bootstrap-server localhost:9092 --topic sensor.telemetry.raw 2>/dev/null | awk -F: '{s+=$3} END{print s+0}'; }
 for i in $(seq 1 $N); do
-  docker network disconnect ${P}_it-net $C; sleep 10; docker network connect --alias it-collector ${P}_it-net $C
+  IP=$(docker inspect -f "{{(index .NetworkSettings.Networks \"${P}_it-net\").IPAddress}}" $C)   # 같은 주소로 다시 붙인다(실제 망 끊김)
+  docker network disconnect ${P}_it-net $C; sleep 10; docker network connect --alias it-collector --ip $IP ${P}_it-net $C
   sleep 60; a=$(off); sleep 15; b=$(off)
   say "#$i 복귀 60 s 뒤 raw 오프셋 15 s 증가 $((b - a))"
   if [ $((b - a)) -eq 0 ]; then
