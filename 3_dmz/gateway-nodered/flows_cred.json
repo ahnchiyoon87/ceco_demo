@@ -1,0 +1,6 @@
+{
+ "mqg": {
+  "user": "gateway",
+  "password": "${MQTT_GATEWAY_PASSWORD}"
+ }
+}

@@ -278,9 +278,9 @@ services:
       retries: 12
       start_period: 30s
 
-  dmz-gateway:   # DMZ 요청 게이트웨이(1차 검사, 자체 코드)
-    build: { context: ., dockerfile: 3_dmz/gateway/Dockerfile }
-    image: ceco-dmz-gateway:base
+  dmz-gateway:   # DMZ 요청 게이트웨이(1차 검사, Node-RED — 흐름은 등록부 생성본, 편집기 없음)
+    build: { context: ., dockerfile: 3_dmz/gateway-nodered/Dockerfile }
+    image: ceco-dmz-gateway-nodered:base
     restart: unless-stopped
     environment:
       GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
@@ -288,10 +288,11 @@ services:
     networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.14" } }
     depends_on: { dmz-broker: { condition: service_healthy } }
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8088/health')"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8088/health"]
       interval: 10s
       timeout: 3s
       retries: 6
+      start_period: 20s
 
   dmz-prom:   # DMZ 수신 Prometheus: OT agent remote_write 수신(짧게 보관) + DMZ 대상 수집, IT 가 /federate 로 가져감
     image: ${PROMETHEUS_IMAGE}

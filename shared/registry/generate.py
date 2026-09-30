@@ -200,6 +200,7 @@ def build() -> dict[pathlib.Path, str]:
         f"map run_signal {{\n  root = match this {{\n{run_cases}\n    _ => false,\n  }}\n}}\n")
     out.update(build_plc(tags))
     out.update(build_nodered(reg_doc))
+    out.update(build_gateway(reg_doc))
     return out
 
 
@@ -319,6 +320,54 @@ def build_nodered(reg: dict) -> dict[pathlib.Path, str]:
     cred = {"mqe": {"user": "edge", "password": "${MQTT_EDGE_PASSWORD}"},
             "mqr": {"user": "ot-receiver", "password": "${MQTT_RECEIVER_PASSWORD}"}}
     d = ROOT / "2_ot" / "edge-nodered"
+    return {d / "flows.json": json.dumps(nodes, ensure_ascii=False, indent=1) + "\n",
+            d / "flows_cred.json": json.dumps(cred, indent=1) + "\n"}
+
+
+def build_gateway(reg: dict) -> dict[pathlib.Path, str]:
+    """DMZ 요청 게이트웨이 Node-RED 의 흐름(편집기 없음). 함수 본문은 3_dmz/gateway-nodered/src/*.js."""
+    src = ROOT / "3_dmz" / "gateway-nodered" / "src"
+    js = lambda name: (src / f"{name}.js").read_text(encoding="utf-8")
+    T = "gw"
+    nodes: list[dict] = [
+        {"id": T, "type": "tab", "label": "DMZ 요청 게이트웨이", "disabled": False,
+         "info": "외부(IT)의 작업 요청을 1차 검사해 DMZ 요청 토픽에 MQTT 5 만료를 달아 낸다. 공장 상태(모드)는 보지 않는다. "
+                 "등록부에서 생성(shared/registry/generate.py)."},
+        {"id": "mqg", "type": "mqtt-broker", "name": "DMZ 브로커(gateway 계정)", "broker": "dmz-broker", "port": "1883",
+         "clientid": "dmz-gateway", "autoConnect": True, "usetls": False, "protocolVersion": "5", "keepalive": "15",
+         "cleansession": True, "autoUnsubscribe": True, "birthTopic": "", "closeTopic": "", "willTopic": "",
+         "userProps": "", "sessionExpiry": ""},
+    ]
+
+    def add(node_id, typ, x, y, wires=None, **props):
+        n = {"id": node_id, "type": typ, "z": T, "x": x, "y": y, **props}
+        if wires is not None:
+            n["wires"] = wires
+        nodes.append(n)
+
+    def fn(node_id, name, code, x, y, wires, outputs=1):
+        add(node_id, "function", x, y, wires, name=name, func=js(code), outputs=outputs,
+            timeout=0, noerr=0, initialize="", finalize="", libs=[])
+
+    def http_in(node_id, name, url, method, x, y, wires, raw=False):
+        add(node_id, "http in", x, y, wires, name=name, url=url, method=method, upload=False, skipBodyParsing=raw,
+            swaggerDoc="")
+
+    http_in("in_req", "작업 요청", "/requests", "post", 160, 80, [["f_check"]], raw=True)   # 본문을 직접 읽어 JSON 오류도 400 으로 답한다
+    fn("f_check", "1차 검사", "check", 400, 80, [["resp"], ["mq_out"]], outputs=2)
+    add("mq_out", "mqtt out", 640, 140, [], name="DMZ 요청 토픽(QoS 1)", topic="", qos="1", retain="false",
+        respTopic="", contentType="", userProps="", correl="", expiry="", broker="mqg")
+    add("done_pub", "complete", 640, 200, [["f_ack"]], name="발행 확인(PUBACK)", scope=["mq_out"], uncaught=False)
+    fn("f_ack", "수용 응답", "ack", 880, 200, [["resp"]])
+    add("resp", "http response", 1100, 80, [], name="", statusCode="", headers={})
+    add("st_mq", "status", 640, 260, [["f_state"]], name="브로커 연결 상태", scope=["mq_out"])
+    fn("f_state", "연결 기억", "broker_state", 880, 260, [[]])
+    http_in("in_health", "상태", "/health", "get", 160, 340, [["f_health"]])
+    fn("f_health", "상태 응답", "health", 400, 340, [["resp"]])
+    http_in("in_metrics", "지표", "/metrics", "get", 160, 400, [["f_metrics"]])
+    fn("f_metrics", "Prometheus 텍스트", "metrics", 400, 400, [["resp"]])
+    cred = {"mqg": {"user": "gateway", "password": "${MQTT_GATEWAY_PASSWORD}"}}
+    d = ROOT / "3_dmz" / "gateway-nodered"
     return {d / "flows.json": json.dumps(nodes, ensure_ascii=False, indent=1) + "\n",
             d / "flows_cred.json": json.dumps(cred, indent=1) + "\n"}
 

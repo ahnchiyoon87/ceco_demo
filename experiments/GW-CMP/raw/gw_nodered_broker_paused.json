@@ -1,9 +1,9 @@
 {
- "phase": "broker_down",
- "url": "http://dmz-gateway:8088/requests",
+ "phase": "broker_paused",
+ "url": "http://dmz-gateway-nr:8088/requests",
  "results": [
   {
-   "case": "브로커 정지 → 즉시 거부",
+   "case": "브로커 무응답 → 확인 제한 시간 뒤 거부",
    "want": [
     503,
     "BROKER_UNAVAILABLE"
@@ -12,7 +12,7 @@
     "code": 503,
     "reason": "BROKER_UNAVAILABLE",
     "expires_at": null,
-    "s": 0.039
+    "s": 2.058
    },
    "pass": true
   }

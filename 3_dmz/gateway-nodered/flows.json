@@ -1,0 +1,245 @@
+[
+ {
+  "id": "gw",
+  "type": "tab",
+  "label": "DMZ 요청 게이트웨이",
+  "disabled": false,
+  "info": "외부(IT)의 작업 요청을 1차 검사해 DMZ 요청 토픽에 MQTT 5 만료를 달아 낸다. 공장 상태(모드)는 보지 않는다. 등록부에서 생성(shared/registry/generate.py)."
+ },
+ {
+  "id": "mqg",
+  "type": "mqtt-broker",
+  "name": "DMZ 브로커(gateway 계정)",
+  "broker": "dmz-broker",
+  "port": "1883",
+  "clientid": "dmz-gateway",
+  "autoConnect": true,
+  "usetls": false,
+  "protocolVersion": "5",
+  "keepalive": "15",
+  "cleansession": true,
+  "autoUnsubscribe": true,
+  "birthTopic": "",
+  "closeTopic": "",
+  "willTopic": "",
+  "userProps": "",
+  "sessionExpiry": ""
+ },
+ {
+  "id": "in_req",
+  "type": "http in",
+  "z": "gw",
+  "x": 160,
+  "y": 80,
+  "name": "작업 요청",
+  "url": "/requests",
+  "method": "post",
+  "upload": false,
+  "skipBodyParsing": true,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "f_check"
+   ]
+  ]
+ },
+ {
+  "id": "f_check",
+  "type": "function",
+  "z": "gw",
+  "x": 400,
+  "y": 80,
+  "name": "1차 검사",
+  "func": "// 작업 요청 1차 검사. 출력 1 = 거부 응답, 출력 2 = DMZ 요청 토픽으로 발행.\n// 검사: 토큰 · 스키마 · 허용 작업 ID·설비·파라미터 범위 · 요청자·승인자 허용 목록 · 요청 나이(10 s) · 중복(만료 시간 안의 ID) · 브로커 연결\nconst EXPIRY_S = 30, MAX_AGE_S = 10, PUBACK_TIMEOUT_MS = 2000;\nconst crypto = global.get('crypto');\nconst allow = global.get('allow');\nconst validate = global.get('validateJob');\nconst now = Date.now() / 1000;\nconst counters = flow.get('counters') || {};\nconst seen = flow.get('seen') || {};\nconst pending = flow.get('pending') || {};\n\nfunction reject(reason, jid, code) {\n    counters['rejected_' + reason] = (counters['rejected_' + reason] || 0) + 1;\n    flow.set('counters', counters);\n    node.log(`거부 ${jid} ${reason}`);\n    msg.statusCode = code || 422;\n    msg.payload = { status: 'REJECTED', reason, job_order_id: jid };\n    return [msg, null];\n}\n\nconst want = Buffer.from('Bearer ' + env.get('GATEWAY_CLIENT_TOKEN'));\nconst got = Buffer.from(msg.req.headers['authorization'] || '');\nif (got.length !== want.length || !crypto.timingSafeEqual(got, want)) {\n    msg.statusCode = 401;\n    counters.rejected_UNAUTHORIZED = (counters.rejected_UNAUTHORIZED || 0) + 1;\n    flow.set('counters', counters);\n    msg.payload = { status: 'REJECTED', reason: 'UNAUTHORIZED' };\n    return [msg, null];\n}\nlet req;\ntry {\n    req = JSON.parse(Buffer.isBuffer(msg.payload) ? msg.payload.toString('utf8') : String(msg.payload));\n} catch (e) {\n    return reject('SCHEMA_INVALID', null, 400);\n}\nconst jid = (req && typeof req === 'object') ? req.job_order_id : null;\nif (!req || typeof req !== 'object' || Array.isArray(req) || !validate(req)) return reject('SCHEMA_INVALID', jid);\nconst wm = allow.work_masters.find(w => w.work_master_id === req.work_master_id);\nif (!wm) return reject('NOT_ALLOWED', jid);\nif (wm.equipment_id !== req.equipment_id) return reject('EQUIPMENT_MISMATCH', jid);\nfor (const p of wm.parameters) {\n    const v = req.job_order_parameters.find(x => x.id === p.id);\n    if (!v) return reject('PARAMETER_MISSING', jid);\n    if (!(p.min <= v.value && v.value <= p.max)) return reject('PARAMETER_RANGE', jid);\n}\nif (!allow.requesters.includes(req.requester)) return reject('REQUESTER_NOT_ALLOWED', jid);\nif (!allow.approvers.includes(req.approver)) return reject('APPROVER_NOT_ALLOWED', jid);\nconst age = now - Number(req.created_at);\nif (age > MAX_AGE_S || age < -2) return reject('TOO_OLD', jid);\nfor (const k of Object.keys(seen)) if (seen[k] < now) delete seen[k];\nif (jid in seen) return reject('DUPLICATE', jid, 409);\n// 브로커가 끊겨 있으면 기다리지 않고 바로 거부한다(동기 HTTP 응답 = 첫 겹)\nif (!flow.get('connected')) return reject('BROKER_UNAVAILABLE', jid, 503);\nseen[jid] = now + EXPIRY_S + 5;\nflow.set('seen', seen);\n\nreq.expires_at = Math.floor(now) + EXPIRY_S;\n// 발행 확인(PUBACK)이 2 s 안에 오지 않으면 거부로 답한다. 확인은 '발행 확인' 노드가 pending 에서 지운다.\npending[msg._msgid] = true;\nflow.set('pending', pending);\nconst res = msg.res;\nsetTimeout(() => {\n    const p = flow.get('pending') || {};\n    if (!p[msg._msgid]) return;\n    delete p[msg._msgid];\n    flow.set('pending', p);\n    const s = flow.get('seen') || {};\n    delete s[jid];\n    flow.set('seen', s);\n    const c = flow.get('counters') || {};\n    c.rejected_BROKER_UNAVAILABLE = (c.rejected_BROKER_UNAVAILABLE || 0) + 1;\n    flow.set('counters', c);\n    node.warn(`거부 ${jid} BROKER_UNAVAILABLE(발행 확인 없음)`);\n    node.send([{ _msgid: msg._msgid, res, statusCode: 503,\n                 payload: { status: 'REJECTED', reason: 'BROKER_UNAVAILABLE', job_order_id: jid } }, null]);\n}, PUBACK_TIMEOUT_MS);\nmsg.topic = global.get('registry').request.in_topic;\nmsg.messageExpiryInterval = EXPIRY_S;\nmsg.payload = req;\nreturn [null, msg];\n",
+  "outputs": 2,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "resp"
+   ],
+   [
+    "mq_out"
+   ]
+  ]
+ },
+ {
+  "id": "mq_out",
+  "type": "mqtt out",
+  "z": "gw",
+  "x": 640,
+  "y": 140,
+  "name": "DMZ 요청 토픽(QoS 1)",
+  "topic": "",
+  "qos": "1",
+  "retain": "false",
+  "respTopic": "",
+  "contentType": "",
+  "userProps": "",
+  "correl": "",
+  "expiry": "",
+  "broker": "mqg",
+  "wires": []
+ },
+ {
+  "id": "done_pub",
+  "type": "complete",
+  "z": "gw",
+  "x": 640,
+  "y": 200,
+  "name": "발행 확인(PUBACK)",
+  "scope": [
+   "mq_out"
+  ],
+  "uncaught": false,
+  "wires": [
+   [
+    "f_ack"
+   ]
+  ]
+ },
+ {
+  "id": "f_ack",
+  "type": "function",
+  "z": "gw",
+  "x": 880,
+  "y": 200,
+  "name": "수용 응답",
+  "func": "// 발행 확인(PUBACK) → 수용 응답. 제한 시간이 지나 이미 거부로 답했으면 아무것도 하지 않는다.\nconst pending = flow.get('pending') || {};\nif (!pending[msg._msgid]) return null;\ndelete pending[msg._msgid];\nflow.set('pending', pending);\nconst counters = flow.get('counters') || {};\ncounters.accepted = (counters.accepted || 0) + 1;\nflow.set('counters', counters);\nconst req = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : msg.payload;\nnode.log(`수용 ${req.job_order_id} ${req.work_master_id} → ${msg.topic} (만료 ${req.expires_at})`);\nreturn { _msgid: msg._msgid, res: msg.res, statusCode: 202,\n         payload: { status: 'ACCEPTED', job_order_id: req.job_order_id, expires_at: req.expires_at } };\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "resp"
+   ]
+  ]
+ },
+ {
+  "id": "resp",
+  "type": "http response",
+  "z": "gw",
+  "x": 1100,
+  "y": 80,
+  "name": "",
+  "statusCode": "",
+  "headers": {},
+  "wires": []
+ },
+ {
+  "id": "st_mq",
+  "type": "status",
+  "z": "gw",
+  "x": 640,
+  "y": 260,
+  "name": "브로커 연결 상태",
+  "scope": [
+   "mq_out"
+  ],
+  "wires": [
+   [
+    "f_state"
+   ]
+  ]
+ },
+ {
+  "id": "f_state",
+  "type": "function",
+  "z": "gw",
+  "x": 880,
+  "y": 260,
+  "name": "연결 기억",
+  "func": "// DMZ 브로커 연결 상태 기억(초록 = 연결됨)\nflow.set('connected', msg.status.fill === 'green');\nreturn null;\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   []
+  ]
+ },
+ {
+  "id": "in_health",
+  "type": "http in",
+  "z": "gw",
+  "x": 160,
+  "y": 340,
+  "name": "상태",
+  "url": "/health",
+  "method": "get",
+  "upload": false,
+  "skipBodyParsing": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "f_health"
+   ]
+  ]
+ },
+ {
+  "id": "f_health",
+  "type": "function",
+  "z": "gw",
+  "x": 400,
+  "y": 340,
+  "name": "상태 응답",
+  "func": "msg.payload = { status: 'ok', broker: !!flow.get('connected') };\nreturn msg;\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "resp"
+   ]
+  ]
+ },
+ {
+  "id": "in_metrics",
+  "type": "http in",
+  "z": "gw",
+  "x": 160,
+  "y": 400,
+  "name": "지표",
+  "url": "/metrics",
+  "method": "get",
+  "upload": false,
+  "skipBodyParsing": false,
+  "swaggerDoc": "",
+  "wires": [
+   [
+    "f_metrics"
+   ]
+  ]
+ },
+ {
+  "id": "f_metrics",
+  "type": "function",
+  "z": "gw",
+  "x": 400,
+  "y": 400,
+  "name": "Prometheus 텍스트",
+  "func": "// Prometheus 텍스트(DMZ Prometheus 가 dmz-gateway:8088/metrics 를 긁는다)\nconst counters = flow.get('counters') || {};\nconst lines = ['# TYPE gateway_requests_total counter'];\nfor (const k of Object.keys(counters).sort()) lines.push(`gateway_requests_total{result=\"${k}\"} ${counters[k]}`);\nlines.push('# TYPE gateway_broker_connected gauge', `gateway_broker_connected ${flow.get('connected') ? 1 : 0}`, '');\nmsg.headers = { 'Content-Type': 'text/plain; version=0.0.4' };\nmsg.payload = lines.join('\\n');\nreturn msg;\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "resp"
+   ]
+  ]
+ }
+]

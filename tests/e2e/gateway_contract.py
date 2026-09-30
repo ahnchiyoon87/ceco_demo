@@ -3,6 +3,7 @@
     base_client python tests/e2e/gateway_contract.py --phase broker_down --out …   (DMZ 브로커를 멈춘 상태에서)
 정상 단계: 인증·형식·허용 목록·범위·나이·중복을 거부 이유로 확인하고, 수용된 요청이 DMZ 요청 토픽에 MQTT 5 만료(30 s)와
 본문 expires_at 을 달고 나가는지 DMZ 브로커에서 받아 본다(viewer 계정). 브로커 정지 단계: 즉시(2 s 안) BROKER_UNAVAILABLE.
+브로커 무응답 단계(docker pause): 발행 확인 제한 시간(2 s) 뒤 BROKER_UNAVAILABLE(3 s 안).
 """
 import argparse, json, os, sys, threading, time, urllib.error, urllib.request, uuid
 
@@ -11,7 +12,7 @@ from paho.mqtt.packettypes import PacketTypes
 
 REG = json.load(open("shared/registry/generated/tags.json", encoding="utf-8"))
 ap = argparse.ArgumentParser()
-ap.add_argument("--phase", choices=["normal", "broker_down"], required=True)
+ap.add_argument("--phase", choices=["normal", "broker_down", "broker_paused"], required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--url", default="http://dmz-gateway:8088/requests")
 a = ap.parse_args()
@@ -37,6 +38,8 @@ def send(payload, token=TOKEN, raw=None):
             code, out = r.status, json.loads(r.read() or b"{}")
     except urllib.error.HTTPError as e:
         code, out = e.code, json.loads(e.read() or b"{}")
+    except TimeoutError:
+        code, out = None, {"reason": "NO_RESPONSE_8S"}
     return {"code": code, "reason": out.get("reason") or out.get("status"), "expires_at": out.get("expires_at"),
             "s": round(time.time() - t0, 3)}
 
@@ -91,6 +94,11 @@ if a.phase == "normal":
     print(("PASS" if exp_ok else "FAIL"), "DMZ 토픽 만료", m, flush=True)
     case("중복", 409, "DUPLICATE", send(ok))
     c.loop_stop()
+elif a.phase == "broker_paused":
+    # 연결은 살아 있으나 브로커가 답하지 않음(docker pause): 발행 확인(PUBACK)을 2 s 기다린 뒤 거부해야 한다
+    got = send(body())
+    case("브로커 무응답 → 확인 제한 시간 뒤 거부", 503, "BROKER_UNAVAILABLE", got)
+    results[-1]["pass"] = results[-1]["pass"] and got["s"] <= 3.0
 else:
     got = send(body())
     case("브로커 정지 → 즉시 거부", 503, "BROKER_UNAVAILABLE", got)

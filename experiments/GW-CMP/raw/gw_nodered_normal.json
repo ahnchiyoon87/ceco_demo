@@ -1,6 +1,6 @@
 {
  "phase": "normal",
- "url": "http://dmz-gateway:8088/requests",
+ "url": "http://dmz-gateway-nr:8088/requests",
  "results": [
   {
    "case": "토큰 없음",
@@ -12,7 +12,7 @@
     "code": 401,
     "reason": "UNAUTHORIZED",
     "expires_at": null,
-    "s": 0.062
+    "s": 0.08
    },
    "pass": true
   },
@@ -26,7 +26,7 @@
     "code": 400,
     "reason": "SCHEMA_INVALID",
     "expires_at": null,
-    "s": 0.003
+    "s": 0.005
    },
    "pass": true
   },
@@ -40,7 +40,7 @@
     "code": 422,
     "reason": "SCHEMA_INVALID",
     "expires_at": null,
-    "s": 0.007
+    "s": 0.005
    },
    "pass": true
   },
@@ -54,7 +54,7 @@
     "code": 422,
     "reason": "SCHEMA_INVALID",
     "expires_at": null,
-    "s": 0.013
+    "s": 0.005
    },
    "pass": true
   },
@@ -68,7 +68,7 @@
     "code": 422,
     "reason": "EQUIPMENT_MISMATCH",
     "expires_at": null,
-    "s": 0.007
+    "s": 0.004
    },
    "pass": true
   },
@@ -96,7 +96,7 @@
     "code": 422,
     "reason": "PARAMETER_RANGE",
     "expires_at": null,
-    "s": 0.004
+    "s": 0.005
    },
    "pass": true
   },
@@ -110,7 +110,7 @@
     "code": 422,
     "reason": "REQUESTER_NOT_ALLOWED",
     "expires_at": null,
-    "s": 0.006
+    "s": 0.004
    },
    "pass": true
   },
@@ -124,7 +124,7 @@
     "code": 422,
     "reason": "APPROVER_NOT_ALLOWED",
     "expires_at": null,
-    "s": 0.009
+    "s": 0.005
    },
    "pass": true
   },
@@ -138,7 +138,7 @@
     "code": 422,
     "reason": "TOO_OLD",
     "expires_at": null,
-    "s": 0.007
+    "s": 0.005
    },
    "pass": true
   },
@@ -151,8 +151,8 @@
    "got": {
     "code": 202,
     "reason": "ACCEPTED",
-    "expires_at": 1790758460,
-    "s": 0.011
+    "expires_at": 1790758416,
+    "s": 0.008
    },
    "pass": true
   },
@@ -163,7 +163,7 @@
     "expires_at 같음"
    ],
    "got": {
-    "expires_at": 1790758460,
+    "expires_at": 1790758416,
     "mqtt_expiry": 30
    },
    "pass": true
@@ -178,7 +178,7 @@
     "code": 409,
     "reason": "DUPLICATE",
     "expires_at": null,
-    "s": 0.007
+    "s": 0.005
    },
    "pass": true
   }
