@@ -1,0 +1,29 @@
+[15:15:09] == 재시작 복구 시작 (coll dmzinflux kafka)
+[15:15:09] kafka #1 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[15:18:13] kafka #1 복구 DMZ {"recover_s": 7.2, "flaps": 0, "waited_s": 128.9} | IT {"recover_s": 58.2, "flaps": 0, "waited_s": 179.1} | Flink RUNNING 4
+[15:18:31] kafka #2 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[15:21:34] kafka #2 복구 DMZ {"recover_s": 7.3, "flaps": 0, "waited_s": 128.2} | IT {"recover_s": 57.6, "flaps": 0, "waited_s": 178.3} | Flink RUNNING 4
+[15:21:52] kafka #3 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[15:24:53] kafka #3 복구 DMZ {"recover_s": 8.0, "flaps": 0, "waited_s": 128.9} | IT {"recover_s": 56.3, "flaps": 0, "waited_s": 177.0} | Flink RUNNING 4
+[15:25:09] coll #1 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[15:27:28] coll #1 복구 DMZ {"recover_s": 5.6, "flaps": 0, "waited_s": 126.5} | IT {"recover_s": 5.7, "flaps": 0, "waited_s": 126.5} | Flink RUNNING 4
+[15:27:44] coll #2 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[15:30:04] coll #2 복구 DMZ {"recover_s": 7.0, "flaps": 0, "waited_s": 127.9} | IT {"recover_s": 7.0, "flaps": 0, "waited_s": 127.7} | Flink RUNNING 4
+[15:30:20] coll #3 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[15:32:40] coll #3 복구 DMZ {"recover_s": 7.3, "flaps": 0, "waited_s": 128.4} | IT {"recover_s": 7.5, "flaps": 0, "waited_s": 128.2} | Flink RUNNING 4
+[15:32:57] dmzinflux #1 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[15:35:59] dmzinflux #1 복구 DMZ {"recover_s": 28.7, "flaps": 0, "waited_s": 149.7} | IT {"recover_s": 6.5, "flaps": 0, "waited_s": 127.3} | Flink RUNNING 4
+[15:36:16] dmzinflux #2 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[15:39:21] dmzinflux #2 복구 DMZ {"recover_s": 31.6, "flaps": 0, "waited_s": 152.5} | IT {"recover_s": 5.4, "flaps": 0, "waited_s": 126.1} | Flink RUNNING 4
+[15:39:39] dmzinflux #3 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[15:42:42] dmzinflux #3 복구 DMZ {"recover_s": 29.0, "flaps": 0, "waited_s": 150.1} | IT {"recover_s": 6.8, "flaps": 0, "waited_s": 127.7} | Flink RUNNING 4
+[15:42:58] == 재시작 복구 끝

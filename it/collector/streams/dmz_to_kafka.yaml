@@ -8,7 +8,7 @@ input:
     client_id: it-collector
     user: it-collector
     password: ${MQTT_IT_COLLECTOR_PASSWORD}
-    clean_session: false
+    clean_session: true
     qos: 1
     topics:
       - AR-100/reaction/+/+/tag/+
@@ -16,6 +16,10 @@ input:
       - AR-100/reaction/+/+/state/+
       - AR-100/reaction/+/+/ack/+
       - AR-100/response/#
+# 출력(저장소)이 잠시 막혀도 MQTT 입력이 멈춰 연결이 끊기지 않게 메모리에 모아 둔다(STABILITY S32). 적재기 프로세스가 죽으면 모아 둔 것은 잃는다.
+buffer:
+  memory:
+    limit: 33554432   # 32 MiB(초당 약 30건 기준 몇 시간 분량)
 pipeline:
   processors:
     - mapping: |

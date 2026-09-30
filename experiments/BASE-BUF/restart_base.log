@@ -1,0 +1,31 @@
+[15:56:13] == 재시작 복구 시작 (dmzinflux kafka)
+[15:56:14] kafka #1 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[15:59:18] kafka #1 복구 DMZ {"recover_s": 8.2, "flaps": 0, "waited_s": 129.5} | IT {"recover_s": 58.8, "flaps": 0, "waited_s": 179.7} | Flink RUNNING 4
+[15:59:38] kafka #2 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[16:02:40] kafka #2 복구 DMZ {"recover_s": 8.3, "flaps": 0, "waited_s": 129.5} | IT {"recover_s": 56.7, "flaps": 0, "waited_s": 177.7} | Flink RUNNING 4
+[16:02:59] kafka #3 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[16:06:02] kafka #3 복구 DMZ {"recover_s": 7.8, "flaps": 0, "waited_s": 129.0} | IT {"recover_s": 58.2, "flaps": 0, "waited_s": 179.1} | Flink RUNNING 4
+[16:06:20] dmzinflux #1 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[16:09:01] dmzinflux #1 복구 DMZ {"recover_s": 7.3, "flaps": 0, "waited_s": 128.5} | IT {"recover_s": 7.3, "flaps": 0, "waited_s": 128.3} | Flink RUNNING 4
+[16:09:19] dmzinflux #2 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[16:12:00] dmzinflux #2 복구 DMZ {"recover_s": 7.4, "flaps": 0, "waited_s": 128.7} | IT {"recover_s": 7.4, "flaps": 0, "waited_s": 128.4} | Flink RUNNING 4
+[16:12:18] dmzinflux #3 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[16:14:59] dmzinflux #3 복구 DMZ {"recover_s": 6.6, "flaps": 0, "waited_s": 128.0} | IT {"recover_s": 6.6, "flaps": 0, "waited_s": 127.5} | Flink RUNNING 4
+[16:15:18] == 재시작 복구 끝
+[16:15:53] == 재시작 복구 시작 (coll)
+[16:15:53] coll #1 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[16:18:13] coll #1 복구 DMZ {"recover_s": 6.5, "flaps": 0, "waited_s": 127.7} | IT {"recover_s": 6.5, "flaps": 0, "waited_s": 127.4} | Flink RUNNING 4
+[16:18:30] coll #2 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[16:20:49] coll #2 복구 DMZ {"recover_s": 5.7, "flaps": 0, "waited_s": 126.5} | IT {"recover_s": 5.7, "flaps": 0, "waited_s": 126.3} | Flink RUNNING 4
+[16:21:05] coll #3 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[16:23:22] coll #3 복구 DMZ {"recover_s": 5.8, "flaps": 0, "waited_s": 126.8} | IT {"recover_s": 5.8, "flaps": 0, "waited_s": 126.5} | Flink RUNNING 4
+[16:23:35] == 재시작 복구 끝

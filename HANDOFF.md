@@ -318,11 +318,12 @@
 - 확인 결과(2026-09-29): 흐름 +144건/10 s, Kafka 데이터가 볼륨에 저장됨, JobManager 재시작 8 s 뒤 잡 4개가 체크포인트에서 복귀. verify.py 20/23 통과(`experiments/STABLE-V1/verify_1.log`). 통과: EdgeX 정규화, Modbus 코일 쓰기 물리 반응, Kafka 토픽·스키마, Flink 4잡, ONNX 추론 0.221 ms, spike→규칙·bearing_wear→CEP·drift→ML, InfluxDB 적재·quality 태그, Prometheus 역할 분리·대상 7/7, FUXA 프로비저닝·Modbus 읽기·양방향 제어. 실패 3개는 모두 결측 주입 관련(원시 TT-101 결측 구간이 보이지 않음, 보간 0건, 보간값 quality 식별) — **미결**, 원인 미확인, 조립 때 처리.
 
 ## 6. 지금 상태
-- **컨테이너:** SCADA 컨테이너 없음. AI 컨테이너 6개(`rot-ai-*`: V1 AI 5개 + 임베딩 `embed` 1개) 정지, 볼륨 보존.
-- **볼륨:** `rot-ai_*` 12개, 학습 모델 `rot-iiot_model-store`·`-v2`.
-- **이미지:** 직접 빌드한 것(rot-flink-onnx:v2, rot-plant-simulator:v2-ts, e2e-client:1.0, l4bench-tools:1.0 — 뒤의 둘은 측정 도구 이미지라 배포 대상이 아니다), iiot/model-trainer:1.0(V1 학습기. 원본 이름이라 다시 빌드하지 않는다), AI(rot-ai-*, neo4j, postgres:17, ollama), 지금 받아 둔 공개 이미지(권장 판은 §2-3이며 조립 때 권장 판을 받는다: apache/kafka:4.3.1, edgexfoundry/*:4.0.0, eclipse-mosquitto:2.1.2-alpine, frangoteam/fuxa:1.3.4, grafana/grafana:12.4.12, influxdb:2.9.1-alpine, zookeeper:3.9.5, postgres:16.3-alpine3.20, python:3.12-slim).
-- **코드:** V1 원본(`docker-compose.yml`, `docker-compose.edgex.yml`, edgex/·emqx/·telegraf/·kafka/·flink/·fuxa/·grafana/·prometheus/·ml/), 배속 600 가상설비(`simulator/`, `docker-compose.timescale.yml`), Flink 2.2.1 HA 빌드, 측정 도구(`harness/`), AI 층(`ai-layer/compose.v2.yml`, `ontology/v2`, `knowledge-docs`).
-- **다른 프로젝트·다른 세션:** 같은 도커에 다른 프로젝트 컨테이너(예: `capstone-luna-guide-*`)나 다른 세션의 작업이 있을 수 있다. 평소에는 건드리지 않고, 사용자가 정리하라고 하면 정리한다(자동 권한 판정기가 막으면 사용자가 수동 승인). 측정은 이 프로젝트(`rot-*`) 합계로 세고, 도커 전체 여유가 부족하면 사용자에게 알린다.
+- **컨테이너:** 새 베이스 `rot-base`(compose.yml) 35개 서비스 기동(한 번 도는 것 5개는 정상 종료). V1 AI(`rot-ai-*`) 5개는 정지(볼륨 보존). 다른 프로젝트 `capstone-*`는 사용자 허락으로 정지만 했다(지우지 않음).
+- **검증(2026-09-30, `reports/BASE_VERIFY.md`):** verify 27/27, 제어·안전 전 항목, PLC 계약 60/60, 탐지 70/70, 재시작 복구 24회 중 23회 스스로 복구·유실 0, 이상 → AI 조치 제안 20.54 s, 메모리 4,675 MiB(30개).
+- **수집기(Bento 유지, decision-log #177·#178):** 두 MQTT 입력(IT 수집기 DMZ → Kafka, DMZ 적재기)은 지속 세션을 끄고 메모리 버퍼 32 MiB 를 둔다. 망 끊김 뒤 조용한 멈춤(S31) 원인 제거(11회 멈춤 0), DMZ InfluxDB 정지 뒤 복구 6.6~7.4 s(S32), 유실 0. Kafka 재시작 뒤 IT 쪽 결과 약 1분 지연(S36, 유실 0, 공장 안 영향 없음)은 Kafka 소비자 그룹 동작이라 알려진 한계. 자체 코드·Telegraf 로 바꾸지 않는다.
+- **다음:** 수집기 확정·재측정 → 레이어 폴더(L0-plant · L1-control · L2-supervisory · L3.5-dmz · L4-it · L4-ai · common) 옮김과 쓰지 않는 파일·옛 리서치 삭제(사용자 승인, 백업 없이) → 새 폴더·빈 볼륨 기동 시험(§3-7 5) → 보고서·쉬운 설명서 실측 칸(다른 세션이 쓰는 중이면 끝난 뒤).
+- **이미지:** 직접 빌드는 `rot-*:base`만(측정 도구 `e2e-client:1.2`·`l4bench-tools:1.0` 별도). 개발·시험 이미지·볼륨은 지웠다(decision-log #171). 떠 있는 익명 볼륨 26개(2 MB 미만)는 자동 권한 판정기가 막아 남음.
+- **다른 프로젝트·다른 세션:** 같은 작업 폴더에서 다른 세션이 보고서(`reports/REPORT_base_plan*`, 쉬운 설명서)를 고치고 커밋한다. 커밋은 경로를 지정해서 한다.
 - **git:** 브랜치 `exp/stack-rotation-202609`, 기준 태그 `v1-original`, push 안 함. 옛 문서·V2 구성은 커밋 `bdced23`에 있다.
 
 ## 7. 넘으면 안 되는 선
