@@ -1,9 +1,0 @@
-{
-  "at": "20260923T071430Z",
-  "backup": "fuxa-runtime-before-20260923T071430Z.json",
-  "bindings_validated": 38,
-  "hmi_readback_matches": true,
-  "devices_preserved": true,
-  "equipment_commands_sent": false,
-  "browser_verified": false
-}

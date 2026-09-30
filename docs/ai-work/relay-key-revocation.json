@@ -1,9 +1,0 @@
-{
-  "time": "2026-09-21T03:57:27.818839+00:00",
-  "deleted_virtual_keys": 13,
-  "remaining_virtual_keys": 0,
-  "revoked_app_key_http": 401,
-  "local_relay_key_removed": true,
-  "admin_master_key_changed": false,
-  "provider_key_changed": false
-}

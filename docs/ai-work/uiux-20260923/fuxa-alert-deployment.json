@@ -1,9 +1,0 @@
-{
-  "at": "20260923T045448Z",
-  "backup": "fuxa-alert-before-20260923T045448Z.json",
-  "project_readback_matches": true,
-  "modbus_preserved": true,
-  "hmi_preserved": true,
-  "equipment_commands_sent": false,
-  "browser_verified": false
-}

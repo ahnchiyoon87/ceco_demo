@@ -1,3 +1,0 @@
-{"kafka_ts_ms": 1790601846707, "ts": 1790601846642325248, "site": "AR-100", "device": "y9.92ee2-S09-1", "tag": "IT-102", "value": 9.9, "alert_type": "THRESHOLD_USL", "severity": "CRITICAL", "detector": "TIER1_RULE", "detail": "IT-102 = 9.9 A / 규격 [-, 9.6]"}
-{"kafka_ts_ms": 1790601846708, "ts": 1790601846642325248, "site": "AR-100", "device": "y9.92ee2-S09-2", "tag": "IT-102", "value": 9.9, "alert_type": "THRESHOLD_USL", "severity": "CRITICAL", "detector": "TIER1_RULE", "detail": "IT-102 = 9.9 A / 규격 [-, 9.6]"}
-{"kafka_ts_ms": 1790601846709, "ts": 1790601846642325248, "site": "AR-100", "device": "y9.92ee2-S09-3", "tag": "IT-102", "value": 9.9, "alert_type": "THRESHOLD_USL", "severity": "CRITICAL", "detector": "TIER1_RULE", "detail": "IT-102 = 9.9 A / 규격 [-, 9.6]"}

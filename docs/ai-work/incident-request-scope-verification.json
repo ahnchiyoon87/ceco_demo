@@ -1,8 +1,0 @@
-﻿{
-    "checked_at":  "2026-09-21T15:06:16.1305863+09:00",
-    "web_http":  200,
-    "tests":  "node --test tests/incidentRequestScope.test.js",
-    "test_result":  "2 passed",
-    "scope":  "actual Vue SFC reactive behavior with deferred mocked network; not browser visual verification",
-    "source_sha256":  "B9D775559C8AB1F4A89B95250FB69717A522C4BE6E8E8A9B2131FFE79CDA1ED2"
-}

@@ -1,5 +1,0 @@
-[{"id":"t1","type":"tab","label":"t"},
-{"id":"b1","type":"mqtt-broker","name":"hub","broker":"hub","port":"1883","clientid":"nrtest","autoConnect":true,"usetls":false,"protocolVersion":"4","keepalive":"15","cleansession":false,"autoUnsubscribe":true},
-{"id":"i1","type":"inject","z":"t1","repeat":"0.1","once":true,"onceDelay":"1","payloadType":"date","topic":"t/x","wires":[["f1"]]},
-{"id":"f1","type":"function","z":"t1","func":"const n=(context.get('n')||0)+1;context.set('n',n);msg.payload=String(n);return msg;","outputs":1,"wires":[["o1"]]},
-{"id":"o1","type":"mqtt out","z":"t1","topic":"t/x","qos":"1","retain":"false","broker":"b1","wires":[]}]

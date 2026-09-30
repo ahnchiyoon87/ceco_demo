@@ -1,8 +1,0 @@
-7d2ab7b918a149ca *docs/research/AGENT_BRIEF.md
-c9878b03536ae0c0 *docs/research/AGENT_BRIEF_FINAL.md
-3f6f547acaf5f9f0 *docs/research/AGENT_BRIEF_v2.md
-1bf0e3c103eac657 *docs/research/ARCHITECTURE_SIMPLIFICATION.md
-8be69f95df7e7e45 *docs/research/compass_artifact_wf-18c556f9-5448-5ee9-b484-7a7598e71258_text_markdown.md
-907659f492b08574 *docs/research/compass_artifact_wf-82e3e870-ecd5-578f-aaa7-e1fa82591b0a_text_markdown.md
-288e57a698f5c355 *docs/research/compass_artifact_wf-a8a541a0-68f9-5314-84d9-575e15374ffe_text_markdown.md
-111e8473263ac76b *docs/research/compass_artifact_wf-fcea248f-669b-56e2-ae01-737b12e6bfc8_text_markdown.md
