@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """전 계층 자동 검증(새 베이스: 망 3구역 · soft-PLC · UNS · DMZ · IT).
 
-V1 과 같은 것을 검사한다 — 프로토콜 정규화, 제어 반응, 흐름, 저장, 역할 분리, 화면 표시(HANDOFF §3-4).
+검사하는 것: 프로토콜 정규화, 제어 반응, 흐름, 저장, 역할 분리, 화면 표시(HANDOFF §3-4).
 길은 새 구조의 것이다: 제어는 FUXA → OT 허브 …/cmd/operator → 엣지 → PLC → 가상설비, 저장은 DMZ 원시 사본과 IT 결과 두 곳.
 호스트에서 공개 포트와 `docker exec` 로만 접근하므로 별도 의존성이 없다. 계정·포트는 .env 에서 읽는다.
     python scripts/verify.py [edge backbone stream detection storage scada]
@@ -72,23 +72,28 @@ def kafka(*args: str, timeout: int = 60) -> str:
     return sh("docker", "exec", c("kafka"), *args, timeout=timeout)
 
 
-def consume_async(topic: str, ms: int) -> subprocess.Popen:
-    """컨슈머를 먼저 띄워 두고 harvest() 로 거둔다(--timeout-ms 는 '그 시간 동안 메시지가 없으면 종료'라 벽시계로 끊는다)."""
-    return subprocess.Popen(["docker", "exec", c("kafka"), "/opt/kafka/bin/kafka-console-consumer.sh",
-                             "--bootstrap-server", "localhost:9092", "--topic", topic, "--timeout-ms", str(ms)],
-                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, encoding="utf-8", errors="replace")
+def offsets(topic: str) -> dict[int, int]:
+    """토픽의 파티션별 끝 오프셋."""
+    out = kafka("/opt/kafka/bin/kafka-get-offsets.sh", "--bootstrap-server", "localhost:9092", "--topic", topic)
+    return {int(p): int(o) for _, p, o in (x.rsplit(":", 2) for x in out.split() if x.count(":") >= 2)}
 
 
-def harvest(proc: subprocess.Popen) -> list[dict]:
-    proc.kill()
-    out, _ = proc.communicate()
-    return _parse(out)
+def read_range(topic: str, start: dict[int, int]) -> list[dict]:
+    """start 오프셋부터 지금 끝까지를 파티션마다 정확한 건수로 읽는다. 컨슈머가 스스로 끝나므로 출력이 모두 나온다."""
+    rows: list[dict] = []
+    for part, end in offsets(topic).items():
+        n = end - start.get(part, 0)
+        if n > 0:
+            rows += _parse(kafka("/opt/kafka/bin/kafka-console-consumer.sh", "--bootstrap-server", "localhost:9092",
+                                 "--topic", topic, "--partition", str(part), "--offset", str(start.get(part, 0)),
+                                 "--max-messages", str(n), "--timeout-ms", "30000"))
+    return rows
 
 
 def consume(topic: str, ms: int) -> list[dict]:
-    p = consume_async(topic, ms)
+    start = offsets(topic)
     time.sleep(ms / 1000)
-    return harvest(p)
+    return read_range(topic, start)
 
 
 def _parse(out: str) -> list[dict]:
@@ -127,6 +132,23 @@ def plc_status(name: str):
     return json.loads(lines[0].split(" ", 1)[1]).get("value") if lines else None
 
 
+def operator_cmd(asset: str, name: str, value) -> None:
+    """FUXA 와 같은 운전원 명령(…/cmd/operator, FUXA 계정)."""
+    topic = next(x["operator_topic"] for x in REG["commands"] if x["asset"] == asset and x["name"] == name)
+    body = json.dumps({"command": name, "value": value, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+    sh("docker", "exec", c("ot-hub"), "mosquitto_pub", "-u", "fuxa", "-P", ENV["MQTT_FUXA_PASSWORD"], "-q", "1", "-t", topic, "-m", body)
+
+
+def recover_interlock(timeout: int = 90) -> None:
+    """인터록은 트립을 기억한다: 압력이 내려와 리셋이 받아질 때까지 리셋하고 펌프를 다시 켠다."""
+    end = time.time() + timeout
+    while time.time() < end and plc_status("interlock") is True:
+        operator_cmd("PLC-01", "interlock_reset", 1)
+        time.sleep(2)
+    operator_cmd("P-101", "run", 1)
+    time.sleep(3)
+
+
 def check(name: str, passed: bool, detail: str = "") -> None:
     results.append((name, passed, detail))
     print(f"{OK if passed else FAIL} {name}" + (f"  — {detail}" if detail else ""), flush=True)
@@ -156,16 +178,13 @@ def t1_edge() -> None:
     before = sim_state()["readings"]
     topic = next(x["operator_topic"] for x in REG["commands"] if x["asset"] == "P-101" and x["name"] == "run")
 
-    def op(value) -> None:
-        body = json.dumps({"command": "run", "value": value, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
-        sh("docker", "exec", c("ot-hub"), "mosquitto_pub", "-u", "fuxa", "-P", ENV["MQTT_FUXA_PASSWORD"], "-q", "1", "-t", topic, "-m", body)
-    op(0)
+    operator_cmd("P-101", "run", 0)
     time.sleep(6)
     after = sim_state()["readings"]
     stopped = after["FT-101"] < 0.2 and after["IT-101"] < 0.2
     check("제어 반응 (운전원 명령 → PLC → 가상설비 물리 반응)", stopped,
           f"FT-101 {before['FT-101']:.2f} → {after['FT-101']:.2f} m3/h, IT-101 {before['IT-101']:.2f} → {after['IT-101']:.2f} A")
-    op(1)
+    operator_cmd("P-101", "run", 1)
     time.sleep(3)
 
 
@@ -191,11 +210,11 @@ def t3_stream() -> None:
     # 결측: dropout 을 걸고 원시에는 공백, 정제에는 보간(품질로 구분)이 생기는지. 두 토픽을 먼저 구독한다
     fault()
     time.sleep(3)
-    p_raw, p_clean = consume_async("sensor.telemetry.raw", 60000), consume_async("sensor.telemetry.clean", 60000)
-    time.sleep(14)          # 컨슈머 JVM 기동 대기
+    s_raw, s_clean = offsets("sensor.telemetry.raw"), offsets("sensor.telemetry.clean")
+    time.sleep(5)
     fault("dropout", duration_s=15)
     time.sleep(40)
-    raw, clean = harvest(p_raw), harvest(p_clean)
+    raw, clean = read_range("sensor.telemetry.raw", s_raw), read_range("sensor.telemetry.clean", s_clean)
     raw_tt = sorted(r["ts"] for r in raw if r["tag"] == "TT-101")
     gaps = [round((b - a) / 1e9, 1) for a, b in zip(raw_tt, raw_tt[1:]) if (b - a) / 1e9 > 2.0]
     check("원시에 결측 구간 보존 (무결성)", bool(gaps), f"raw TT-101 공백 {gaps}초 — 보간으로 덮어쓰지 않음")
@@ -218,16 +237,17 @@ def t3_detection() -> None:
     def run(scenario: str, wait: int, want: str, note: str) -> None:
         fault()
         time.sleep(4)
-        p = consume_async("sensor.alerts", wait * 1000)
-        time.sleep(12)
+        start = offsets("sensor.alerts")
         fault(scenario)
         time.sleep(wait - 12)
-        alerts = harvest(p)
+        alerts = read_range("sensor.alerts", start)
         found = {a.get("detector") for a in alerts}
         sample = next((a for a in alerts if a.get("detector") == want), None)
         check(f"{scenario} → {want}", want in found,
               (str(sample.get("detail"))[:95] if sample else f"탐지기 {sorted(found) or '없음'}") + f" | {note}")
         fault()
+        if scenario == "spike":
+            recover_interlock()
 
     only = os.environ.get("VERIFY_SCENARIO")
     for sc, wait, det, note in [("spike", 30, "TIER1_RULE", "규격 이탈은 1계층 규칙이 즉시 처리"),

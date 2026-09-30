@@ -842,6 +842,39 @@
       "interval": 60
      }
     },
+    "CmdInterlockReset": {
+     "id": "CmdInterlockReset",
+     "name": "CmdInterlockReset",
+     "label": "CmdInterlockReset",
+     "type": "json",
+     "address": "AR-100/reaction/reactor-line-01/PLC-01/cmd/operator",
+     "memaddress": "",
+     "options": {
+      "pubs": [
+       {
+        "key": "command",
+        "type": "static",
+        "value": "interlock_reset"
+       },
+       {
+        "key": "value",
+        "type": "value",
+        "value": ""
+       },
+       {
+        "key": "ts",
+        "type": "timestamp",
+        "value": ""
+       }
+      ]
+     },
+     "description": "고압 인터록 리셋(압력이 해제 값 아래일 때만)",
+     "daq": {
+      "enabled": false,
+      "changed": false,
+      "interval": 60
+     }
+    },
     "Req_count": {
      "id": "Req_count",
      "name": "Req_count",
@@ -1048,7 +1081,7 @@
      "margin": 10
     },
     "variables": {},
-    "svgcontent": "<svg width=\"1600\" height=\"1180\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:html=\"http://www.w3.org/1999/xhtml\"><g><title>AR-100</title><rect width=\"1600\" height=\"1180\" fill=\"#0b1422\"/><text x=\"32\" y=\"40\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#60d4bd\" text-anchor=\"start\" font-weight=\"600\">AR-100 / PROCESS CONTROL (OT)</text><text x=\"32\" y=\"78\" font-family=\"Segoe UI,Arial\" font-size=\"28\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">반응기 라인 · 공정 감시</text><text x=\"1568\" y=\"42\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">가상 공정 · 교육용</text><text x=\"1568\" y=\"73\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">계측: OT 허브(UNS) 구독  /  조작: soft-PLC 운전원 채널</text><rect x=\"28\" y=\"106\" width=\"990\" height=\"374\" rx=\"14\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"50\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">01  공정 흐름</text><text x=\"996\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">원료 → 이송 → 교반·가열 → 배출</text><rect x=\"65\" y=\"199\" width=\"136\" height=\"177\" rx=\"18\" fill=\"#172e43\" stroke=\"#6089aa\"/><text x=\"133\" y=\"187\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"middle\" font-weight=\"normal\">TK-101 원료</text><text x=\"133\" y=\"248\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">레벨</text><g id=\"VAL_000001\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000001\" x=\"183\" y=\"282\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"201\" y=\"334\" width=\"69\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><g id=\"MTR_000002\" type=\"svg-ext-motor\" stroke=\"#22303f\" fill=\"#7f7f7f\" font-family=\"sans-serif\" font-size=\"14\" text-anchor=\"middle\"><ellipse id=\"cMTR_000002\" cx=\"294\" cy=\"337\" rx=\"23\" ry=\"23\" stroke=\"#22303f\"/><path id=\"sMTR_000002\" stroke=\"null\" fill=\"#10161f\" d=\"M291.7,315.84L315.85,337.46L291.7,359.08L291.7,315.84z\"/></g><text x=\"294\" y=\"385\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">P-101 공급펌프</text><rect x=\"318\" y=\"334\" width=\"85\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><rect x=\"403\" y=\"213\" width=\"300\" height=\"200\" rx=\"22\" fill=\"#172e43\" stroke=\"#6089aa\"/><text x=\"553\" y=\"197\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#e8eef6\" text-anchor=\"middle\" font-weight=\"normal\">R-101 교반 반응기</text><path d=\"M550 216V263 M523 261H580\" fill=\"none\" stroke=\"#729bb7\" stroke-width=\"6\"/><text x=\"426\" y=\"299\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">온도</text><g id=\"VAL_000003\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000003\" x=\"680\" y=\"301\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><g id=\"SEM_000004\" type=\"svg-ext-gauge_semaphore\"><rect x=\"414\" y=\"310\" width=\"278\" height=\"45\" rx=\"8\" fill=\"#233e54\"/></g><text x=\"426\" y=\"342\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#ffffff\" text-anchor=\"start\" font-weight=\"normal\">압력</text><g id=\"VAL_000005\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000005\" x=\"680\" y=\"344\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#ffffff\" stroke-width=\"0\">--.--</text></g><text x=\"426\" y=\"385\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">레벨</text><g id=\"VAL_000006\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000006\" x=\"680\" y=\"387\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"703\" y=\"334\" width=\"79\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><g id=\"VLA_000007\" type=\"svg-ext-valve\" fill=\"#7f7f7f\" stroke=\"#22303f\" font-family=\"sans-serif\" font-size=\"14\" text-anchor=\"middle\"><path id=\"tlVLA_000007\" stroke=\"#22303f\" d=\"M785,317L805,337L785,357L785,317z\"/><path id=\"trVLA_000007\" stroke=\"#22303f\" d=\"M825,357L805,337L825,317L825,357z\"/></g><rect x=\"828\" y=\"334\" width=\"127\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><text x=\"805\" y=\"386\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">CV-101 배출밸브</text><text x=\"950\" y=\"317\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#e8eef6\" text-anchor=\"end\" font-weight=\"normal\">제품 →</text><text x=\"52\" y=\"454\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">값은 엣지가 OT 허브에 낸 UNS 값입니다(품질이 STALE 이면 마지막 값). 통신 경고 중에는 조작하지 마세요.</text><text x=\"52\" y=\"473\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#e4b987\" text-anchor=\"start\" font-weight=\"normal\">압력 색상: 남색 정상 / 주황 6 barg 이상 / 빨강 6.5 barg 이상(PLC 인터록)</text><rect x=\"1038\" y=\"106\" width=\"534\" height=\"374\" rx=\"14\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"1060\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">02  운전원 조작</text><text x=\"1060\" y=\"160\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">명령은 PLC 가 모드·인터록·범위를 검사해 받습니다(REMOTE_MANUAL 에서만).</text><g id=\"SEM_000008\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"182\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"195\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">P-101 공급펌프</text><g id=\"HXB_000009\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000009\" x=\"1260\" y=\"176\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000010\" x=\"1260\" y=\"176\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000010\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000011\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000011\" x=\"1338\" y=\"176\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000012\" x=\"1338\" y=\"176\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000012\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000013\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"222\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"235\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">M-101 교반기</text><g id=\"HXB_000014\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000014\" x=\"1260\" y=\"216\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000015\" x=\"1260\" y=\"216\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000015\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000016\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000016\" x=\"1338\" y=\"216\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000017\" x=\"1338\" y=\"216\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000017\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000018\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"262\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"275\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">HX-101 히터</text><g id=\"HXB_000019\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000019\" x=\"1260\" y=\"256\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000020\" x=\"1260\" y=\"256\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000020\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000021\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000021\" x=\"1338\" y=\"256\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000022\" x=\"1338\" y=\"256\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000022\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000023\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"302\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"315\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">HX-102 냉각기</text><g id=\"HXB_000024\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000024\" x=\"1260\" y=\"296\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000025\" x=\"1260\" y=\"296\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000025\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000026\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000026\" x=\"1338\" y=\"296\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000027\" x=\"1338\" y=\"296\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000027\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><text x=\"1060\" y=\"360\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">운전 모드</text><g id=\"VAL_000028\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000028\" x=\"1150\" y=\"360\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#9fe3d2\" stroke-width=\"0\">—</text></g><g id=\"HXB_000029\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000029\" x=\"1330\" y=\"342\" width=\"110\" height=\"28\" fill=\"#315e82\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000030\" x=\"1330\" y=\"342\" width=\"110\" height=\"28\"><BUTTON id=\"B-HXB_000030\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#315e82;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">MANUAL</BUTTON></foreignObject></g><g id=\"HXB_000031\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000031\" x=\"1448\" y=\"342\" width=\"110\" height=\"28\" fill=\"#4a5f96\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000032\" x=\"1448\" y=\"342\" width=\"110\" height=\"28\"><BUTTON id=\"B-HXB_000032\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#4a5f96;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">AUTO</BUTTON></foreignObject></g><text x=\"1060\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">정비 모드</text><g id=\"SEM_000033\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1140\" y=\"382\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1162\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">담당자</text><g id=\"VAL_000034\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000034\" x=\"1240\" y=\"394\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><text x=\"1262\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">ID 입력→정비 켜기</text><g id=\"HXI_000035\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000035\" x=\"1448\" y=\"380\" width=\"110\" height=\"26\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000036\" x=\"1448\" y=\"380\" width=\"110\" height=\"26\"><INPUT id=\"I-HXI_000036\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><text x=\"1060\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">인터록</text><g id=\"SEM_000037\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1110\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1140\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">비상정지</text><g id=\"SEM_000038\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1200\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1230\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">현장 통신</text><g id=\"SEM_000039\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1295\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#b3363a\"/></g><text x=\"1325\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">PLC 통신</text><g id=\"SEM_000040\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1388\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#b3363a\"/></g><text x=\"1060\" y=\"456\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">마지막 명령 응답</text><g id=\"VAL_000041\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000041\" x=\"1180\" y=\"456\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#ffd59e\" stroke-width=\"0\">—</text></g><text x=\"1560\" y=\"472\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">정비 해제는 현장 패널(해제 키)에서만</text><text x=\"32\" y=\"519\" font-family=\"Segoe UI,Arial\" font-size=\"17\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">03  전체 계측</text><text x=\"1568\" y=\"519\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">UNS 값 · 규격을 넘으면 공정 알람(FUXA 알람 목록)</text><rect x=\"28\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"43\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">LT-101</text><text x=\"257\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">원료탱크 레벨</text><g id=\"VAL_000042\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000042\" x=\"256\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"288\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"303\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">LT-102</text><text x=\"517\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 레벨</text><g id=\"VAL_000043\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000043\" x=\"516\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"548\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"563\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">TT-101</text><text x=\"777\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 온도</text><g id=\"VAL_000044\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000044\" x=\"776\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"808\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"823\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">TT-102</text><text x=\"1037\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">재킷 온도</text><g id=\"VAL_000045\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000045\" x=\"1036\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><g id=\"SEM_000046\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1068\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#233e54\"/></g><text x=\"1083\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">PT-101</text><text x=\"1297\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 압력</text><g id=\"VAL_000047\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000047\" x=\"1296\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#ffffff\" stroke-width=\"0\">--.--</text></g><rect x=\"1328\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1343\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">FT-101</text><text x=\"1557\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">공급 유량</text><g id=\"VAL_000048\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000048\" x=\"1556\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"28\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"43\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">FT-102</text><text x=\"257\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">배출 유량</text><g id=\"VAL_000049\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000049\" x=\"256\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"288\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"303\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">IT-101</text><text x=\"517\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">펌프 전류</text><g id=\"VAL_000050\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000050\" x=\"516\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"548\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"563\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">IT-102</text><text x=\"777\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">교반기 전류</text><g id=\"VAL_000051\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000051\" x=\"776\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"808\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"823\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">VT-101</text><text x=\"1037\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">교반기 진동</text><g id=\"VAL_000052\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000052\" x=\"1036\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1068\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1083\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">pH-101</text><text x=\"1297\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 pH</text><g id=\"VAL_000053\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000053\" x=\"1296\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1328\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1343\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">CT-101</text><text x=\"1557\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">전도도</text><g id=\"VAL_000054\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000054\" x=\"1556\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"28\" y=\"785\" width=\"990\" height=\"117\" rx=\"12\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"48\" y=\"814\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">04  설정값</text><text x=\"990\" y=\"814\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e4b987\" text-anchor=\"end\" font-weight=\"600\">흰 칸에 입력 → Enter → 오른쪽 현재 설정값 확인</text><text x=\"48\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">펌프 속도</text><g id=\"HXI_000055\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000055\" x=\"48\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000056\" x=\"48\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000056\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000057\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000057\" x=\"325\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><text x=\"365\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">밸브 개도</text><g id=\"HXI_000058\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000058\" x=\"365\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000059\" x=\"365\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000059\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000060\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000060\" x=\"642\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><text x=\"682\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">반응기 온도</text><g id=\"HXI_000061\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000061\" x=\"682\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000062\" x=\"682\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000062\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000063\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000063\" x=\"959\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1038\" y=\"785\" width=\"534\" height=\"117\" rx=\"12\" fill=\"#231f2b\" stroke=\"#594054\"/><text x=\"1058\" y=\"815\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">05  분석 경고(참고)</text><g id=\"VAL_000064\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000064\" x=\"1058\" y=\"849\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#ffb4b4\" stroke-width=\"0\">새 분석 경고 없음 · 정상 판정 아님</text></g><text x=\"1058\" y=\"882\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">IT 분석(Flink) 결과를 참고로 보입니다. 공정 알람이 아니며 조작하지 않습니다.</text><rect x=\"28\" y=\"922\" width=\"1544\" height=\"196\" rx=\"12\" fill=\"#1a2130\" stroke=\"#43506a\"/><text x=\"48\" y=\"952\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">06  받은 요청</text><text x=\"190\" y=\"952\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">외부 시스템(AI)이 담당자 승인을 거쳐 보낸 작업 요청입니다. REMOTE_MANUAL 에서는 여기서 운전원이 받을지 정합니다(60초 넘으면 자동 거부).</text><text x=\"48\" y=\"990\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">대기</text><g id=\"VAL_000065\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"16\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000065\" x=\"110\" y=\"990\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"16\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><text x=\"150\" y=\"990\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">요청 ID</text><g id=\"VAL_000066\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000066\" x=\"215\" y=\"990\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#cfe3ff\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1022\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">내용</text><g id=\"VAL_000067\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000067\" x=\"110\" y=\"1022\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#ffffff\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1054\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">원인</text><g id=\"VAL_000068\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000068\" x=\"110\" y=\"1054\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#c9d3e0\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1086\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">대기 시간</text><g id=\"VAL_000069\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000069\" x=\"170\" y=\"1086\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><g id=\"HXB_000070\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000070\" x=\"1300\" y=\"990\" width=\"120\" height=\"40\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000071\" x=\"1300\" y=\"990\" width=\"120\" height=\"40\"><BUTTON id=\"B-HXB_000071\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">수락</BUTTON></foreignObject></g><g id=\"HXB_000072\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000072\" x=\"1432\" y=\"990\" width=\"120\" height=\"40\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000073\" x=\"1432\" y=\"990\" width=\"120\" height=\"40\"><BUTTON id=\"B-HXB_000073\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">거부</BUTTON></foreignObject></g><text x=\"1552\" y=\"1054\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">수락해도 PLC 가 물리적으로 되는지 다시 검사합니다.</text><text x=\"32\" y=\"1150\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#8caac2\" text-anchor=\"start\" font-weight=\"normal\">수집 → 엣지 → OT 허브(UNS) → (OT 가 연 브리지) → DMZ → IT(Kafka·Flink·AI). 이 화면은 OT 안에서만 돌며 IT 가 멈춰도 계속됩니다.</text></g></svg>",
+    "svgcontent": "<svg width=\"1600\" height=\"1180\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:html=\"http://www.w3.org/1999/xhtml\"><g><title>AR-100</title><rect width=\"1600\" height=\"1180\" fill=\"#0b1422\"/><text x=\"32\" y=\"40\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#60d4bd\" text-anchor=\"start\" font-weight=\"600\">AR-100 / PROCESS CONTROL (OT)</text><text x=\"32\" y=\"78\" font-family=\"Segoe UI,Arial\" font-size=\"28\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">반응기 라인 · 공정 감시</text><text x=\"1568\" y=\"42\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">가상 공정 · 교육용</text><text x=\"1568\" y=\"73\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">계측: OT 허브(UNS) 구독  /  조작: soft-PLC 운전원 채널</text><rect x=\"28\" y=\"106\" width=\"990\" height=\"374\" rx=\"14\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"50\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">01  공정 흐름</text><text x=\"996\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">원료 → 이송 → 교반·가열 → 배출</text><rect x=\"65\" y=\"199\" width=\"136\" height=\"177\" rx=\"18\" fill=\"#172e43\" stroke=\"#6089aa\"/><text x=\"133\" y=\"187\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"middle\" font-weight=\"normal\">TK-101 원료</text><text x=\"133\" y=\"248\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">레벨</text><g id=\"VAL_000001\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000001\" x=\"183\" y=\"282\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"201\" y=\"334\" width=\"69\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><g id=\"MTR_000002\" type=\"svg-ext-motor\" stroke=\"#22303f\" fill=\"#7f7f7f\" font-family=\"sans-serif\" font-size=\"14\" text-anchor=\"middle\"><ellipse id=\"cMTR_000002\" cx=\"294\" cy=\"337\" rx=\"23\" ry=\"23\" stroke=\"#22303f\"/><path id=\"sMTR_000002\" stroke=\"null\" fill=\"#10161f\" d=\"M291.7,315.84L315.85,337.46L291.7,359.08L291.7,315.84z\"/></g><text x=\"294\" y=\"385\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">P-101 공급펌프</text><rect x=\"318\" y=\"334\" width=\"85\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><rect x=\"403\" y=\"213\" width=\"300\" height=\"200\" rx=\"22\" fill=\"#172e43\" stroke=\"#6089aa\"/><text x=\"553\" y=\"197\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#e8eef6\" text-anchor=\"middle\" font-weight=\"normal\">R-101 교반 반응기</text><path d=\"M550 216V263 M523 261H580\" fill=\"none\" stroke=\"#729bb7\" stroke-width=\"6\"/><text x=\"426\" y=\"299\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">온도</text><g id=\"VAL_000003\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000003\" x=\"680\" y=\"301\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><g id=\"SEM_000004\" type=\"svg-ext-gauge_semaphore\"><rect x=\"414\" y=\"310\" width=\"278\" height=\"45\" rx=\"8\" fill=\"#233e54\"/></g><text x=\"426\" y=\"342\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#ffffff\" text-anchor=\"start\" font-weight=\"normal\">압력</text><g id=\"VAL_000005\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000005\" x=\"680\" y=\"344\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#ffffff\" stroke-width=\"0\">--.--</text></g><text x=\"426\" y=\"385\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">레벨</text><g id=\"VAL_000006\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000006\" x=\"680\" y=\"387\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"22\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"703\" y=\"334\" width=\"79\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><g id=\"VLA_000007\" type=\"svg-ext-valve\" fill=\"#7f7f7f\" stroke=\"#22303f\" font-family=\"sans-serif\" font-size=\"14\" text-anchor=\"middle\"><path id=\"tlVLA_000007\" stroke=\"#22303f\" d=\"M785,317L805,337L785,357L785,317z\"/><path id=\"trVLA_000007\" stroke=\"#22303f\" d=\"M825,357L805,337L825,317L825,357z\"/></g><rect x=\"828\" y=\"334\" width=\"127\" height=\"7\" fill=\"#4982a1\" rx=\"2\"/><text x=\"805\" y=\"386\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"middle\" font-weight=\"normal\">CV-101 배출밸브</text><text x=\"950\" y=\"317\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#e8eef6\" text-anchor=\"end\" font-weight=\"normal\">제품 →</text><text x=\"52\" y=\"454\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">값은 엣지가 OT 허브에 낸 UNS 값입니다(품질이 STALE 이면 마지막 값). 통신 경고 중에는 조작하지 마세요.</text><text x=\"52\" y=\"473\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#e4b987\" text-anchor=\"start\" font-weight=\"normal\">압력 색상: 남색 정상 / 주황 6 barg 이상 / 빨강 6.5 barg 이상(PLC 인터록)</text><rect x=\"1038\" y=\"106\" width=\"534\" height=\"374\" rx=\"14\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"1060\" y=\"137\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">02  운전원 조작</text><text x=\"1060\" y=\"160\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">명령은 PLC 가 모드·인터록·범위를 검사해 받습니다(REMOTE_MANUAL 에서만).</text><g id=\"SEM_000008\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"182\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"195\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">P-101 공급펌프</text><g id=\"HXB_000009\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000009\" x=\"1260\" y=\"176\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000010\" x=\"1260\" y=\"176\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000010\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000011\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000011\" x=\"1338\" y=\"176\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000012\" x=\"1338\" y=\"176\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000012\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000013\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"222\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"235\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">M-101 교반기</text><g id=\"HXB_000014\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000014\" x=\"1260\" y=\"216\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000015\" x=\"1260\" y=\"216\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000015\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000016\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000016\" x=\"1338\" y=\"216\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000017\" x=\"1338\" y=\"216\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000017\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000018\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"262\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"275\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">HX-101 히터</text><g id=\"HXB_000019\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000019\" x=\"1260\" y=\"256\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000020\" x=\"1260\" y=\"256\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000020\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000021\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000021\" x=\"1338\" y=\"256\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000022\" x=\"1338\" y=\"256\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000022\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><g id=\"SEM_000023\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1060\" y=\"302\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#5a6b7d\"/></g><text x=\"1084\" y=\"315\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"normal\">HX-102 냉각기</text><g id=\"HXB_000024\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000024\" x=\"1260\" y=\"296\" width=\"70\" height=\"30\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000025\" x=\"1260\" y=\"296\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000025\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">기동</BUTTON></foreignObject></g><g id=\"HXB_000026\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000026\" x=\"1338\" y=\"296\" width=\"70\" height=\"30\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000027\" x=\"1338\" y=\"296\" width=\"70\" height=\"30\"><BUTTON id=\"B-HXB_000027\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">정지</BUTTON></foreignObject></g><text x=\"1060\" y=\"360\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">운전 모드</text><g id=\"VAL_000028\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000028\" x=\"1150\" y=\"360\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#9fe3d2\" stroke-width=\"0\">—</text></g><g id=\"HXB_000029\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000029\" x=\"1330\" y=\"342\" width=\"110\" height=\"28\" fill=\"#315e82\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000030\" x=\"1330\" y=\"342\" width=\"110\" height=\"28\"><BUTTON id=\"B-HXB_000030\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#315e82;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">MANUAL</BUTTON></foreignObject></g><g id=\"HXB_000031\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000031\" x=\"1448\" y=\"342\" width=\"110\" height=\"28\" fill=\"#4a5f96\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000032\" x=\"1448\" y=\"342\" width=\"110\" height=\"28\"><BUTTON id=\"B-HXB_000032\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#4a5f96;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">AUTO</BUTTON></foreignObject></g><text x=\"1060\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">정비 모드</text><g id=\"SEM_000033\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1140\" y=\"382\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1162\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">담당자</text><g id=\"VAL_000034\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000034\" x=\"1240\" y=\"394\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><text x=\"1262\" y=\"394\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">ID 입력→정비 켜기</text><g id=\"HXI_000035\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000035\" x=\"1448\" y=\"380\" width=\"110\" height=\"26\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000036\" x=\"1448\" y=\"380\" width=\"110\" height=\"26\"><INPUT id=\"I-HXI_000036\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><text x=\"1060\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">인터록</text><g id=\"SEM_000037\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1110\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1140\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">비상정지</text><g id=\"SEM_000038\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1200\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#1d3246\"/></g><text x=\"1230\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">현장 통신</text><g id=\"SEM_000039\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1295\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#b3363a\"/></g><text x=\"1325\" y=\"424\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">PLC 통신</text><g id=\"SEM_000040\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1388\" y=\"413\" width=\"14\" height=\"14\" rx=\"7\" fill=\"#b3363a\"/></g><g id=\"HXB_000041\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000041\" x=\"1448\" y=\"410\" width=\"110\" height=\"26\" fill=\"#8a5a1f\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000042\" x=\"1448\" y=\"410\" width=\"110\" height=\"26\"><BUTTON id=\"B-HXB_000042\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#8a5a1f;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">인터록 리셋</BUTTON></foreignObject></g><text x=\"1060\" y=\"456\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">마지막 명령 응답</text><g id=\"VAL_000043\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000043\" x=\"1180\" y=\"456\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#ffd59e\" stroke-width=\"0\">—</text></g><text x=\"1560\" y=\"472\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">정비 해제는 현장 패널(해제 키)에서만</text><text x=\"32\" y=\"519\" font-family=\"Segoe UI,Arial\" font-size=\"17\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">03  전체 계측</text><text x=\"1568\" y=\"519\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">UNS 값 · 규격을 넘으면 공정 알람(FUXA 알람 목록)</text><rect x=\"28\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"43\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">LT-101</text><text x=\"257\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">원료탱크 레벨</text><g id=\"VAL_000044\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000044\" x=\"256\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"288\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"303\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">LT-102</text><text x=\"517\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 레벨</text><g id=\"VAL_000045\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000045\" x=\"516\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"548\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"563\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">TT-101</text><text x=\"777\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 온도</text><g id=\"VAL_000046\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000046\" x=\"776\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"808\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"823\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">TT-102</text><text x=\"1037\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">재킷 온도</text><g id=\"VAL_000047\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000047\" x=\"1036\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><g id=\"SEM_000048\" type=\"svg-ext-gauge_semaphore\"><rect x=\"1068\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#233e54\"/></g><text x=\"1083\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">PT-101</text><text x=\"1297\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 압력</text><g id=\"VAL_000049\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000049\" x=\"1296\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#ffffff\" stroke-width=\"0\">--.--</text></g><rect x=\"1328\" y=\"541\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1343\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">FT-101</text><text x=\"1557\" y=\"566\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">공급 유량</text><g id=\"VAL_000050\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000050\" x=\"1556\" y=\"610\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"28\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"43\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">FT-102</text><text x=\"257\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">배출 유량</text><g id=\"VAL_000051\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000051\" x=\"256\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"288\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"303\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">IT-101</text><text x=\"517\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">펌프 전류</text><g id=\"VAL_000052\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000052\" x=\"516\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"548\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"563\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">IT-102</text><text x=\"777\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">교반기 전류</text><g id=\"VAL_000053\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000053\" x=\"776\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"808\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"823\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">VT-101</text><text x=\"1037\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">교반기 진동</text><g id=\"VAL_000054\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000054\" x=\"1036\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1068\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1083\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">pH-101</text><text x=\"1297\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">반응기 pH</text><g id=\"VAL_000055\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000055\" x=\"1296\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1328\" y=\"657\" width=\"244\" height=\"101\" rx=\"10\" fill=\"#122236\" stroke=\"#283e55\"/><text x=\"1343\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#8fb4d2\" text-anchor=\"start\" font-weight=\"600\">CT-101</text><text x=\"1557\" y=\"682\" font-family=\"Segoe UI,Arial\" font-size=\"11\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">전도도</text><g id=\"VAL_000056\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000056\" x=\"1556\" y=\"726\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"23\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"28\" y=\"785\" width=\"990\" height=\"117\" rx=\"12\" fill=\"#111f30\" stroke=\"#2a4058\"/><text x=\"48\" y=\"814\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">04  설정값</text><text x=\"990\" y=\"814\" font-family=\"Segoe UI,Arial\" font-size=\"14\" fill=\"#e4b987\" text-anchor=\"end\" font-weight=\"600\">흰 칸에 입력 → Enter → 오른쪽 현재 설정값 확인</text><text x=\"48\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">펌프 속도</text><g id=\"HXI_000057\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000057\" x=\"48\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000058\" x=\"48\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000058\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000059\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000059\" x=\"325\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><text x=\"365\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">밸브 개도</text><g id=\"HXI_000060\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000060\" x=\"365\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000061\" x=\"365\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000061\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000062\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000062\" x=\"642\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><text x=\"682\" y=\"844\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">반응기 온도</text><g id=\"HXI_000063\" type=\"svg-ext-html_input\" stroke=\"#000000\" text-anchor=\"right\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#f1f1f1\"><rect id=\"rHXI_000063\" x=\"682\" y=\"854\" width=\"110\" height=\"33\" fill=\"#ffffff\" stroke-width=\"0\"/><foreignObject id=\"H-HXI_000064\" x=\"682\" y=\"854\" width=\"110\" height=\"33\"><INPUT id=\"I-HXI_000064\" type=\"number\" style=\"width:calc(100% - 7px);height:calc(100% - 7px);text-align:right;border:unset;background-color:#ffffff;color:#000000;vector-effect:non-scaling-stroke;\"/></foreignObject></g><g id=\"VAL_000065\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000065\" x=\"959\" y=\"879\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"18\" fill=\"#7fe3b0\" stroke-width=\"0\">--.--</text></g><rect x=\"1038\" y=\"785\" width=\"534\" height=\"117\" rx=\"12\" fill=\"#231f2b\" stroke=\"#594054\"/><text x=\"1058\" y=\"815\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">05  분석 경고(참고)</text><g id=\"VAL_000066\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000066\" x=\"1058\" y=\"849\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#ffb4b4\" stroke-width=\"0\">새 분석 경고 없음 · 정상 판정 아님</text></g><text x=\"1058\" y=\"882\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">IT 분석(Flink) 결과를 참고로 보입니다. 공정 알람이 아니며 조작하지 않습니다.</text><rect x=\"28\" y=\"922\" width=\"1544\" height=\"196\" rx=\"12\" fill=\"#1a2130\" stroke=\"#43506a\"/><text x=\"48\" y=\"952\" font-family=\"Segoe UI,Arial\" font-size=\"16\" fill=\"#e8eef6\" text-anchor=\"start\" font-weight=\"600\">06  받은 요청</text><text x=\"190\" y=\"952\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">외부 시스템(AI)이 담당자 승인을 거쳐 보낸 작업 요청입니다. REMOTE_MANUAL 에서는 여기서 운전원이 받을지 정합니다(60초 넘으면 자동 거부).</text><text x=\"48\" y=\"990\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">대기</text><g id=\"VAL_000067\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"16\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000067\" x=\"110\" y=\"990\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"16\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><text x=\"150\" y=\"990\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">요청 ID</text><g id=\"VAL_000068\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000068\" x=\"215\" y=\"990\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#cfe3ff\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1022\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">내용</text><g id=\"VAL_000069\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000069\" x=\"110\" y=\"1022\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"15\" fill=\"#ffffff\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1054\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">원인</text><g id=\"VAL_000070\" type=\"svg-ext-value\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000070\" x=\"110\" y=\"1054\" text-anchor=\"start\" font-family=\"Segoe UI,Arial\" font-size=\"13\" fill=\"#c9d3e0\" stroke-width=\"0\">—</text></g><text x=\"48\" y=\"1086\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"start\" font-weight=\"normal\">대기 시간</text><g id=\"VAL_000071\" type=\"svg-ext-value\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"none\" stroke-width=\"0\"><text id=\"tVAL_000071\" x=\"170\" y=\"1086\" text-anchor=\"end\" font-family=\"Consolas,monospace\" font-size=\"14\" fill=\"#ffd59e\" stroke-width=\"0\">--.--</text></g><g id=\"HXB_000072\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000072\" x=\"1300\" y=\"990\" width=\"120\" height=\"40\" fill=\"#167e6a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000073\" x=\"1300\" y=\"990\" width=\"120\" height=\"40\"><BUTTON id=\"B-HXB_000073\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#167e6a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">수락</BUTTON></foreignObject></g><g id=\"HXB_000074\" type=\"svg-ext-html_button\" fill=\"#FFFFFF\" font-size=\"14\" font-family=\"sans-serif\" text-anchor=\"right\" stroke=\"#000000\"><rect id=\"rHXB_000074\" x=\"1432\" y=\"990\" width=\"120\" height=\"40\" fill=\"#a6504a\" stroke-width=\"0\"/><foreignObject id=\"H-HXB_000075\" x=\"1432\" y=\"990\" width=\"120\" height=\"40\"><BUTTON id=\"B-HXB_000075\" class=\"md-btn md-btn-raised\" style=\"width:100%;height:100%;background-color:#a6504a;color:#ffffff;border:0;border-radius:7px;vector-effect:non-scaling-stroke;font-size:14px;\">거부</BUTTON></foreignObject></g><text x=\"1552\" y=\"1054\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#9badc3\" text-anchor=\"end\" font-weight=\"normal\">수락해도 PLC 가 물리적으로 되는지 다시 검사합니다.</text><text x=\"32\" y=\"1150\" font-family=\"Segoe UI,Arial\" font-size=\"12\" fill=\"#8caac2\" text-anchor=\"start\" font-weight=\"normal\">수집 → 엣지 → OT 허브(UNS) → (OT 가 연 브리지) → DMZ → IT(Kafka·Flink·AI). 이 화면은 OT 안에서만 돌며 IT 가 멈춰도 계속됩니다.</text></g></svg>",
     "items": {
      "VAL_000001": {
       "id": "VAL_000001",
@@ -1805,8 +1838,30 @@
        ]
       }
      },
-     "VAL_000041": {
-      "id": "VAL_000041",
+     "HXB_000041": {
+      "id": "HXB_000041",
+      "type": "svg-ext-html_button",
+      "name": "인터록 리셋",
+      "label": "HtmlButton",
+      "property": {
+       "events": [
+        {
+         "type": "click",
+         "action": "onSetValue",
+         "actparam": "1"
+        }
+       ],
+       "variable": "CmdInterlockReset",
+       "variableId": "CmdInterlockReset",
+       "variableSrc": "UNS",
+       "alarmId": "",
+       "alarmSrc": "",
+       "alarm": "",
+       "alarmColor": ""
+      }
+     },
+     "VAL_000043": {
+      "id": "VAL_000043",
       "type": "svg-ext-value",
       "name": "LastAck",
       "label": "Value",
@@ -1821,8 +1876,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000042": {
-      "id": "VAL_000042",
+     "VAL_000044": {
+      "id": "VAL_000044",
       "type": "svg-ext-value",
       "name": "LT_101",
       "label": "Value",
@@ -1846,8 +1901,8 @@
        ]
       }
      },
-     "VAL_000043": {
-      "id": "VAL_000043",
+     "VAL_000045": {
+      "id": "VAL_000045",
       "type": "svg-ext-value",
       "name": "LT_102",
       "label": "Value",
@@ -1871,8 +1926,8 @@
        ]
       }
      },
-     "VAL_000044": {
-      "id": "VAL_000044",
+     "VAL_000046": {
+      "id": "VAL_000046",
       "type": "svg-ext-value",
       "name": "TT_101",
       "label": "Value",
@@ -1896,8 +1951,8 @@
        ]
       }
      },
-     "VAL_000045": {
-      "id": "VAL_000045",
+     "VAL_000047": {
+      "id": "VAL_000047",
       "type": "svg-ext-value",
       "name": "TT_102",
       "label": "Value",
@@ -1921,8 +1976,8 @@
        ]
       }
      },
-     "SEM_000046": {
-      "id": "SEM_000046",
+     "SEM_000048": {
+      "id": "SEM_000048",
       "type": "svg-ext-gauge_semaphore",
       "name": "PT_101",
       "label": "HtmlSemaphore",
@@ -1957,8 +2012,8 @@
        ]
       }
      },
-     "VAL_000047": {
-      "id": "VAL_000047",
+     "VAL_000049": {
+      "id": "VAL_000049",
       "type": "svg-ext-value",
       "name": "PT_101",
       "label": "Value",
@@ -1982,8 +2037,8 @@
        ]
       }
      },
-     "VAL_000048": {
-      "id": "VAL_000048",
+     "VAL_000050": {
+      "id": "VAL_000050",
       "type": "svg-ext-value",
       "name": "FT_101",
       "label": "Value",
@@ -2007,8 +2062,8 @@
        ]
       }
      },
-     "VAL_000049": {
-      "id": "VAL_000049",
+     "VAL_000051": {
+      "id": "VAL_000051",
       "type": "svg-ext-value",
       "name": "FT_102",
       "label": "Value",
@@ -2032,8 +2087,8 @@
        ]
       }
      },
-     "VAL_000050": {
-      "id": "VAL_000050",
+     "VAL_000052": {
+      "id": "VAL_000052",
       "type": "svg-ext-value",
       "name": "IT_101",
       "label": "Value",
@@ -2057,8 +2112,8 @@
        ]
       }
      },
-     "VAL_000051": {
-      "id": "VAL_000051",
+     "VAL_000053": {
+      "id": "VAL_000053",
       "type": "svg-ext-value",
       "name": "IT_102",
       "label": "Value",
@@ -2082,8 +2137,8 @@
        ]
       }
      },
-     "VAL_000052": {
-      "id": "VAL_000052",
+     "VAL_000054": {
+      "id": "VAL_000054",
       "type": "svg-ext-value",
       "name": "VT_101",
       "label": "Value",
@@ -2107,8 +2162,8 @@
        ]
       }
      },
-     "VAL_000053": {
-      "id": "VAL_000053",
+     "VAL_000055": {
+      "id": "VAL_000055",
       "type": "svg-ext-value",
       "name": "pH_101",
       "label": "Value",
@@ -2132,8 +2187,8 @@
        ]
       }
      },
-     "VAL_000054": {
-      "id": "VAL_000054",
+     "VAL_000056": {
+      "id": "VAL_000056",
       "type": "svg-ext-value",
       "name": "CT_101",
       "label": "Value",
@@ -2157,8 +2212,8 @@
        ]
       }
      },
-     "HXI_000055": {
-      "id": "HXI_000055",
+     "HXI_000057": {
+      "id": "HXI_000057",
       "type": "svg-ext-html_input",
       "name": "CmdPumpSpeedSP",
       "label": "HtmlInput",
@@ -2173,8 +2228,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000057": {
-      "id": "VAL_000057",
+     "VAL_000059": {
+      "id": "VAL_000059",
       "type": "svg-ext-value",
       "name": "PumpSpeedSP",
       "label": "Value",
@@ -2198,8 +2253,8 @@
        ]
       }
      },
-     "HXI_000058": {
-      "id": "HXI_000058",
+     "HXI_000060": {
+      "id": "HXI_000060",
       "type": "svg-ext-html_input",
       "name": "CmdValveOpenSP",
       "label": "HtmlInput",
@@ -2214,8 +2269,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000060": {
-      "id": "VAL_000060",
+     "VAL_000062": {
+      "id": "VAL_000062",
       "type": "svg-ext-value",
       "name": "ValveOpenSP",
       "label": "Value",
@@ -2239,8 +2294,8 @@
        ]
       }
      },
-     "HXI_000061": {
-      "id": "HXI_000061",
+     "HXI_000063": {
+      "id": "HXI_000063",
       "type": "svg-ext-html_input",
       "name": "CmdTempSP",
       "label": "HtmlInput",
@@ -2255,8 +2310,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000063": {
-      "id": "VAL_000063",
+     "VAL_000065": {
+      "id": "VAL_000065",
       "type": "svg-ext-value",
       "name": "TempSP",
       "label": "Value",
@@ -2280,8 +2335,8 @@
        ]
       }
      },
-     "VAL_000064": {
-      "id": "VAL_000064",
+     "VAL_000066": {
+      "id": "VAL_000066",
       "type": "svg-ext-value",
       "name": "AnalysisAlert",
       "label": "Value",
@@ -2296,8 +2351,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000065": {
-      "id": "VAL_000065",
+     "VAL_000067": {
+      "id": "VAL_000067",
       "type": "svg-ext-value",
       "name": "Req_count",
       "label": "Value",
@@ -2321,8 +2376,8 @@
        ]
       }
      },
-     "VAL_000066": {
-      "id": "VAL_000066",
+     "VAL_000068": {
+      "id": "VAL_000068",
       "type": "svg-ext-value",
       "name": "Req_head_job",
       "label": "Value",
@@ -2337,8 +2392,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000067": {
-      "id": "VAL_000067",
+     "VAL_000069": {
+      "id": "VAL_000069",
       "type": "svg-ext-value",
       "name": "Req_head_desc",
       "label": "Value",
@@ -2353,8 +2408,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000068": {
-      "id": "VAL_000068",
+     "VAL_000070": {
+      "id": "VAL_000070",
       "type": "svg-ext-value",
       "name": "Req_head_context",
       "label": "Value",
@@ -2369,8 +2424,8 @@
        "alarmColor": ""
       }
      },
-     "VAL_000069": {
-      "id": "VAL_000069",
+     "VAL_000071": {
+      "id": "VAL_000071",
       "type": "svg-ext-value",
       "name": "Req_head_wait_s",
       "label": "Value",
@@ -2394,8 +2449,8 @@
        ]
       }
      },
-     "HXB_000070": {
-      "id": "HXB_000070",
+     "HXB_000072": {
+      "id": "HXB_000072",
       "type": "svg-ext-html_button",
       "name": "수락",
       "label": "HtmlButton",
@@ -2416,8 +2471,8 @@
        "alarmColor": ""
       }
      },
-     "HXB_000072": {
-      "id": "HXB_000072",
+     "HXB_000074": {
+      "id": "HXB_000074",
       "type": "svg-ext-html_button",
       "name": "거부",
       "label": "HtmlButton",
@@ -2904,7 +2959,7 @@
    }
   },
   {
-   "name": "고압 인터록 발동 — 펌프 출력 차단",
+   "name": "고압 인터록 트립 — 펌프 정지(압력이 내려오면 리셋)",
    "property": {
     "variableId": "Interlock",
     "variableSrc": "UNS",
@@ -2916,7 +2971,7 @@
     "min": 1,
     "max": 1,
     "timedelay": 0,
-    "text": "고압 인터록 발동 — 펌프 출력 차단",
+    "text": "고압 인터록 트립 — 펌프 정지(압력이 내려오면 리셋)",
     "group": "공정",
     "ackmode": "ackactive",
     "bkcolor": "",

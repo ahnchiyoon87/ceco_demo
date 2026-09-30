@@ -1,18 +1,8 @@
 # ═══════════════════════════════════════════════════════════════
-# Flink 1.20 — 설정 (Flink 1.19+ 신규 config.yaml 포맷)
+# Flink 2.2.1 서버 설정(JobManager·TaskManager 공용, config.yaml 형식)
+# 부하: 태그 12개 × 초당 1건. 잡 4개(규칙 SQL 3 + ONNX 1)가 병렬도 1로 슬롯 4개를 쓴다.
 # ═══════════════════════════════════════════════════════════════
-# ── 장애 복구 ──
-# 기본값(NoRestartBackoffTimeStrategy)은 한 번 실패하면 잡이 그대로 죽는다.
-# TaskManager 하트비트 타임아웃 같은 일시적 장애에서 자동 복구되도록 한다.
-# 체크포인트가 있으므로 복구 시 정확히 한 번 의미가 유지된다 (PDF p.6).
-restart-strategy:
-  type: exponential-delay
-  exponential-delay:
-    initial-backoff: 5s
-    max-backoff: 2min
-    backoff-multiplier: 2.0
-    reset-backoff-threshold: 10min
-    jitter-factor: 0.1
+# 장애 복구는 Flink 기본값(체크포인트가 켜져 있으면 exponential-delay: 1 s 부터 1.5배, 최대 1분)
 
 heartbeat:
   timeout: 120000
@@ -24,13 +14,12 @@ jobmanager:
     port: 6123
   memory:
     process:
-      size: 1024m   # (경량화 #131) 1600m → 1024m. 힙 실측 245 MB. 공식 규칙: 704m 에서 권장 힙 128 MB(리서치 09)
+      size: 768m    # 힙 사용 약 250 MB
   execution:
     failover-strategy: region
   bind-host: 0.0.0.0
 
-# Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 덮어쓰면 이 값이 사라져
-# 잡 제출 시 InaccessibleObjectException 이 발생하므로 반드시 함께 유지한다.
+# Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 이 파일로 덮으므로 함께 둔다(없으면 잡 제출 때 InaccessibleObjectException).
 env:
   java:
     opts:
@@ -39,15 +28,15 @@ env:
 taskmanager:
   bind-host: 0.0.0.0
   host: flink-taskmanager
-  numberOfTaskSlots: 8
+  numberOfTaskSlots: 4
   memory:
     process:
-      size: 1536m   # (경량화 #131) 4608m → 1536m. 힙 실측 527 MB. 관리 메모리 0(HashMap 상태) → 힙 약 850 MB
+      size: 1024m
     managed:
-      fraction: 0.0 # HashMap 상태 저장은 관리 메모리를 쓰지 않음 — 공식 문서 권고(리서치 09)
+      fraction: 0.0 # HashMap 상태 저장은 관리 메모리를 쓰지 않는다(공식 문서)
 
 parallelism:
-  default: 2
+  default: 1
 
 rest:
   address: 0.0.0.0
@@ -63,14 +52,13 @@ execution:
 
 state:
   backend:
-    type: hashmap                 # (경량화 #131) rocksdb → hashmap. 12태그 창 상태라 작음. 체크포인트·HA 복구 지원(공식 문서, 리서치 09)
+    type: hashmap                 # 태그 12개 창 상태라 작다. 체크포인트·HA 복구 지원
   checkpoints:
     dir: file:///opt/flink/checkpoints
   savepoints:
     dir: file:///opt/flink/savepoints
 
-# ── Prometheus 노출: 체크포인트 소요·실패, 백프레셔 등 인프라 지표 ──
-#    (센서 데이터는 InfluxDB 로. PDF p.7 역할 분리 원칙)
+# ── Prometheus 노출: 체크포인트 소요·실패, 백프레셔 등 인프라 지표(공정 데이터는 InfluxDB) ──
 metrics:
   reporter:
     prom:
@@ -78,14 +66,11 @@ metrics:
       port: 9249
   reporters: prom
 
-# ── V2: Flink 재시작 복구(고가용성, Flink 내장 기능 — 설정만, #94) ──
-# V1 은 이 기능이 꺼져 있어 JobManager 가 재시작하면 잡 4개가 사라지고 사람이 다시 제출해야 했다(대장 S1, #4·#81).
-# ZooKeeper 가 JobManager 의 잡 목록·최신 체크포인트 위치를 보관하고, 재시작한 JobManager 가 그 자리에서 잡을 되살린다.
+# ── 고가용성: ZooKeeper 가 잡 목록·최신 체크포인트 위치를 보관해, 다시 시작한 JobManager 가 잡을 되살린다 ──
 high-availability:
   type: zookeeper
-  # 체크포인트 볼륨(flink 사용자 소유) 안에 둔다 — 별도 명명 볼륨은 root 소유라 JobManager 가 못 쓴다(l4bench flinkha 에서 확인)
-  storageDir: file:///opt/flink/checkpoints/ha
-  cluster-id: /rot-iiot-v2
+  storageDir: file:///opt/flink/checkpoints/ha   # 체크포인트 볼륨(flink 사용자 소유) 안
+  cluster-id: /ar100
   zookeeper:
     quorum: zookeeper:2181
     path:

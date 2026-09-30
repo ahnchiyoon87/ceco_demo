@@ -40,7 +40,7 @@ say "== 재시작 복구 시작 ($T)"
 has othub     && rtest othub     "docker stop $C_OTHUB" "docker start $C_OTHUB" 10
 has dmzb      && rtest dmzb      "docker stop $C_DMZB" "docker start $C_DMZB" 10
 has kafka     && rtest kafka     "docker restart $C_KAFKA" "true" 1
-has coll      && rtest coll      "docker network disconnect ${P}_it-net $C_COLL" "docker network connect ${P}_it-net $C_COLL" 10
+has coll      && rtest coll      "docker network disconnect ${P}_it-net $C_COLL" "docker network connect --alias it-collector ${P}_it-net $C_COLL" 10
 has flink     && rtest flink     "docker restart $C_JM" "true" 1
 has itinflux  && rtest itinflux  "docker stop $C_ITI" "docker start $C_ITI" 30
 has dmzinflux && rtest dmzinflux "docker stop $C_DMZI" "docker start $C_DMZI" 30

@@ -12,7 +12,7 @@ export MSYS_NO_PATHCONV=1 COMPOSE_PATH_SEPARATOR=:
 R=experiments/$EXP/raw; mkdir -p $R
 LOG=experiments/$EXP/baseline_$NAME.log
 REPO="D:/work/study/scada-rotation"
-CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.0"   # e1.py 는 /experiments/<EXP>/raw 에 씀(#103 전엔 미연결 → 로그 요약 줄만 남음)
+CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.2"   # e1.py 는 /experiments/<EXP>/raw 에 씀(#103 전엔 미연결 → 로그 요약 줄만 남음)
 SCADA="docker compose --env-file .env --env-file .env.rotation"
 AI="docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge"
 # 구조 이름표는 기본값(SCADA·AI 포함) 뒤에 읽는다 — 앞에서 읽으면 V2 의 SCADA 가 V1 기본값으로 덮여 "V2 기동"이 V1 을 띄움(#125 실제 발생)

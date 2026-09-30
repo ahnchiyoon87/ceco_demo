@@ -35,6 +35,7 @@ PROGRAM main
     fp_maint_release_seq AT %IW305 : WORD;
     fp_operator_id AT %IW306 : WORD;
     fp_estop AT %IW307 : WORD;
+    fp_reset_seq AT %IW308 : WORD;
     (* ── 현장 장치 출력 ── *)
     q_pump AT %QX0.0 : BOOL;
     q_agitator AT %QX0.1 : BOOL;
@@ -100,6 +101,7 @@ PROGRAM main
     last_op_seq : WORD := 0;  last_rq_seq : WORD := 0;
     last_local_seq : WORD := 0;  last_maint_on_seq : WORD := 0;  last_maint_release_seq : WORD := 0;
     last_fp_mode : WORD := 1;
+    last_reset_seq : WORD := 0;  ilk_reset : BOOL := FALSE;
     seen_hash : ARRAY[0..7] OF DWORD;
     seen_idx : INT := 0;
     src : INT;  fresh : BOOL;  c_code : INT;  c_val : INT;  c_acc : BOOL;
@@ -177,13 +179,14 @@ PROGRAM main
     END_IF;
     last_local_seq := fp_local_seq;
 
-    (* ── 8. 고압 인터록(히스테리시스). 결측 표시값은 판단에서 뺀다 ── *)
-    IF pt101 > -1000.0 THEN
-      IF pt101 >= {{ILK_TRIP}} THEN
-        interlock := TRUE;
-      ELSIF pt101 <= {{ILK_RESET}} THEN
-        interlock := FALSE;
-      END_IF;
+    (* ── 8. 고압 인터록(트립 기억): {{ILK_TRIP}} barg 에서 트립하고 펌프 운전 명령을 끈다(풀려도 저절로 다시 돌지 않게).
+           압력이 {{ILK_RESET}} barg 아래로 내려온 뒤 운전원 리셋(FUXA 인터록 리셋·현장 패널 리셋)으로만 풀린다(아래 9 뒤).
+           결측 표시값은 판단에서 뺀다 ── *)
+    ilk_reset := (fp_reset_seq <> last_reset_seq);
+    last_reset_seq := fp_reset_seq;
+    IF pt101 > -1000.0 AND pt101 >= {{ILK_TRIP}} THEN
+      interlock := TRUE;
+      cmd_pump := FALSE;
     END_IF;
 
     (* ── 9. 명령 두 출처 채널: 1 운전원(FUXA), 2 외부 요청(OT 수신기) ── *)
@@ -200,10 +203,10 @@ PROGRAM main
       END_IF;
       IF fresh THEN
         result := 0;
-        ok_code := ((c_code >= 1) AND (c_code <= 7)) OR (c_code = 10) OR (c_code = 11);
+        ok_code := ((c_code >= 1) AND (c_code <= 7)) OR (c_code = 10) OR (c_code = 11) OR ((c_code = 12) AND (src = 1));
         is_stop := (c_code <= 4) AND (c_val = 0);
         is_maint_on := (c_code = 11);
-        op_mode_cmd := (c_code = 10) OR (c_code = 11);
+        op_mode_cmd := (c_code = 10) OR (c_code = 11) OR (c_code = 12);
         start_or_change := ((c_code <= 4) AND (c_val = 1)) OR ((c_code >= 5) AND (c_code <= 7)) OR (c_code = 10);
         (* 명령 코드·값 범위 *)
         IF NOT ok_code THEN
@@ -249,6 +252,9 @@ PROGRAM main
         IF (result = 0) AND estop AND start_or_change THEN
           result := 9;
         END_IF;
+        IF result = 0 AND c_code = 12 AND interlock AND pt101 > {{ILK_RESET}} THEN
+          result := 5;
+        END_IF;
         IF result = 0 AND c_code = 1 AND c_val = 1 THEN
           IF interlock THEN
             result := 5;
@@ -268,6 +274,7 @@ PROGRAM main
             7: sp_temp := INT_TO_REAL(c_val) / 10.0; hold_temp := {{HOLD_CYCLES}};
             10: mode := c_val;
             11: maint := TRUE; maint_op := INT_TO_WORD(c_val);
+            12: ilk_reset := TRUE;
           END_CASE;
           IF src = 2 AND c_hash <> 0 THEN
             seen_hash[seen_idx] := c_hash;
@@ -282,6 +289,11 @@ PROGRAM main
         END_IF;
       END_IF;
     END_FOR;
+
+    (* ── 9-1. 인터록 리셋: 트립 중이고 압력이 해제 값 아래일 때만 푼다 ── *)
+    IF interlock AND ilk_reset AND pt101 > -1000.0 AND pt101 <= {{ILK_RESET}} THEN
+      interlock := FALSE;
+    END_IF;
 
     (* ── 10. 생산 스케줄(설비 시각 기준, plant.yaml autopilot 과 같은 값) ── *)
     IF NOT ap_init AND pts > 0.0 THEN

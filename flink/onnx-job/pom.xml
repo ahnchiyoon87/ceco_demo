@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- L4 후보(EXP-112/111 보강): V1 flink/onnx-job 을 Flink 2.2.1 로 재빌드. 로직 동일, API 차이만 수정 -->
+<!-- ONNX 이상탐지 잡(Flink 2.2.1) -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">

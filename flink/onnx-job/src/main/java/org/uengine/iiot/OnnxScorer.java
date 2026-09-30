@@ -131,7 +131,7 @@ public class OnnxScorer extends KeyedProcessFunction<String, Reading, AnomalySco
     /**
      * 스캔 순번으로 벡터를 맞춘다(17번 K4: ML 입력 창만 설비 시각 기준). 한 스캔의 12태그가 다 오면 바로,
      * 덜 왔으면 다음·다다음 스캔이 올 때 또는 1.5초 뒤 직전 값(LOCF)으로 채워 벡터를 만든다.
-     * 순번이 없는 보간값은 직전 값만 갱신한다. 규칙 탐지(SQL)는 V1 과 같은 벽시계 ts 기준 그대로다.
+     * 순번이 없는 보간값은 직전 값만 갱신한다. 규칙 탐지(SQL)는 벽시계 ts 기준이다.
      */
     @Override
     public void processElement(Reading in, Context ctx, Collector<AnomalyScore> out) throws Exception {

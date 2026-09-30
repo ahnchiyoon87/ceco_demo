@@ -3,7 +3,7 @@
 잠깐 흘렀다 멈추는 경우(#97: Kafka 재시작 뒤 중계기가 버퍼만 흘리고 정지)를 복구로 오판하지 않기 위해
 흐름이 처음 다시 보인 시각부터 --sustain-s 동안 끊김(최근 --window-s 초에 TT-101 0건)이 없어야 한다.
 끊기면 시작 시각을 버리고 다시 센다. --timeout-s 안에 연속 흐름이 없으면 recover_s = null(스스로 복구 안 됨).
-  docker run --rm --network rot-iiot --env-file .env e2e-client:1.0 python harness/e2e/wait_flow.py --t0 <epoch_s>
+  docker run --rm --network rot-iiot --env-file .env e2e-client:1.2 python harness/e2e/wait_flow.py --t0 <epoch_s>
 출력(stdout 한 줄 JSON): {"recover_s": 복구까지 초 또는 null, "flaps": 흐름 재개 후 다시 끊긴 횟수, "waited_s": 총 대기}
 """
 import argparse, json, os, time, urllib.parse, urllib.request

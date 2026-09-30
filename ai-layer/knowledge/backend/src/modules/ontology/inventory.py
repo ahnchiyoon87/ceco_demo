@@ -44,11 +44,11 @@ def export_inventory(source: Path) -> dict:
             }})
             relationships.append({"from_id": prefix, "to_id": node_id, "type": "EXPOSES_SENSOR"})
         for cmd in asset.get("commands", []):
-            if "legacy" not in cmd:
+            if "control_point" not in cmd:
                 continue   # 제어기 자체 명령(모드·정비)은 설비 제어점이 아니다
-            node_id = f"{prefix}/point/{cmd['legacy']}"
+            node_id = f"{prefix}/point/{cmd['control_point']}"
             nodes.append({"id": node_id, "class": "ControlPoint", "properties": {
-                **provenance, "name": cmd["legacy"], "description": cmd["desc"], "equipment_id": asset["id"],
+                **provenance, "name": cmd["control_point"], "description": cmd["desc"], "equipment_id": asset["id"],
                 "command": cmd["name"], "readonly": False,
                 "source_locator": f"assets[id={asset['id']}].commands[name={cmd['name']}]",
             }})

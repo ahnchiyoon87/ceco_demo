@@ -35,7 +35,7 @@ for (const t of reg.tags) {
 flow.set('lastPub', lastPub);
 flow.set('lastValues', { seq, pts, tsNs });
 // 수업 자료가 쓰는 edgex/telemetry: 같은 데이터를 EdgeX Event 모양으로 낸다(같은 데이터의 이름 둘, 정본은 등록부)
-uns.push({ topic: reg.legacy_telemetry_topic, qos: 1, retain: false, payload: JSON.stringify({
+uns.push({ topic: reg.edgex_telemetry_topic, qos: 1, retain: false, payload: JSON.stringify({
     apiVersion: 'v3', id: String(seq), deviceName: reg.hierarchy.line, profileName: 'AR100-Reactor-Line',
     sourceName: 'AllSensors', origin: tsNs, readings }) });
 return { batch: uns };

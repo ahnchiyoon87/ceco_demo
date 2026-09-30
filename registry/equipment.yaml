@@ -41,7 +41,7 @@ equipment_types:
 # ── 설비 개체 ───────────────────────────────────────────────────────────────
 #   signals[].plc_ir : PLC 입력 레지스터(float32 시작 주소, OpenPLC %IW) — 엣지가 FC4 로 읽는다
 #   commands[].code  : PLC 명령 코드(PLC 프로그램 plc/project/pous/programs/main.st 와 같은 값)
-#   commands[].legacy: V1 가상설비 명령 이름(AI 온톨로지의 ControlPoint 이름으로 그대로 쓴다)
+#   commands[].control_point: AI 온톨로지의 제어점(ControlPoint) 이름
 assets:
   - id: TK-101
     type: Tank
@@ -58,20 +58,20 @@ assets:
       - { tag: pH-101, class: analytic,    unit: "pH",    desc: "반응기 pH",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }
       - { tag: CT-101, class: analytic,    unit: "mS/cm", desc: "전도도",      lsl: null, usl: null, plc_ir: 22 }
     commands:
-      - { name: temp_sp, legacy: temp_sp_x10, code: 7, kind: setpoint, unit: "degC", scale: 10, min: 20.0, max: 100.0, desc: "반응기 온도 설정값" }
+      - { name: temp_sp, control_point: temp_sp_x10, code: 7, kind: setpoint, unit: "degC", scale: 10, min: 20.0, max: 100.0, desc: "반응기 온도 설정값" }
   - id: HX-101
     type: Heater
     name: "재킷 히터"
     signals:
       - { tag: TT-102, class: temperature, unit: "degC", desc: "재킷 온도", lsl: null, usl: 125.0, plc_ir: 6 }
     commands:
-      - { name: enable, legacy: heater_enable, code: 3, kind: switch, desc: "재킷 히터 Enable" }
+      - { name: enable, control_point: heater_enable, code: 3, kind: switch, desc: "재킷 히터 Enable" }
   - id: HX-102
     type: Cooler
     name: "냉각기"
     signals: []
     commands:
-      - { name: enable, legacy: cooler_enable, code: 4, kind: switch, desc: "가상 냉각기 Enable" }
+      - { name: enable, control_point: cooler_enable, code: 4, kind: switch, desc: "가상 냉각기 Enable" }
   - id: P-101
     type: Pump
     name: "공급 펌프"
@@ -79,15 +79,15 @@ assets:
       - { tag: FT-101, class: flow,    unit: "m3/h", desc: "공급 유량", lsl: null, usl: null, plc_ir: 10 }
       - { tag: IT-101, class: current, unit: "A",    desc: "펌프 전류", lsl: null, usl: 14.0, plc_ir: 14 }
     commands:
-      - { name: run,      legacy: pump_run,      code: 1, kind: switch,   desc: "공급 펌프 기동" }
-      - { name: speed_sp, legacy: pump_speed_sp, code: 5, kind: setpoint, unit: "%", scale: 1, min: 0, max: 100, desc: "펌프 속도 설정값" }
+      - { name: run,      control_point: pump_run,      code: 1, kind: switch,   desc: "공급 펌프 기동" }
+      - { name: speed_sp, control_point: pump_speed_sp, code: 5, kind: setpoint, unit: "%", scale: 1, min: 0, max: 100, desc: "펌프 속도 설정값" }
   - id: CV-101
     type: ControlValve
     name: "배출 밸브"
     signals:
       - { tag: FT-102, class: flow, unit: "m3/h", desc: "배출 유량", lsl: null, usl: null, plc_ir: 12 }
     commands:
-      - { name: open_sp, legacy: valve_open_sp, code: 6, kind: setpoint, unit: "%", scale: 1, min: 0, max: 100, desc: "밸브 개도 설정값" }
+      - { name: open_sp, control_point: valve_open_sp, code: 6, kind: setpoint, unit: "%", scale: 1, min: 0, max: 100, desc: "밸브 개도 설정값" }
   - id: M-101
     type: Agitator
     name: "교반기"
@@ -95,7 +95,7 @@ assets:
       - { tag: IT-102, class: current,   unit: "A",    desc: "교반기 전류", lsl: null, usl: 9.6, plc_ir: 16 }
       - { tag: VT-101, class: vibration, unit: "mm/s", desc: "교반기 진동", lsl: null, usl: 7.1, plc_ir: 18 }
     commands:
-      - { name: run, legacy: agitator_run, code: 2, kind: switch, desc: "교반기 기동" }
+      - { name: run, control_point: agitator_run, code: 2, kind: switch, desc: "교반기 기동" }
   - id: PLC-01
     type: Controller
     name: "제어기"
@@ -103,10 +103,11 @@ assets:
     commands:
       - { name: mode,        code: 10, kind: mode, desc: "운전 모드(1=REMOTE_MANUAL, 2=REMOTE_AUTO)" }
       - { name: maintenance, code: 11, kind: maintenance_on, desc: "정비 모드 켜기(값 = 담당자 ID)" }
+      - { name: interlock_reset, code: 12, kind: reset, desc: "고압 인터록 리셋(압력이 해제 값 아래일 때만, 운전원만)" }
 
 # ── 제어기(soft-PLC) 설정 — registry/generate.py 가 PLC 프로그램 상수로 넣는다 ──
 controller:
-  interlock:                 # 고압 인터록(V1 가상설비 안 인터록을 PLC 로 옮김, 같은 값)
+  interlock:                 # 고압 인터록: trip_barg 에서 트립·펌프 정지(기억), reset_barg 아래에서 운전원 리셋으로 해제
     tag: PT-101
     trip_barg: 6.5
     reset_barg: 5.2

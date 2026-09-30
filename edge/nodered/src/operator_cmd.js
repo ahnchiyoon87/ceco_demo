@@ -17,6 +17,7 @@ let v;
 if (cmd.kind === 'switch') v = [true, 1, '1', 'true', 'on', 'ON'].includes(body.value) ? 1 : 0;
 else if (cmd.kind === 'setpoint') v = Math.round(Number(body.value) * (cmd.scale || 1));
 else if (cmd.kind === 'mode') v = ({ REMOTE_MANUAL: 1, REMOTE_AUTO: 2 })[body.value] || Number(body.value);
+else if (cmd.kind === 'reset') v = 1;
 else v = Number(body.value);
 if (!Number.isInteger(v)) return reject('BAD_VALUE', { command: body.command, value: body.value });
 const seq = (((flow.get('opSeq') || 0) + 1) & 0xFFFF) || 1;

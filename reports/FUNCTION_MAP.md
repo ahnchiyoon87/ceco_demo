@@ -13,13 +13,13 @@ V1이 하던 일을 잃지 않았는지, 빼거나 바꾼 부품마다 누가 �
 | CAP-03 | 실시간 감시 화면 | FUXA(OT 허브 UNS 구독, 등록부에서 생성한 화면) + Grafana(IT) | 확인 | FUXA 현재값 = DMZ 원시 사본 120/120, = FUXA DAQ 120/120 — `raw/e7_base.json` |
 | CAP-04 | 운전원 직접 조작(C1 FUXA, C2 Vue) | C1: FUXA → `…/cmd/operator` → 엣지 → PLC. C2(Vue `/control`)는 없앰 → FUXA가 대신(쓰기 길 하나, §3-2) | 확인 | 제어 회귀 S14(ACCEPTED, 반영), 모드 표 — `raw/control_base.json` |
 | CAP-05 | 센서·분석 이력 저장·조회 | OT: FUXA DAQ(SQLite, 7일) / DMZ: InfluxDB 원시 사본 / IT: InfluxDB 결과(정제값·점수·알람) | 확인 | 위 E7, 12태그 저장, Grafana 데이터 원본 3개 정상 |
-| CAP-06 | 상·하한 / Z-Score / 순서 패턴 / 모델 이상 탐지 | Flink 2.2.1: SQL 잡 3개(V1 SQL 그대로) + ONNX 잡(입력 창만 스캔 순번·설비 시각, K4) | 확인 | 판정 70/70(`raw/reg_base_l4_eval.txt`), ONNX = Python 100/100·최대 차 0.0(`raw/s13_s13_base.json`), 학습기 자체 검증 드리프트·베어링 100 %(`experiments/ML-K4/train_scale600.log`) |
+| CAP-06 | 상·하한 / Z-Score / 순서 패턴 / 모델 이상 탐지 | Flink 2.2.1: SQL 잡 3개(V1 SQL 그대로) + ONNX 잡(입력 창만 스캔 순번·설비 시각, K4) | 확인 | 판정 70/70(`raw/reg_base_l4_eval.txt`), ONNX = Python 100/100·최대 차 0.0(`raw/s13_s13_base.json`), 학습기 자체 검증 드리프트·베어링 100 %(`experiments/ML-K4/train_scale600.log`), 실제 흐름 verify: 스파이크 → 규칙·베어링 → CEP·드리프트 → ML, 결측 → 원시 공백·정제 보간(`BASE-VERIFY/verify_detection.log`) |
 | CAP-07 | 알람 화면 표시 | 공정 알람은 FUXA가 OT 안에서 판정(규격·인터록·비상정지·통신), 분석 경고는 IT → DMZ → OT 허브 → FUXA "분석 경고(참고)", AI 화면 | 확인 | 고장→화면: 스파이크 3.01 s, 히터 5.95 s, 베어링 7.13 s, 드리프트 2.09 s(`raw/onset_base_run*.json`) |
 | CAP-08 | 알람 → 사건 등록(중복 결합) | 업무 서비스의 AI 사건 접수 스레드(V1 `consumer.persist_message` 그대로) + alert 묶음(ISA-18.2) | 확인 | 교반기 이상 주입 3 s 뒤 사건 생성(`BASE-VERIFY/control_ai.log`) |
 | CAP-09 | 운영 지표 감시 | Prometheus 셋(OT agent → DMZ → IT federate), Alertmanager, cAdvisor, kafka-exporter, 브로커 `$SYS` exporter(Bento) | 확인 | IT에서 zone=ot·dmz 대상 up, 규칙 9개 `promtool` 통과. `$SYS` 구독 결함을 고친 뒤 브리지 상태·버린 건수 지표가 나옴 |
 | CAP-10 | 설비↔센서↔문서 근거 조회 | Neo4j + 기동 시드(등록부에서 인벤토리) | 확인 | 시드 A·B·C 게시(`graph-seed` 로그) |
 | CAP-11 | 사람 승인·반려 | AI 화면 승인(담당자) → 작업 요청 / OT 안 운전원 수락·거부(FUXA "받은 요청") | 확인 | AI S17(반려 → 요청 0), OT S17(운전원 거부 → 설비 변화 없음) |
-| CAP-12 | 고압 인터록 | PLC(6.5 / 5.2 barg) + 가상설비 릴리프(7.5 barg) | 확인 | S16: PLC INTERLOCK 거부, 인터록 중 펌프 꺼짐·유량 < 0.5 |
+| CAP-12 | 고압 인터록 | PLC(트립 6.5 barg, 리셋 허용 5.2 barg) + 가상설비 릴리프(7.5 barg). **V1과 달라짐(사용자 결정 2026-09-30):** V1은 압력이 5.2 barg 아래로 내려오면 저절로 풀렸다. 새 베이스는 트립을 기억(래칭)하고 운전원이 FUXA "인터록 리셋"(명령 코드 12, 운전원 출처만)을 눌러야 풀린다. 압력이 5.2 barg를 넘으면 리셋을 거부하고, 풀린 뒤에도 펌프는 운전원이 다시 켤 때까지 꺼져 있다 | 확인 | PLC 계약 시험 60/60(트립 기억·압력 높을 때 리셋 거부·외부 요청 리셋 불가·운전원·현장 패널 리셋), 제어 S16(표본 51개 모두 펌프 꺼짐, 압력이 내려와도 유지, 리셋 뒤 운전원 재기동) — `BASE-VERIFY/raw/plc_contract_r1·r2.json`, `control_s16.json` |
 | CAP-13 | 실행 직전 조건 재검사 | AI(대응안 지문) → 수신기(모드·정비·만료) → PLC(범위·모드·인터록·만료·중복) | 확인 | AI S18(명령 바뀜 → 409, 요청 0), OT S18(대기 중 정비 모드 → 수락해도 거부) |
 | CAP-14 | 명령 후 실제 상태 재확인 | 업무 서비스 재관측(PLC 수용부터 10 s) → 불일치면 COMMAND_DISAGREE alert | 확인 | 모드 표 REMOTE_AUTO·REMOTE_MANUAL 재관측 OK, S20 불일치 10.44 s |
 | CAP-15 | 감사 추적 | PostgreSQL `audit.log`(추가 전용) + Kafka `audit.copy` | 확인 | 요청 1건에 approve → dispatched → gateway_accepted → response_receipt·operator·plc → observed, UPDATE·DELETE는 ops·postgres 모두 거부 |
@@ -46,6 +46,7 @@ V1이 하던 일을 잃지 않았는지, 빼거나 바꾼 부품마다 누가 �
 | AI `actions.py` Modbus 쓰기·`/state` 확인 | AI 조치 실행 | 작업 요청(workflow → 발송기 → 게이트웨이 → 수신기 → PLC) + 업무 서비스 재관측 | AI S21(요청 1건, 수신 0.19 s), 모드 표 |
 | AI `evidence.py` 가상설비 `/state` 조회 | 현재 상태 근거 | DMZ 원시 사본(InfluxQL 읽기 전용 계정) | `live_state` 12태그·명령·모드 반환 |
 | AI 훈련 고장 주입 | 수업용 고장 | 호스트 전용 강사 API(계정 필요), AI·IT에는 자격 증명 없음 | AI·IT 컨테이너에서 강사 API·현장 패널 401 |
+| 임베딩 Ollama(`embed` 컨테이너, qwen3-embedding)·매뉴얼 절 검색 bge-m3(`V2_EMBED_URL`) | 온톨로지·매뉴얼 벡터 검색 | GCP LiteLLM(`knu-litellm`)의 `embedding` 모델(text-embedding-3-small, 1536차원) 하나. 호스트·컨테이너 Ollama 없음(사용자 결정 2026-09-30) | 매뉴얼 절 26·개체 113 다시 임베딩, 빠진 벡터 0·0 벡터 0(graph-seed 로그), 이상 → AI 조치 제안 20.54 s(`BASE-VERIFY/raw/cycle_base.json`) |
 | Prometheus 규칙 `EMQXDisconnectSpike` | 브로커 끊김 경보 | `MosquittoBridgeDown`·클라이언트 급감·버린 건수 규칙 | 규칙 통과, `$SYS` 지표 확인 |
 | `make lite`(EdgeX 없이 시뮬레이터 → EMQX) | 가벼운 기동 | 새 베이스 자체(엣지 1컨테이너) | 별도 경로 없음 — 대체 |
 | FUXA 가 Modbus 로 가상설비 직접 읽기·쓰기(이중 폴링) | 화면·조작 | FUXA는 UNS 구독·운전원 명령 발행만 | 이중 폴링 제거(현업 근거 없음, §2-1 V1과 비교) |

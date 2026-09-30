@@ -23,11 +23,10 @@ rest:
 
 execution:
   target: remote
-  # (V2) ONNX 잡(flink run)도 체크포인트를 켠다. V1 은 SQL 잡만 SQL 의 SET 으로 켜고 ONNX 잡은 꺼진 채였다
-  # (잡 설정 조회 interval=Long.MAX, 대장 S17) → 재시작 복구(HA) 때 ONNX 잡 상태·읽은 위치를 복원 못 함. SQL 잡과 같은 값.
+  # ONNX 잡(flink run)도 SQL 잡과 같은 주기로 체크포인트를 켠다(재시작 복구 때 상태·읽은 위치를 복원)
   checkpointing:
     interval: 10s
     mode: EXACTLY_ONCE
 
 parallelism:
-  default: 2
+  default: 1

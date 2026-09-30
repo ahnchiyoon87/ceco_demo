@@ -96,6 +96,7 @@ CMD = {
     "temp_sp": command("CmdTempSP", "R-101", "temp_sp", "온도 설정 [°C]"),
     "mode": command("CmdMode", "PLC-01", "mode", "운전 모드(REMOTE_MANUAL/REMOTE_AUTO)"),
     "maint": command("CmdMaintenanceOn", "PLC-01", "maintenance", "정비 모드 켜기(값 = 담당자 ID)"),
+    "ilk_reset": command("CmdInterlockReset", "PLC-01", "interlock_reset", "고압 인터록 리셋(압력이 해제 값 아래일 때만)"),
 }
 PENDING = {k: sub(f"Req_{k}", REG["request"]["pending_topic"], k, d) for k, d in (
     ("count", "대기 요청 수"), ("head_job", "맨 앞 요청 ID"), ("head_desc", "맨 앞 요청 내용"),
@@ -129,7 +130,7 @@ for t in REG["tags"]:
         a["low"] = level(f'{t["tag"]} 하한 {t["lsl"]:g} {t["unit"]} 미만', -1e9, t["lsl"])
     if t["usl"] is not None or t["lsl"] is not None:
         alarms.append(a)
-for key, text in (("interlock", "고압 인터록 발동 — 펌프 출력 차단"), ("estop", "비상정지 눌림"),):
+for key, text in (("interlock", "고압 인터록 트립 — 펌프 정지(압력이 내려오면 리셋)"), ("estop", "비상정지 눌림"),):
     alarms.append({"name": text, "property": {"variableId": STATE[key], "variableSrc": DEV, "permission": None},
                    "highhigh": level(text, 1, 1, delay=0), "high": dict(off), "low": dict(off), "info": dict(off)})
 for key, text in (("field_comm", "현장 장치(가상설비) 통신 끊김"), ("plc_comm", "PLC 통신 끊김(엣지 폴링)")):

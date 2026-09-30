@@ -12,5 +12,5 @@ d={}
 for l in sys.stdin:
     n,u=l.split()[0],l.split()[1]; v=float(re.match(r'[\d.]+',u).group()); v*=1024 if 'GiB' in u else (1/1024 if 'KiB' in u else 1); d[n]=round(v)
 print(json.dumps({'total_mib':sum(d.values()),'n':len(d),'per':d}))")
-onset=$(docker run --rm --network rot-iiot --env-file .env -v D:/work/study/scada-rotation:/repo -w /repo e2e-client:1.0 python harness/e2e/fault_onset.py --reps 1 --faults spike --broker mqtt --mqtt-topic scada/hmi/latest-alert --out experiments/QUICK/${N}_onset.json 2>&1 | tail -1)
+onset=$(docker run --rm --network rot-iiot --env-file .env -v D:/work/study/scada-rotation:/repo -w /repo e2e-client:1.2 python harness/e2e/fault_onset.py --reps 1 --faults spike --broker mqtt --mqtt-topic scada/hmi/latest-alert --out experiments/QUICK/${N}_onset.json 2>&1 | tail -1)
 python -c "import json,sys;print(json.dumps({'name':sys.argv[1],'jobs_running':sys.argv[2],'influx_raw_30s':sys.argv[3],'mem':json.loads(sys.argv[4]),'spike':sys.argv[5]},ensure_ascii=False))" "$N" "$jobs" "$raw" "$mem" "$onset" | tee experiments/QUICK/$N.json

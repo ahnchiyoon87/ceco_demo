@@ -1,5 +1,5 @@
 # ═══ IT 수집기 ① DMZ 브로커 → Kafka (IT 가 여는 연결, HANDOFF §2-1 ②) ═══
-#   계측값(품질 GOOD) → sensor.telemetry.raw  (V1 과 같은 모양 + asset·seq·pts, 키 = 설비 ID)
+#   계측값(품질 GOOD) → sensor.telemetry.raw  (ts·site·device·tag·value·quality + asset·seq·pts, 키 = 설비 ID)
 #   PLC 상태·통신 상태·ACK → plant.status   (키 = 설비 ID)
 #   작업 요청 응답 ⓑⓒ → request.responses  (키 = 요청 ID)
 input:

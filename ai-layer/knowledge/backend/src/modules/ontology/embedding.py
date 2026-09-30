@@ -1,4 +1,4 @@
-"""Embedding client for ontology entity nodes. Supports OpenAI and Ollama."""
+"""Embedding client for ontology entity nodes (OpenAI-compatible API: OPENAI_BASE_URL · EMBEDDING_MODEL)."""
 
 from __future__ import annotations
 
@@ -37,22 +37,15 @@ def truncate_by_tokens(text: str, max_tokens: int | None = None) -> str:
     return enc.decode(token_ids[:max_tokens])
 
 
-def _is_openai_mode() -> bool:
-    """True when using OpenAI API (not Ollama)."""
-    settings = get_settings()
-    return bool(settings.openai_api_key and settings.openai_api_key != "frentis"
-                and not settings.openai_base_url)
-
-
-def _openai_embed(texts: list[str], model: str = "text-embedding-3-small") -> list[list[float]]:
-    """Call OpenAI embeddings API."""
+def _openai_embed(texts: list[str], model: str | None = None) -> list[list[float]]:
+    """Call an OpenAI-compatible embeddings API (OpenAI or LiteLLM)."""
     settings = get_settings()
     payload = json.dumps({
-        "model": model,
+        "model": model or settings.embedding_model,
         "input": texts,
     }).encode("utf-8")
 
-    base = settings.openai_base_url or "https://api.openai.com/v1"
+    base = (settings.openai_base_url or "https://api.openai.com/v1").rstrip("/")
     req = urllib.request.Request(
         f"{base}/embeddings",
         data=payload,
@@ -68,26 +61,8 @@ def _openai_embed(texts: list[str], model: str = "text-embedding-3-small") -> li
         return [item["embedding"] for item in sorted_data]
 
 
-def _ollama_embed(texts: list[str]) -> list[list[float]]:
-    """Call Ollama embedding API."""
-    settings = get_settings()
-    payload = json.dumps({
-        "model": settings.ollama_embedding_model,
-        "input": texts,
-    }).encode("utf-8")
-
-    req = urllib.request.Request(
-        f"{settings.ollama_base_url}/api/embed",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-        return data.get("embeddings", [])
-
-
 def _get_dimensions() -> int:
-    return 1536 if _is_openai_mode() else 4096
+    return get_settings().embedding_dimensions
 
 
 def embed_text(text: str) -> list[float]:
@@ -119,10 +94,7 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     try:
         for offset in range(0, len(cleaned), batch_size):
             batch = cleaned[offset: offset + batch_size]
-            if _is_openai_mode():
-                all_embeddings.extend(_openai_embed(batch))
-            else:
-                all_embeddings.extend(_ollama_embed(batch))
+            all_embeddings.extend(_openai_embed(batch))
         return all_embeddings
     except Exception as exc:
         logger.warning("Embedding failed: %s", exc)
@@ -134,12 +106,8 @@ def generate_hypothetical_answer(question: str) -> str:
     """Generate a hypothetical answer for HyDE using the configured LLM."""
     settings = get_settings()
 
-    if _is_openai_mode():
-        base_url = "https://api.openai.com/v1"
-        model = settings.minor_model.replace("openai:", "")
-    else:
-        base_url = settings.openai_base_url or "http://localhost:11434/v1"
-        model = settings.minor_model.replace("openai:", "")
+    base_url = (settings.openai_base_url or "https://api.openai.com/v1").rstrip("/")
+    model = settings.minor_model.replace("openai:", "")
 
     payload = json.dumps({
         "model": model,

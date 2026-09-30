@@ -33,7 +33,10 @@ ACK = {0: "ACCEPTED", 1: "LOCAL_MODE", 2: "MAINTENANCE", 3: "MODE", 4: "RANGE", 
        7: "DUPLICATE", 8: "UNKNOWN_COMMAND", 9: "ESTOP", 10: "NO_TIME_SYNC", 11: "PHYSICS"}
 results: list[dict] = []
 c = ModbusTcpClient(a.plc, port=502, timeout=3)
-assert c.connect(), "PLC 연결 실패"
+deadline = time.time() + 90          # 재시작 직후에는 런타임이 프로그램을 올린 뒤 Modbus 를 연다
+while not c.connect():
+    assert time.time() < deadline, "PLC 연결 실패(90 s)"
+    time.sleep(1)
 lock = threading.Lock()
 
 
@@ -171,7 +174,7 @@ try:
     check("외부 요청(REMOTE_MANUAL, 수락 표시 없음) 거부", "MODE", rq(4, 1, h=0x1001))
     check("외부 요청(REMOTE_MANUAL, 운전원 수락) 수용", "ACCEPTED", rq(4, 1, accepted=1, h=0x1002))
     check("같은 요청 해시 재수신 → 중복 거부", "DUPLICATE", rq(4, 1, accepted=1, h=0x1002))
-    check("만료된 요청 거부", "EXPIRED", rq(4, 0, accepted=1, exp=int(time.time()) - 1, h=0x1003))
+    check("만료된 요청 거부", "EXPIRED", rq(4, 0, accepted=1, exp=int(time.time()) - 5, h=0x1003))  # PLC 시각은 1 s 마다 동기되므로 그보다 확실히 지난 만료
     check("냉각기 끔(운전원)", "ACCEPTED", op(4, 0))
     # REMOTE_AUTO
     check("운전원: REMOTE_AUTO 로", "ACCEPTED", op(10, 2))
@@ -215,8 +218,29 @@ try:
     check("PT-101 6.5 barg 이상 → 인터록", True, wait_for(lambda: status()["interlock"] == 1, 4))
     check("인터록 중 펌프 출력 꺼짐", True, wait_for(lambda: status()["outputs"] & 1 == 0, 2))
     check("인터록 중 펌프 기동 명령 거부", "INTERLOCK", op(1, 1))
-    check("PT-101 5.2 barg 이하로 내려오면 인터록 해제·펌프 출력 복귀", True,
-          wait_for(lambda: status()["interlock"] == 0 and status()["outputs"] & 1 == 1, 15))
+    check("외부 요청으로 인터록 리셋 불가(모르는 명령)", "UNKNOWN_COMMAND", rq(12, 1, accepted=1, h=0x5002))
+    instr("/fault/clear", {})
+    wait_for(lambda: instr("/state")["readings"]["PT-101"] <= 5.0, 60)
+    time.sleep(2)
+    check("압력이 내려와도 트립 유지(기억)", 1, status()["interlock"])
+    check("트립 뒤 펌프 운전 명령 꺼짐(저절로 다시 돌지 않음)", 0, status()["outputs"] & 1)
+    check("운전원 인터록 리셋 수용", "ACCEPTED", op(12, 1))
+    check("리셋 → 인터록 해제", True, wait_for(lambda: status()["interlock"] == 0, 4))
+    check("리셋 뒤 운전원 펌프 기동", "ACCEPTED", op(1, 1))
+    check("펌프 출력 복귀", True, wait_for(lambda: status()["outputs"] & 1 == 1, 4))
+    # 압력이 높은 동안의 리셋은 거부, 현장 패널 리셋으로도 풀린다
+    wait_for(lambda: instr("/state")["readings"]["PT-101"] >= 3.0, 60)   # 운전점으로 돌아와야 스파이크가 트립 값을 넘는다
+    instr("/fault", {"scenario": "spike", "duration_s": 6})
+    check("다시 트립", True, wait_for(lambda: status()["interlock"] == 1, 4))
+    # 리셋 허용값(5.2 barg)보다 지시값이 확실히 높은 순간에 리셋을 낸다. 펌프가 멈추면 실제 압력이 떨어지므로 먼저 확인한다
+    check("트립 뒤 PT-101 지시값이 리셋 허용값 + 0.3 barg 위", True,
+          wait_for(lambda: instr("/state")["readings"]["PT-101"] > 5.5, 3))
+    check("압력이 높은 동안 운전원 리셋 거부", "INTERLOCK", op(12, 1))
+    instr("/fault/clear", {})
+    wait_for(lambda: instr("/state")["readings"]["PT-101"] <= 5.0, 60)
+    panel("reset")
+    check("현장 패널 리셋 → 인터록 해제", True, wait_for(lambda: status()["interlock"] == 0, 4))
+    op(1, 1); wait_for(lambda: status()["outputs"] & 1 == 1, 4)
     # 비상정지(가상설비 안 래치 + PLC 명령 끔)
     panel("estop")
     check("비상정지 → 모든 출력 꺼짐", True, wait_for(lambda: status()["estop"] == 1 and status()["outputs"] == 0))

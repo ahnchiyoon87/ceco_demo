@@ -1,0 +1,180 @@
+{
+ "results": [
+  {
+   "item": "PLC 기동 시 모드 = REMOTE_MANUAL(1)",
+   "expected": 1,
+   "actual": 1,
+   "verdict": "PASS"
+  },
+  {
+   "item": "현장 통신 정상",
+   "expected": 1,
+   "actual": 1,
+   "verdict": "PASS"
+  },
+  {
+   "item": "하트비트 증가(PLC RUN)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "계측 12점 PLC 통과(같은 스캔 순번에서 가상설비 값과 차이 < 1e-3)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "설비 시각 증가(배속 600: 2초에 약 1200초)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: 교반기 정지(REMOTE_MANUAL)",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "가상설비 교반기 코일 꺼짐",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: 교반기 기동",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "범위 밖 설정값(펌프 150%) 거부",
+   "expected": "RANGE",
+   "actual": "RANGE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "없는 명령 코드 거부",
+   "expected": "UNKNOWN_COMMAND",
+   "actual": "UNKNOWN_COMMAND",
+   "verdict": "PASS"
+  },
+  {
+   "item": "외부 요청(REMOTE_MANUAL, 수락 표시 없음) 거부",
+   "expected": "MODE",
+   "actual": "MODE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "외부 요청(REMOTE_MANUAL, 운전원 수락) 수용",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "같은 요청 해시 재수신 → 중복 거부",
+   "expected": "DUPLICATE",
+   "actual": "DUPLICATE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "만료된 요청 거부",
+   "expected": "EXPIRED",
+   "actual": "EXPIRED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "냉각기 끔(운전원)",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: REMOTE_AUTO 로",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "REMOTE_AUTO 에서 운전원 조작 거부",
+   "expected": "MODE",
+   "actual": "MODE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "REMOTE_AUTO 에서 외부 요청 자동 수용",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "가상설비 냉각기 코일 켜짐",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: REMOTE_MANUAL 로",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "냉각기 끔",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "시각 동기 멈춤 → 외부 요청 거부",
+   "expected": "NO_TIME_SYNC",
+   "actual": "NO_TIME_SYNC",
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: 정비 모드 켜기(담당자 101)",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "정비 모드 표시·담당자",
+   "expected": [
+    1,
+    101
+   ],
+   "actual": [
+    1,
+    101
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "item": "정비 모드: 외부 요청 거부",
+   "expected": "MAINTENANCE",
+   "actual": "MAINTENANCE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "정비 모드: 운전원 기동 거부",
+   "expected": "MAINTENANCE",
+   "actual": "MAINTENANCE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "정비 모드: 운전원 정지(안전 쪽) 수용",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "정비 모드: 운전원 모드 바꾸기 거부",
+   "expected": "MAINTENANCE",
+   "actual": "MAINTENANCE",
+   "verdict": "PASS"
+  }
+ ],
+ "pass": 28,
+ "fail": 0
+}

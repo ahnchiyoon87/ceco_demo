@@ -5,7 +5,7 @@
      환경변수 FUXA_ADMIN_PASSWORD 로 바꾸고, 운전원 계정 operator(그룹 Operator=2, FUXA_OPERATOR_PASSWORD)를 만든다.
      화면 값 보기는 로그인 없이(guest), 운전원 명령은 로그인한 사용자만, 화면·설정 변경은 관리자만 된다(FUXA 1.3.4 규칙).
   1) MQTT 장치 계정(fuxa)·비밀번호를 장치 보안 저장소(POST /api/device, query=security, 관리자만 읽고 씀)에 넣는다.
-     프로젝트는 로그인 없이도 읽히므로 거기에는 계정을 두지 않는다(09-30 실측: 두면 IT 컨테이너가 호스트 포트로 읽어 간다).
+     프로젝트는 로그인 없이도 읽히므로 거기에는 계정을 두지 않는다(두면 IT 컨테이너도 호스트 포트를 거쳐 읽을 수 있다).
   2) project.json(registry/generate.py 가 등록부에서 만든 화면·태그·공정 알람)을 관리자 토큰으로 POST /api/project 로 넣는다.
   3) DAQ(OT 이력, SQLite) 보존이 7일인지 확인한다(HANDOFF §2-2 보존 표, ⑨-9: FUXA 1.3.4 의 daqstore.retention).
      값은 compose 가 FUXA 첫 기동 때 넣는 fuxa/mysettings.json 에서 온다. 여기서 설정 API 로 바꾸지 않는다 —

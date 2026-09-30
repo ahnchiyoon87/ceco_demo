@@ -1,4 +1,4 @@
-"""V2 read-only tools: ontology fault tracing and manual section search.
+"""Read-only tools on the fault ontology (v2 model): fault tracing and manual section search.
 
 The graph returns candidate failure modes, how each can be checked and the
 current observations those checks name. It never evaluates a check or decides
@@ -12,11 +12,12 @@ import time
 
 from fastapi import APIRouter, HTTPException
 
-from ..ontology.tools import _run_query, _run_readonly_query, get_driver
+from ..ontology.tools import _run_query, _run_readonly_query, ensure_vector_index, get_driver
 from .evidence import history, live_state
 
 router = APIRouter(prefix="/api/operations/v2", tags=["manufacturing-v2"])
 SECTION_INDEX = "section_embedding_v2"
+EMBED_MODEL = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 
 
 def signatures(detail):
@@ -81,17 +82,18 @@ def fault_context(site, device, sigs):
 
 
 def _embedder():
-    from neo4j_graphrag.embeddings import OllamaEmbeddings
-    return OllamaEmbeddings(model=os.environ.get("V2_EMBED_MODEL", "bge-m3"),
-                            host=os.environ.get("V2_EMBED_URL", "http://embed:11434"))
+    """매뉴얼 절 임베딩: OpenAI 호환 API(OPENAI_BASE_URL · EMBEDDING_MODEL)."""
+    from neo4j_graphrag.embeddings import OpenAIEmbeddings
+    return OpenAIEmbeddings(model=EMBED_MODEL, base_url=os.environ.get("OPENAI_BASE_URL") or None,
+                            api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 def index_sections():
     """(Re)embed DocumentSection text whose content changed; failures raise instead of storing zeros."""
-    from neo4j_graphrag.indexes import create_vector_index
     rows = _run_query("""MATCH (d:DocumentSection) WHERE d.content IS NOT NULL
-        AND (d.v2_embedding IS NULL OR d.v2_embedded_hash IS NULL OR d.v2_embedded_hash <> toString(size(d.content)) + ':' + d.name)
-        RETURN elementId(d) AS id, d.name AS name, d.content AS content""")
+        AND (d.v2_embedding IS NULL OR d.v2_embedded_hash IS NULL OR d.v2_embedded_hash <> toString(size(d.content)) + ':' + d.name
+             OR coalesce(d.v2_embed_model, '') <> $m)
+        RETURN elementId(d) AS id, d.name AS name, d.content AS content""", {"m": EMBED_MODEL})
     embedder = _embedder()
     for row in rows:
         vector = embedder.embed_query(f"{row['name']}\n{row['content']}")
@@ -99,11 +101,10 @@ def index_sections():
             raise RuntimeError("임베딩 결과가 비었습니다. 색인하지 않았습니다.")
         _run_query("""MATCH (d) WHERE elementId(d)=$id SET d.v2_embedding=$v,
             d.v2_embedded_hash=toString(size(d.content)) + ':' + d.name, d.v2_embed_model=$m""",
-                   {"id": row["id"], "v": vector, "m": os.environ.get("V2_EMBED_MODEL", "bge-m3")})
+                   {"id": row["id"], "v": vector, "m": EMBED_MODEL})
     dims = _run_query("MATCH (d:DocumentSection) WHERE d.v2_embedding IS NOT NULL RETURN size(d.v2_embedding) AS n LIMIT 1")
     if dims:
-        create_vector_index(get_driver(), SECTION_INDEX, label="DocumentSection", embedding_property="v2_embedding",
-                            dimensions=dims[0]["n"], similarity_fn="cosine")
+        ensure_vector_index(SECTION_INDEX, "DocumentSection", "v2_embedding", dims[0]["n"])
     return {"embedded": len(rows), "index": SECTION_INDEX}
 
 

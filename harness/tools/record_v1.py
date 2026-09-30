@@ -2,7 +2,7 @@
 
 rot-iiot 망에서 실행. 정상 --normal-s 초 뒤 고장을 하나씩 주입(--fault-s 초 유지 → 해제 → --gap-s 초)하며
 MQTT edgex/telemetry(EdgeX 이벤트 원문)와 Kafka 토픽(raw·clean·alerts·anomaly)을 받은 그대로 기록한다.
-  docker run --rm --network rot-iiot --env-file .env -v "$PWD:/repo" -w /repo e2e-client:1.0 \
+  docker run --rm --network rot-iiot --env-file .env -v "$PWD:/repo" -w /repo e2e-client:1.2 \
      python harness/tools/record_v1.py --out experiments/REC-V1
 출력: <out>/mqtt_edgex_telemetry.jsonl · kafka_<topic>.jsonl({"rx": 수신 epoch 초, "key", "value"(원문 문자열)}),
       <out>/timeline.json(주입 시각표), <out>/manifest.json(건수·구간).

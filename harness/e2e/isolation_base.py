@@ -113,14 +113,16 @@ if a.phase == "during":
             break
         time.sleep(0.2)
     http("http://plant-sim:8080/fault/clear", {}, AUTH)
-    out |= {"interlock_seen": ilk, "pump_off_during_interlock": pump_off}
+    from ot_ops import Operator                        # 트립 기억: 끊긴 동안에도 OT 안에서 운전원이 리셋·재기동한다
+    rec = Operator().recover_interlock()
+    out |= {"interlock_seen": ilk, "pump_off_during_interlock": pump_off, "reset_in_ot": rec}
     rest = a.cut_s - (time.time() - t_cut) - 5
     time.sleep(max(0, rest))
     out["fuxa_daq_rows_during_cut"] = fuxa_daq_count(int(t_cut * 1000), int(time.time() * 1000))
     out["during_s"] = round(time.time() - t_cut, 1)
     json.dump(out, open(STATE_FILE, "w"))
     res = {"during": out, "ot_continues": out["fuxa_value_updates"] and out["operator_ack"] == "ACCEPTED" and ilk and pump_off
-                                           and out["fuxa_daq_rows_during_cut"] > 0}
+                                           and out["fuxa_daq_rows_during_cut"] > 0 and rec.get("released") is True}
     json.dump(res, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(json.dumps(res, ensure_ascii=False))
 else:

@@ -1,4 +1,4 @@
-"""Build reviewed-import batches for the V2 fault ontology (deterministic, no LLM).
+"""Build reviewed-import batches for the fault ontology (v2 model, deterministic, no LLM).
 
   --arm B : failure-knowledge documents (source_kind simulator-physics-fmea or a
             later *-RESPONSE doc named in the ontology) linked to their assets.
@@ -107,7 +107,7 @@ def knowledge():
 
 
 def new_documents():
-    """Documents added after V1 (not in the V1 set), each linked to the assets it applies to."""
+    """Fault knowledge documents, each linked to the assets it applies to."""
     return [p for p in sorted((root / "knowledge-docs").glob("*.md")) if p.stem not in V1_DOCS]
 
 
@@ -126,7 +126,7 @@ def arm_c():
     assets = {"M-101", "R-101", "P-101", "TK-101"}
     inventory = export_inventory(root / "registry/equipment.yaml")
     points = {n["properties"]["name"]: n for n in inventory["nodes"] if n["class"] == "ControlPoint"}
-    aliases = {"temp_sp_c": "temp_sp_x10"}   # 온톨로지 문장은 °C 설정값, 제어점 이름은 V1 레지스터 이름(temp_sp_x10)
+    aliases = {"temp_sp_c": "temp_sp_x10"}   # 온톨로지 문장은 °C 설정값, 제어점 이름은 temp_sp_x10(등록부 control_point)
 
     def target(name):
         return batch.asset(name) if name in assets else batch.node(f"v2/component/{name}", "Component")

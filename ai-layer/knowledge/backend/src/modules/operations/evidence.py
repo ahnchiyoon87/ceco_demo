@@ -17,9 +17,9 @@ router = APIRouter(prefix="/api/operations", tags=["manufacturing-evidence"])
 
 
 # ── 설비 접점: DMZ InfluxDB 의 OT 원시값 사본을 읽기 전용 계정으로 조회한다(HANDOFF §1 AI 층, §2-1 ③) ──
-# V1 은 가상설비 HTTP /state 를 직접 읽었다. 새 구조에서 IT 는 OT 에 닿지 않고 DMZ 사본만 본다.
+# IT 는 OT 에 닿지 않고 DMZ 사본만 본다.
 # 명령 상태·인터록·모드·순번은 엣지가 UNS 에 낸 PLC 상태 토픽이 DMZ 사본(plc_status)에 들어온 것이다.
-COMMANDS = {  # V1 /state 의 commands 이름 → PLC 상태(설비/이름)
+COMMANDS = {  # 증거에 쓰는 명령 이름(온톨로지 제어점) → PLC 상태(설비/이름)
     "pump_run": ("P-101", "run"), "agitator_run": ("M-101", "run"), "heater_enable": ("HX-101", "enable"),
     "cooler_enable": ("HX-102", "enable"), "pump_speed_sp": ("P-101", "speed_sp"), "valve_open_sp": ("CV-101", "open_sp"),
     "temp_sp_c": ("R-101", "temp_sp")}

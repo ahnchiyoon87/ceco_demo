@@ -25,3 +25,73 @@ rot-base-dmz-broker-1
 [12:35:07] dmzb #3 복구 DMZ {"recover_s": 5.5, "flaps": 0, "waited_s": 126.1} | IT {"recover_s": 5.5, "flaps": 0, "waited_s": 126.0} | Flink RUNNING 4
 [12:35:23] kafka #1 주입: docker restart rot-base-kafka-1
 rot-base-kafka-1
+[12:38:29] kafka #1 복구 DMZ {"recover_s": 7.4, "flaps": 0, "waited_s": 128.2} | IT {"recover_s": 60.0, "flaps": 0, "waited_s": 180.4} | Flink RUNNING 4
+[12:38:43] kafka #2 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[12:41:43] kafka #2 복구 DMZ {"recover_s": 7.2, "flaps": 0, "waited_s": 127.7} | IT {"recover_s": 55.5, "flaps": 0, "waited_s": 176.0} | Flink RUNNING 4
+[12:41:58] kafka #3 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[12:44:57] kafka #3 복구 DMZ {"recover_s": 6.4, "flaps": 0, "waited_s": 127.0} | IT {"recover_s": 54.7, "flaps": 0, "waited_s": 175.1} | Flink RUNNING 4
+[12:45:13] coll #1 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[12:52:25] coll #1 복구 DMZ {"recover_s": 6.5, "flaps": 0, "waited_s": 126.9} | IT {"recover_s": null, "flaps": 0, "waited_s": 420.1} | Flink RUNNING 4
+[12:52:41] coll #2 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[12:55:04] coll #2 복구 DMZ {"recover_s": 7.8, "flaps": 0, "waited_s": 129.7} | IT {"recover_s": 7.8, "flaps": 0, "waited_s": 129.6} | Flink RUNNING 4
+[12:55:23] coll #3 주입: docker network disconnect rot-base_it-net rot-base-it-collector-1
+[12:57:44] coll #3 복구 DMZ {"recover_s": 8.8, "flaps": 0, "waited_s": 129.9} | IT {"recover_s": 8.7, "flaps": 0, "waited_s": 129.8} | Flink RUNNING 4
+[12:58:01] flink #1 주입: docker restart rot-base-flink-jobmanager-1
+rot-base-flink-jobmanager-1
+[13:00:31] flink #1 복구 DMZ {"recover_s": 7.4, "flaps": 0, "waited_s": 128.5} | IT {"recover_s": 21.7, "flaps": 0, "waited_s": 142.6} | Flink RUNNING 4
+[13:00:47] flink #2 주입: docker restart rot-base-flink-jobmanager-1
+rot-base-flink-jobmanager-1
+[13:03:08] flink #2 복구 DMZ {"recover_s": 7.3, "flaps": 0, "waited_s": 128.3} | IT {"recover_s": 15.5, "flaps": 0, "waited_s": 136.3} | Flink RUNNING 4
+[13:03:26] flink #3 주입: docker restart rot-base-flink-jobmanager-1
+rot-base-flink-jobmanager-1
+[13:05:48] flink #3 복구 DMZ {"recover_s": 7.5, "flaps": 0, "waited_s": 128.3} | IT {"recover_s": 17.7, "flaps": 0, "waited_s": 138.2} | Flink RUNNING 4
+[13:06:06] itinflux #1 주입: docker stop rot-base-it-influx-1
+rot-base-it-influx-1
+rot-base-it-influx-1
+[13:08:45] itinflux #1 복구 DMZ {"recover_s": 6.2, "flaps": 0, "waited_s": 126.8} | IT {"recover_s": 6.4, "flaps": 0, "waited_s": 127.0} | Flink RUNNING 4
+[13:09:02] itinflux #2 주입: docker stop rot-base-it-influx-1
+rot-base-it-influx-1
+rot-base-it-influx-1
+[13:11:41] itinflux #2 복구 DMZ {"recover_s": 5.1, "flaps": 0, "waited_s": 125.7} | IT {"recover_s": 5.0, "flaps": 0, "waited_s": 125.6} | Flink RUNNING 4
+[13:11:58] itinflux #3 주입: docker stop rot-base-it-influx-1
+rot-base-it-influx-1
+rot-base-it-influx-1
+[13:14:36] itinflux #3 복구 DMZ {"recover_s": 5.7, "flaps": 0, "waited_s": 126.4} | IT {"recover_s": 5.8, "flaps": 0, "waited_s": 126.4} | Flink RUNNING 4
+[13:14:51] dmzinflux #1 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[13:17:29] dmzinflux #1 복구 DMZ {"recover_s": 5.4, "flaps": 0, "waited_s": 126.0} | IT {"recover_s": 5.4, "flaps": 0, "waited_s": 125.9} | Flink RUNNING 4
+[13:17:44] dmzinflux #2 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[13:20:52] dmzinflux #2 복구 DMZ {"recover_s": 34.9, "flaps": 0, "waited_s": 155.6} | IT {"recover_s": 4.6, "flaps": 0, "waited_s": 125.3} | Flink RUNNING 4
+[13:21:08] dmzinflux #3 주입: docker stop rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+rot-base-dmz-influx-1
+[13:24:18] dmzinflux #3 복구 DMZ {"recover_s": 36.9, "flaps": 0, "waited_s": 157.5} | IT {"recover_s": 6.7, "flaps": 0, "waited_s": 127.3} | Flink RUNNING 4
+[13:24:33] pg #1 주입: docker stop rot-base-postgres-1
+rot-base-postgres-1
+rot-base-postgres-1
+[13:27:13] pg #1 복구 DMZ {"recover_s": 6.4, "flaps": 0, "waited_s": 127.0} | IT {"recover_s": 6.4, "flaps": 0, "waited_s": 127.0} | Flink RUNNING 4
+[13:27:28] pg #2 주입: docker stop rot-base-postgres-1
+rot-base-postgres-1
+rot-base-postgres-1
+[13:30:07] pg #2 복구 DMZ {"recover_s": 6.7, "flaps": 0, "waited_s": 127.5} | IT {"recover_s": 6.8, "flaps": 0, "waited_s": 127.4} | Flink RUNNING 4
+[13:30:22] pg #3 주입: docker stop rot-base-postgres-1
+rot-base-postgres-1
+rot-base-postgres-1
+[13:33:00] pg #3 복구 DMZ {"recover_s": 5.2, "flaps": 0, "waited_s": 125.8} | IT {"recover_s": 5.2, "flaps": 0, "waited_s": 125.7} | Flink RUNNING 4
+[13:33:14] == 재시작 복구 끝
+[14:45:35] == 재시작 복구 시작 (kafka)
+[14:45:35] kafka #1 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[14:48:43] kafka #1 복구 DMZ {"recover_s": 12.4, "flaps": 0, "waited_s": 132.8} | IT {"recover_s": 61.7, "flaps": 0, "waited_s": 182.4} | Flink RUNNING 4
+[14:49:03] kafka #2 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[14:52:09] kafka #2 복구 DMZ {"recover_s": 9.1, "flaps": 0, "waited_s": 130.3} | IT {"recover_s": 59.5, "flaps": 0, "waited_s": 180.5} | Flink RUNNING 4
+[14:52:34] kafka #3 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1
+[14:55:43] kafka #3 복구 DMZ {"recover_s": 11.0, "flaps": 0, "waited_s": 132.7} | IT {"recover_s": 62.3, "flaps": 0, "waited_s": 183.0} | Flink RUNNING 4
+[14:56:02] == 재시작 복구 끝

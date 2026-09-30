@@ -15,7 +15,7 @@ S25=1 sh harness/e2e/regression.sh $EXP $NAME >> $L 2>&1
 say "회귀 끝"
 [ -f harness/e2e/struct_${STRUCT}.sh ] && . harness/e2e/struct_${STRUCT}.sh   # 새 구조는 struct_<이름>.sh 에 ONSET_ARGS·COMPOSE_EXTRA 와 컨테이너 이름표를 둔다
 OB=${ONSET_ARGS:-}
-docker run --rm --network rot-iiot --env-file .env -v D:/work/study/scada-rotation:/repo -w /repo e2e-client:1.0 \
+docker run --rm --network rot-iiot --env-file .env -v D:/work/study/scada-rotation:/repo -w /repo e2e-client:1.2 \
   python harness/e2e/fault_onset.py --reps 3 $OB --out experiments/$EXP/raw/onset_${NAME}_${RUN}600.json >> $L 2>&1
 say "고장→알람 끝"
 sh harness/tools/internal_errors.sh $T0 experiments/$EXP/internal_errors_${NAME}_${RUN}.json >> $L 2>&1

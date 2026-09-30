@@ -1,5 +1,5 @@
 """[측정 도구] 재시작 중 1초마다 두 지점의 '가장 새 값이 현재보다 몇 초 늦었나'를 기록: Kafka raw 도착, InfluxDB process_raw.
-  docker run --rm --network rot-iiot --env-file .env -v <repo>:/repo -w /repo e2e-client:1.0 python harness/e2e/lag_probe.py --seconds 70 --out <file>
+  docker run --rm --network rot-iiot --env-file .env -v <repo>:/repo -w /repo e2e-client:1.2 python harness/e2e/lag_probe.py --seconds 70 --out <file>
 """
 import argparse, json, os, threading, time, urllib.parse, urllib.request
 from confluent_kafka import Consumer

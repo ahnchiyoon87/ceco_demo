@@ -5,7 +5,7 @@
 site: AR-100
 device: reactor-line-01
 scan_interval_ms: 1000
-# 물리 배속(V2 기본값): 온도·액위·마모 등 공정 변화에만 적용. 스캔·발행은 1초 그대로.
+# 물리 배속(기본값): 온도·액위·마모 등 공정 변화에만 적용. 스캔·발행은 1초 그대로.
 # 이상을 넣으면 10초 안에 화면·알람에 나타나야 한다 → 600배(히터 고착 약 3초에 상한 초과, 알람까지 약 6초).
 # 모든 서서히 진행하는 현상(공정 물리·과정 고장·생산 스케줄)이 이 하나의 시계를 따른다. 순간 사건만 실제 초.
 physics_time_scale: 600
@@ -66,7 +66,7 @@ physics:
     area_m2: 3.0
     height_m: 4.0
     refill_m3h: 14.0         # 보충 최대 유량(액위 제어가 0~최대 사이로 조절)
-    level_sp_pct: 70.0       # 원료탱크 액위 제어 목표(V1 은 고정 8 m3/h 보충 → 몇 시간 뒤 넘쳐 LT-101 상한 알람 상시)
+    level_sp_pct: 70.0       # 원료탱크 액위 제어 목표(고정 보충이면 몇 시간 뒤 넘쳐 LT-101 상한 알람 상시)
     level_kp: 0.5            # [m3/h per %]
   reactor:
     area_m2: 2.2
@@ -152,7 +152,7 @@ faults:
   dropout:
     desc: "TT-101 발행 중단 → Flink 결측치 보간(LOCF/선형) 검증"
     kind: event
-    default_duration_s: 5            # 통신 결측 사건 길이(실제 초). V1 보간은 결측이 끝난 뒤 채운다
+    default_duration_s: 5            # 통신 결측 사건 길이(실제 초). Flink 보간은 결측이 끝난 뒤 채운다
     target: [TT-101]
   spike:
     desc: "PT-101 순간 과압 → Tier-1 USL 규칙 + 고압 인터록 검증"
@@ -173,7 +173,7 @@ faults:
     target: [IT-102, VT-101]
     wear_ramp_s: 600                 # 전류 쪽 마모 진행 설비 시간(10분) — 배속 600 에서 1스캔 안에 전류 상한 초과
     lag_s: 300                       # 진동이 따라오기 시작하는 설비 시간(5분) — 진동은 다음 스캔(전류 먼저·진동 나중 유지)
-    vib_ramp_s: 600                  # 진동 쪽 진행(10분). 알람 시간은 대부분 V1 CEP 워터마크 5초
+    vib_ramp_s: 600                  # 진동 쪽 진행(10분). 알람 시간은 대부분 CEP 워터마크 5초
   drift:
     desc: "pH-101/CT-101 동시 미세 드리프트 → 단일 임계치 무반응, Autoencoder만 탐지"
     kind: process

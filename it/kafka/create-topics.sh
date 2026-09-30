@@ -17,7 +17,7 @@ create() {
   fi
 }
 echo "Kafka 토픽 초기화"
-create sensor.telemetry.raw   6 $D7    # 원시 계측(V1 과 같은 모양 + asset·seq·pts)
+create sensor.telemetry.raw   6 $D7    # 원시 계측(ts·site·device·tag·value·quality + asset·seq·pts)
 create sensor.telemetry.clean 6 $D7    # Flink 중복 제거·결측 보간
 create sensor.anomaly.score   3 $D7    # 오토인코더 재구성 오차
 create sensor.alerts          3 $D7    # Flink 분석 alert(규칙·Z-Score·CEP·ML)

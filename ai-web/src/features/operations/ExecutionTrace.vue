@@ -38,7 +38,7 @@ const calls = computed(() => {
   for (const event of events.value) {
     if (!['agent_tool_started', 'agent_tool_result', 'agent_tool_failed'].includes(event.kind)) continue
     const p = event.payload
-    const key = p.call_id || `legacy-${event.id}`
+    const key = p.call_id
     const previous = rows.get(key)
     rows.set(key, { ...previous, ...p, key, time: previous?.time || event.created_at,
       state: event.kind === 'agent_tool_result' ? 'complete' : event.kind === 'agent_tool_failed' ? 'failed' : active.value ? 'running' : 'unknown' })

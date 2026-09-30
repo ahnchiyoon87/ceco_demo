@@ -1,6 +1,6 @@
 """업무 서비스(HANDOFF §2-3) — Kafka 를 소비해 사건·alert 상태·작업 요청 결과를 정리한다. 설비에 명령하지 않는다.
 
-  sensor.alerts     → AI 사건 접수(consumer.persist_message, V1 과 같음)
+  sensor.alerts     → AI 사건 접수(consumer.persist_message)
                     → alert 스키마: ISA-18.2 상태(설비 정지 = Suppressed by Design, 정비 모드 = Out of Service),
                       사건 키 asset_id + rule_id 로 묶기(열린 묶음이면 건수·마지막 시각만), 표시할 것만 alerts.display 로
   plant.status      → PLC 상태 기억(억제 판단·재관측), 정비 모드 켜기·끄기를 감사에 기록
@@ -198,8 +198,8 @@ def note(conn, jid, kind, status, reason, detail=None):
 
 def intake_loop() -> None:
     """AI 사건 접수(AI DB). 요청 판정과 다른 스레드·연결로 돈다 — AI 승인이 사건 행을 잠근 동안(작업 요청 결과 대기)
-    접수가 멈춰도 작업 요청의 시간 판정(ACK 5 s·만료·재관측)은 멈추지 않는다(09-30 제어 회귀 S21 에서 20 s 멈춤 실측)."""
-    # 사건 접수는 V1 과 같은 소비자 그룹(earliest, 처음부터 빠짐없이)으로 따로 소비한다
+    접수가 멈춰도 작업 요청의 시간 판정(ACK 5 s·만료·재관측)은 멈추지 않는다."""
+    # 사건 접수는 자기 소비자 그룹(earliest, 처음부터 빠짐없이)으로 따로 소비한다
     intake = Consumer({"bootstrap.servers": BOOTSTRAP, "group.id": "ar100-ai-incidents-v1", "auto.offset.reset": "earliest",
                        "enable.auto.commit": False, "enable.auto.offset.store": False})
     intake.subscribe(["sensor.alerts"])

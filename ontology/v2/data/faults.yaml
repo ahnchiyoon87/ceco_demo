@@ -71,7 +71,7 @@ failure_modes:
     supports: [{command: temp_sp_c, cmp: ">=", ref_tag: TT-101, ref: usl}]
     refutes: [{command: temp_sp_c, cmp: "<", ref_tag: TT-101, ref: usl}]
 
-# 조치: 허용 목록(V1 actions.py 와 같은 이름). 전제 조건이 모두 참일 때만 제안. 어느 것도 아니면 inspect_only.
+# 조치: 허용 목록(actions.py 의 WORK_MASTERS 와 같은 이름). 전제 조건이 모두 참일 때만 제안. 어느 것도 아니면 inspect_only.
 actions:
   - id: stop_mixer
     mitigates: [SYM-MIXER-CURRENT-VIBRATION]

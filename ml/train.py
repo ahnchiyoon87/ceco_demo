@@ -209,7 +209,7 @@ def validate() -> None:
             plant.step(dt)
         if scenario:
             # 고장이 시험 구간 내내 이어지게 한다. 과정 고장은 설비 시계, 순간 사건은 관측 시계로 잰다
-            # (배속을 곱하지 않으면 배속 600 에서 과정 고장이 첫 스텝 안에 끝나 탐지율이 0 %로 보인다 — 결함 S6 재검토).
+            # (배속을 곱하지 않으면 배속 600 에서 공정 고장이 첫 스텝 안에 끝난다).
             kind = cfg["faults"][scenario].get("kind", "process")
             plant.inject(scenario, seconds * dt * (plant.time_scale if kind == "process" else 1.0))
         # 주의: 스캔당 step() 은 정확히 한 번만 호출해야 한다.

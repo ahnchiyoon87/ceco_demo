@@ -1,0 +1,42 @@
+{
+ "start": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": false,
+   "pump_speed_sp": 47.0,
+   "valve_open_sp": 49.0,
+   "temp_sp_c": 68.1
+  }
+ },
+ "S16": {
+  "pass": true,
+  "pt_before": 3.046,
+  "ack_during": "INTERLOCK",
+  "stable_samples": 51,
+  "violations": [],
+  "held_after_pressure_drop": true,
+  "reset_while_high": "INTERLOCK",
+  "reset": "ACCEPTED",
+  "released": true,
+  "restart_ack": "ACCEPTED",
+  "pump_running": true,
+  "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동·인터록 리셋이 없다 — 외부 길은 설계로 차단",
+  "took_s": 138.4
+ },
+ "restored": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": false,
+   "pump_speed_sp": 76.0,
+   "valve_open_sp": 55.0,
+   "temp_sp_c": 78.4
+  }
+ },
+ "pass_all": true
+}

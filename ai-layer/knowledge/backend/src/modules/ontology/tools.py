@@ -665,19 +665,36 @@ def batch_ingest(nodes_json: str, schema_name: str = "") -> str:
         return json.dumps({"error": str(exc)}, ensure_ascii=False)
 
 
+def ensure_vector_index(name: str, label: str, prop: str, dims: int) -> None:
+    """벡터 색인을 dims 차원으로 둔다. 같은 이름의 색인이 다른 차원이면 지우고 다시 만든다
+    (임베딩 모델을 바꾸면 차원이 바뀐다 — `IF NOT EXISTS` 만으로는 옛 차원 색인이 남는다)."""
+    rows = _run_query("SHOW INDEXES YIELD name, type, options WHERE name = $n RETURN options", {"n": name})
+    if rows:
+        cur = ((rows[0].get("options") or {}).get("indexConfig") or {}).get("vector.dimensions")
+        if cur == dims:
+            return
+        _run_query(f"DROP INDEX {name} IF EXISTS")
+    _run_query(f"""
+        CREATE VECTOR INDEX {name} IF NOT EXISTS
+        FOR (n:{label}) ON (n.{prop})
+        OPTIONS {{indexConfig: {{`vector.dimensions`: {int(dims)}, `vector.similarity_function`: 'cosine'}}}}
+    """)
+
+
 def _embed_entity_nodes(batch_size: int = 20) -> int:
-    """Embed all _Entity nodes that don't have an embedding yet."""
+    """Embed all _Entity nodes that don't have an embedding yet (or whose embedding has another dimension)."""
 
-    from .embedding import embed_texts, node_text_for_embedding
+    from .embedding import _get_dimensions, embed_texts, node_text_for_embedding
 
-    # Get nodes without embeddings
+    dims = _get_dimensions()
+    # Get nodes without embeddings, or embedded by a model with another dimension
     rows = _run_query("""
-        MATCH (n:_Entity) WHERE n.embedding IS NULL
+        MATCH (n:_Entity) WHERE n.embedding IS NULL OR size(n.embedding) <> $dims
         RETURN elementId(n) AS eid,
                n.name AS name, n.title AS title,
                substring(toString(n.content), 0, 1500) AS content
         LIMIT 500
-    """)
+    """, {"dims": dims})
     if not rows:
         return 0
 
@@ -707,19 +724,9 @@ def _embed_entity_nodes(batch_size: int = 20) -> int:
             )
             total_embedded += 1
 
-    # Create vector index if not exists
+    # Create (or re-create with the current dimension) the vector index
     if total_embedded > 0:
-        try:
-            _run_query(f"""
-                CREATE VECTOR INDEX entity_embedding_vector IF NOT EXISTS
-                FOR (n:_Entity) ON (n.embedding)
-                OPTIONS {{indexConfig: {{
-                    `vector.dimensions`: {len(vectors[0])},
-                    `vector.similarity_function`: 'cosine'
-                }}}}
-            """)
-        except Exception:
-            pass  # index may already exist with different config
+        ensure_vector_index("entity_embedding_vector", "_Entity", "embedding", dims)
 
     return total_embedded
 

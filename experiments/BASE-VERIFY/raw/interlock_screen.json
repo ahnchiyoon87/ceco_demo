@@ -1,0 +1,29 @@
+{
+ "runs": [
+  {
+   "ready": true,
+   "alarm_seen_s": 2.44,
+   "held_after_spike": true,
+   "released": true,
+   "alarm_cleared": true,
+   "pass": true
+  },
+  {
+   "ready": true,
+   "alarm_seen_s": 2.32,
+   "held_after_spike": true,
+   "released": true,
+   "alarm_cleared": true,
+   "pass": true
+  },
+  {
+   "ready": true,
+   "alarm_seen_s": 2.53,
+   "held_after_spike": true,
+   "released": true,
+   "alarm_cleared": true,
+   "pass": true
+  }
+ ],
+ "pass": true
+}

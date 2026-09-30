@@ -121,7 +121,7 @@ def build() -> dict[pathlib.Path, str]:
                            "pending_topic": f"{LINE_PREFIX}/request/pending",
                            "decision_topic": f"{LINE_PREFIX}/request/decision"},
                "alert_display_topic": f'{H["site"]}/alert/display',
-               "legacy_telemetry_topic": "edgex/telemetry"}
+               "edgex_telemetry_topic": "edgex/telemetry"}
     gen = ROOT / "registry" / "generated"
     dump = lambda o: json.dumps(o, ensure_ascii=False, indent=1) + "\n"
     out[gen / "tags.json"] = dump(reg_doc)
@@ -132,7 +132,7 @@ def build() -> dict[pathlib.Path, str]:
 
     wm_ids = [w["work_master_id"] for w in allow_table]
     # 스키마 판은 draft-07: 게이트웨이(Python jsonschema)와 OT 수신기(Node-RED json 노드 = ajv 8 기본 클래스)가 둘 다 안다.
-    # 2020-12 로 두면 ajv 8 이 메타 스키마를 몰라 엣지 기동 뒤 첫 요청을 SCHEMA_INVALID 로 거부한다(09-30 실측, 제어 회귀 S17).
+    # 2020-12 는 ajv 8 기본 클래스가 메타 스키마를 몰라 첫 컴파일이 실패한다.
     META = "http://json-schema.org/draft-07/schema#"
     job_schema = {
         "$schema": META,

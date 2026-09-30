@@ -51,7 +51,7 @@ class ReactorPlant:
         self.p_heater = ph["heater"]
         self.p_cooler = ph.get("cooler", {"max_power_kw": 0.0, "kp": 0.0})
         self.p_agit = ph["agitator"]
-        # 릴리프 밸브식 압력 상한(제어와 독립인 마지막 보호). 없으면 상한 없음(V1 과 같음).
+        # 릴리프 밸브식 압력 상한(제어와 독립인 마지막 보호). 설정이 없으면 상한 없음.
         self.relief_barg = float(ph.get("relief", {}).get("set_barg", float("inf")))
         self.p_rxn = ph["reaction"]
         self.noise = cfg["noise"]
@@ -193,7 +193,7 @@ class ReactorPlant:
 
         # ── 질량수지 ──
         # 원료 보충: level_sp_pct 가 있으면 실제 설비처럼 액위 제어(보충량 = 소비량 + P 보정, 0~refill_m3h),
-        # 없으면 V1 과 같은 고정 보충. 고정 보충은 소비보다 많아 설비 시간 몇 시간 뒤 탱크가 넘친다.
+        # 설정이 없으면 고정 보충(소비보다 많아 설비 시간 몇 시간 뒤 탱크가 넘친다).
         if "level_sp_pct" in self.p_feed:
             err = self.p_feed["level_sp_pct"] - feed_level_frac * 100.0
             refill = min(max(q_in + self.p_feed.get("level_kp", 0.5) * err, 0.0), self.p_feed["refill_m3h"])

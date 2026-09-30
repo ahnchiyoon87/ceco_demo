@@ -1,0 +1,15 @@
+# python scripts/verify.py backbone stream detection  (2026-09-30 14:3x, Kafka 읽기를 오프셋 구간으로 고친 뒤)
+✓ Kafka 토픽 구성 — 9/9개 토픽
+✓ 정규화 스키마 일관성 (값·품질·스캔 순번·설비 시각) — 192건 / 태그 12종
+✓ 나노초 타임스탬프 보존 — 출처 시각(엣지가 읽은 시각)
+✓ Flink 잡 가동 — RUNNING 4개 (Tier-1 SQL 3 + Tier-2 ONNX 1)
+✓ 원시에 결측 구간 보존 (무결성) — raw TT-101 공백 [15.3]초 — 보간으로 덮어쓰지 않음
+✓ 결측치 보간 수행 — clean 보간 14건, 방식 ['INTERPOLATED_LINEAR']
+✓ 보간값이 quality 로 식별됨 (감사 추적) — 실측치와 추정치가 구분되어 저장됨
+✓ Autoencoder 추론 동작 — 15건 수신
+✓ 임베디드 서빙 지연 < 5ms — 평균 0.358ms — TaskManager 내부 직접 호출
+✓ 이상 기여 센서 역추적 — VT-101(49%), FT-101(13%), FT-102(12%)
+✓ spike → TIER1_RULE — PT-101 = 6.841 barg / 규격 [-, 6.0]
+✓ bearing_wear → TIER1_CEP — 교반기 전류 10.32A (정격 120% 초과) 후 1초 내 진동 8.18mm/s 상회 → 베어링 열화 의심
+✓ drift → TIER2_ML — 재구성오차 34.82191 > 임계 0.16640 · 기여 상위: VT-101(97%), IT-102(2%), PT-101(1%) · 추론 0.20ms
+결과: 13/13 통과

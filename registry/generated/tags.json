@@ -227,7 +227,7 @@
   {
    "asset": "R-101",
    "name": "temp_sp",
-   "legacy": "temp_sp_x10",
+   "control_point": "temp_sp_x10",
    "code": 7,
    "kind": "setpoint",
    "unit": "degC",
@@ -242,7 +242,7 @@
   {
    "asset": "HX-101",
    "name": "enable",
-   "legacy": "heater_enable",
+   "control_point": "heater_enable",
    "code": 3,
    "kind": "switch",
    "desc": "재킷 히터 Enable",
@@ -253,7 +253,7 @@
   {
    "asset": "HX-102",
    "name": "enable",
-   "legacy": "cooler_enable",
+   "control_point": "cooler_enable",
    "code": 4,
    "kind": "switch",
    "desc": "가상 냉각기 Enable",
@@ -264,7 +264,7 @@
   {
    "asset": "P-101",
    "name": "run",
-   "legacy": "pump_run",
+   "control_point": "pump_run",
    "code": 1,
    "kind": "switch",
    "desc": "공급 펌프 기동",
@@ -275,7 +275,7 @@
   {
    "asset": "P-101",
    "name": "speed_sp",
-   "legacy": "pump_speed_sp",
+   "control_point": "pump_speed_sp",
    "code": 5,
    "kind": "setpoint",
    "unit": "%",
@@ -290,7 +290,7 @@
   {
    "asset": "CV-101",
    "name": "open_sp",
-   "legacy": "valve_open_sp",
+   "control_point": "valve_open_sp",
    "code": 6,
    "kind": "setpoint",
    "unit": "%",
@@ -305,7 +305,7 @@
   {
    "asset": "M-101",
    "name": "run",
-   "legacy": "agitator_run",
+   "control_point": "agitator_run",
    "code": 2,
    "kind": "switch",
    "desc": "교반기 기동",
@@ -332,6 +332,16 @@
    "operator_topic": "AR-100/reaction/reactor-line-01/PLC-01/cmd/operator",
    "request_topic": "AR-100/reaction/reactor-line-01/PLC-01/cmd/request",
    "status_topic": "AR-100/reaction/reactor-line-01/PLC-01/status/maintenance"
+  },
+  {
+   "asset": "PLC-01",
+   "name": "interlock_reset",
+   "code": 12,
+   "kind": "reset",
+   "desc": "고압 인터록 리셋(압력이 해제 값 아래일 때만, 운전원만)",
+   "operator_topic": "AR-100/reaction/reactor-line-01/PLC-01/cmd/operator",
+   "request_topic": "AR-100/reaction/reactor-line-01/PLC-01/cmd/request",
+   "status_topic": "AR-100/reaction/reactor-line-01/PLC-01/status/interlock_reset"
   }
  ],
  "plc": {
@@ -415,5 +425,5 @@
   "decision_topic": "AR-100/reaction/reactor-line-01/request/decision"
  },
  "alert_display_topic": "AR-100/alert/display",
- "legacy_telemetry_topic": "edgex/telemetry"
+ "edgex_telemetry_topic": "edgex/telemetry"
 }

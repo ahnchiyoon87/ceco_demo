@@ -7,8 +7,12 @@ V1 과 다른 점은 '화면' 지점뿐이다.
   base_client python harness/e2e/fault_onset_base.py --reps 3 --out /repo/experiments/<EXP>/raw/onset_base.json
 """
 import argparse, base64, json, os, threading, time, urllib.request, uuid
+import sys
 import paho.mqtt.client as mqtt
 from confluent_kafka import Consumer
+
+sys.path.insert(0, "/repo/harness/e2e")
+from ot_ops import Operator  # noqa: E402
 
 EXPECT = {   # V1 fault_onset.py 와 같은 기대 알람
     "spike":        lambda a: a["tag"] == "PT-101" and a["alert_type"] == "THRESHOLD_USL",
@@ -110,6 +114,7 @@ def screen_hit(fault, src, al):
     return any(c in al.get("name", "") for c in cond) if kind == "fuxa" else ("tag" in al and cond(al))
 
 
+OPERATOR = Operator()
 results = {}
 for fault in a.faults.split(","):
     match, lat = EXPECT[fault], []
@@ -144,6 +149,9 @@ for fault in a.faults.split(","):
             time.sleep(0.05)
         lat.append(got)
         print(fault, i, got, flush=True)
+        if fault == "spike":                      # 인터록 트립 기억: 운전원 리셋·펌프 재기동 뒤 다음 회
+            http(a.sim + "/fault/clear", {})
+            OPERATOR.recover_interlock()
         if os.environ.get("ONSET_DEBUG"):
             with lock:
                 print("  fuxa 이벤트:", [(round(ts - t0, 2), al.get("name")) for src, ts, al in events if src == "fuxa" and ts >= t0 - 5], flush=True)

@@ -85,6 +85,7 @@ def render(d):
     semaphore_box(1295, 413, 14, 14, ST['field_comm'], ok_flag, rx=7)
     txt(1325, 424, 'PLC 통신', size=12, fill=muted)
     semaphore_box(1388, 413, 14, 14, ST['plc_comm'], ok_flag, rx=7)
+    button(1448, 410, 110, 26, '인터록 리셋', CMD['ilk_reset'], 1, bg='#8a5a1f')
     txt(1060, 456, '마지막 명령 응답', size=12, fill=muted)
     text_value(1180, 456, ST['ack'], size=13, color='#ffd59e')
     txt(1560, 472, '정비 해제는 현장 패널(해제 키)에서만', size=11, fill=muted, anchor='end')

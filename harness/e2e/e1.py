@@ -56,6 +56,8 @@ def main():
     ap.add_argument("--fuxa-alarms", default=None, help="새 베이스: FUXA 활성 알람 API(선택). 이름에 --tag 가 든 알람이 새로 뜬 시각을 'fuxa:alarm' 지점으로 기록")
     ap.add_argument("--min-before", default=None, help="주입 전 조건 '태그=값': 그 계측값이 값 이상일 때까지 최대 150 s 기다린다. "
                     "예) PT-101=2.6 — 스파이크(+3.6)가 규격(6.0)을 넘는 운전점에서만 주입(생산 스케줄 주기 144 s)")
+    ap.add_argument("--recover-interlock", action="store_true",
+                    help="새 베이스: 인터록은 트립을 기억하므로 회마다 고장을 푼 뒤 운전원 리셋·펌프 재기동(FUXA 계정)")
     ap.add_argument("--fuxa-match", default=None, help="FUXA 알람 이름에 든 글자 또는 알람 종류(쉼표). 기본 --tag. "
                     "예) PT-101,highhigh (highhigh = 인터록·비상정지. 한글은 Windows 명령줄에서 깨질 수 있어 종류로 맞춘다)")
     a = ap.parse_args()
@@ -138,8 +140,16 @@ def main():
                 time.sleep(0.2)
         threading.Thread(target=iloop, daemon=True).start()
     reps = []
+    operator = None
+    if a.recover_interlock:
+        import sys
+        sys.path.insert(0, "/repo/harness/e2e")
+        from ot_ops import Operator
+        operator = Operator()
     for i in range(a.reps):
         http(a.sim + "/fault/clear", {})
+        if operator:
+            operator.recover_interlock()
         t_wait = time.time()
         while True:                                # 직전 회차 잔여 알람·인터록이 끝날 때까지
             with lock:

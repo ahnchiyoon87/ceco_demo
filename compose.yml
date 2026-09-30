@@ -48,6 +48,15 @@ volumes:
   knowledge-uploads:
   knowledge-output:
 
+x-ai-llm: &ai-llm   # AI 층의 LLM·임베딩 게이트웨이(GCP LiteLLM). 키는 저장소 밖 ai-layer/.env.local 의 LITELLM_*
+  env_file: [ { path: ./ai-layer/.env.local, required: false } ]
+  entrypoint: ["sh", "-c", "export OPENAI_API_KEY=\"$${LITELLM_API_KEY:-}\" OPENAI_BASE_URL=\"$${LITELLM_BASE_URL:-}\" MAJOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\" MINOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\"; exec \"$$@\"", "llm-env"]
+
+x-ai-llm-env: &ai-llm-env
+  EMBEDDING_MODEL: embedding          # LiteLLM 모델 이름(text-embedding-3-small)
+  EMBEDDING_DIMENSIONS: "1536"
+  OCR_EMBEDDING_MODEL: openai:embedding
+
 x-mqtt-common: &mqtt-common
   image: ${MOSQUITTO_IMAGE}
   restart: unless-stopped
@@ -161,7 +170,7 @@ services:
     restart: unless-stopped
     # 로그인(보안)·JWT 비밀·DAQ(OT 이력) 보존 7일은 FUXA 가 기동 때 읽는 사용자 설정(_appdata/mysettings.json)에
     # 없는 값만 채운다(fuxa/seed_settings.js). 설정 API 로 넣으면 프로젝트 넣기와 함께 런타임이 1초 안에 두 번 재시작돼
-    # 같은 이름의 DAQ 파일을 FUXA 가 스스로 지운다(SQLITE_READONLY, 09-30 실측).
+    # 같은 이름의 DAQ 파일을 FUXA 가 스스로 지운다(SQLITE_READONLY).
     command: [ "sh", "-c", "node /seed/seed_settings.js && exec node main.js" ]
     environment:
       FUXA_JWT_SECRET: ${FUXA_JWT_SECRET}
@@ -332,8 +341,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_LOG_DIRS: /var/lib/kafka/data          # 결함 S21: 지정하지 않으면 /tmp 에 쌓여 볼륨이 빈다
-      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data          # 지정하지 않으면 /tmp 에 쌓여 볼륨이 빈다
+      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"   # GC 뒤 살아 있는 힙 약 210 MB(실측) → 두 배 여유
       CLUSTER_ID: ar100-base-kraft-cluster
     ports: [ "127.0.0.1:${PORT_KAFKA}:19092" ]
     volumes: [ "kafka-data:/var/lib/kafka/data" ]
@@ -375,7 +384,7 @@ services:
       retries: 12
       start_period: 30s
 
-  zookeeper:   # Flink JobManager HA(결함 S1: 재시작 뒤 잡 자동 복구)
+  zookeeper:   # Flink JobManager HA(재시작 뒤 잡 자동 복구)
     image: ${ZOOKEEPER_IMAGE}
     restart: unless-stopped
     environment: { ZOO_4LW_COMMANDS_WHITELIST: "ruok" }
@@ -384,12 +393,12 @@ services:
     healthcheck: { test: ["CMD-SHELL", "echo ruok | nc -w 2 localhost 2181 | grep -q imok"], interval: 10s, timeout: 5s, retries: 10 }
 
   flink-jobmanager:
-    build: { context: ./flink, dockerfile: Dockerfile.v2 }
+    build: { context: ./flink, dockerfile: Dockerfile }
     image: rot-flink-onnx:base
     restart: unless-stopped
     command: jobmanager
     ports: [ "127.0.0.1:${PORT_FLINK_UI}:8081" ]
-    volumes: [ "./flink/conf/config.v2.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    volumes: [ "./flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on: { zookeeper: { condition: service_healthy } }
     healthcheck: { test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"], interval: 10s, timeout: 5s, retries: 20, start_period: 30s }
@@ -398,7 +407,7 @@ services:
     image: rot-flink-onnx:base
     restart: unless-stopped
     command: taskmanager
-    volumes: [ "./flink/conf/config.v2.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    volumes: [ "./flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on: { flink-jobmanager: { condition: service_healthy } }
     healthcheck:
@@ -419,7 +428,7 @@ services:
     image: rot-flink-onnx:base
     restart: "no"
     entrypoint: ["/bin/bash", "/submit-jobs.sh"]
-    volumes: [ "./flink/sql:/opt/flink/sql:ro", "./flink/submit-jobs.sh:/submit-jobs.sh:ro", "./flink/conf/client-config.v2.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
+    volumes: [ "./flink/sql:/opt/flink/sql:ro", "./flink/submit-jobs.sh:/submit-jobs.sh:ro", "./flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on:
       flink-jobmanager: { condition: service_healthy }
@@ -496,6 +505,7 @@ services:
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
       GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
       GF_NEWS_NEWS_FEED_ENABLED: "false"
+      GF_PLUGINS_PREINSTALL_DISABLED: "true"        # 쓰지 않는 기본 플러그인(백엔드 프로세스)을 띄우지 않는다
       INFLUX_ORG: ${INFLUX_ORG}
       IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
       IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
@@ -558,7 +568,9 @@ services:
     image: ${CADVISOR_IMAGE}
     restart: unless-stopped
     privileged: true
-    command: ["--docker_only=true", "--housekeeping_interval=10s", "--store_container_labels=false"]
+    # 인프라 화면·경보가 쓰는 CPU·메모리·네트워크만 모은다
+    command: ["--docker_only=true", "--housekeeping_interval=10s", "--store_container_labels=false",
+              "--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,hugetlb,referenced_memory,cpu_topology,resctrl,advtcp,process,cpuLoad,oom_event,memory_numa,cpuset"]
     volumes: [ "/:/rootfs:ro", "/var/run:/var/run:ro", "/sys:/sys:ro", "/var/lib/docker/:/var/lib/docker:ro" ]
     networks: [it-net]
 
@@ -568,9 +580,9 @@ services:
     restart: unless-stopped
     environment:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
-      NEO4J_server_memory_heap_initial__size: 512m
-      NEO4J_server_memory_heap_max__size: 1G
-      NEO4J_server_memory_pagecache_size: 512m
+      NEO4J_server_memory_heap_initial__size: 256m   # 교육용 그래프(노드 수백 개 + 벡터)
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 128m
     ports: [ "127.0.0.1:${PORT_GRAPH_HTTP}:7474", "127.0.0.1:${PORT_GRAPH_BOLT}:7687" ]
     volumes: [ "graph-data:/data", "graph-logs:/logs" ]
     networks: [it-net]
@@ -581,12 +593,14 @@ services:
       retries: 18
       start_period: 30s
 
-  graph-seed:   # 기동 때 1회: 등록부·교육 문서·고장 온톨로지 묶음을 검토·게시 모듈로 넣는다(멱등, LLM 없음)
+  graph-seed:   # 기동 때 1회: 등록부·교육 문서·고장 온톨로지 묶음 게시 + 매뉴얼 절·개체 임베딩(멱등)
+    <<: *ai-llm
     image: rot-ai-knowledge:base
     restart: "no"
     working_dir: /app
     command: ["python", "/repo/ai-layer/seed_graph.py"]
     environment:
+      <<: *ai-llm-env
       NEO4J_URI: bolt://graph:7687
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
@@ -596,11 +610,12 @@ services:
 
   knowledge:   # AI 업무 도우미 백엔드(에이전트·온톨로지·매뉴얼 검색·승인). 설비에는 작업 요청으로만 닿는다
     build: { context: ./ai-layer/knowledge, dockerfile: backend/Dockerfile }
+    <<: *ai-llm
     image: rot-ai-knowledge:base
     restart: unless-stopped
-    env_file: [ { path: ./ai-layer/.env.local, required: false } ]   # LLM 키(저장소 밖)
-    command: ["sh", "-c", "export OPENAI_API_KEY=\"$${LITELLM_API_KEY:-}\" OPENAI_BASE_URL=\"$${LITELLM_BASE_URL:-}\" MAJOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\" MINOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\"; exec ontology-studio-backend"]
+    command: ["ontology-studio-backend"]
     environment:
+      <<: *ai-llm-env
       NEO4J_URI: bolt://graph:7687
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
@@ -623,9 +638,6 @@ services:
       SANDBOX_BACKEND: local
       LOCAL_SANDBOX_ROOT: /workspace
       SANDBOX_WORKDIR: /workspace
-      OLLAMA_BASE_URL: http://host.docker.internal:11434   # 임베딩은 호스트 Ollama(도커 예산 밖, ⑨-10)
-      V2_EMBED_URL: http://host.docker.internal:11434      # 매뉴얼 절 검색(bge-m3)도 같은 호스트 Ollama. 없으면 V1 의 embed 컨테이너를 찾는다
-    extra_hosts: [ "host.docker.internal:host-gateway" ]
     ports: [ "127.0.0.1:${PORT_AI_KNOWLEDGE}:8000" ]
     volumes: [ "knowledge-data:/app/backend/data", "knowledge-uploads:/workspace/uploads", "knowledge-output:/workspace/output" ]
     networks: [it-net]

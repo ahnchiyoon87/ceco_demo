@@ -1,12 +1,12 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
     "python_full_version >= '3.14' and sys_platform != 'win32'",
     "python_full_version == '3.13.*' and sys_platform == 'win32'",
-    "python_full_version < '3.13' and sys_platform == 'win32'",
     "python_full_version == '3.13.*' and sys_platform != 'win32'",
+    "python_full_version < '3.13' and sys_platform == 'win32'",
     "python_full_version < '3.13' and sys_platform != 'win32'",
 ]
 
@@ -868,11 +868,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/96/1c/4d6fa3d0d4e4bd2ffea212fb07ca8e7e374068261c960ee02db769129e29/neo4j_graphrag-1.21.0-py3-none-any.whl", hash = "sha256:d9a6befd9f44fa73ac2d52f168d8c61646f1a1c84275c552a920cbe1d6965b73", size = 297712, upload-time = "2026-09-23T13:13:15.001Z" },
 ]
 
-[package.optional-dependencies]
-ollama = [
-    { name = "ollama" },
-]
-
 [[package]]
 name = "numpy"
 version = "2.5.3"
@@ -947,19 +942,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ollama"
-version = "0.4.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpx" },
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/4d/f46ff3d124ce0805cf728a443cfb0227beb025256cb9276a6f71521c19bd/ollama-0.4.9.tar.gz", hash = "sha256:5266d4d29b5089a01489872b8e8f980f018bccbdd1082b3903448af1d5615ce7", size = 40875, upload-time = "2025-05-27T18:09:27.538Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/b6/0c40493c0505652d3da58ad048be19f00c4bdf587140cc578a770d2029d4/ollama-0.4.9-py3-none-any.whl", hash = "sha256:18c8c85358c54d7f73d6a66cda495b0e3ba99fdb88f824ae470d740fbb211a50", size = 13303, upload-time = "2025-05-27T18:09:26.147Z" },
-]
-
-[[package]]
 name = "ontology-studio-backend"
 version = "0.1.0"
 source = { editable = "." }
@@ -974,7 +956,7 @@ dependencies = [
     { name = "langgraph-checkpoint-sqlite" },
     { name = "mcp" },
     { name = "neo4j" },
-    { name = "neo4j-graphrag", extra = ["ollama"] },
+    { name = "neo4j-graphrag" },
     { name = "openai" },
     { name = "pdfplumber" },
     { name = "psycopg", extra = ["binary"] },
@@ -1000,7 +982,7 @@ requires-dist = [
     { name = "langgraph-checkpoint-sqlite", specifier = ">=3.0.3" },
     { name = "mcp", specifier = ">=1.2.0" },
     { name = "neo4j" },
-    { name = "neo4j-graphrag", extras = ["ollama"], specifier = "==1.21.0" },
+    { name = "neo4j-graphrag", specifier = "==1.21.0" },
     { name = "openai" },
     { name = "pdfplumber" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },

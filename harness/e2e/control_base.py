@@ -223,29 +223,38 @@ def s15():
 
 
 def s16():
-    """스파이크(+3.6 bar 계기 튐) 동안 인터록은 6.5 bar 트립 → 펌프 정지로 압력이 내려가 5.2 bar 해제 → 재기동을 반복한다
-    (히스테리시스 인터록의 정상 동작). 판정: 인터록 중 기동 명령 → PLC INTERLOCK 거부, 그리고 인터록이 1 s 넘게 켜진
-    구간의 표본마다 가상설비 펌프 출력이 꺼져 있고 유량 < 0.5(V1 S16 과 같은 물리 판정)."""
+    """인터록(트립 기억): 스파이크(+3.6 bar 계기 튐)로 6.5 bar 트립 → 기동 명령 PLC INTERLOCK 거부, 트립 구간 펌프 꺼짐·유량 < 0.5,
+    고장을 풀어 압력이 내려와도 트립 유지, 압력이 높을 때 리셋은 INTERLOCK 거부, 5.2 bar 아래에서 리셋 수락 → 해제 → 펌프 재기동 수락."""
     set_mode("REMOTE_MANUAL")
+    # 스파이크(+3.6)가 트립 값(6.5)을 넘는 운전점에서만 주입한다(생산 스케줄 주기 144 s 안에서 PT-101 약 2.4~4.0)
+    ready = wait_until(lambda: sim_state()["readings"]["PT-101"] >= 3.0, 180)
+    pt_before = sim_state()["readings"]["PT-101"]
     fault({"scenario": "spike", "duration_s": 15})   # spike 는 kind: event → 실제 초
-    samples, ack, t0 = [], None, time.time()
+    samples, ack, reset_high, t0 = [], None, None, time.time()
     while time.time() - t0 < 15:
-        ilk = status.get(("PLC-01", "interlock"))
-        if ilk is True and ack is None:
+        if status.get(("PLC-01", "interlock")) is True and ack is None:
             ack, _ = operator("P-101", "run", True)
+            if sim_state()["readings"]["PT-101"] > 5.2:
+                reset_high, _ = operator("PLC-01", "interlock_reset", 1)
         s = sim_state()
         samples.append({"t": round(time.time() - t0, 2), "ilk": status.get(("PLC-01", "interlock")),
                         "pump": s["commands"]["pump_run"], "ft": s["readings"].get("FT-101")})
         time.sleep(0.25)
     fault(None)
-    released = wait_until(lambda: status.get(("PLC-01", "interlock")) is False, 60)
-    # 인터록이 표본 앞뒤 1 s 동안 계속 켜져 있던 표본만 본다(PLC → 가상설비 출력 반영·유량 감소 지연 제외)
+    wait_until(lambda: sim_state()["readings"]["PT-101"] <= 5.0, 60)
+    time.sleep(2)
+    held = status.get(("PLC-01", "interlock")) is True                  # 압력이 내려와도 풀리지 않는다
+    reset, _ = operator("PLC-01", "interlock_reset", 1)
+    released = wait_until(lambda: status.get(("PLC-01", "interlock")) is False, 6)
+    restart, _ = operator("P-101", "run", True)
+    running = wait_until(lambda: sim_state()["commands"]["pump_run"] is True, 6)
     stable = [x for x in samples if all(y["ilk"] is True for y in samples if abs(y["t"] - x["t"]) <= 1.0)]
     bad = [x for x in stable if x["pump"] is not False or (x["ft"] is not None and x["ft"] >= 0.5)]
-    trips = sum(1 for a, b in zip(samples, samples[1:]) if a["ilk"] is not True and b["ilk"] is True)
-    return {"pass": ack == "INTERLOCK" and len(stable) >= 3 and not bad, "ack_during": ack, "trips": trips,
-            "stable_samples": len(stable), "violations": bad[:5], "released": released,
-            "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동이 없다 — 외부 길은 설계로 차단"}
+    return {"pass": ready and ack == "INTERLOCK" and len(stable) >= 3 and not bad and held and reset_high in ("INTERLOCK", None)
+                    and reset == "ACCEPTED" and released and restart == "ACCEPTED" and running,
+            "pt_before": pt_before, "ack_during": ack, "stable_samples": len(stable), "violations": bad[:5], "held_after_pressure_drop": held,
+            "reset_while_high": reset_high, "reset": reset, "released": released, "restart_ack": restart, "pump_running": running,
+            "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동·인터록 리셋이 없다 — 외부 길은 설계로 차단"}
 
 
 def s17():

@@ -39,8 +39,8 @@ class Settings:
     neo4j_uri: str
     neo4j_user: str
     neo4j_password: str
-    ollama_base_url: str
-    ollama_embedding_model: str
+    embedding_model: str
+    embedding_dimensions: int
     embedding_chunk_max_tokens: int
     mcp_transport: str
     mcp_host: str
@@ -103,8 +103,8 @@ def get_settings() -> Settings:
         neo4j_uri=os.environ.get("NEO4J_URI", "bolt://localhost:7687"),
         neo4j_user=os.environ.get("NEO4J_USER", "neo4j"),
         neo4j_password=os.environ.get("NEO4J_PASSWORD", ""),
-        ollama_base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-        ollama_embedding_model=os.environ.get("OLLAMA_EMBEDDING_MODEL", "qwen3-embedding"),
+        embedding_model=os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small"),
+        embedding_dimensions=int(os.environ.get("EMBEDDING_DIMENSIONS", "1536")),
         embedding_chunk_max_tokens=int(os.environ.get("EMBEDDING_CHUNK_MAX_TOKENS", "1000")),
         mcp_transport=os.environ.get("MCP_TRANSPORT", "stdio").strip().lower() or "stdio",
         mcp_host=os.environ.get("MCP_HOST", "0.0.0.0"),

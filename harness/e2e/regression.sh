@@ -11,7 +11,7 @@ STRUCT=${STRUCT:-V1}
 R=experiments/$EXP/raw; mkdir -p $R
 LOG=experiments/$EXP/regression_$NAME.log
 REPO="D:/work/study/scada-rotation"
-CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.0"
+CLIENT="docker run --rm --network rot-iiot --add-host host.docker.internal:host-gateway --env-file .env -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo e2e-client:1.2"
 TOOLS="docker run --rm --network rot-iiot -e BOOTSTRAP=kafka:9092 -v $REPO:/repo -v $REPO/experiments:/experiments -w /repo l4bench-tools:1.0"   # replay.py·evaluate.py 는 BOOTSTRAP 환경변수로 Kafka 를 찾는다(첫 실행에서 KeyError, #130)
 API=http://127.0.0.1:38000/api/operations
 SIM=http://127.0.0.1:37080

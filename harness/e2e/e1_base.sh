@@ -13,8 +13,8 @@ for k in ${E1_RUNS:-1 2 3}; do
   base_client python harness/e2e/e1.py --exp $EXP --run e1_base_$k --reps 10 --quiet-s 3 --sim $SIM_INT \
     --mqtt ot-hub --kafka kafka:9092 --kafka-topic sensor.alerts \
     --match THRESHOLD_USL --fault-duration 2 --incident-api $AI_INT/incidents \
-    --fuxa-alarms $FUXA_INT/api/alarms --fuxa-match PT-101,인터록 --min-before PT-101=3.0 --timeout-s 15 2>&1 | tail -1
+    --fuxa-alarms $FUXA_INT/api/alarms --fuxa-match PT-101,인터록 --min-before PT-101=3.0 --recover-interlock --timeout-s 15 2>&1 | tail -1
 done
 base_client python harness/e2e/e1.py --exp $EXP --run e1_base_display --reps 10 --quiet-s 65 --sim $SIM_INT \
   --mqtt ot-hub --mqtt-topics AR-100/alert/display --kafka kafka:9092 --kafka-topic sensor.alerts \
-  --match THRESHOLD_USL --fault-duration 2 --min-before PT-101=3.0 2>&1 | tail -1
+  --match THRESHOLD_USL --fault-duration 2 --min-before PT-101=3.0 --recover-interlock 2>&1 | tail -1

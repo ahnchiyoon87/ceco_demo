@@ -1,0 +1,12 @@
+{
+ "incident": "708781ff-231b-4458-8c92-08d4f390347e",
+ "run_status": "awaiting_review",
+ "model": "openai:coding",
+ "proposals": [
+  "stop_mixer"
+ ],
+ "t_incident_s": 2.24,
+ "t_analysis_s": 18.05,
+ "t_cycle_s": 20.54,
+ "pass": true
+}

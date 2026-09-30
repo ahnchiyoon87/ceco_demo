@@ -6,9 +6,9 @@
    "agitator_run": true,
    "heater_enable": true,
    "cooler_enable": false,
-   "pump_speed_sp": 60.0,
-   "valve_open_sp": 56.0,
-   "temp_sp_c": 65.9
+   "pump_speed_sp": 58.0,
+   "valve_open_sp": 51.0,
+   "temp_sp_c": 74.0
   }
  },
  "S14": {
@@ -16,48 +16,52 @@
   "before": true,
   "stop": {
    "ack": "ACCEPTED",
-   "ack_s": 0.2,
+   "ack_s": 0.35,
    "sim": true
   },
   "start": {
    "ack": "ACCEPTED",
-   "ack_s": 0.25,
+   "ack_s": 0.14,
    "sim": true
   },
-  "took_s": 1.4
+  "took_s": 1.7
  },
  "S15": {
   "pass": true,
   "operator": {
    "ack": "RANGE",
-   "valve_before": 56.0,
-   "valve_after": 56.0
+   "valve_before": 51.0,
+   "valve_after": 51.0
   },
   "external": {
-   "job": "ctl-d3efc02672de4175a715a6f7f3fe7adc",
+   "job": "ctl-54207276693249afbfcf7b8602780002",
    "events": [
     "approved:APPROVED",
     "dispatched:None",
     "gateway_rejected:REJECTED(PARAMETER_RANGE)"
    ],
-   "temp_before": 65.9,
-   "temp_after": 67.0
+   "temp_before": 74.0,
+   "temp_after": 74.0
   },
-  "took_s": 4.3
+  "took_s": 4.8
  },
  "S16": {
-  "pass": true,
-  "ack_during": "INTERLOCK",
-  "trips": 1,
-  "stable_samples": 5,
+  "pass": false,
+  "ack_during": null,
+  "stable_samples": 0,
   "violations": [],
+  "held_after_pressure_drop": false,
+  "reset_while_high": null,
+  "reset": "ACCEPTED",
   "released": true,
-  "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동이 없다 — 외부 길은 설계로 차단",
-  "took_s": 15.2
+  "restart_ack": "ACCEPTED",
+  "pump_running": true,
+  "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동·인터록 리셋이 없다 — 외부 길은 설계로 차단",
+  "took_s": 17.7
  },
  "S17": {
   "pass": true,
-  "job": "ctl-3cc3defc3c544cb5ac5e05453f205be1",
+  "job": "ctl-8a045f492e8c402c9911bb2e8c984cd3",
   "events": [
    "approved:APPROVED",
    "dispatched:None",
@@ -67,11 +71,11 @@
   ],
   "agitator_before": true,
   "agitator_after": true,
-  "took_s": 4.1
+  "took_s": 2.8
  },
  "S18": {
   "pass": true,
-  "job": "ctl-9a8895b7e6a74e1aa0c038a821819698",
+  "job": "ctl-652e8d344fde46d6886e67ced66138da",
   "events": [
    "approved:APPROVED",
    "dispatched:None",
@@ -81,11 +85,11 @@
   ],
   "cooler_before": false,
   "cooler_after": false,
-  "took_s": 5.3
+  "took_s": 3.2
  },
  "S20": {
   "pass": true,
-  "job": "ctl-6b4fa1a01f57498ebc086e542d67bc57",
+  "job": "ctl-a6cd2f84081f48f980d17fb73cd9e47e",
   "events": [
    "approved:APPROVED",
    "dispatched:None",
@@ -95,17 +99,17 @@
    "command_disagree:DISAGREE(PLC 수용 뒤 10 s 안에 HX-102/enable 가 True 로 보이지 않음(현재 False))"
   ],
   "state_enable": false,
-  "disagree_after_plc_s": 10.44,
-  "injected_at_s": 1790729325.938,
-  "took_s": 11.5
+  "disagree_after_plc_s": 10.07,
+  "injected_at_s": 1790744825.336,
+  "took_s": 10.6
  },
  "S21": {
   "pass": true,
-  "job": "ctl-dup-7d63dd58b6a742f9a04927856d6fa637",
+  "job": "ctl-dup-b96f1510e6a94794b93a92006047755b",
   "receipts": 1,
   "plc_acks": 1,
   "ack": "ACCEPTED",
-  "temp_before": 72.9,
+  "temp_before": 74.0,
   "temp_after": 66.0,
   "note": "워크플로에 없는 요청 ID 라 업무 서비스는 기록하지 않는다(등록되지 않은 응답)",
   "took_s": 8.2
@@ -144,14 +148,14 @@
    "temp_before": 66.0,
    "temp_after": 70.0,
    "pass": true,
-   "job": "ctl-efa91d5d061347e19e74c5fe9831e2c0",
+   "job": "ctl-9a39940d357b445585f8bccc1582fdad",
    "timeline_s": {
     "approved:APPROVED": 0.0,
-    "dispatched:None": 0.06,
-    "gateway_accepted:ACCEPTED": 0.07,
-    "receipt:AUTO_ACCEPTED": 0.6,
-    "plc:ACCEPTED": 0.81,
-    "observed:OK": 1.61
+    "dispatched:None": 0.09,
+    "gateway_accepted:ACCEPTED": 0.1,
+    "receipt:AUTO_ACCEPTED": 0.31,
+    "plc:ACCEPTED": 0.31,
+    "observed:OK": 0.77
    }
   },
   "REMOTE_MANUAL": {
@@ -166,29 +170,29 @@
    ],
    "cooler_before": false,
    "cooler_after": true,
-   "job": "ctl-288b858452f44c15a5d369723bf1823c",
+   "job": "ctl-1e42d04f03ae47c2ba2f368bfbc6ecc0",
    "timeline_s": {
     "approved:APPROVED": 0.0,
-    "dispatched:None": 0.02,
-    "gateway_accepted:ACCEPTED": 0.04,
-    "receipt:OPERATOR_WAIT": 0.35,
+    "dispatched:None": 0.15,
+    "gateway_accepted:ACCEPTED": 0.15,
+    "receipt:OPERATOR_WAIT": 0.34,
     "operator:OPERATOR_ACCEPTED": 0.75,
     "plc:ACCEPTED": 0.95,
-    "observed:OK": 1.36
+    "observed:OK": 1.58
    },
    "pass": true
   },
   "pass": true,
-  "took_s": 6.7
+  "took_s": 6.0
  },
  "EXP": {
   "pass": true,
   "response": {
-   "job_order_id": "ctl-exp-88f9acc3e3fd4d9391b739bfd61c031c",
+   "job_order_id": "ctl-exp-a779261026a34e438e2b470378fab26c",
    "stage": "receipt",
    "status": "REJECTED",
    "reason": "EXPIRED",
-   "ts": "2026-09-30T00:49:12.141Z"
+   "ts": "2026-09-30T05:07:30.049Z"
   },
   "took_s": 0.5
  },
@@ -201,12 +205,12 @@
    "receipt:OPERATOR_WAIT(STORED)",
    "operator:REJECTED(OPERATOR_TIMEOUT)"
   ],
-  "timeout_after_s": 59.4,
-  "took_s": 60.5
+  "timeout_after_s": 61.0,
+  "took_s": 61.3
  },
  "AUD": {
   "pass": true,
-  "job": "ctl-288b858452f44c15a5d369723bf1823c",
+  "job": "ctl-1e42d04f03ae47c2ba2f368bfbc6ecc0",
   "audit_actions": [
    "approve",
    "dispatched",
@@ -231,21 +235,21 @@
    "agitator_run": true,
    "heater_enable": true,
    "cooler_enable": false,
-   "pump_speed_sp": 76.0,
-   "valve_open_sp": 47.0,
+   "pump_speed_sp": 73.0,
+   "valve_open_sp": 49.0,
    "temp_sp_c": 70.0
   }
  },
- "pass_all": true,
+ "pass_all": false,
  "S19": {
   "pass": true,
   "note": "준비만(모드 REMOTE_AUTO). 엣지 정지·요청은 S19A, 재기동 뒤 확인은 S19B",
   "temp_before": 70.0,
-  "took_s": 0.3
+  "took_s": 0.2
  },
  "S19A": {
   "pass": true,
-  "job": "ctl-a2a920decd3f43939e2cb245c0fc900f",
+  "job": "ctl-417c4707723f4b26b9bc660cf02263b2",
   "events": [
    "approved:APPROVED",
    "dispatched:None",
@@ -253,12 +257,12 @@
    "ack_timeout:UNKNOWN(ACK 5 s 안에 수신 응답(ⓑ) 없음 — 응답 없음(결과 모름). 다시 보내지 않는다)",
    "expired_unconfirmed:UNKNOWN(만료 + 5 s 까지 수신 응답(ⓑ) 없음 — 결과 미확인)"
   ],
-  "ack_timeout_after_s": 5.38,
-  "took_s": 35.4
+  "ack_timeout_after_s": 5.19,
+  "took_s": 35.6
  },
  "S19B": {
   "pass": true,
-  "job": "ctl-a2a920decd3f43939e2cb245c0fc900f",
+  "job": "ctl-417c4707723f4b26b9bc660cf02263b2",
   "events": [
    "approved:APPROVED",
    "dispatched:None",
