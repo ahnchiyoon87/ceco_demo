@@ -196,7 +196,7 @@ services:
     networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.16" } }
     depends_on: { fuxa: { condition: service_healthy } }
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:2019/config/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:2019/config/"]
       interval: 10s
       timeout: 5s
       retries: 12
