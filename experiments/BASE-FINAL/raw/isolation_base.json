@@ -1,0 +1,43 @@
+{
+ "during": {
+  "cut_at": 1790762802.6797593,
+  "job_a": "iso-a-b7ba8cacc5d24bb286fd410e464ae27b",
+  "job_b": "iso-b-2b60b0cbe643462ca21016ce6fdecb91",
+  "job_b_expires_at": 1790762823,
+  "fuxa_value_updates": true,
+  "operator_ack": "ACCEPTED",
+  "interlock_seen": true,
+  "pump_off_during_interlock": true,
+  "reset_in_ot": {
+   "tripped": true,
+   "resets": 2,
+   "last_reset_ack": "ACCEPTED",
+   "released": true,
+   "pump_start_ack": "ACCEPTED"
+  },
+  "fuxa_daq_rows_during_cut": 55,
+  "during_s": 55.1
+ },
+ "ot_continues": true,
+ "after": {
+  "job_a_response_on_ot": null,
+  "job_a_events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "ack_timeout:UNKNOWN",
+   "expired_unconfirmed:UNKNOWN"
+  ],
+  "job_b_response_on_ot": {
+   "job_order_id": "iso-b-2b60b0cbe643462ca21016ce6fdecb91",
+   "stage": "receipt",
+   "status": "REJECTED",
+   "reason": "SCHEMA_INVALID",
+   "detail": "[{\"instancePath\":\"\",\"schemaPath\":\"#/required\",\"keyword\":\"required\",\"params\":{\"missingProperty\":\"requester_type\"},\"message\":\"must have required property 'requester_type'\"}]",
+   "ts": "2026-09-30T10:07:58.838Z"
+  }
+ },
+ "mqtt_expiry_dropped": true,
+ "body_expiry_rejected": false,
+ "pass": false
+}

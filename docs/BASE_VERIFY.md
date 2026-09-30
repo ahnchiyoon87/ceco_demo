@@ -106,3 +106,21 @@ E1 무효 실행(파일 이름에 이유): 배정 전 시작(측정 도구가 Ka
 ## 8. 이번 검증에서 찾아 고친 결함
 
 `docs/STABILITY.md` S23~S35, `docs/decision-log.md` #167~#175.
+
+## 9. 설계검증 반영 뒤 확인 (2026-09-30, 바꾼 부분만)
+
+게이트웨이·발송기·알림 묶기를 기성 제품으로 바꾸고 요청자 종류·편집기 잠금을 넣은 뒤, 바꾼 길에 해당하는 시험만 돌렸다.
+
+| 항목 | 결과 | 판정 | 근거 |
+|---|---|---|---|
+| DMZ 게이트웨이 계약(정상 14 + 브로커 정지 + 무응답) | Node-RED 16/16(요청자 종류 불일치 거부 포함). 옛 자체 코드는 무응답에서 8 s 답 없음 | 통과 | `experiments/GW-CMP` |
+| 발송(Kafka 승인 토픽 + Bento) · MES 흉내 | 7/7: 수용·게이트웨이 거부 기록·재알림 재발송 없음·MES 지시 수용·잘못된 작업 422·없는 ID 무시·감사 | 통과 | `experiments/DISP-CMP/raw/dispatch_mes.json` |
+| AI 회귀 S17·S21·S18·S22 | 4/4 | 통과 | `experiments/DISP-CMP/raw/control_ai_bento.jsonl` |
+| 제어 회귀 S14~S22·EXP·OPT·AUD·S19 | MODE 외 통과, MODE 1회 흔들림 → 단독 2/2(원인 미확인, STABILITY S38). 요청자 종류 추가 전 실행 | 통과(관찰 1) | `experiments/DISP-CMP/raw/control_bento.json` |
+| 편집기 잠금 | 엣지: 로그인 없이 401·읽기 200·배포 401·설치 404, 게이트웨이 편집기 없음 | 통과 | `experiments/EDGE-LOCK` |
+| 전 계층 verify | 28/28(Kafka 토픽 10개 중 검사 대상 9개) | 통과 | 교체 직후 실행 |
+| 알람 → Kafka · AI 사건 p95(3묶음 중앙, 유효 27회) | 1.16 s · 1.36 s(V1 1.67 · 2.06 s). 운전점이 낮아(주입 전 PT 2.0~2.3 bar < 조건 3.0) 알람이 생기지 않은 3회는 기존 무효 규칙대로 뺌 | 나아짐 | `experiments/BASE-FINAL/raw/e1_e1_base_1~3.json` |
+| 알람 → FUXA 분석 경고(Alertmanager 경로) | 9/10, p95 1.38 s(교체 전 1.21 s, V1 1.84 s). 빠진 1회 원인 미분석 | 기록 | `experiments/BASE-FINAL/raw/e1_e1_base_display.json` |
+| FUXA 공정 알람(OT 안) | 유효 27회 중 23회 도착, 묶음 p95 중앙 3.4 s. 4회 없음 원인 미확인 | 기록 | 같은 파일 |
+
+**다시 재지 않은 것(무효):** 같은 날 19:00~19:50 최종 회귀의 고장→알람(잡음 3회 무응답, 도구 오류로 드리프트 못 잼), 격리(요청자 종류가 빠진 시험 입력 → 수신기 SCHEMA_INVALID), 재시작 복구(Kafka·수집기 복구 31~124 s)는 호스트 메모리 49 MB·CPU 100 %(다른 프로그램과 겹침)에서 잰 값이라 쓰지 않는다. 도커 엔진까지 응답하지 않아 재시작했다. 시험 입력(요청자 종류)과 도구 오류는 고쳤고(`tests/e2e/isolation_base.py`·`control_base.py`·`fault_onset_base.py`), 재시작 복구는 이번 변경과 관계없어 §6 값을 유지한다. 사용자 결정으로 긴 회귀는 다시 돌리지 않았다.

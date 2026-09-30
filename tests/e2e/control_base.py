@@ -351,7 +351,7 @@ def s20():
 def req_msg(jid, wm, equipment, params=None, expires_in=30):
     now = time.time()
     return {"job_order_id": jid, "work_master_id": wm, "equipment_id": equipment, "job_order_parameters": params or [],
-            "requester": "ai-ops", "approver": "operator-01", "created_at": now, "expires_at": int(now) + expires_in,
+            "requester": "ai-ops", "requester_type": "ai", "approver": "operator-01", "created_at": now, "expires_at": int(now) + expires_in,
             "context": {"summary": "control_base"}}
 
 

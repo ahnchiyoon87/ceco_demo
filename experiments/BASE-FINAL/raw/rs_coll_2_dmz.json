@@ -1,0 +1,168 @@
+{
+ "window_ms": [
+  1790764550000,
+  1790765102000
+ ],
+ "kafka_raw": {
+  "expected": 6624,
+  "seconds": 552,
+  "missing_s_total": 6373,
+  "dup_total": 0,
+  "max_gap_s": 453.31,
+  "per_tag": {
+   "LT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "LT-102": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "TT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "TT-102": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "PT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "FT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "FT-102": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "IT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "IT-102": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "VT-101": {
+    "n": 22,
+    "missing_s": 532,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "pH-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   },
+   "CT-101": {
+    "n": 23,
+    "missing_s": 531,
+    "dup": 0,
+    "max_gap_s": 453.31
+   }
+  }
+ },
+ "influx_process_raw": {
+  "expected": 6624,
+  "seconds": 552,
+  "missing_s_total": 4776,
+  "dup_total": 0,
+  "max_gap_s": 99.01,
+  "per_tag": {
+   "LT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "LT-102": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "TT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "TT-102": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "PT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "FT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "FT-102": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "IT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "IT-102": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "VT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "pH-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   },
+   "CT-101": {
+    "n": 164,
+    "missing_s": 398,
+    "dup": 0,
+    "max_gap_s": 99.01
+   }
+  }
+ }
+}

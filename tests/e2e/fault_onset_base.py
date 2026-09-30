@@ -15,12 +15,12 @@ sys.path.insert(0, "/repo/tests/e2e")
 from ot_ops import Operator  # noqa: E402
 
 EXPECT = {   # V1 fault_onset.py 와 같은 기대 알람
-    "spike":        lambda a: a["tag"] == "PT-101" and a["alert_type"] == "THRESHOLD_USL",
-    "heater_stuck": lambda a: a["tag"] == "TT-101" and a["alert_type"] == "THRESHOLD_USL",
-    "bearing_wear": lambda a: a["tag"] == "VT-101" and a["alert_type"] == "CEP_BEARING",
-    "noise":        lambda a: a["tag"] == "TT-101" and a["alert_type"] == "ZSCORE",
+    "spike":        lambda a: a["tag"] == "PT-101" and a.get("alert_type") == "THRESHOLD_USL",
+    "heater_stuck": lambda a: a["tag"] == "TT-101" and a.get("alert_type") == "THRESHOLD_USL",
+    "bearing_wear": lambda a: a["tag"] == "VT-101" and a.get("alert_type") == "CEP_BEARING",
+    "noise":        lambda a: a["tag"] == "TT-101" and a.get("alert_type") == "ZSCORE",
     "dropout":      lambda a: a["tag"] == "TT-101" and a.get("quality") not in (None, "GOOD"),
-    "drift":        lambda a: a["alert_type"] == "ML_AUTOENCODER",
+    "drift":        lambda a: a.get("alert_type") == "ML_AUTOENCODER",
 }
 SCREEN = {   # 화면 지점: ("fuxa", 알람 이름에 든 글자들 중 하나) 또는 ("display", 기대 알람 조건) 또는 None(V1 처럼 화면 판정 제외)
     # 스파이크: 운전원에게 뜨는 공정 알람은 '고압 인터록 발동'(지연 0)이다. PT-101 규격 알람은 ISA-18.2 on-delay 2 s 라

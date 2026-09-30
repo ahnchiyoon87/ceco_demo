@@ -86,7 +86,7 @@ if a.phase == "during":
     dmz.username_pw_set("gateway", os.environ["MQTT_GATEWAY_PASSWORD"]); dmz.connect("dmz-broker", 1883); dmz.loop_start(); time.sleep(1)
     now = time.time()
     body = {"job_order_id": jid_b, "work_master_id": "WM-M101-STOP", "equipment_id": "M-101", "job_order_parameters": [],
-            "requester": "ai-ops", "approver": "operator-01", "created_at": now, "expires_at": int(now) + 20,
+            "requester": "ai-ops", "requester_type": "ai", "approver": "operator-01", "created_at": now, "expires_at": int(now) + 20,
             "context": {"summary": "격리 실습 ⓑ(MQTT 만료 없음)"}}
     dmz.publish(REQ_IN, json.dumps(body), qos=1).wait_for_publish(5)   # 속성 없음 = MQTT 만료 없음
     out |= {"job_a": jid_a, "job_b": jid_b, "job_b_expires_at": body["expires_at"]}

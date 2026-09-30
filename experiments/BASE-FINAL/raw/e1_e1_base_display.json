@@ -1,0 +1,135 @@
+{
+ "run": "e1_base_display",
+ "reps": 10,
+ "args": {
+  "exp": "BASE-FINAL",
+  "run": "e1_base_display",
+  "reps": 10,
+  "sim": "http://plant-sim:8080",
+  "mqtt": "ot-hub",
+  "mqtt_topics": "AR-100/alert/display",
+  "kafka": "kafka:9092",
+  "kafka_topic": "sensor.alerts",
+  "match": "THRESHOLD_USL",
+  "tag": "PT-101",
+  "scenario": "spike",
+  "quiet_s": 65.0,
+  "timeout_s": 60.0,
+  "fault_duration": 2.0,
+  "incident_api": null,
+  "fuxa_alarms": null,
+  "min_before": "PT-101=3.0",
+  "recover_interlock": true,
+  "fuxa_match": null
+ },
+ "summary": {
+  "kafka:sensor.alerts": {
+   "n": 9,
+   "missing": 1,
+   "p50": 897.4,
+   "p95": 1260.4,
+   "max": 1260.4,
+   "mean": 897.5
+  },
+  "mqtt:AR-100/alert/display": {
+   "n": 9,
+   "missing": 1,
+   "p50": 1095.7,
+   "p95": 1375.1,
+   "max": 1375.1,
+   "mean": 1010.1
+  }
+ },
+ "reps_detail": [
+  {
+   "i": 0,
+   "t0_ms": 1790761560456.902,
+   "lat_ms": {
+    "kafka:sensor.alerts": 897.4,
+    "mqtt:AR-100/alert/display": 1095.7
+   },
+   "missing": []
+  },
+  {
+   "i": 1,
+   "t0_ms": 1790761626750.9192,
+   "lat_ms": {
+    "kafka:sensor.alerts": 803.5,
+    "mqtt:AR-100/alert/display": 1011.4
+   },
+   "missing": []
+  },
+  {
+   "i": 2,
+   "t0_ms": 1790761693088.631,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1260.4,
+    "mqtt:AR-100/alert/display": 1279.3
+   },
+   "missing": []
+  },
+  {
+   "i": 3,
+   "t0_ms": 1790761759681.2366,
+   "lat_ms": {
+    "kafka:sensor.alerts": 671.7,
+    "mqtt:AR-100/alert/display": 696.5
+   },
+   "missing": []
+  },
+  {
+   "i": 4,
+   "t0_ms": 1790761825769.4434,
+   "lat_ms": {
+    "kafka:sensor.alerts": 382.6,
+    "mqtt:AR-100/alert/display": 418.0
+   },
+   "missing": []
+  },
+  {
+   "i": 5,
+   "t0_ms": 1790762041629.2947,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "mqtt:AR-100/alert/display"
+   ]
+  },
+  {
+   "i": 6,
+   "t0_ms": 1790762144280.9805,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1175.5,
+    "mqtt:AR-100/alert/display": 1375.1
+   },
+   "missing": []
+  },
+  {
+   "i": 7,
+   "t0_ms": 1790762211020.5056,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1153.0,
+    "mqtt:AR-100/alert/display": 1239.7
+   },
+   "missing": []
+  },
+  {
+   "i": 8,
+   "t0_ms": 1790762277605.3167,
+   "lat_ms": {
+    "kafka:sensor.alerts": 670.7,
+    "mqtt:AR-100/alert/display": 868.8
+   },
+   "missing": []
+  },
+  {
+   "i": 9,
+   "t0_ms": 1790762494272.7163,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1062.5,
+    "mqtt:AR-100/alert/display": 1106.8
+   },
+   "missing": []
+  }
+ ]
+}
