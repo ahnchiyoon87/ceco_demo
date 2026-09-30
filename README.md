@@ -44,7 +44,7 @@ make verify      # 전 계층 자동 검증
 | PDF 권고 | 구현 | 비고 |
 |---|---|---|
 | IoT 미들웨어 존치 (p.13 결론 1) | EdgeX Foundry 4.0 | Modbus→JSON 정규화, Southbound 명령, Store-and-Forward |
-| Esper → Flink CEP 대체 (결론 2) | Flink SQL `MATCH_RECOGNIZE` | [04_tier1_cep.sql](flink/sql/04_tier1_cep.sql) |
+| Esper → Flink CEP 대체 (결론 2) | Flink SQL `MATCH_RECOGNIZE` | [04_tier1_cep.sql](4_it/detection-flink/sql/04_tier1_cep.sql) |
 | 선택적 결측치 보간 (결론 3) | Flink `Interpolator` | 원본 토픽은 무손실 유지, clean 에만 보간 + `quality` 표기 |
 | 인라인 ML 추론 서빙 (결론 4) | Flink TaskManager 내 ONNX Runtime | 실측 추론 지연 **0.16~0.18 ms**, 네트워크 홉 0 |
 | 저장소·시각화 이원화 (결론 5) | InfluxDB / Prometheus, FUXA / Grafana | Prometheus 에 센서 태그 **0건** |
@@ -64,7 +64,7 @@ make verify      # 전 계층 자동 검증
 **Modbus/TCP 슬레이브**로 노출합니다. FUXA 에서 버튼을 누르면 레지스터가 바뀌고,
 물리량이 반응하고, 그 변화가 전 구간을 거쳐 Grafana 트렌드까지 나타납니다.
 
-계측 12점 · 제어 8점의 정의는 전부 [simulator/plant.yaml](simulator/plant.yaml) 한 파일에 있습니다.
+계측 12점 · 제어 8점의 정의는 전부 [0_plant/simulator/plant.yaml](0_plant/simulator/plant.yaml) 한 파일에 있습니다.
 이 파일이 EdgeX 디바이스 프로파일과 FUXA 프로젝트의 **단일 출처**입니다.
 
 ```bash
@@ -155,18 +155,18 @@ lite 모드에서도 Kafka 진입 스키마가 동일하므로 **Flink 이후 �
 
 | 경로 | 내용 |
 |---|---|
-| [simulator/](simulator/) | 물리 모델 · Modbus 슬레이브 · 고장 주입 API |
+| [0_plant/simulator/](0_plant/simulator/) | 물리 모델 · Modbus 슬레이브 · 고장 주입 API |
 | [edgex/](edgex/) | 디바이스 프로파일 생성기 (plant.yaml → EdgeX YAML) |
 | [emqx/](emqx/) | 브로커 설정 (QoS1 · 세션 영속) |
 | [kafka/](kafka/) | 토픽 초기화 |
 | [telegraf/](telegraf/) | MQTT→Kafka 브리지 · Kafka→InfluxDB 싱크 · 알람 재발행 |
-| [flink/sql/](flink/sql/) | Tier-1 탐지 (선언형 SQL — 임계치·Z-Score·CEP) |
-| [flink/onnx-job/](flink/onnx-job/) | Tier-2 탐지 (결측보간 + 임베디드 ONNX) |
-| [ml/](ml/) | Autoencoder 오프라인 학습 + 판별력 자가검증 |
-| [grafana/](grafana/) | 데이터소스·대시보드 프로비저닝 |
-| [fuxa/](fuxa/) | P&ID 화면 생성기 + 자동 주입 |
+| [4_it/detection-flink/sql/](4_it/detection-flink/sql/) | Tier-1 탐지 (선언형 SQL — 임계치·Z-Score·CEP) |
+| [4_it/detection-flink/onnx-job/](4_it/detection-flink/onnx-job/) | Tier-2 탐지 (결측보간 + 임베디드 ONNX) |
+| [4_it/ml-trainer/](4_it/ml-trainer/) | Autoencoder 오프라인 학습 + 판별력 자가검증 |
+| [4_it/dashboard-grafana/](4_it/dashboard-grafana/) | 데이터소스·대시보드 프로비저닝 |
+| [2_ot/hmi-fuxa/](2_ot/hmi-fuxa/) | P&ID 화면 생성기 + 자동 주입 |
 | [prometheus/](prometheus/) | 스크랩 설정 · 파이프라인 경보 룰 |
-| [scripts/verify.py](scripts/verify.py) | 전 계층 자동 검증 |
+| [tests/verify.py](tests/verify.py) | 전 계층 자동 검증 |
 
 ## 문서
 

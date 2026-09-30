@@ -4,9 +4,9 @@
 #   OT(ot-net, internal)   가상설비 → soft-PLC → 엣지 → OT 허브(UNS) · FUXA(HMI) · OT 감시 agent
 #   DMZ(dmz-net, internal) DMZ 브로커 · 원시 사본 InfluxDB · 요청 게이트웨이 · 감시 수신
 #   IT(it-net)             수집기 → Kafka → Flink → 결과 InfluxDB · PostgreSQL · Grafana · 감시 · AI
-#   router                 세 망에 붙는 유일한 컨테이너. 구역 사이 새 연결은 OT→DMZ, IT→DMZ 만(router/rules.sh)
+#   router                 세 망에 붙는 유일한 컨테이너. 구역 사이 새 연결은 OT→DMZ, IT→DMZ 만(shared/network-router/rules.sh)
 #
-# 기동: docker compose up -d --build     (설정·이미지 판은 .env, 설비는 registry/equipment.yaml)
+# 기동: docker compose up -d --build     (설정·이미지 판은 .env, 설비는 shared/registry/equipment.yaml)
 # ═══════════════════════════════════════════════════════════════════════════
 name: ${COMPOSE_PROJECT_NAME:-rot-base}
 
@@ -48,8 +48,8 @@ volumes:
   knowledge-uploads:
   knowledge-output:
 
-x-ai-llm: &ai-llm   # AI 층의 LLM·임베딩 게이트웨이(GCP LiteLLM). 키는 저장소 밖 ai-layer/.env.local 의 LITELLM_*
-  env_file: [ { path: ./ai-layer/.env.local, required: false } ]
+x-ai-llm: &ai-llm   # AI 층의 LLM·임베딩 게이트웨이(GCP LiteLLM). 키는 저장소 밖 5_ai/server/.env.local 의 LITELLM_*
+  env_file: [ { path: ./5_ai/server/.env.local, required: false } ]
   entrypoint: ["sh", "-c", "export OPENAI_API_KEY=\"$${LITELLM_API_KEY:-}\" OPENAI_BASE_URL=\"$${LITELLM_BASE_URL:-}\" MAJOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\" MINOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\"; exec \"$$@\"", "llm-env"]
 
 x-ai-llm-env: &ai-llm-env
@@ -66,7 +66,7 @@ x-mqtt-common: &mqtt-common
 services:
   # ─────────────────────────── 구역 사이 방화벽 ───────────────────────────
   router:
-    build: ./router
+    build: ./shared/network-router
     image: rot-router:base
     restart: unless-stopped
     cap_add: [NET_ADMIN]
@@ -88,7 +88,7 @@ services:
 
   # ─────────────────────────────── OT ───────────────────────────────
   plant-sim:
-    build: ./simulator
+    build: ./0_plant/simulator
     image: rot-plant-simulator:base
     restart: unless-stopped
     environment:
@@ -105,7 +105,7 @@ services:
       start_period: 10s
 
   plc:
-    build: ./plc
+    build: ./1_control/plc-openplc
     image: rot-openplc:base
     restart: unless-stopped
     cap_add: [SYS_NICE, SYS_RESOURCE]
@@ -133,7 +133,7 @@ services:
       MQTT_VIEWER_PASSWORD: ${MQTT_VIEWER_PASSWORD}
       MQTT_OT_EXPORTER_PASSWORD: ${MQTT_OT_EXPORTER_PASSWORD}
       MQTT_BRIDGE_PASSWORD: ${MQTT_BRIDGE_PASSWORD}
-    volumes: [ "./mqtt/entrypoint.sh:/cfg/entrypoint.sh:ro", "./mqtt/ot-hub/mosquitto.conf:/cfg/mosquitto.conf:ro", "./mqtt/ot-hub/acl:/cfg/acl:ro", "ot-hub-data:/mosquitto/data" ]
+    volumes: [ "./shared/mosquitto/entrypoint.sh:/cfg/entrypoint.sh:ro", "./2_ot/factory-broker-mosquitto/mosquitto.conf:/cfg/mosquitto.conf:ro", "./2_ot/factory-broker-mosquitto/acl:/cfg/acl:ro", "ot-hub-data:/mosquitto/data" ]
     networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.12" } }
     depends_on:
       router: { condition: service_healthy }
@@ -145,7 +145,7 @@ services:
       retries: 6
 
   edge:
-    build: { context: ., dockerfile: edge/nodered/Dockerfile }
+    build: { context: ., dockerfile: 2_ot/edge-nodered/Dockerfile }
     image: rot-edge-nodered:base
     restart: unless-stopped
     environment:
@@ -169,13 +169,13 @@ services:
     image: ${FUXA_IMAGE}
     restart: unless-stopped
     # 로그인(보안)·JWT 비밀·DAQ(OT 이력) 보존 7일은 FUXA 가 기동 때 읽는 사용자 설정(_appdata/mysettings.json)에
-    # 없는 값만 채운다(fuxa/seed_settings.js). 설정 API 로 넣으면 프로젝트 넣기와 함께 런타임이 1초 안에 두 번 재시작돼
+    # 없는 값만 채운다(2_ot/hmi-fuxa/seed_settings.js). 설정 API 로 넣으면 프로젝트 넣기와 함께 런타임이 1초 안에 두 번 재시작돼
     # 같은 이름의 DAQ 파일을 FUXA 가 스스로 지운다(SQLITE_READONLY).
     command: [ "sh", "-c", "node /seed/seed_settings.js && exec node main.js" ]
     environment:
       FUXA_JWT_SECRET: ${FUXA_JWT_SECRET}
     volumes: [ "fuxa-appdata:/usr/src/app/FUXA/server/_appdata", "fuxa-db:/usr/src/app/FUXA/server/_db",
-               "./fuxa/mysettings.json:/seed/mysettings.json:ro", "./fuxa/seed_settings.js:/seed/seed_settings.js:ro" ]
+               "./2_ot/hmi-fuxa/mysettings.json:/seed/mysettings.json:ro", "./2_ot/hmi-fuxa/seed_settings.js:/seed/seed_settings.js:ro" ]
     networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.15" } }
     depends_on: { ot-hub: { condition: service_healthy } }
     healthcheck:
@@ -195,7 +195,7 @@ services:
       MQTT_FUXA_PASSWORD: ${MQTT_FUXA_PASSWORD}
       FUXA_ADMIN_PASSWORD: ${FUXA_ADMIN_PASSWORD}
       FUXA_OPERATOR_PASSWORD: ${FUXA_OPERATOR_PASSWORD}
-    volumes: [ "./fuxa:/work:ro" ]
+    volumes: [ "./2_ot/hmi-fuxa:/work:ro" ]
     networks: [ot-net]
     depends_on: { fuxa: { condition: service_healthy } }
 
@@ -211,7 +211,7 @@ services:
       MQTT_IT_COLLECTOR_PASSWORD: ${MQTT_IT_COLLECTOR_PASSWORD}
       MQTT_VIEWER_PASSWORD: ${MQTT_VIEWER_PASSWORD}
       MQTT_DMZ_EXPORTER_PASSWORD: ${MQTT_DMZ_EXPORTER_PASSWORD}
-    volumes: [ "./mqtt/entrypoint.sh:/cfg/entrypoint.sh:ro", "./mqtt/dmz-broker/mosquitto.conf:/cfg/mosquitto.conf:ro", "./mqtt/dmz-broker/acl:/cfg/acl:ro", "dmz-broker-data:/mosquitto/data" ]
+    volumes: [ "./shared/mosquitto/entrypoint.sh:/cfg/entrypoint.sh:ro", "./3_dmz/dmz-broker-mosquitto/mosquitto.conf:/cfg/mosquitto.conf:ro", "./3_dmz/dmz-broker-mosquitto/acl:/cfg/acl:ro", "dmz-broker-data:/mosquitto/data" ]
     networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.11" } }
     healthcheck:
       test: ["CMD-SHELL", "mosquitto_sub -u viewer -P \"$$MQTT_VIEWER_PASSWORD\" -t '$$SYS/broker/uptime' -C 1 -W 5 >/dev/null"]
@@ -233,7 +233,7 @@ services:
       DMZ_INFLUX_READER_USER: ${DMZ_INFLUX_READER_USER}
       DMZ_INFLUX_READER_PASSWORD: ${DMZ_INFLUX_READER_PASSWORD}
       INFLUXD_LOG_LEVEL: warn
-    volumes: [ "dmz-influx-data:/var/lib/influxdb2", "dmz-influx-config:/etc/influxdb2", "./dmz/influx/10-it-reader.sh:/docker-entrypoint-initdb.d/10-it-reader.sh:ro" ]
+    volumes: [ "dmz-influx-data:/var/lib/influxdb2", "dmz-influx-config:/etc/influxdb2", "./3_dmz/history-influxdb/10-it-reader.sh:/docker-entrypoint-initdb.d/10-it-reader.sh:ro" ]
     networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.12" } }
     healthcheck: { test: ["CMD", "influx", "ping"], interval: 10s, timeout: 5s, retries: 15, start_period: 15s }
 
@@ -249,7 +249,7 @@ services:
       BROKER_URL: tcp://dmz-broker:1883
       MQTT_USER: dmz-exporter
       MQTT_PASS: ${MQTT_DMZ_EXPORTER_PASSWORD}
-    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./dmz/loader/loader.yaml:/cfg/loader.yaml:ro", "./monitoring/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
+    volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./3_dmz/loader-bento/loader.yaml:/cfg/loader.yaml:ro", "./shared/bento/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
     networks: [dmz-net]
     depends_on:
       dmz-broker: { condition: service_healthy }
@@ -262,7 +262,7 @@ services:
       start_period: 30s
 
   dmz-gateway:   # DMZ 요청 게이트웨이(1차 검사, 자체 코드)
-    build: { context: ., dockerfile: dmz/gateway/Dockerfile }
+    build: { context: ., dockerfile: 3_dmz/gateway/Dockerfile }
     image: rot-dmz-gateway:base
     restart: unless-stopped
     environment:
@@ -281,7 +281,7 @@ services:
     restart: unless-stopped
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=2h",
               "--web.enable-remote-write-receiver", "--log.level=warn"]
-    volumes: [ "./monitoring/dmz-prom.yml:/etc/prometheus/prometheus.yml:ro", "dmz-prom-data:/prometheus" ]
+    volumes: [ "./shared/monitoring-prometheus/dmz.yml:/etc/prometheus/prometheus.yml:ro", "dmz-prom-data:/prometheus" ]
     networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.13" } }
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
@@ -299,7 +299,7 @@ services:
       BROKER_URL: tcp://ot-hub:1883
       MQTT_USER: ot-exporter
       MQTT_PASS: ${MQTT_OT_EXPORTER_PASSWORD}
-    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./monitoring/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
+    volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./shared/bento/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
     networks: [ot-net]
     depends_on: { ot-hub: { condition: service_healthy } }
     healthcheck:
@@ -313,7 +313,7 @@ services:
     image: ${PROMETHEUS_IMAGE}
     restart: unless-stopped
     command: ["--agent", "--config.file=/etc/prometheus/prometheus.yml", "--storage.agent.path=/prometheus", "--log.level=warn"]
-    volumes: [ "./monitoring/ot-agent.yml:/etc/prometheus/prometheus.yml:ro", "ot-agent-data:/prometheus" ]
+    volumes: [ "./shared/monitoring-prometheus/ot-agent.yml:/etc/prometheus/prometheus.yml:ro", "ot-agent-data:/prometheus" ]
     networks: [ot-net]
     depends_on: { router: { condition: service_healthy }, dmz-prom: { condition: service_healthy } }
     healthcheck:
@@ -358,7 +358,7 @@ services:
     image: ${KAFKA_IMAGE}
     restart: "no"
     entrypoint: ["/bin/bash", "/create-topics.sh"]
-    volumes: [ "./it/kafka/create-topics.sh:/create-topics.sh:ro" ]
+    volumes: [ "./4_it/stream-kafka/create-topics.sh:/create-topics.sh:ro" ]
     networks: [it-net]
     depends_on: { kafka: { condition: service_healthy } }
 
@@ -371,7 +371,7 @@ services:
       INFLUX_ORG: ${INFLUX_ORG}
       IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
       IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
-    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./it/collector/streams:/cfg/streams:ro" ]
+    volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./4_it/collector-bento/streams:/cfg/streams:ro" ]
     networks: [it-net]
     depends_on:
       router: { condition: service_healthy }
@@ -393,12 +393,12 @@ services:
     healthcheck: { test: ["CMD-SHELL", "echo ruok | nc -w 2 localhost 2181 | grep -q imok"], interval: 10s, timeout: 5s, retries: 10 }
 
   flink-jobmanager:
-    build: { context: ./flink, dockerfile: Dockerfile }
+    build: { context: ./4_it/detection-flink, dockerfile: Dockerfile }
     image: rot-flink-onnx:base
     restart: unless-stopped
     command: jobmanager
     ports: [ "127.0.0.1:${PORT_FLINK_UI}:8081" ]
-    volumes: [ "./flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    volumes: [ "./4_it/detection-flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./4_it/detection-flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./4_it/detection-flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on: { zookeeper: { condition: service_healthy } }
     healthcheck: { test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"], interval: 10s, timeout: 5s, retries: 20, start_period: 30s }
@@ -407,7 +407,7 @@ services:
     image: rot-flink-onnx:base
     restart: unless-stopped
     command: taskmanager
-    volumes: [ "./flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    volumes: [ "./4_it/detection-flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./4_it/detection-flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./4_it/detection-flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on: { flink-jobmanager: { condition: service_healthy } }
     healthcheck:
@@ -418,7 +418,7 @@ services:
       start_period: 30s
 
   model-trainer:   # 오토인코더 학습(기동 때 1회). 가상설비 물리로 정상 데이터를 만들어 ONNX 로 낸다
-    build: { context: ., dockerfile: ml/Dockerfile }
+    build: { context: ., dockerfile: 4_it/ml-trainer/Dockerfile }
     image: rot-model-trainer:base
     restart: "no"
     volumes: [ "model-store:/opt/models" ]
@@ -428,7 +428,7 @@ services:
     image: rot-flink-onnx:base
     restart: "no"
     entrypoint: ["/bin/bash", "/submit-jobs.sh"]
-    volumes: [ "./flink/sql:/opt/flink/sql:ro", "./flink/submit-jobs.sh:/submit-jobs.sh:ro", "./flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
+    volumes: [ "./4_it/detection-flink/sql:/opt/flink/sql:ro", "./4_it/detection-flink/submit-jobs.sh:/submit-jobs.sh:ro", "./4_it/detection-flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
     networks: [it-net]
     depends_on:
       flink-jobmanager: { condition: service_healthy }
@@ -464,12 +464,12 @@ services:
       PG_AI_PASSWORD: ${PG_AI_PASSWORD}
       PG_READER_PASSWORD: ${PG_READER_PASSWORD}
     ports: [ "127.0.0.1:${PORT_PG}:5432" ]
-    volumes: [ "pg-data:/var/lib/postgresql", "./postgres/init:/docker-entrypoint-initdb.d:ro" ]
+    volumes: [ "pg-data:/var/lib/postgresql", "./4_it/db-postgres/init:/docker-entrypoint-initdb.d:ro" ]
     networks: [it-net]
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d plant"], interval: 5s, timeout: 5s, retries: 24 }
 
   dispatcher:   # IT 발송기: 승인된 작업 요청 → DMZ 게이트웨이(HTTP POST), 응답 ⓐ 기록
-    build: { context: ., dockerfile: it/dispatcher/Dockerfile }
+    build: { context: ., dockerfile: 4_it/dispatcher/Dockerfile }
     image: rot-dispatcher:base
     restart: unless-stopped
     environment:
@@ -512,7 +512,7 @@ services:
       DMZ_INFLUX_BUCKET: ${DMZ_INFLUX_BUCKET}
       DMZ_INFLUX_READER_USER: ${DMZ_INFLUX_READER_USER}
       DMZ_INFLUX_READER_PASSWORD: ${DMZ_INFLUX_READER_PASSWORD}
-    volumes: [ "./grafana/provisioning:/etc/grafana/provisioning:ro", "./grafana/dashboards:/var/lib/grafana/dashboards:ro", "grafana-data:/var/lib/grafana" ]
+    volumes: [ "./4_it/dashboard-grafana/provisioning:/etc/grafana/provisioning:ro", "./4_it/dashboard-grafana/dashboards:/var/lib/grafana/dashboards:ro", "grafana-data:/var/lib/grafana" ]
     networks: [it-net]
     depends_on: { it-influx: { condition: service_healthy } }
     healthcheck:
@@ -527,7 +527,7 @@ services:
     restart: unless-stopped
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=7d", "--log.level=warn"]
     ports: [ "127.0.0.1:${PORT_PROMETHEUS}:9090" ]
-    volumes: [ "./monitoring/it-prom.yml:/etc/prometheus/prometheus.yml:ro", "./monitoring/rules.yml:/etc/prometheus/rules.yml:ro", "prometheus-data:/prometheus" ]
+    volumes: [ "./shared/monitoring-prometheus/it.yml:/etc/prometheus/prometheus.yml:ro", "./shared/monitoring-prometheus/rules.yml:/etc/prometheus/rules.yml:ro", "prometheus-data:/prometheus" ]
     networks: [it-net]
     depends_on: { router: { condition: service_healthy } }
     healthcheck:
@@ -542,7 +542,7 @@ services:
     restart: unless-stopped
     command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager", "--log.level=warn"]
     ports: [ "127.0.0.1:${PORT_ALERTMANAGER}:9093" ]
-    volumes: [ "./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro", "alertmanager-data:/alertmanager" ]
+    volumes: [ "./shared/monitoring-prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro", "alertmanager-data:/alertmanager" ]
     networks: [it-net]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:9093/-/healthy"]
@@ -598,18 +598,18 @@ services:
     image: rot-ai-knowledge:base
     restart: "no"
     working_dir: /app
-    command: ["python", "/repo/ai-layer/seed_graph.py"]
+    command: ["python", "/repo/5_ai/server/seed_graph.py"]
     environment:
       <<: *ai-llm-env
       NEO4J_URI: bolt://graph:7687
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-    volumes: [ "./ai-layer:/repo/ai-layer:ro", "./registry:/repo/registry:ro", "./knowledge-docs:/repo/knowledge-docs:ro", "./ontology:/repo/ontology:ro" ]
+    volumes: [ "./5_ai/server:/repo/5_ai/server:ro", "./shared/registry:/repo/shared/registry:ro", "./5_ai/manuals:/repo/5_ai/manuals:ro", "./5_ai/ontology:/repo/5_ai/ontology:ro" ]
     networks: [it-net]
     depends_on: { graph: { condition: service_healthy } }
 
   knowledge:   # AI 업무 도우미 백엔드(에이전트·온톨로지·매뉴얼 검색·승인). 설비에는 작업 요청으로만 닿는다
-    build: { context: ./ai-layer/knowledge, dockerfile: backend/Dockerfile }
+    build: { context: ./5_ai/server/knowledge, dockerfile: backend/Dockerfile }
     <<: *ai-llm
     image: rot-ai-knowledge:base
     restart: unless-stopped
@@ -653,7 +653,7 @@ services:
       start_period: 30s
 
   web:   # AI 업무 화면(담당자 승인). 설비 조작 화면은 없다(FUXA 가 대신)
-    build: { context: ./ai-web, args: { VITE_FUXA_URL: "http://127.0.0.1:${PORT_FUXA}/" } }
+    build: { context: ./5_ai/web, args: { VITE_FUXA_URL: "http://127.0.0.1:${PORT_FUXA}/" } }
     image: rot-ai-web:base
     restart: unless-stopped
     ports: [ "127.0.0.1:${PORT_AI_WEB}:8080" ]
@@ -677,7 +677,7 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       REGISTRY_TAGS: /opt/ar100/registry/tags.json
       REGISTRY_WM: /opt/ar100/registry/work_masters.ot.json
-    volumes: [ "./registry/generated:/opt/ar100/registry:ro" ]
+    volumes: [ "./shared/registry/generated:/opt/ar100/registry:ro" ]
     networks: [it-net]
     depends_on:
       postgres: { condition: service_healthy }

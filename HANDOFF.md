@@ -7,7 +7,7 @@
 
 ## 0. 새 세션이 처음 할 일
 1. 실제 상태를 대조한다: `git status`, `docker ps -a`(§6과 다르면 실제가 우선이고 이 파일을 고친다).
-2. 이 파일을 끝까지 읽는다. 이어서 `reports/QA.md`(사용자 지시 원문과 질문·확정 답)를 끝까지 읽는다. 사용자 발화 전체와 반영 위치는 `reports/사용자발화_2026-09-29.md` — 같은 질문에는 QA.md의 확정 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
+2. 이 파일을 끝까지 읽는다. 이어서 `docs/QA.md`(사용자 지시 원문과 질문·확정 답)를 끝까지 읽는다. 사용자 발화 전체와 반영 위치는 `docs/사용자발화_2026-09-29.md` — 같은 질문에는 QA.md의 확정 답을 기준으로 답한다. 답을 바꿀 근거가 생기면 QA.md와 이 파일을 함께 고친다.
 3. 조사 결과를 끝까지 읽는다(모두 `docs/research/현업조사_2026-09/`, 의뢰서는 같은 폴더 `00_조사의뢰서.md`). 구조와 스택은 함께 본다.
    - `12_조사1_현업구조.md` — 현업 구조, v3·우리 비교, 권장 베이스 (요지 §2-1)
    - `13_조사2_세부규칙.md` — 세부 결정 29줄 (요지 §2-2)
@@ -17,9 +17,9 @@
    - `17_판단근거확인_결과.md` — 설계 판단 70개(과장 7·근거 없음 46·약함 17)를 현업·규칙과 대조한 결과. 근거로 해소 56, 추천으로 해소 14, 미해소 0. 결론 표(21~98줄)의 "바꿀 것"은 모두 이 파일에 반영했다(본문에 "17번 E16"처럼 항목 번호로 표시). 입력은 `17_판단근거확인_입력_전수검사.md`(전수 검사 161개 결정). 실행해야 알 수 있는 것은 단계 4 ⑨.
    - 조사 원문(12~15)에 있는 "지원 기간 관문 탈락·조건부" 판정(예: EdgeX 관문 탈락, Flink 조건부)은 옛 기준이다. 지금 기준은 §3-1이다(판별 지원 종료일은 제외 이유가 아님). 원문은 고치지 않는다. 옛 폴더 `docs/research/deep-2026-09-29/`의 01~11(예: 06의 V2 부품 관문, 09의 경량 크기)은 옛 방향(V2)에서 쓴 조사다. 버전·라이선스·실측 같은 사실만 참고하고 판정·권고는 따르지 않는다.
    - 12~16의 판단 가운데 17번 결론 표가 바꾼 것(예: 12번 "제어기가 최종 판단", 13번 "컨테이너로 구현한 공개 예 없음", 16번 "정비 잠금·작업지시 완료 조건·Kafka 요청 장부")은 17번과 이 파일이 우선이다. 원문은 고치지 않는다.
-4. **조립·검증은 끝났다(2026-09-30).** 새 베이스는 `compose.yml` 하나(프로젝트 `rot-base`, 35개 서비스, `docker compose up -d --build`)이고, 검증 결과는 `reports/BASE_VERIFY.md`, 기능 대응표는 `reports/FUNCTION_MAP.md`, 결함은 `reports/STABILITY.md` S23~S30, 결정은 `reports/decision-log.md` #162~. 다시 조사하지 않는다. 남은 일은 §6 "남은 일"이다.
+4. **조립·검증은 끝났다(2026-09-30).** 새 베이스는 `compose.yml` 하나(프로젝트 `rot-base`, 35개 서비스, `docker compose up -d --build`)이고, 검증 결과는 `docs/BASE_VERIFY.md`, 기능 대응표는 `docs/FUNCTION_MAP.md`, 결함은 `docs/STABILITY.md` S23~S30, 결정은 `docs/decision-log.md` #162~. 다시 조사하지 않는다. 남은 일은 §6 "남은 일"이다.
    1. 먼저 `docker compose ps -a`로 30개 서비스 healthy + 일회성 5개(kafka-init·model-trainer·flink-job-submitter·fuxa-provisioner·graph-seed) 정상 종료인지 본다.
-   2. 검증을 다시 돌릴 때는 `harness/e2e/*_base.*` 도구를 쓴다(§8). 측정은 한 번에 하나씩 — 두 측정이 겹치면 서로의 고장 주입이 섞여 무효가 된다(09-30 E1 실제 발생).
+   2. 검증을 다시 돌릴 때는 `tests/e2e/*_base.*` 도구를 쓴다(§8). 측정은 한 번에 하나씩 — 두 측정이 겹치면 서로의 고장 주입이 섞여 무효가 된다(09-30 E1 실제 발생).
 
 ## 1. 목표와 방향
 - **무엇:** 국립 경남대 제조 AI 과정 학생이 배우고 실습할 IIoT·SCADA 시스템.
@@ -40,7 +40,7 @@
   - 같은 역할의 중복을 하나로 합친다.
 - **저장소의 옛 문서:** 루트의 `README.md`·`ARCHITECTURE.md`·`TODO.md`와 `docs/`(`docs/ai-work/HANDOFF.md`, `docs/RUNBOOK.md`, `docs/VERIFICATION.md` 등)는 원본 V1 저장소에서 온 문서다. V1 설명 자료로만 읽고 기준·지시로 따르지 않는다(기준은 이 파일뿐). 이미지·볼륨 이름의 `v2`(`rot-flink-onnx:v2`, `rot-plant-simulator:v2-ts`, `model-store-v2`)는 이름일 뿐이며, 쓰지 않기로 한 옛 V2 구성과 관계없다.
 - **참조:** 참조 설계서 v3(다른 팀이 구축·실행한 구조, 내용은 의뢰서 부록 A)와 우리 구조도(`시스템구성도_풀스택_보강본.pdf`, `시스템구성도_실제통신구조_확인본.pdf`)는 비교 대상이다. 판단은 현업 조사 결과로 한다.
-- **AI 층(L7~L9):** 구조 그림에는 포함한다. 베이스 단계에서 AI의 판단 로직(에이전트·온톨로지·매뉴얼 검색)은 고치지 않는다. **AI 층이 설비에 닿는 연결 부분만 새 길로 바꾼다.** V1 AI 층이 설비(가상설비)에 직접 닿는 곳은 네 군데이고(모두 `ai-layer/knowledge/backend/src/modules/operations/`, 접속 주소는 `ai-layer/compose.yml`이 `host.docker.internal`로 넣음), 각각 이렇게 바꾼다. 바꾼 것은 기능 대응표(§3-4)에 적는다.
+- **AI 층(L7~L9):** 구조 그림에는 포함한다. 베이스 단계에서 AI의 판단 로직(에이전트·온톨로지·매뉴얼 검색)은 고치지 않는다. **AI 층이 설비에 닿는 연결 부분만 새 길로 바꾼다.** V1 AI 층이 설비(가상설비)에 직접 닿는 곳은 네 군데이고(모두 `5_ai/server/knowledge/backend/src/modules/operations/`, 접속 주소는 `5_ai/server/compose.yml`이 `host.docker.internal`로 넣음), 각각 이렇게 바꾼다. 바꾼 것은 기능 대응표(§3-4)에 적는다.
   - `actions.py`(AI 조치 실행: Modbus 코일 직접 쓰기 + HTTP `/state` 재조회) → "작업 요청"(아래)과 PLC ACK·상태 토픽.
   - `evidence.py` `/plant`(증거용 현재 설비 상태: 시뮬레이터 HTTP `/state` 직접 읽기, `SCADA_STATE_URL`) → DMZ InfluxDB 원시 사본의 최신값 조회. `/state`가 주던 `commands`·`interlock`·`seq`·설비 식별자도 엣지가 UNS에 내는 PLC 상태·명령 확인·인터록·순번 토픽으로 DMZ 사본에 들어가므로 거기서 읽는다(실행 직전 재확인 `actions.py:163·316`, 조치 뒤 관측 `thermal_observation.py:64-71`이 쓰는 필드). 설비 식별자는 ISA-95 이름으로 바뀌므로 등록부의 대응표로 옮긴다.
   - `simulation.py` 훈련 조작(`/state` 읽기, 고장 주입 `POST /fault`·`/fault/clear`) → IT 앱에서 뺀다. 고장 주입은 사람이 호스트에서 쓰는 강사·실습 도구(가상설비 API, 호스트 전용 포트, 전용 계정)로 옮겨 기능을 잃지 않게 한다. 현재값 읽기는 DMZ 사본 조회로.
@@ -49,8 +49,8 @@
   - 그래프 DB 필수, 원인 분석은 온톨로지 그래프 추론, 매뉴얼 검색은 임베딩 + 그래프 연결
   - V1 에이전트(LLM + LangGraph + 가드레일)를 유지하고 도구를 더한다. 새 고장은 코드 0줄로 확장한다.
   - 비교는 같은 LiteLLM 설정으로 시나리오당 3회, 정답은 주입한 고장 사실만(순환 평가 금지). 시나리오마다 ① 3회 모두 정답(pass^3) ② 1회 이상 정답 ③ 정답 비율을 적는다. 시나리오를 확정하기 전에 주입한 고장이 데이터에 드러나는지 한 번 확인한다. 3회로는 작은 차이의 순위를 매기지 않는다(순위가 필요하면 9회 이상, 17번 A14)
-  - 기존 측정 결과: `experiments/EXP-AI`(`harness/tools/report_ai.py`)
-  - AI 구성: 루트 `compose.yml` 하나에 knowledge·graph-seed·business·web·graph(Neo4j)를 it-net에만 붙인다. LLM과 임베딩 호출은 모두 GCP의 LiteLLM(`knu-litellm`, asia-northeast3)으로 간다(**사용자 결정 2026-09-30**, 호스트·컨테이너 Ollama 없음): 분석은 모델 `coding`, 임베딩은 모델 `embedding`(text-embedding-3-small, 1536차원). 온톨로지 개체와 매뉴얼 절 검색이 같은 임베딩을 쓴다. 주소와 키는 `ai-layer/.env.local`(`LITELLM_BASE_URL`·`LITELLM_API_KEY`, 커밋하지 않음)에서 읽고, 없으면 graph-seed가 임베딩을 건너뛴다. 임베딩 실패는 0 벡터로 숨지 않게 graph-seed가 빠진 벡터·0 벡터 수를 세어 하나라도 있으면 실패로 끝난다(실측: 절 26·개체 113, 빠진 0·0 벡터 0). AI 업무 DB는 공용 PostgreSQL 18.6의 DATABASE `ai`. AI 조치 코드의 요청 길 전환(§1 위 문단)은 단계 4 ⑧에서 했다.
+  - 기존 측정 결과: `experiments/EXP-AI`(`tests/tools/report_ai.py`)
+  - AI 구성: 루트 `compose.yml` 하나에 knowledge·graph-seed·business·web·graph(Neo4j)를 it-net에만 붙인다. LLM과 임베딩 호출은 모두 GCP의 LiteLLM(`knu-litellm`, asia-northeast3)으로 간다(**사용자 결정 2026-09-30**, 호스트·컨테이너 Ollama 없음): 분석은 모델 `coding`, 임베딩은 모델 `embedding`(text-embedding-3-small, 1536차원). 온톨로지 개체와 매뉴얼 절 검색이 같은 임베딩을 쓴다. 주소와 키는 `5_ai/server/.env.local`(`LITELLM_BASE_URL`·`LITELLM_API_KEY`, 커밋하지 않음)에서 읽고, 없으면 graph-seed가 임베딩을 건너뛴다. 임베딩 실패는 0 벡터로 숨지 않게 graph-seed가 빠진 벡터·0 벡터 수를 세어 하나라도 있으면 실패로 끝난다(실측: 절 26·개체 113, 빠진 0·0 벡터 0). AI 업무 DB는 공용 PostgreSQL 18.6의 DATABASE `ai`. AI 조치 코드의 요청 길 전환(§1 위 문단)은 단계 4 ⑧에서 했다.
 
 ## 2. 진행 순서와 지금 위치
 | 단계 | 내용 | 상태 |
@@ -60,9 +60,9 @@
 | 1-3 | 판단 근거 확인(17번, 의뢰서 §10): 전수 검사에서 근거가 없거나 약하거나 과장된 판단 70개를 현업 사례·표준·규칙으로 다시 확인. 근거가 정말 없으면 추천과 이유 | 완료. 근거 56·추천 14·미해소 0, §2-1~§3-6에 반영 |
 | 2 | 구조 확정(12~15와 사용자 대화로 확정, 요지 §2-1~§2-2). **조립하면서 에이전트가 근거로 정할 세부:** ①② 연결 방향은 16번으로 확정(§2-1 외부 시스템 연결: OT가 브리지로 연다) ③ 회귀 S14~S22를 새 명령 길에 맞춰 다시 정의(§3-5) ④ AI 층 업무 DB는 공용 PostgreSQL 18.6 안의 별도 DATABASE `ai`로 합치고 postgres:17 컨테이너를 없앤다(17번 H2. 데이터가 쌓이기 전인 지금이 가장 싸다. AI 층이 18에서 도는지는 단계 4 ⑨에서 확인) | 확정. 세부는 단계 4에서 |
 | 3 | 칸별 제품·버전 확정 | 완료(14·15, 결정 §2-3). 엣지 한 칸은 단계 4 실측으로 정한다 |
-| 4 | 조립 한 번에: V1 코드에서 출발해 확정 구조·스택으로 바꾸고 기능 대응표(§3-4)를 채운다. 엣지는 먼저 Node-RED·EdgeX를 나란히 재서 정한다(§2-3 결정 ①). **이 단계에서 할 일:** ⑥ 학습 모델 — 학습기가 설비 시간 그대로(`physics_time_scale: 1`, V1과 같은 설비 동역학. §3-6의 운영 배속과 별개)로 학습하도록 `ml/train.yaml`에 학습용 배속 값을 두고 `ml/train.py`가 설비 설정(`PLANT_CFG`, 학습 데이터 생성과 자체 검증이 함께 쓴다)의 `physics_time_scale`을 그 값으로 덮어쓴다. 새 폴더 `--build`로 만든 모델의 학습기 자체 검증 탐지율이 V1(드리프트·베어링 100 %)과 같아야 한다. 배속 600 운영에서 정상 오경보가 느는 문제(S6)의 근본 해결은 ML(오토인코더) 입력 창만 설비 시각으로 자르는 것이다: 가상설비가 설비 시각과 순번(`seq`, V1 reg 200)을 레지스터로 내고 PLC·엣지가 그대로 통과시켜 값에 싣는다. ONNX 잡은 입력 창을 설비 시각 기준으로 다시 맞추고, 수집 간격(벽시계) × 600이 학습 표본 간격보다 크면 모델을 그 간격으로 다시 학습한다(학습 간격 재정의). tier-1 규칙·CEP·워터마크·보간은 V1과 같은 기존 `ts`(벽시계) 기준으로 둔다 — V1 규칙의 창(CEP 10 s, 워터마크 5 s, 보간 1 s·최대 공백 20 s)이 벽시계에 맞춰져 있고 판정 70/70 리플레이 데이터에 설비 시각이 없기 때문이다. 시뮬레이터에서 UNS·Kafka로 가는 곁길은 만들지 않는다(17번 K4 추천을 이 범위로 좁힘, 원리 HLA·Flink event time). §3-5 오경보 기준으로 판정한다. ⑦ AI 검증 구성 — §1 AI 층의 덧씌우기 파일을 만든다. AI 업무 DB를 공용 PostgreSQL 18.6의 DATABASE `ai`로 옮기는 것도 여기서 한다(단계 2 ④). ⑧ 외부 시스템 연결(§2-1 외부 시스템 연결 ①~⑫) — 라우터 컨테이너(망 방향 강제), DMZ 브로커와 OT 허브 브리지(`out`·`in`, mqttv50·끊김 버퍼), IT 쪽 수집기·발송기, DMZ 게이트웨이, OT 작업 요청 수신기와 FUXA "받은 요청"·"분석 경고(참고)" 화면, PLC 정비 모드, 작업 요청(Job Control 필드)·두 겹 응답 형식과 시간 값, PostgreSQL 스키마 4개·서비스별 계정·추가 전용 감사 표, FUXA DAQ, InfluxDB 둘(DMZ 원시 사본·IT Flink 결과), Prometheus 셋(OT agent → DMZ 수신 → IT federate), 엣지의 장치 통신 상태 발행, 가상설비 안전 층(압력 상한·비상정지), AI 조치 코드를 요청 길로, 연결 목록 문서. ⑨ 실행으로 먼저 확인할 것 10개(17번이 문서로만 본 것)와 실패하면 할 일: (1) 라우터 컨테이너가 Windows Docker Desktop에서 되는지(B8), `internal` 망과 호스트 포트 공개가 함께 되는지 → 라우터가 안 되면 §2-1 ⑫ 2안, `internal`이 부딪히면 ⑫의 처리 (2) mqttv50 브리지로 MQTT 만료가 넘어가는지(E16) → 안 되면 본문 `expires_at` 검사(수신기·PLC) 한 겹으로 두고 한계를 보고서에 적는다 (3) 브리지 큐 한도와 한도에 닿은 뒤 재연결(D10, Mosquitto #2256) → 재현되면 고친 판을 찾아 올리고, 없으면 한도를 격리 실습 보관 시간보다 넉넉히 잡고 버린 건수 지표로 감시하며 한계를 적는다 (4) 브리지 `in` 메시지에 로컬 ACL이 걸리는지(E34) → 안 걸리면 브리지 `in` 토픽 설정(요청·alert 토픽만)이 거르는 역할을 하고, 명령 토픽 발행 ACL은 로컬 계정에 건다 (5) `openplc-cli`·`program.zip`으로 PLC 프로그램 넣기(J3) → 둘 다 안 되면 soft-PLC 2안(자체 Python 제어기) (6) Bento 게이트웨이 조합(E11) → 안 되면 자체 코드 게이트웨이 (7) AI 층의 PostgreSQL 18 동작(H2) → 안 되면 AI DB만 postgres:17로 두고 이유를 decision-log에 적는다(단계 2 ④ 되돌림) (8) Prometheus 셋과 새 칸의 메모리(G5) → 7.6 GB를 넘으면 보존·수집 주기로 줄이고, 그래도 넘으면 사용자에게 알린다 (9) FUXA DAQ 보존 설정 유무(H3) → 없으면 과정 기간의 디스크 증가를 재서 한계로 적는다 (10) 임베딩 → GCP LiteLLM `embedding`(사용자 결정 2026-09-30, 도커 메모리에 들지 않음) | 완료(2026-09-30). ⑥은 원인을 정정해 운영 배속 600·표본 간격 600 설비 초로 학습(#165), ⑨ 결과 `experiments/ENV-9/RESULT.md`, 엣지 Node-RED(#164) |
-| 5 | 검증 한 번에(§3-5) → 나빠진 곳만 고침 → 태그 | 완료(2026-09-30). 결과 `reports/BASE_VERIFY.md`, 미검증은 §6 |
-| 6 | 보고서: `reports/REPORT_base_plan.html`(화면 공유용 요약)·`REPORT_base_plan_대본.md`·`REPORT_base_plan_근거상세.html`에 실측 결과를 채움 + 쉬운 설명서 → 작업보고 | 완료(2026-09-30) |
+| 4 | 조립 한 번에: V1 코드에서 출발해 확정 구조·스택으로 바꾸고 기능 대응표(§3-4)를 채운다. 엣지는 먼저 Node-RED·EdgeX를 나란히 재서 정한다(§2-3 결정 ①). **이 단계에서 할 일:** ⑥ 학습 모델 — 학습기가 설비 시간 그대로(`physics_time_scale: 1`, V1과 같은 설비 동역학. §3-6의 운영 배속과 별개)로 학습하도록 `4_it/ml-trainer/train.yaml`에 학습용 배속 값을 두고 `4_it/ml-trainer/train.py`가 설비 설정(`PLANT_CFG`, 학습 데이터 생성과 자체 검증이 함께 쓴다)의 `physics_time_scale`을 그 값으로 덮어쓴다. 새 폴더 `--build`로 만든 모델의 학습기 자체 검증 탐지율이 V1(드리프트·베어링 100 %)과 같아야 한다. 배속 600 운영에서 정상 오경보가 느는 문제(S6)의 근본 해결은 ML(오토인코더) 입력 창만 설비 시각으로 자르는 것이다: 가상설비가 설비 시각과 순번(`seq`, V1 reg 200)을 레지스터로 내고 PLC·엣지가 그대로 통과시켜 값에 싣는다. ONNX 잡은 입력 창을 설비 시각 기준으로 다시 맞추고, 수집 간격(벽시계) × 600이 학습 표본 간격보다 크면 모델을 그 간격으로 다시 학습한다(학습 간격 재정의). tier-1 규칙·CEP·워터마크·보간은 V1과 같은 기존 `ts`(벽시계) 기준으로 둔다 — V1 규칙의 창(CEP 10 s, 워터마크 5 s, 보간 1 s·최대 공백 20 s)이 벽시계에 맞춰져 있고 판정 70/70 리플레이 데이터에 설비 시각이 없기 때문이다. 시뮬레이터에서 UNS·Kafka로 가는 곁길은 만들지 않는다(17번 K4 추천을 이 범위로 좁힘, 원리 HLA·Flink event time). §3-5 오경보 기준으로 판정한다. ⑦ AI 검증 구성 — §1 AI 층의 덧씌우기 파일을 만든다. AI 업무 DB를 공용 PostgreSQL 18.6의 DATABASE `ai`로 옮기는 것도 여기서 한다(단계 2 ④). ⑧ 외부 시스템 연결(§2-1 외부 시스템 연결 ①~⑫) — 라우터 컨테이너(망 방향 강제), DMZ 브로커와 OT 허브 브리지(`out`·`in`, mqttv50·끊김 버퍼), IT 쪽 수집기·발송기, DMZ 게이트웨이, OT 작업 요청 수신기와 FUXA "받은 요청"·"분석 경고(참고)" 화면, PLC 정비 모드, 작업 요청(Job Control 필드)·두 겹 응답 형식과 시간 값, PostgreSQL 스키마 4개·서비스별 계정·추가 전용 감사 표, FUXA DAQ, InfluxDB 둘(DMZ 원시 사본·IT Flink 결과), Prometheus 셋(OT agent → DMZ 수신 → IT federate), 엣지의 장치 통신 상태 발행, 가상설비 안전 층(압력 상한·비상정지), AI 조치 코드를 요청 길로, 연결 목록 문서. ⑨ 실행으로 먼저 확인할 것 10개(17번이 문서로만 본 것)와 실패하면 할 일: (1) 라우터 컨테이너가 Windows Docker Desktop에서 되는지(B8), `internal` 망과 호스트 포트 공개가 함께 되는지 → 라우터가 안 되면 §2-1 ⑫ 2안, `internal`이 부딪히면 ⑫의 처리 (2) mqttv50 브리지로 MQTT 만료가 넘어가는지(E16) → 안 되면 본문 `expires_at` 검사(수신기·PLC) 한 겹으로 두고 한계를 보고서에 적는다 (3) 브리지 큐 한도와 한도에 닿은 뒤 재연결(D10, Mosquitto #2256) → 재현되면 고친 판을 찾아 올리고, 없으면 한도를 격리 실습 보관 시간보다 넉넉히 잡고 버린 건수 지표로 감시하며 한계를 적는다 (4) 브리지 `in` 메시지에 로컬 ACL이 걸리는지(E34) → 안 걸리면 브리지 `in` 토픽 설정(요청·alert 토픽만)이 거르는 역할을 하고, 명령 토픽 발행 ACL은 로컬 계정에 건다 (5) `openplc-cli`·`program.zip`으로 PLC 프로그램 넣기(J3) → 둘 다 안 되면 soft-PLC 2안(자체 Python 제어기) (6) Bento 게이트웨이 조합(E11) → 안 되면 자체 코드 게이트웨이 (7) AI 층의 PostgreSQL 18 동작(H2) → 안 되면 AI DB만 postgres:17로 두고 이유를 decision-log에 적는다(단계 2 ④ 되돌림) (8) Prometheus 셋과 새 칸의 메모리(G5) → 7.6 GB를 넘으면 보존·수집 주기로 줄이고, 그래도 넘으면 사용자에게 알린다 (9) FUXA DAQ 보존 설정 유무(H3) → 없으면 과정 기간의 디스크 증가를 재서 한계로 적는다 (10) 임베딩 → GCP LiteLLM `embedding`(사용자 결정 2026-09-30, 도커 메모리에 들지 않음) | 완료(2026-09-30). ⑥은 원인을 정정해 운영 배속 600·표본 간격 600 설비 초로 학습(#165), ⑨ 결과 `experiments/ENV-9/RESULT.md`, 엣지 Node-RED(#164) |
+| 5 | 검증 한 번에(§3-5) → 나빠진 곳만 고침 → 태그 | 완료(2026-09-30). 결과 `docs/BASE_VERIFY.md`, 미검증은 §6 |
+| 6 | 보고서: `docs/REPORT_base_plan.html`(화면 공유용 요약)·`REPORT_base_plan_대본.md`·`REPORT_base_plan_근거상세.html`에 실측 결과를 채움 + 쉬운 설명서 → 작업보고 | 완료(2026-09-30) |
 | 7 | 설비 확장 → 시나리오·온톨로지 | 이후 |
 
 ### 2-1. 현업 구조 (근거는 12번 파일)
@@ -148,12 +148,12 @@
   | Kafka 요청·감사 토픽 | 30일(정본은 DB) | 사본 역할(AU-4(1)) |
   | 명령·승인·감사(PostgreSQL) | 과정 중 지우지 않음. 현업에 설명할 최소치는 18개월 | ASD·CISA 2024 사고 발견 18개월, NIST AU-11 |
 
-  FUXA DAQ 보존은 `daqstore.retention: days7`이다(FUXA가 기동 때 읽는 사용자 설정 `_appdata/mysettings.json`에 `fuxa/seed_settings.js`가 없는 값만 채움. 설정 API로 넣으면 DAQ 파일이 지워진다, STABILITY S23). 7일 뒤 실제 삭제는 관찰하지 못했다. 볼륨 실사용은 `reports/BASE_VERIFY.md` §5.
+  FUXA DAQ 보존은 `daqstore.retention: days7`이다(FUXA가 기동 때 읽는 사용자 설정 `_appdata/mysettings.json`에 `2_ot/hmi-fuxa/seed_settings.js`가 없는 값만 채움. 설정 API로 넣으면 DAQ 파일이 지워진다, STABILITY S23). 7일 뒤 실제 삭제는 관찰하지 못했다. 볼륨 실사용은 `docs/BASE_VERIFY.md` §5.
 - **확장:** 등록부 = 설비 종류 모델 표 + 설비 개체 표. 생성 스크립트가 엣지 설정·토픽·Kafka 키·Flink 범위·온톨로지 노드·JSON Schema·작업 정의 표 두 개(§2-1 ④)를 만든다. 현업은 템플릿(UDT·모델) 인스턴스화와 Sparkplug 자동 발견을 함께 쓰고, 우리는 앞의 것을 정본 파일 → 생성 스크립트로 흉내 낸다(17번 I3). Node-RED면 서브플로 템플릿 하나 + 등록부에서 인스턴스 속성 생성 → Admin API 배포(17번 I4). 온톨로지 고장 칸은 EN 13306 정의(고장 모드·원인·메커니즘) + CMMS식 조치 코드, 증상 연결은 ISO 13379-1 FMSA 참고. ISO 14224 용어를 쓰는 곳은 "석유·가스 분야 용어 차용"으로 표시한다(17번 I5). OPC UA는 엣지 서비스 하나만 더한다.
 - **AI:** 우리 시스템의 외부 시스템이다. 도구는 읽기 전용(데이터는 DMZ InfluxDB 원시 사본·IT InfluxDB 결과·Neo4j·PostgreSQL 조회). 흐름: 알람 → 사건 접수 → AI 조사·제안 → 담당자가 AI 업무 화면에서 승인 → 작업 요청 → §2-1 외부 시스템 연결 ④~⑥의 길 → 수용·거부 응답과 실행 결과·새 상태 → 재관측 → 기록.
 - **망·보안:** `ot-net`·`dmz-net`·`it-net` 도커 망 3개, 모든 컨테이너가 붙는 공용 망은 두지 않는다. 여러 망에 붙는 것은 라우터 컨테이너 하나뿐이다(§2-1 ⑫). 서비스별 계정 + 토픽 ACL(최소 권한): 제어기 명령 토픽은 출처별로 `…/cmd/operator`는 FUXA만, `…/cmd/request`는 OT 작업 요청 수신기만 발행하고, 엣지는 명령 토픽 읽기만, DMZ 요청 토픽 발행은 DMZ 게이트웨이만, DMZ `alert` 토픽 발행은 IT 수집기만, "받은 요청" 목록 토픽 `…/request/pending`은 수신기만 발행(FUXA 구독), 운전원 결정 토픽 `…/request/decision`은 FUXA만 발행(수신기 구독), 브리지 `in`은 요청 토픽(과 읽기 전용 `alert` 토픽)만 가져오고 명령 토픽으로 바로 잇지 않는다(Sparkplug ACL 예, 17번 E34). 브리지로 들어온 메시지에는 로컬 ACL이 걸리지 않으므로(⑨-4) 브리지 `in` 토픽 설정이 거르는 역할을 한다. 사람용 공개 포트는 컨테이너도 호스트를 거쳐 닿으므로(⑫) FUXA·강사 API·현장 패널·엣지 편집기는 모두 계정 로그인으로 막는다(FUXA: 보기는 로그인 없이, 운전원 명령은 `operator`, 화면·설정 변경은 `admin`, 장치 계정은 관리자 전용 장치 보안 저장소, STABILITY S26). 구역을 넘는 TLS와 사람 접근의 다중 인증은 설명만 한다(§2-1 외부 시스템 연결 ⑪).
 - **감시:** 장치 통신 상태는 엣지가 대신 알린다: 엣지가 읽는 장치의 폴링 성공·실패로 장치 통신 상태 토픽을 발행하고 값 품질을 STALE로 바꾼다(Sparkplug DDEATH 흉내). PLC는 MQTT에 붙지 않으므로 PLC 통신 상태는 엣지의 폴링 결과로, 시뮬레이터↔PLC 통신 상태는 PLC의 "현장 장치 통신 정상" 레지스터로 엣지가 발행한다. 엣지 자신의 브로커 끊김은 엣지의 MQTT Will로 알린다(NDEATH 흉내). 시뮬레이터는 UNS에 직접 붙지 않고, 프로세스가 살아 있는지는 cAdvisor로 본다(17번 G2). v3 `status`와 분리한다. 플랫폼 지표는 OT 쪽 Prometheus `--agent`가 `remote_write`로 DMZ 수신 Prometheus(`--web.enable-remote-write-receiver`, 짧게 보관)에 보내고, IT 본 Prometheus가 DMZ를 `/federate`로 가져간다. OT agent가 읽는 대상은 OT 쪽 서비스(엣지 지표, OT 허브용 exporter — 이미지·판은 조립 때 §3-1 관문으로 고른다)이고, 판정은 "OT 대상 지표가 IT Prometheus에서 보인다"로 한다. DMZ 수신 Prometheus는 DMZ 대상(DMZ 브로커용 exporter·적재기·게이트웨이 Bento 지표·DMZ InfluxDB)도 직접 읽는다. V1 경보 규칙 EMQXDisconnectSpike(`prometheus/rules.yml`)는 Mosquitto 브리지·클라이언트 끊김 규칙으로 바꾸고 기능 대응표에 적는다. IT 쪽 대상(Kafka·Flink·cAdvisor 등)은 IT 본 Prometheus가 직접 읽고, Alertmanager·Grafana는 IT에 둔다(17번 G5 추천, 14번의 "DMZ가 OT를 스크랩"은 쓰지 않는다). 한 PC에서는 cAdvisor 하나가 모든 컨테이너를 보므로 구역별 배치는 흉내다.
-- **확인 못 한 것:** FUXA의 ISA-18.2 셸빙(없음, master 소스 기준). 메모리·Windows 도커 망 동작(라우터 1안)은 실측했다(`reports/BASE_VERIFY.md`, ⑨-1). 찾지 못함으로 확정: 데이터 랩과 보안 랩을 합친 교육 사례, UNS 채택 통계, 요청 단위 만료를 요구하는 제조 표준(17번 E17), 이름 있는 공장의 층 구조.
+- **확인 못 한 것:** FUXA의 ISA-18.2 셸빙(없음, master 소스 기준). 메모리·Windows 도커 망 동작(라우터 1안)은 실측했다(`docs/BASE_VERIFY.md`, ⑨-1). 찾지 못함으로 확정: 데이터 랩과 보안 랩을 합친 교육 사례, UNS 채택 통계, 요청 단위 만료를 요구하는 제조 표준(17번 E17), 이름 있는 공장의 층 구조.
 
 ### 2-3. 스택 (근거·버전·이미지 태그는 14번 파일 맨 앞 표)
 | 칸 | 권장 | V1 대비 |
@@ -162,7 +162,7 @@
 | soft-PLC | OpenPLC Runtime v4.2.4(MIT). 2안은 자체 Python 제어기 | 추가 |
 | 엣지 | Node-RED 5.0.7(+node-red-contrib-modbus 5.60.2). EdgeX 4.0.2와 나란히 재서 골랐다(결정 ①, decision-log #164). OPC UA 단계에서 node-red-contrib-opcua 0.2.355 | EdgeX 대체 |
 | MQTT 브로커 | Mosquitto 2.1.2 두 개: OT 허브 + DMZ 브로커. OT 허브가 브리지로 DMZ에 연결을 연다(`out` 데이터·응답, `in` 요청·읽기 전용 alert. `bridge_protocol_version mqttv50`). 끊김 버퍼 한도는 `.env` `MQTT_MAX_QUEUED_MESSAGES`, 버려진 세션은 1시간 뒤 지움(`persistent_client_expiration`, STABILITY S28) | EMQX 대체, DMZ 브로커 추가(실측 약 8 MiB) |
-| DMZ·IT 경계 | Bento 1.21.2 두 개: IT 쪽 수집기(it-net, DMZ 브로커 구독 → Kafka, Kafka의 Flink 결과 → IT InfluxDB, Kafka `alerts.display` → DMZ 브로커 `alert` 토픽 — 모두 IT가 여는 연결)와 DMZ 쪽 적재기(dmz-net, DMZ 브로커 → DMZ InfluxDB 원시값). DMZ 요청 게이트웨이(1차 검사): 자체 코드(`dmz/gateway`, aiohttp + paho MQTT 5). Bento 는 MQTT 3.1.1 로만 발행해 메시지 만료를 붙일 수 없고 브로커가 멈추면 즉시 거부하지 못해 쓰지 않는다(⑨-6, 17번 E11). IT 쪽 발송기(자체: 공용 DB `workflow`에서 보낼 요청을 읽어 게이트웨이에 HTTP(S) POST, 응답 ⓐ와 발송 상태를 `workflow`·`audit`에 추가 기록하고 요청·ⓐ 이벤트를 Kafka 사본으로 발행 — 발송한 요청은 다시 보내지 않는다) | Telegraf 3개 대체, 게이트웨이·발송기 추가 |
+| DMZ·IT 경계 | Bento 1.21.2 두 개: IT 쪽 수집기(it-net, DMZ 브로커 구독 → Kafka, Kafka의 Flink 결과 → IT InfluxDB, Kafka `alerts.display` → DMZ 브로커 `alert` 토픽 — 모두 IT가 여는 연결)와 DMZ 쪽 적재기(dmz-net, DMZ 브로커 → DMZ InfluxDB 원시값). DMZ 요청 게이트웨이(1차 검사): 자체 코드(`3_dmz/gateway`, aiohttp + paho MQTT 5). Bento 는 MQTT 3.1.1 로만 발행해 메시지 만료를 붙일 수 없고 브로커가 멈추면 즉시 거부하지 못해 쓰지 않는다(⑨-6, 17번 E11). IT 쪽 발송기(자체: 공용 DB `workflow`에서 보낼 요청을 읽어 게이트웨이에 HTTP(S) POST, 응답 ⓐ와 발송 상태를 `workflow`·`audit`에 추가 기록하고 요청·ⓐ 이벤트를 Kafka 사본으로 발행 — 발송한 요청은 다시 보내지 않는다) | Telegraf 3개 대체, 게이트웨이·발송기 추가 |
 | 장부 | Kafka 4.3.1(분석 데이터 흐름, 요청 이벤트 통로·감사 사본) | 버전만 |
 | 탐지 | Flink 2.2.1 + ZooKeeper HA(2.3 커넥터 나오면 2.3.x) | 버전 올림 + 재시작 복구(HA) 추가 |
 | 이력 | OT: FUXA DAQ(SQLite, 새 컨테이너 없음). DMZ: InfluxDB 2.9.1(OT 원시값 사본 전용, IT는 HTTP API로 조회). IT: InfluxDB 2.9.1(Flink 결과·집계). 태그는 `influxdb:2.9.1` 고정(`latest`는 3 Core) | 배치 변경, OT 이력 추가, IT 결과 저장 분리 |
@@ -171,7 +171,7 @@
 | 감시 | Prometheus 3.13 LTS 셋(OT `--agent` → DMZ 수신 → IT 본 Prometheus `/federate`), Alertmanager(플랫폼 경보 전달, V1 기능 보존. 14번에 판이 없으므로 조립 때 최신 부 버전으로). 감시는 기본으로 켠다, cAdvisor 0.60.6, kafka-exporter 1.10.0 | 버전 올림 + 구역별 배치 |
 | 설비 등록부 | 자체(YAML/JSON → PostgreSQL 표·Neo4j 노드). 정본 파일은 저장소에 두고, 생성 스크립트가 각 망의 설정(엣지·토픽·키·규칙 범위)을 배포 전에 만든다 | 추가 |
 | AI·지식 | Neo4j 5.26 LTS CE, LangGraph, LiteLLM(1.82.7·1.82.8 금지) | 유지, 도구 읽기 전용 |
-| 업무 서비스 | V1 AI 층 백엔드의 운영 모듈(`ai-layer/knowledge/backend/src/modules/operations`, `consumer.py`가 Kafka alert를 사건으로 접수). 새 베이스에서 더하는 일: Kafka의 alert·수신 응답 ⓑⓒ·PLC ACK·상태를 소비, `alert` 스키마 상태(억제·Out of Service)와 `alerts.display` 발행, 5 s·10 s 타이머 판정과 command-disagree alert, 요청·승인·응답을 `workflow`·`audit`에 추가 기록(전용 계정). 정본은 공용 DB의 `workflow`·`audit`이고, V1 AI 앱의 사건·승인 표(DATABASE `ai`)는 화면용으로 둔다 — 승인·요청 발행 코드(AI 조치 길 전환과 같은 수정)가 `workflow`·`audit`에 먼저 쓰고, 성공한 뒤 화면용 표를 고친다(실패하면 화면에 "기록 실패"를 보이고 발송하지 않는다) | 유지, 연결 부분만 수정 |
+| 업무 서비스 | V1 AI 층 백엔드의 운영 모듈(`5_ai/server/knowledge/backend/src/modules/operations`, `consumer.py`가 Kafka alert를 사건으로 접수). 새 베이스에서 더하는 일: Kafka의 alert·수신 응답 ⓑⓒ·PLC ACK·상태를 소비, `alert` 스키마 상태(억제·Out of Service)와 `alerts.display` 발행, 5 s·10 s 타이머 판정과 command-disagree alert, 요청·승인·응답을 `workflow`·`audit`에 추가 기록(전용 계정). 정본은 공용 DB의 `workflow`·`audit`이고, V1 AI 앱의 사건·승인 표(DATABASE `ai`)는 화면용으로 둔다 — 승인·요청 발행 코드(AI 조치 길 전환과 같은 수정)가 `workflow`·`audit`에 먼저 쓰고, 성공한 뒤 화면용 표를 고친다(실패하면 화면에 "기록 실패"를 보이고 발송하지 않는다) | 유지, 연결 부분만 수정 |
 | 승인 흐름 | 자체(PostgreSQL `workflow`·`audit` 스키마): AI 업무 화면의 승인 + 작업 요청 발행 + 두 겹 응답 표시 + 같은 요청 ID 감사 기록. 승인 대상은 두 종류(요청 길 / 변경 관리 기록). 승인·ACK 대기·재관측 타이머를 자체 코드로 감당하기 어려우면(단계 4에서 판단) Operaton 2.1.5 | 유지, 요청 길로 변경 |
 | OT 작업 요청 수신기 | 엣지 Node-RED의 전용 흐름 탭·전용 MQTT 계정(엣지가 EdgeX로 정해지면 같은 역할의 작은 자체 서비스): 스키마 재검사·허용 집합·파라미터 범위·만료 재검사·모드·운전원 확인 → 제어기 명령 토픽. 결정과 명령 토픽 발행까지만(현업 MES 서버·SCADA MES 모듈 흉내, 17번 E20) | 추가 |
 | 알람 수명주기 | 공정 알람은 soft-PLC·FUXA, 분석 alert는 PostgreSQL `alert` 스키마의 ISA-18.2 상태표 | 추가 |
@@ -214,10 +214,10 @@
 3. **Flink는 2.2.1로 시작하고, 2.3용 Kafka 커넥터(FLINK-40121)가 나오면 2.3.x로 올린다.** 일반 규칙: 다음 판에 필요한 연결 부품이 아직 없으면 부품이 나올 때까지 현재 판의 최신 패치를 쓰고 그 사실을 적는다. 판정 70/70·재시작 자동 복구를 실측했다.
 
 **그 밖의 사실:**
-- 메모리(실측, `reports/BASE_VERIFY.md` §5): 새 베이스 전체(SCADA + AI, 컨테이너 30개) 3분 중앙 5,588 MiB(V1 29개 5,918 MiB). 큰 것: Flink TaskManager 1,052 · Neo4j 696 · Kafka 687 · Flink JobManager 604 · Grafana 384 MiB. 임베딩은 GCP LiteLLM이 만들므로 도커 합계에 들지 않는다(⑨-10, 사용자 결정 2026-09-30).
+- 메모리(실측, `docs/BASE_VERIFY.md` §5): 새 베이스 전체(SCADA + AI, 컨테이너 30개) 3분 중앙 5,588 MiB(V1 29개 5,918 MiB). 큰 것: Flink TaskManager 1,052 · Neo4j 696 · Kafka 687 · Flink JobManager 604 · Grafana 384 MiB. 임베딩은 GCP LiteLLM이 만들므로 도커 합계에 들지 않는다(⑨-10, 사용자 결정 2026-09-30).
 - FUXA 알람: 확인(ack)은 있고 보류(shelving)는 없다(master 소스 기준, 1.3.4와 같은지는 미확인).
-- **PLC 프로그램:** 할 일은 인터록, 운전 모드(LOCAL/REMOTE_MANUAL/REMOTE_AUTO + 출처 채널 + 정비 모드), 요청 만료·명령 순번 중복·범위·물리 타당성 검사, 되읽기 감시(시간 초과면 모터 정지), ACK·상태 레지스터(엣지가 읽어 발행. PLC는 MQTT에 직접 붙지 않는다), 운전 상태(RUN/STOP) 레지스터, 현장 장치 통신 정상 표시다. 에이전트가 IEC 61131-3 ST로 쓴다. OpenPLC v4 런타임 REST(`/api/upload-file`)는 ST가 아니라 편집기가 만든 zip만 받는다(17번 J3). 넣는 길은 1안으로 됐다(⑨-5): 등록부에서 만든 ST 프로젝트(`plc/project`, 원본 `plc/main.st.tmpl`)를 이미지 빌드 때 OpenPLC Editor 4.3.2 헤드리스 `openplc-cli`로 컴파일하고(sha256 고정), 런타임 자체 함수로 미리 넣어 첫 기동부터 RUN이다(첫 기동 오류 로그 없음). 계약 시험 `harness/e2e/plc_contract.py` 50/50. OpenPLC v3는 수명 종료다.
-- **생산 스케줄(V1 autopilot):** V1 가상설비는 설정값 세 개(펌프 속도·밸브 개도·온도)를 스스로 바꾸는 생산 스케줄을 갖고 매 스캔 holding 100~102에 다시 쓴다(`simulator/plant.py:109-131`, `sim.py:127-158`, `plant.yaml` `autopilot`). PLC가 하나뿐인 쓰기 주인이므로 이 스케줄을 PLC 프로그램으로 옮기고(같은 주기·범위·경사·수동 조작 뒤 300 s 보류) 가상설비의 autopilot은 끈다. 학습 데이터는 학습기가 가상설비 물리를 직접 돌려 만들므로(autopilot 켠 상태, V1과 같음) 운전 분포가 같아진다. PLC 기동 때 초기 출력은 `plant.yaml`의 초기 설정값이다.
+- **PLC 프로그램:** 할 일은 인터록, 운전 모드(LOCAL/REMOTE_MANUAL/REMOTE_AUTO + 출처 채널 + 정비 모드), 요청 만료·명령 순번 중복·범위·물리 타당성 검사, 되읽기 감시(시간 초과면 모터 정지), ACK·상태 레지스터(엣지가 읽어 발행. PLC는 MQTT에 직접 붙지 않는다), 운전 상태(RUN/STOP) 레지스터, 현장 장치 통신 정상 표시다. 에이전트가 IEC 61131-3 ST로 쓴다. OpenPLC v4 런타임 REST(`/api/upload-file`)는 ST가 아니라 편집기가 만든 zip만 받는다(17번 J3). 넣는 길은 1안으로 됐다(⑨-5): 등록부에서 만든 ST 프로젝트(`1_control/plc-openplc/project`, 원본 `1_control/plc-openplc/main.st.tmpl`)를 이미지 빌드 때 OpenPLC Editor 4.3.2 헤드리스 `openplc-cli`로 컴파일하고(sha256 고정), 런타임 자체 함수로 미리 넣어 첫 기동부터 RUN이다(첫 기동 오류 로그 없음). 계약 시험 `tests/e2e/plc_contract.py` 50/50. OpenPLC v3는 수명 종료다.
+- **생산 스케줄(V1 autopilot):** V1 가상설비는 설정값 세 개(펌프 속도·밸브 개도·온도)를 스스로 바꾸는 생산 스케줄을 갖고 매 스캔 holding 100~102에 다시 쓴다(`0_plant/simulator/plant.py:109-131`, `sim.py:127-158`, `plant.yaml` `autopilot`). PLC가 하나뿐인 쓰기 주인이므로 이 스케줄을 PLC 프로그램으로 옮기고(같은 주기·범위·경사·수동 조작 뒤 300 s 보류) 가상설비의 autopilot은 끈다. 학습 데이터는 학습기가 가상설비 물리를 직접 돌려 만들므로(autopilot 켠 상태, V1과 같음) 운전 분포가 같아진다. PLC 기동 때 초기 출력은 `plant.yaml`의 초기 설정값이다.
 - **V1 설비 안 고압 인터록:** 가상설비 안의 6.5 barg 펌프 트립(`plant.py:177-185`, `plant.yaml` `interlock`, coil 20)은 PLC 인터록으로 옮긴다(같은 값). 가상설비 안에는 그보다 높은 값(설계 압력, 조립 때 `plant.yaml`에서 정함)의 릴리프식 압력 상한만 남겨 제어와 독립인 마지막 보호로 둔다. 그래야 회귀의 "인터록" 판정이 PLC를 검사한다.
 - **결측 표시값:** V1은 Telegraf가 가상설비의 결측 표시값(-999999)을 버려 공백을 만들고 Flink가 보간했다(`telegraf/bridge-edgex.conf:73-84`). 새 길에서는 PLC는 값을 그대로 통과시키고, 엣지가 결측 표시값을 버리고 품질을 Bad로 발행한다(Flink 보간은 그대로). verify 결측 3건(§5 미결)도 이 자리에서 본다.
 - **안전 층:** 우리 가정(기계·유압 설비 공장)에 맞는 기준은 IEC 61511(공정 산업 SIS)이 아니라 기계 안전 제어(ISO 13849-1·IEC 62061)와 산업안전보건법 방호조치·안전인증이다. "SIS" 대신 "기계 안전 기능"이라고 부르고 안전 PLC는 설명만 한다. 추천대로 가상설비 안에 제어기·네트워크가 끌 수 없는 보호 두 가지(유압 릴리프 밸브식 압력 상한, 비상정지)를 둔다. 제어가 뚫려도 설비가 터지지 않는 층을 보여 주기 위해서다(17번 B9).
@@ -238,14 +238,14 @@
 ### 3-3. 제품
 - 칸마다 현업 주류를 우선한다. 관문에 걸리면 ① 지원 중인 마지막 무료판 또는 ② 가장 가까운 무료 제품을 고르고 이유를 적는다.
 ### 3-4. 기능 보존
-- V1이 하던 일을 잃지 않는다. 사람이 쓰는 기능도 포함한다: MQTT 실시간 계측(`edgex/telemetry` — 수업·시연 자료가 씀), `scripts/verify.py`, 수업 자료.
-- `scripts/verify.py`는 새 구조에 맞게 검사 항목을 바꾸되, 무엇을 검사하는지(정규화, 제어 반응, 흐름, 저장, 역할 분리, 화면 표시)는 유지한다. 바뀐 항목은 기능 대응표에 적는다.
+- V1이 하던 일을 잃지 않는다. 사람이 쓰는 기능도 포함한다: MQTT 실시간 계측(`edgex/telemetry` — 수업·시연 자료가 씀), `tests/verify.py`, 수업 자료.
+- `tests/verify.py`는 새 구조에 맞게 검사 항목을 바꾸되, 무엇을 검사하는지(정규화, 제어 반응, 흐름, 저장, 역할 분리, 화면 표시)는 유지한다. 바뀐 항목은 기능 대응표에 적는다.
 - 빼거나 바꾸는 부품마다 "그 기능을 누가 대신하나"를 표로 쓰고 실측으로 확인한다. 대체가 없으면 "잃은 것"으로 보고서에 적는다.
 ### 3-5. 검증 묶음 (조립 뒤 한 번, §5 V1 기준값과 비교)
 - 할 것:
   - 흐름: 12태그 저장, FUXA 화면값과 이력값 일치(V1처럼 화면값 대 외부 이력 = DMZ InfluxDB 원시 사본, 그리고 FUXA DAQ)
   - 탐지 판정 70건(회귀 S02·S04~S08 리플레이)
-  - ML(오토인코더) 기능 보존: 새로 학습한 모델에서 Flink ONNX 점수와 Python 점수가 1e-6 안에서 같고(`harness/situations/L4.md` L4-12, `harness/tools/s13.py`), V1과의 비교는 탐지율(드리프트·베어링 100 %, 단계 4 ⑥)로 한다(모델을 다시 학습하고 입력 창도 K4로 바뀌므로 점수 자체는 V1과 같을 수 없다. 이 도구의 모델 경로가 지운 `harness/l4bench/models`를 가리키므로 조립 때 모델 볼륨 경로로 고친다)
+  - ML(오토인코더) 기능 보존: 새로 학습한 모델에서 Flink ONNX 점수와 Python 점수가 1e-6 안에서 같고(`tests/situations/L4.md` L4-12, `tests/tools/s13.py`), V1과의 비교는 탐지율(드리프트·베어링 100 %, 단계 4 ⑥)로 한다(모델을 다시 학습하고 입력 창도 K4로 바뀌므로 점수 자체는 V1과 같을 수 없다. 이 도구의 모델 경로가 지운 `tests/l4bench/models`를 가리키므로 조립 때 모델 볼륨 경로로 고친다)
   - 정상 운전 오경보: 같은 조건(회귀 S01 정상 3분)에서 V1보다 많지 않다(결함 S6). V1 값은 기록이 없으므로 조립 전에 안정화 V1(§5)로 회귀 S01을 한 번 재서 기준을 만든다(§5 "다시 재지 않는다"의 예외)
   - 고장→알람: 배속 600에서 모든 고장 10초 안. 단 잡음(Z-Score) 고장은 V1도 확률적으로 약 10.8 s이므로 V1보다 나빠지지 않으면 합격
   - 제어·안전: 회귀 S14~S22(`docs/research/AGENT_BRIEF_FINAL.md`의 시나리오). V1 쓰기 길 기준으로 적혀 있으므로 조립 때(단계 2 세부 ③) 새 명령 길 두 가지 — 운전원 길(`…/cmd/operator` → 엣지 → PLC ACK·상태)과 외부 요청 길(승인 → 게이트웨이 → 수신기 → `…/cmd/request` → PLC) — 에 맞춰 다시 정의한다. 판정하는 뜻(인터록, 사람 승인, 실행 직전 재검사, 중복 실행 방지, 감사 기록, 명령≠상태)은 그대로다
@@ -255,21 +255,21 @@
   - 한 사이클(이상 주입 → 감지 → AI 조치 제안) 1분 안(§3-6)
   - 메모리·CPU·이미지·디스크: 전체(SCADA + AI)가 도커 7.6 GB 안에서 엔진 오류 없이 돈다. V1 기록값(5,918 MiB, SCADA 24 + AI 5)과 나란히 적는다
   - 내부 오류 로그
-- 번호 표기: "회귀 S14"는 회귀 시나리오, "결함 S6"은 `reports/STABILITY.md`의 결함 번호다.
+- 번호 표기: "회귀 S14"는 회귀 시나리오, "결함 S6"은 `docs/STABILITY.md`의 결함 번호다.
 - 판정: 정확도·유실·중복은 V1보다 조금도 나빠지면 안 된다. 지연 p95는 +5% 이내면 같다. 성능·복구 시간은 3회 중앙값으로 재고 V1보다 나쁘지 않아야 한다(+5% 이내면 같다). SPEC식 3회 중앙값 + 5 % 판정선이며 통계적 동등성 검정은 아니다(17번 K6).
 - 하지 않을 것: 과부하, 장시간(개인 실습 목적에 과함).
 ### 3-6. 시간
-- 가상설비는 **배속 600이 기본값**이다(`simulator/plant.yaml physics_time_scale: 600`). "1배속"이라는 말은 쓰지 않는다.
+- 가상설비는 **배속 600이 기본값**이다(`0_plant/simulator/plant.yaml physics_time_scale: 600`). "1배속"이라는 말은 쓰지 않는다.
 - 목표: 이상 주입→알람 10초 안, 한 사이클(이상→감지→AI 조치 제안) 1분 안.
 - 걸리는 시간은 짐작하지 말고 첫 실행을 재서 말한다.
 - 벽시계로 도는 것(soft-PLC 타이머, 요청 만료·ACK·재관측 대기, 인터록 지연)은 가속되지 않는다. 설비 시간으로 보면 600배 느리다는 점을 수업에서 알린다. ML 입력 창만 설비 시각 기준으로 하고 규칙 탐지는 V1과 같은 벽시계 `ts` 기준이다(단계 4 ⑥, 17번 K4).
 
 ### 3-7. 기반 품질 — 깨끗하고 원활하게 도는가 (조립 뒤 모두 만족해야 "됐다")
 1. **한 번에 깨끗이 뜬다:** 명령 한 번으로 모든 컨테이너가 healthy가 된다. 사람 손(수동 재시작·잡 재제출·순서 맞추기)이 0번이다.
-2. **조용히 돈다:** 재시작 반복 0, 설명할 수 없는 오류 로그 0, 실제 오류를 가리는 경고 폭주 0(`harness/tools/internal_errors.sh`).
+2. **조용히 돈다:** 재시작 반복 0, 설명할 수 없는 오류 로그 0, 실제 오류를 가리는 경고 폭주 0(`tests/tools/internal_errors.sh`).
 3. **스스로 회복한다:** OT 허브·DMZ 브로커·Kafka·수집기·탐지기·저장 DB 재시작 뒤 사람 손 없이 원래대로 돌아온다(§3-5).
 4. **깨끗하다:** 쓰지 않는 서비스·파일·설정이 없다. 같은 설정을 두 곳에 두지 않고 정본 한 곳에서 만든다. 버전 고정, 비밀값은 환경변수, 데이터는 이름 붙은 볼륨, 기동 순서는 healthcheck·depends_on 조건으로 맞춘다.
-5. **학생 PC에서도 같다:** 저장소를 새 폴더에 복제하고, 다른 compose 프로젝트 이름과 빈 볼륨으로 `--build` 기동해 1~3을 확인한다. 직접 만드는 이미지는 저장소의 Dockerfile로 빌드되고(이름은 `rot-*:base`, 원본과 다른 이름), 학습 모델은 기동 때 학습기(`ml/Dockerfile`, `ml/train.py`)가 운영 배속 600·표본 간격 600 설비 초로 만든다(`ml/train.yaml` `physics_time_scale: plant`, K4 — 결함 S6 닫힘, decision-log #165). 줄 끝은 `.gitattributes`가 LF로 고정한다(Windows `core.autocrlf`로 복제해도 컨테이너에 붙는 셸 스크립트가 깨지지 않게). 학생에게 보낼 묶음(ZIP 등)은 배포 단계에서 따로 만든다.
+5. **학생 PC에서도 같다:** 저장소를 새 폴더에 복제하고, 다른 compose 프로젝트 이름과 빈 볼륨으로 `--build` 기동해 1~3을 확인한다. 직접 만드는 이미지는 저장소의 Dockerfile로 빌드되고(이름은 `rot-*:base`, 원본과 다른 이름), 학습 모델은 기동 때 학습기(`4_it/ml-trainer/Dockerfile`, `4_it/ml-trainer/train.py`)가 운영 배속 600·표본 간격 600 설비 초로 만든다(`4_it/ml-trainer/train.yaml` `physics_time_scale: plant`, K4 — 결함 S6 닫힘, decision-log #165). 줄 끝은 `.gitattributes`가 LF로 고정한다(Windows `core.autocrlf`로 복제해도 컨테이너에 붙는 셸 스크립트가 깨지지 않게). 학생에게 보낼 묶음(ZIP 등)은 배포 단계에서 따로 만든다.
 
 ## 4. 작업 방식
 1. **질문에는 먼저 쉬운 자연어로 답한다.** "~하면 안 되나?"는 지시가 아니라 질문이다. 권고로 답한다. 단계마다 번호 붙은 짧은 중간 보고를 쓰고, 중간 보고 뒤에는 멈추지 말고 계속한다. 멈추고 사용자에게 묻는 것은 확정된 방향을 바꿔야 할 근거가 생겼을 때뿐이다.
@@ -280,8 +280,8 @@
 6. **근본 수정만 한다.** 땜빵은 금지한다: 수동 재시작, 시간 기다리기(sleep)로 순서 맞추기, 검사 건너뛰기, 실패를 통과로 세기, 원인 모르는 설정 덧대기. 원인을 찾아 설정·코드에서 고친다. 하나를 고치면 같은 원인의 땜빵이 다른 곳에 남았는지 같이 본다. "됐다"는 §3-7을 실제로 돌려 확인한 뒤에만 말한다.
 7. **말은 쉽게 한다.** 무엇을 왜 했는지를 말한다. 부품은 실제 이름으로 부른다("중계기" 같은 만든 말을 쓰지 않는다).
 8. PC 자원(이미지 받기·빌드, 컨테이너 기동·삭제, Docker 재시작)은 허락 없이 쓴다. 무거운 측정은 Docker 메모리 7.6 GB 안에서 한 번에 하나씩.
-9. 구조·스택은 확정됐다. 실행 판단은 스스로 하고 `reports/decision-log.md`에 추가한다(추가만).
-10. 맥락이 차기 전에 이 파일을 최신으로 고친다. 이 파일에는 경위를 쓰지 않는다(경위는 decision-log). 사용자가 새로 묻고 답이 확정되면 `reports/QA.md`에 더한다. 조각을 덧대지 말고 해당 절을 통째로 바꾼다.
+9. 구조·스택은 확정됐다. 실행 판단은 스스로 하고 `docs/decision-log.md`에 추가한다(추가만).
+10. 맥락이 차기 전에 이 파일을 최신으로 고친다. 이 파일에는 경위를 쓰지 않는다(경위는 decision-log). 사용자가 새로 묻고 답이 확정되면 `docs/QA.md`에 더한다. 조각을 덧대지 말고 해당 절을 통째로 바꾼다.
 
 **하지 않는 것(이유):**
 - 경량화를 이유로 층을 빼거나 비주류 제품을 고르기 — 현업 기준·기능 보존과 어긋난다.
@@ -290,7 +290,7 @@
 - Vector 사용 — Kafka 재조정 뒤 소비가 멈춘다(#22006, 수정판 없음, 결함 S19).
 
 ## 5. 재사용할 증거 — 다시 재지 않는다
-**V1 기준값**(배속 600 설비; 요약 `experiments/EXP-001/summary_V1_r2_.json` ← `python harness/tools/summarize_baseline.py EXP-001 V1 r2_`; 고장→알람 `experiments/EXP-000/raw/onset_v2sim_600*.json`; 탐지 `experiments/EXP-L4`; 기록 데이터 `experiments/REC-V1/`)
+**V1 기준값**(배속 600 설비; 요약 `experiments/EXP-001/summary_V1_r2_.json` ← `python tests/tools/summarize_baseline.py EXP-001 V1 r2_`; 고장→알람 `experiments/EXP-000/raw/onset_v2sim_600*.json`; 탐지 `experiments/EXP-L4`; 기록 데이터 `experiments/REC-V1/`)
 | 항목 | V1 값 |
 |---|---|
 | 자원 | 메모리 합계 5,918 MiB(SCADA 24개 약 4,837 + AI 5개 1,081) · CPU 51.2 % · 컨테이너 29(SCADA 24 + AI 5, 임베딩 제외) |
@@ -307,10 +307,10 @@
 
 **제품 사실(1차 출처는 `docs/research/`)**
 - 라이선스·지원: EMQX 5.9+ BSL, 5.8은 2026-02-28 지원 종료. EdgeX 4.0.2가 현재 최신 판(다음 판 Queensland 2027 봄 예정). V1의 Kafka 3.9·InfluxDB 2.7 등은 최신 부 버전으로 올린다. InfluxDB `latest`는 3 Core. TimescaleDB 압축·연속 집계는 TSL. Confluent MQTT 커넥터 독점. Redpanda BSL.
-- Flink 2.2.1 + ZooKeeper HA: 판정 70/70으로 V1 알람과 같고, JobManager 재시작 뒤 잡 4개가 체크포인트에서 스스로 복귀한다(`flink/Dockerfile.v2`, `flink/onnx-job-2x`, `flink/conf/*.v2.yaml`, 이미지 `rot-flink-onnx:v2`). ONNX 잡은 제출 설정에 체크포인트를 따로 켠다(결함 S17).
+- Flink 2.2.1 + ZooKeeper HA: 판정 70/70으로 V1 알람과 같고, JobManager 재시작 뒤 잡 4개가 체크포인트에서 스스로 복귀한다(`4_it/detection-flink/Dockerfile.v2`, `4_it/detection-flink/onnx-job-2x`, `4_it/detection-flink/conf/*.v2.yaml`, 이미지 `rot-flink-onnx:v2`). ONNX 잡은 제출 설정에 체크포인트를 따로 켠다(결함 S17).
 - Bento 1.21.2: Kafka 3.9에서 V1 Telegraf와 같은 결과를 냈다. 약점: 알람 JSON의 timestamp가 64비트 실수로 반올림된다(decision-log #111). 미검증: Kafka 4.3.1과의 조합, Kafka 재조정 뒤 재개.
 - 수집: EdgeX 1356/1356·p95 9.75 ms·컨테이너 10. 저장 24시간 디스크: InfluxDB 19 MB, TimescaleDB·QuestDB 680~1100 MB. 브로커 재시작 중복: Mosquitto 1건(2회), RMQTT 0건.
-- 조립할 때 지킬 것(`reports/STABILITY.md` 결함 S1~S22): InfluxDB 설정 볼륨에 이름을 붙인다. Kafka에 `KAFKA_LOG_DIRS`를 지정한다. 설비 전용망에는 별칭을 준다. verify.py는 실패를 실패로 센다.
+- 조립할 때 지킬 것(`docs/STABILITY.md` 결함 S1~S22): InfluxDB 설정 볼륨에 이름을 붙인다. Kafka에 `KAFKA_LOG_DIRS`를 지정한다. 설비 전용망에는 별칭을 준다. verify.py는 실패를 실패로 센다.
 - 측정 함정: EMQX 기본 ACL은 `#` 구독을 거부한다. ONNX 점수는 입력이 멈춰도 나오므로 흐름 확인에 쓰지 않는다. 흐름은 Kafka 원시 토픽 오프셋 증가로 본다(10초 간격 약 144 증가가 정상). Windows 줄끝 때문에 셸 루프에는 `tr -d '\r'`. "거부" 표시가 떠도 명령이 실행됐을 수 있으니 결과를 확인한다.
 
 **안정화 V1 덧씌우기 `docker-compose.stable.yml`(작업 트리에서는 뺐다 — V1 compose·설정과 함께 커밋 `61f04ae`에 있다: `git show 61f04ae:docker-compose.stable.yml`, 폴더째는 `git worktree add ../v1-stable 61f04ae`):** 원본 V1 compose 위에 같은 제품 수정 다섯 가지를 얹는다(Flink 2.2.1 + ZooKeeper HA, ONNX 체크포인트, `KAFKA_LOG_DIRS`, InfluxDB 설정 이름 볼륨, FUXA 1.3.4 고정). 원본 파일은 그대로다. 재설계 뒤 같은 제품을 쓰면 이 수정을 그대로 가져간다.
@@ -319,45 +319,45 @@
 
 ## 6. 지금 상태
 - **컨테이너:** 새 베이스 `rot-base`(compose.yml) 35개 서비스 기동(한 번 도는 것 5개는 정상 종료). V1 AI(`rot-ai-*`) 5개는 정지(볼륨 보존). 다른 프로젝트 `capstone-*`는 사용자 허락으로 정지만 했다(지우지 않음).
-- **검증(2026-09-30, `reports/BASE_VERIFY.md`):** verify 27/27, 제어·안전 전 항목, PLC 계약 60/60, 탐지 70/70, 재시작 복구 24회 중 23회 스스로 복구·유실 0, 이상 → AI 조치 제안 20.54 s, 메모리 4,675 MiB(30개).
+- **검증(2026-09-30, `docs/BASE_VERIFY.md`):** verify 27/27, 제어·안전 전 항목, PLC 계약 60/60, 탐지 70/70, 재시작 복구 24회 중 23회 스스로 복구·유실 0, 이상 → AI 조치 제안 20.54 s, 메모리 4,675 MiB(30개).
 - **수집기(Bento 유지, decision-log #177·#178):** 두 MQTT 입력(IT 수집기 DMZ → Kafka, DMZ 적재기)은 지속 세션을 끄고 메모리 버퍼 32 MiB 를 둔다. 망 끊김 뒤 조용한 멈춤(S31) 원인 제거(11회 멈춤 0), DMZ InfluxDB 정지 뒤 복구 6.6~7.4 s(S32), 유실 0. Kafka 재시작 뒤 IT 쪽 결과 약 1분 지연(S36, 유실 0, 공장 안 영향 없음)은 Kafka 소비자 그룹 동작이라 알려진 한계. 자체 코드·Telegraf 로 바꾸지 않는다.
 - **다음:** 수집기 확정·재측정 → 레이어 폴더(L0-plant · L1-control · L2-supervisory · L3.5-dmz · L4-it · L4-ai · common) 옮김과 쓰지 않는 파일·옛 리서치 삭제(사용자 승인, 백업 없이) → 새 폴더·빈 볼륨 기동 시험(§3-7 5) → 보고서·쉬운 설명서 실측 칸(다른 세션이 쓰는 중이면 끝난 뒤).
 - **메모리(사용자 결정 2026-09-30: 여기까지):** 4,675 MiB(30개)로 확정. 더 줄일 후보(실측 여유 기준, 줄이면 힙·GC·verify 를 다시 잰다): Flink TaskManager 1024m → 768m(힙 22 % 사용, 약 −200 MiB 추정), Neo4j 힙 최대 512m(82 MB 사용, 약 −100), Grafana 쓰지 않는 기능(약 −100, 미확인), Flink JobManager(힙 42 %, 약 −80). 구역별 Prometheus 셋·ZooKeeper 는 구조(구역 분리·Flink HA)라 빼지 않는다.
 - **이미지:** 직접 빌드는 `rot-*:base`만(측정 도구 `e2e-client:1.2`·`l4bench-tools:1.0` 별도). 개발·시험 이미지·볼륨은 지웠다(decision-log #171). 떠 있는 익명 볼륨 26개(2 MB 미만)는 자동 권한 판정기가 막아 남음.
-- **다른 프로젝트·다른 세션:** 같은 작업 폴더에서 다른 세션이 보고서(`reports/REPORT_base_plan*`, 쉬운 설명서)를 고치고 커밋한다. 커밋은 경로를 지정해서 한다.
+- **다른 프로젝트·다른 세션:** 같은 작업 폴더에서 다른 세션이 보고서(`docs/REPORT_base_plan*`, 쉬운 설명서)를 고치고 커밋한다. 커밋은 경로를 지정해서 한다.
 - **git:** 브랜치 `exp/stack-rotation-202609`, 기준 태그 `v1-original`, push 안 함. 옛 문서·V2 구성은 커밋 `bdced23`에 있다.
 
 ## 7. 넘으면 안 되는 선
 - 원본 `D:\work\study\lecture-iiot-scada`는 수정하지 않는다. 원본 이름(`iiot*`·`ar100*`)의 컨테이너·볼륨·이미지를 만들거나 덮어쓰지 않는다(격리 이름 `rot-*`).
 - git push 금지. `latest` 태그 금지. §3-1 금지 라이선스.
-- `ai-layer/.env.local`의 키는 출력하거나 커밋하지 않는다. LLM 호출은 필요한 만큼만(크레딧).
+- `5_ai/server/.env.local`의 키는 출력하거나 커밋하지 않는다. LLM 호출은 필요한 만큼만(크레딧).
 
 ## 8. 명령
 - 격리 스택 이름: `.env.rotation`(rot-iiot, rot-ai).
 - V1 격리 기동: 원본 이미지 `iiot/flink-onnx:1.0`·`iiot/plant-simulator:1.0`이 없어 원본 compose 그대로는 뜨지 않는다(원본 이름으로 빌드하는 것은 §7 금지). V1과 비교가 필요하면 §5의 안정화 V1 덧씌우기 명령을 쓴다(원본 V1의 공개 이미지는 다시 받는다).
-- AI 기동: `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file ai-layer/.env.local --env-file .env.rotation -f ai-layer/compose.yml -f ai-layer/compose.scada.yml --profile knowledge up -d --no-build`. 검증 때는 §1 AI 층의 새 덧씌우기 파일을 `-f`로 더한다
-- 측정 도구: `harness/e2e/baseline.sh`(전체), `regression.sh`(회귀), `fault_onset.py`(고장→알람), `completeness.py`, `e1.py`. 요약: `harness/tools/summarize_baseline.py`, `e3_summary.py`, `internal_errors.sh`, `scorecard.py`. 정의: `harness/situations/`(ROBUSTNESS·STRUCTURE·L4·paths.yaml), `scenarios/catalog.yaml`. 새 구조는 `harness/e2e/struct_<이름>.sh`에 컨테이너 이름표를 둔다. 망 3개 구조에서는 도구가 고정한 망 이름 `rot-iiot`(`regression.sh`, `baseline.sh`, verify.py의 `VERIFY_NETWORK`)을 새 망에 맞춘다. 사용법은 각 파일 머리말.
-- 확인 스크립트: `VERIFY_CN_PREFIX=rot- VERIFY_NETWORK=rot-iiot VERIFY_ENV_FILE=.env.rotation python scripts/verify.py`
+- AI 기동: `COMPOSE_PATH_SEPARATOR=: docker compose -p rot-ai --env-file 5_ai/server/.env.local --env-file .env.rotation -f 5_ai/server/compose.yml -f 5_ai/server/compose.scada.yml --profile knowledge up -d --no-build`. 검증 때는 §1 AI 층의 새 덧씌우기 파일을 `-f`로 더한다
+- 측정 도구: `tests/e2e/baseline.sh`(전체), `regression.sh`(회귀), `fault_onset.py`(고장→알람), `completeness.py`, `e1.py`. 요약: `tests/tools/summarize_baseline.py`, `e3_summary.py`, `internal_errors.sh`, `scorecard.py`. 정의: `tests/situations/`(ROBUSTNESS·STRUCTURE·L4·paths.yaml), `tests/scenarios/catalog.yaml`. 새 구조는 `tests/e2e/struct_<이름>.sh`에 컨테이너 이름표를 둔다. 망 3개 구조에서는 도구가 고정한 망 이름 `rot-iiot`(`regression.sh`, `baseline.sh`, verify.py의 `VERIFY_NETWORK`)을 새 망에 맞춘다. 사용법은 각 파일 머리말.
+- 확인 스크립트: `VERIFY_CN_PREFIX=rot- VERIFY_NETWORK=rot-iiot VERIFY_ENV_FILE=.env.rotation python tests/verify.py`
 - 환경: 호스트 RAM 15.7 GB, Docker VM 7.6 GB(넘으면 엔진 500 오류). 긴 작업은 Git Bash(`D:\dev\Git\bin\bash.exe`). 컨테이너 경로 인자 앞에 `MSYS_NO_PATHCONV=1`. Python은 `PYTHONUTF8=1`.
 
 ## 9. 자산 지도
 | 위치 | 역할 |
 |---|---|
 | `HANDOFF.md` | 유일한 정본 |
-| `reports/QA.md` | 사용자 지시 원문(핵심)과 질문·확정 답(이유를 쉬운 말로). 대화 원문 위치도 적혀 있다 |
-| `reports/사용자발화_2026-09-29.md` | 이 세션 사용자 발화 전부(원문)와 인계 반영 위치 |
-| `reports/REPORT_base_plan.html` | 화면 공유용 요약(6블록: 조사 → 현업 구조 그림 → 스택·경쟁 칸만 이유 → 아키텍처 그림(상자 15개, 우리가 만든 것만 강조) → 검증 → 남은 것). 2026-09-30 사용자 요청("보고서가 너무 길어", "화면공유용 핵심만")으로 줄였다 |
-| `reports/REPORT_base_plan_대본.md` | 요약 보고서를 보며 읽는 설명 대본(블록마다 짚을 위치 + 읽을 말, 끝에 요소 풀이·자주 나올 질문) |
-| `reports/REPORT_base_plan_근거상세.html` | 이전의 긴 보고서(근거 문서 19개, 부품별 카드, 조립 중 정한 것, 판단 70개의 근거·추천 표, 검증 상세) |
-| `reports/쉬운설명_새_베이스_아키텍처.html` | 새 베이스를 비유와 이야기 하나("교반기가 떨리기 시작했다")로 쉽게 푼 설명서(원본 V1 설명서 `docs/소스코드로_확인한_아주쉬운_시스템설명.html`의 방식). 그림은 보고서와 같은 SVG |
+| `docs/QA.md` | 사용자 지시 원문(핵심)과 질문·확정 답(이유를 쉬운 말로). 대화 원문 위치도 적혀 있다 |
+| `docs/사용자발화_2026-09-29.md` | 이 세션 사용자 발화 전부(원문)와 인계 반영 위치 |
+| `docs/REPORT_base_plan.html` | 화면 공유용 요약(6블록: 조사 → 현업 구조 그림 → 스택·경쟁 칸만 이유 → 아키텍처 그림(상자 15개, 우리가 만든 것만 강조) → 검증 → 남은 것). 2026-09-30 사용자 요청("보고서가 너무 길어", "화면공유용 핵심만")으로 줄였다 |
+| `docs/REPORT_base_plan_대본.md` | 요약 보고서를 보며 읽는 설명 대본(블록마다 짚을 위치 + 읽을 말, 끝에 요소 풀이·자주 나올 질문) |
+| `docs/REPORT_base_plan_근거상세.html` | 이전의 긴 보고서(근거 문서 19개, 부품별 카드, 조립 중 정한 것, 판단 70개의 근거·추천 표, 검증 상세) |
+| `docs/쉬운설명_새_베이스_아키텍처.html` | 새 베이스를 비유와 이야기 하나("교반기가 떨리기 시작했다")로 쉽게 푼 설명서(원본 V1 설명서 `docs/소스코드로_확인한_아주쉬운_시스템설명.html`의 방식). 그림은 보고서와 같은 SVG |
 | `docs/research/현업조사_2026-09/00_조사의뢰서.md` | 조사 의뢰서(목표, 우리 구조 요약, 부록 A v3, §6 세부, §7 스택, §8 무료 대체품 비교, §9 외부 시스템 연결, §10 판단 근거 확인) |
 | `docs/research/현업조사_2026-09/` | 조사 의뢰서(`00_조사의뢰서.md`)와 현업 조사 결과(파일 이름 앞 번호 12~17 = 본문의 "12번"~"17번". 12 구조·13 세부·14 스택·15 무료 대체품 비교·16 외부 시스템 연결 `16_조사5_외부시스템연결.md`·17 판단 근거 확인 `17_판단근거확인_결과.md`(입력 `17_판단근거확인_입력_전수검사.md`), 모두 완료) |
 | `docs/research/deep-2026-09-29/01`~`11` | 옛 방향(V2) 때의 제품별 사실 자료(`11`은 미완). 판정·권고는 따르지 않는다 |
 | `docs/research/compass_artifact_*` 4개, `docs/research/AGENT_BRIEF_FINAL.md`(회귀 S01~S25·G0~G10 시나리오 정의), `docs/research/ARCHITECTURE_SIMPLIFICATION.md`(V1 중복·우회 분석) | 제품별 사실·시나리오 정의 자료 |
 | 커밋 `61f04ae`의 `docker-compose*.yml`·V1 설정 폴더 · `experiments/STABLE-V1/verify_1.log` · `experiments/BASE-S01` | 안정화 V1 덧씌우기(작업 트리에서는 뺌)와 그 확인 결과, 안정화 V1 S01 기준 |
 | `시스템구성도_*.pdf`·`.md`, `프로토타입_아키텍처_보고용.*` | V1 구조도(사용자 자료) |
-| `reports/STABILITY.md` | 결함과 교훈 S1~S22 |
-| `reports/decision-log.md` | 실행·판정·경위 기록(추가만) |
+| `docs/STABILITY.md` | 결함과 교훈 S1~S22 |
+| `docs/decision-log.md` | 실행·판정·경위 기록(추가만) |
 | `experiments/EXP-000`·`EXP-001`·`REC-V1`·`EXP-L4`·`EXP-S09`·`EXP-AI` | 증거 원본 |
-| `harness/` | 측정 도구(솔루션 부품 아님) |
+| `tests/` | 측정 도구(솔루션 부품 아님) |
 | 원본 `D:\work\study\lecture-iiot-scada` | 읽기만 |

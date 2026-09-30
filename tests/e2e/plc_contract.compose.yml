@@ -1,0 +1,21 @@
+# [측정 도구] soft-PLC 계약 시험용 단독 스택: 가상설비 + PLC(배포 이미지 그대로) + 측정 클라이언트. 엣지·브로커 없음.
+#   bash tests/e2e/plc_contract.sh <EXP>
+name: rot-plc-contract
+networks: { n: {} }
+services:
+  plant-sim:
+    image: rot-plant-simulator:base
+    environment: { INSTRUCTOR_USER: instructor, INSTRUCTOR_PASSWORD: instr-pw, FIELD_PANEL_USER: panel, FIELD_PANEL_PASSWORD: panel-pw }
+    networks: [n]
+  plc:
+    image: rot-openplc:base
+    cap_add: [SYS_NICE, SYS_RESOURCE]
+    environment: { PLC_ADMIN_USER: plcadmin, PLC_ADMIN_PASSWORD: plc-admin-pw }
+    volumes: [ "plcdata:/var/run/runtime" ]
+    networks: [n]
+  probe:
+    image: e2e-client:1.2
+    environment: { INSTRUCTOR_USER: instructor, INSTRUCTOR_PASSWORD: instr-pw, FIELD_PANEL_USER: panel, FIELD_PANEL_PASSWORD: panel-pw }
+    networks: [n]
+    entrypoint: ["sleep", "infinity"]
+volumes: { plcdata: {} }

@@ -7,16 +7,16 @@
 docker-compose.override.yml
 
 # 빌드 산출물
-flink/onnx-job/target/
+4_it/detection-flink/onnx-job/target/
 **/__pycache__/
 *.pyc
 
 # 모델은 model-trainer 가 기동 시 생성
-ml/*.onnx
-ml/model_meta.json
+4_it/ml-trainer/*.onnx
+4_it/ml-trainer/model_meta.json
 
 candidates/*/target/
-harness/l4bench/models/
+tests/l4bench/models/
 
-# 조립 전 확인(⑨-5)에 받은 OpenPLC Editor(약 150 MB) — plc/Dockerfile 이 같은 판을 sha256 고정으로 직접 받는다
+# 조립 전 확인(⑨-5)에 받은 OpenPLC Editor(약 150 MB) — 1_control/plc-openplc/Dockerfile 이 같은 판을 sha256 고정으로 직접 받는다
 experiments/ENV-9/openplc/*.AppImage

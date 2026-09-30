@@ -1,0 +1,45 @@
+# V2 온톨로지 — 설비·센서·제어점·인터록 (근거: 5_ai/manuals/AR100-ASSET-CONTEXT, AR100-SENSOR-CONTEXT, 0_plant/simulator/plant.yaml)
+# 설비 계층은 ISA-95 명명(site → line → unit → equipment). 관측은 SOSA 방식(Sensor observes Property of FeatureOfInterest).
+site: AR-100
+device: reactor-line-01
+
+assets:
+  - {id: AR-100, name: AR-100 반응기 라인, level: line}
+  - {id: TK-101, name: 원료탱크, level: equipment, part_of: AR-100}
+  - {id: P-101, name: 공급펌프, level: equipment, part_of: AR-100}
+  - {id: R-101, name: 반응기, level: equipment, part_of: AR-100}
+  - {id: M-101, name: 교반기, level: equipment, part_of: R-101}
+  - {id: HX-101, name: 재킷히터, level: equipment, part_of: R-101}
+  - {id: HX-102, name: 가상 냉각기, level: equipment, part_of: R-101}
+  - {id: CV-101, name: 배출밸브, level: equipment, part_of: AR-100}
+  - {id: M-101-BEARING, name: 교반기 베어링, level: component, part_of: M-101}
+  - {id: M-101-SHAFT, name: 교반기 축, level: component, part_of: M-101}
+
+# observes: 측정 대상 속성, of: 관측 대상(FeatureOfInterest). owner 가 없으면 소속 미확정(SENSOR-CONTEXT: TT-102·FT-102).
+sensors:
+  - {tag: LT-101, observes: level, of: TK-101, owner: TK-101}
+  - {tag: LT-102, observes: level, of: R-101, owner: R-101}
+  - {tag: TT-101, observes: temperature, of: R-101, owner: R-101}
+  - {tag: PT-101, observes: pressure, of: R-101, owner: R-101}
+  - {tag: pH-101, observes: pH, of: R-101, owner: R-101}
+  - {tag: CT-101, observes: conductivity, of: R-101, owner: R-101}
+  - {tag: IT-102, observes: motor_current, of: M-101, owner: M-101}
+  - {tag: VT-101, observes: vibration, of: M-101, owner: M-101}
+  - {tag: IT-101, observes: motor_current, of: P-101, owner: P-101}
+  - {tag: FT-101, observes: feed_flow, of: P-101, owner: P-101}
+  - {tag: TT-102, observes: jacket_temperature, of: R-101, owner: null, influenced_by: [HX-101, HX-102]}
+  - {tag: FT-102, observes: outlet_flow, of: R-101, owner: null, influenced_by: [CV-101]}
+# 단위·lsl·usl 은 로더가 0_plant/simulator/plant.yaml 에서 읽는다(정본). 여기 중복 기재하지 않는다.
+
+control_points:
+  - {name: pump_run, kind: coil, addr: 0, controls: P-101}
+  - {name: agitator_run, kind: coil, addr: 1, controls: M-101}
+  - {name: heater_enable, kind: coil, addr: 2, controls: HX-101}
+  - {name: cooler_enable, kind: coil, addr: 3, controls: HX-102}
+  - {name: pump_speed_sp, kind: register, addr: 100, controls: P-101}
+  - {name: valve_open_sp, kind: register, addr: 101, controls: CV-101}
+  - {name: temp_sp_c, kind: register, addr: 102, controls: R-101}
+
+interlocks:
+  - {id: ILK-HIGH-PRESSURE, name: 고압 인터록, monitors: PT-101, trip_barg: 6.5, reset_barg: 5.2, blocks: [pump_run],
+     note: "PT-101 지시값 기준 트립, 펌프 강제 정지 (0_plant/simulator/plant.py 결정론적 안전 로직)"}

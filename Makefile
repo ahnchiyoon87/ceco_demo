@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════════════
-# AR-100 IIoT/SCADA 새 베이스 (망 3구역: OT · DMZ · IT) — 정본 compose.yml, 설정·계정 .env, 설비 registry/equipment.yaml
+# AR-100 IIoT/SCADA 새 베이스 (망 3구역: OT · DMZ · IT) — 정본 compose.yml, 설정·계정 .env, 설비 shared/registry/equipment.yaml
 # ═══════════════════════════════════════════════════════════════════════════
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
@@ -43,8 +43,8 @@ urls:  ## 사람용 접속 주소(모두 127.0.0.1)
 	@echo "  IT  AI 업무 화면                        http://localhost:$(call env,PORT_AI_WEB)"
 	@echo ""
 
-regen:  ## 등록부(registry/equipment.yaml)를 바꾼 뒤: 태그·흐름·PLC·FUXA·스키마 다시 만들고 반영
-	python3 registry/generate.py
+regen:  ## 등록부(shared/registry/equipment.yaml)를 바꾼 뒤: 태그·흐름·PLC·FUXA·스키마 다시 만들고 반영
+	python3 shared/registry/generate.py
 	docker compose up -d --build plc edge dmz-gateway
 	docker compose up -d fuxa-provisioner
 
@@ -77,4 +77,4 @@ state:  ## 가상설비 현재 상태(강사 API)
 	@curl -s $(AUTH) $(SIM)/state | python3 -m json.tool
 
 verify:  ## 전 계층 자동 검증 (make verify S=edge 로 단계 지정)
-	@python3 scripts/verify.py $(S)
+	@python3 tests/verify.py $(S)

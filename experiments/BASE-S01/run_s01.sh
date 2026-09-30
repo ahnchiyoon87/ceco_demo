@@ -9,5 +9,5 @@ CLIENT="docker run --rm --network $NET -v $REPO:/repo -w /repo ${CLIENT_IMG:-e2e
 curl -s -X POST -H 'Content-Type: application/json' -d '{}' $SIM/fault/clear >/dev/null; sleep 5
 for i in 1 2 3; do
   T0=$(( $(date +%s) * 1000 )); sleep 180; T1=$(( $(date +%s) * 1000 ))
-  $CLIENT python harness/e2e/alerts_window.py --start-ms $T0 --end-ms $T1 --out /repo/$D/s01_${NAME}_$i.json | tail -1
+  $CLIENT python tests/e2e/alerts_window.py --start-ms $T0 --end-ms $T1 --out /repo/$D/s01_${NAME}_$i.json | tail -1
 done
