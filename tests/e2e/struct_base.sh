@@ -5,7 +5,7 @@
 set -u
 export MSYS_NO_PATHCONV=1
 P=${COMPOSE_PROJECT_NAME:-ceco-demo}
-REPO=${REPO:-D:/work/study/scada-rotation}
+REPO=${REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && (pwd -W 2>/dev/null || pwd))}   # 저장소 루트(이 파일 기준)
 CLIENT_IMG=${CLIENT_IMG:-e2e-client:1.2}
 env_get(){ grep -E "^$1=" "$REPO/.env" | head -1 | cut -d= -f2-; }
 SIM_INT=http://plant-sim:8080                       # 강사용 고장 주입 API(Basic 인증)
@@ -32,6 +32,7 @@ base_client(){
     -e MQTT_FUXA_PASSWORD="$(env_get MQTT_FUXA_PASSWORD)" -e MQTT_RECEIVER_PASSWORD="$(env_get MQTT_RECEIVER_PASSWORD)" \
     -e MQTT_GATEWAY_PASSWORD="$(env_get MQTT_GATEWAY_PASSWORD)" -e PG_AI_PASSWORD="$(env_get PG_AI_PASSWORD)" \
     -e PG_OPS_PASSWORD="$(env_get PG_OPS_PASSWORD)" -e PG_SUPERUSER_PASSWORD="$(env_get PG_SUPERUSER_PASSWORD)" \
+    -e GATEWAY_CLIENT_TOKEN="$(env_get GATEWAY_CLIENT_TOKEN)" \
     -v "$REPO/experiments:/repo/experiments" -v "$REPO/experiments:/experiments" -w /repo $CLIENT_IMG "$@" >/dev/null
   # 코드는 바인드 마운트 대신 복사해 넣는다: Docker VM 여유가 적을 때 파일 공유 층이 목록 읽기에서 ENOMEM 을 낸다(09-30 실측).
   # 결과는 experiments 바인드 마운트로만 쓴다.
