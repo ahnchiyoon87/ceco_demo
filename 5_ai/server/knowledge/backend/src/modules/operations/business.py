@@ -1,9 +1,8 @@
-"""업무 서비스(HANDOFF §2-3) — Kafka 를 소비해 사건·alert 상태·작업 요청 결과를 정리한다. 설비에 명령하지 않는다.
+"""업무 서비스(HANDOFF §2-3) — Kafka 를 소비해 PLC 상태·작업 요청 결과를 정리한다. 설비에 명령하지 않는다.
+분석 alert 의 묶기·억제·표시는 Alertmanager 가 한다(IT 수집기 alerts_to_alertmanager·status_to_alertmanager·alertmanager_to_display).
 
   sensor.alerts     → AI 사건 접수(consumer.persist_message)
-                    → alert 스키마: ISA-18.2 상태(설비 정지 = Suppressed by Design, 정비 모드 = Out of Service),
-                      사건 키 asset_id + rule_id 로 묶기(열린 묶음이면 건수·마지막 시각만), 표시할 것만 alerts.display 로
-  plant.status      → PLC 상태 기억(억제 판단·재관측), 정비 모드 켜기·끄기를 감사에 기록
+  plant.status      → PLC 상태 기억(재관측), 정비 모드 켜기·끄기를 감사에 기록
   request.responses → OT 수신기 응답 ⓑⓒ 를 workflow 사건·감사로(같은 요청 ID)
   타이머(0.5 s)     → ACK 5 s(게이트웨이 수용 ⓐ 부터 수신 응답 ⓑ 까지, 넘으면 '결과 모름'), 만료 + 5 s(ⓑ 없음),
                       운전원 대기 60 + 30 + 5 s(ⓒ 없음), 재관측 10 s(PLC 수용부터 새 상태까지, 넘으면 command-disagree alert)
@@ -16,7 +15,6 @@ import logging
 import os
 import threading
 import time
-from datetime import datetime, timezone
 
 from confluent_kafka import Consumer, KafkaException, Producer
 
@@ -26,10 +24,7 @@ from .plant_db import audit, plant_connection, request_event
 log = logging.getLogger("business")
 REG = json.load(open(os.environ.get("REGISTRY_TAGS", "/opt/ar100/registry/tags.json"), encoding="utf-8"))
 WM = {w["work_master_id"]: w for w in json.load(open(os.environ.get("REGISTRY_WM", "/opt/ar100/registry/work_masters.ot.json"), encoding="utf-8"))}
-TAG_ASSET = {t["tag"]: t["asset"] for t in REG["tags"]}
-RUN_STATUS = {"P-101": "run", "M-101": "run", "HX-101": "enable", "HX-102": "enable"}   # 운전 여부를 가진 설비
 ACK_S, REOBS_S, OP_WAIT_S, EXPIRY_S = 5.0, 10.0, 60.0, 30.0
-GROUP_CLEAR_S = 60.0
 ALIVE = __import__("pathlib").Path("/tmp/alive")   # compose healthcheck 가 수정 시각을 본다
 BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
 producer = Producer({"bootstrap.servers": BOOTSTRAP, "linger.ms": 5})
@@ -50,55 +45,6 @@ def audited(conn, actor_type, actor_id, action, jid, subject, detail):
     audit(conn, actor_type, actor_id, action, jid, subject, detail)
     publish("audit.copy", jid or subject or action, {"actor_type": actor_type, "actor_id": actor_id, "action": action,
                                                        "job_order_id": jid, "subject": subject, "detail": detail, "at": now()})
-
-
-# ── alert 상태(ISA-18.2) ─────────────────────────────────────────────
-def display_state(asset: str | None) -> tuple[str, int | None]:
-    with lock:
-        if state.get(("PLC-01", "maintenance")) is True:
-            return "OUT_OF_SERVICE", state.get(("PLC-01", "maint_operator"))
-        if asset in RUN_STATUS and state.get((asset, RUN_STATUS[asset])) is False:
-            return "SUPPRESSED_BY_DESIGN", None
-        if state.get(("PLC-01", "run_state")) == "STOP":
-            return "SUPPRESSED_BY_DESIGN", None
-    return "DISPLAYED", None
-
-
-def on_alert(conn, a: dict) -> None:
-    asset = TAG_ASSET.get(a.get("tag"), a.get("device"))
-    rule = f'{a.get("alert_type")}:{a.get("tag")}'
-    ts = datetime.fromtimestamp(a["ts"] / 1e9, timezone.utc)
-    shown, maint_op = display_state(asset)
-    g = conn.execute("""UPDATE alert.alert_group SET count = count + 1, last_ts = %s
-                        WHERE asset_id IS NOT DISTINCT FROM %s AND rule_id = %s AND state = 'ACTIVE' RETURNING id""",
-                     (ts, asset, rule)).fetchone()
-    new_group = g is None
-    if new_group:
-        g = conn.execute("""INSERT INTO alert.alert_group(asset_id, rule_id, first_ts, last_ts, suppressed_by, maint_operator)
-                            VALUES (%s,%s,%s,%s,%s,%s) RETURNING id""",
-                         (asset, rule, ts, ts, {"OUT_OF_SERVICE": "OUT_OF_SERVICE", "SUPPRESSED_BY_DESIGN": "DESIGN"}.get(shown),
-                          maint_op)).fetchone()
-    conn.execute("""INSERT INTO alert.alert_event(ts, asset_id, rule_id, tag, value, severity, detector, detail, display_state, group_id)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                 (ts, asset, rule, a.get("tag"), a.get("value"), a.get("severity"), a.get("detector"), a.get("detail"), shown, g["id"]))
-    # 표시: 새 묶음이고 억제·정비 중이 아닐 때만(반복 alert 는 건수만 올린다, 17번 F4)
-    if new_group and shown == "DISPLAYED":
-        text = f'{ts.strftime("%m-%d %H:%M:%S")} UTC | {a.get("severity")} | {a.get("tag")} | {a.get("alert_type")}'
-        publish("alerts.display", asset or "-", {"ts": a["ts"], "text": text, "asset": asset, "tag": a.get("tag"),
-                                                "alert_type": a.get("alert_type"), "severity": a.get("severity"), "group_id": g["id"]})
-
-
-def clear_groups(conn) -> None:
-    """마지막 alert 뒤 60초 조용하면 묶음을 닫는다. 억제·정비가 풀리면 억제 표시를 자동으로 되돌린다(17번 F5)."""
-    conn.execute("UPDATE alert.alert_group SET state = 'CLEARED' WHERE state = 'ACTIVE' AND last_ts < now() - interval '60 seconds'")
-    with lock:
-        maint = state.get(("PLC-01", "maintenance")) is True
-        running = {a for a, f in RUN_STATUS.items() if state.get((a, f)) is not False}
-    if not maint:
-        conn.execute("UPDATE alert.alert_group SET suppressed_by = NULL, maint_operator = NULL WHERE state = 'ACTIVE' AND suppressed_by = 'OUT_OF_SERVICE'")
-    if running:
-        conn.execute("UPDATE alert.alert_group SET suppressed_by = NULL WHERE state = 'ACTIVE' AND suppressed_by = 'DESIGN' AND asset_id = ANY(%s)",
-                     (list(running),))
 
 
 # ── PLC 상태 ───────────────────────────────────────────────────────
@@ -182,7 +128,7 @@ def timers(conn) -> None:
             note(conn, jid, "command_disagree", "DISAGREE",
                  f"PLC 수용 뒤 10 s 안에 {asset}/{name} 가 {expected} 로 보이지 않음(현재 {current})",
                  {"asset": asset, "name": name, "expected": expected, "current": current})
-            # 명령 ≠ 상태 alert 는 분석 alert 와 같은 길(sensor.alerts)로 낸다 → 사건 접수·alert 상태·표시·이력이 한 길
+            # 명령 ≠ 상태 alert 는 분석 alert 와 같은 길(sensor.alerts)로 낸다 → 사건 접수·Alertmanager 묶기·표시·이력이 한 길
             publish("sensor.alerts", asset, {"ts": time.time_ns(), "site": REG["hierarchy"]["site"], "device": REG["hierarchy"]["line"],
                                              "tag": f"{asset}/{name}", "value": 0.0, "alert_type": "COMMAND_DISAGREE",
                                              "severity": "WARNING", "detector": "BUSINESS",
@@ -223,7 +169,7 @@ def main() -> None:
     threading.Thread(target=intake_loop, name="ai-intake", daemon=True).start()
     consumer = Consumer({"bootstrap.servers": BOOTSTRAP, "group.id": "ar100-business-v2", "auto.offset.reset": "latest",
                          "enable.auto.commit": False, "enable.auto.offset.store": False})
-    consumer.subscribe(["sensor.alerts", "plant.status", "request.responses"])
+    consumer.subscribe(["plant.status", "request.responses"])
     last_tick = 0.0
     while True:
         try:
@@ -235,11 +181,10 @@ def main() -> None:
                         if m.error():
                             raise KafkaException(m.error())
                         v = json.loads(m.value() or b"{}")
-                        {"sensor.alerts": on_alert, "plant.status": on_status, "request.responses": on_response}[m.topic()](conn, v)
+                        {"plant.status": on_status, "request.responses": on_response}[m.topic()](conn, v)
                         consumer.commit(message=m, asynchronous=False)
                     if now() - last_tick >= 0.5:
                         timers(conn)
-                        clear_groups(conn)
                         producer.poll(0)
                         last_tick = now()
                         ALIVE.touch()   # healthcheck: 업무 DB 에 붙은 채 타이머 루프가 돈다

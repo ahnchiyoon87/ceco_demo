@@ -1,0 +1,41 @@
+# ═══ IT 수집기 ④ Kafka sensor.alerts → Alertmanager (분석 alert 의 묶기·억제·표시는 Alertmanager 가 한다) ═══
+#   라벨: source=plant · asset(등록부 태그 → 설비) · rule(alert 종류:태그). 같은 alert 가 다시 오면 끝 시각만 늘어난다.
+#   끝 시각 = 마지막 alert + 60 s → 60 s 조용하면 Alertmanager 가 해제한다(묶음 닫힘).
+input:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topics: [ sensor.alerts ]
+    consumer_group: it-collector-alertmanager
+    start_from_oldest: false
+pipeline:
+  processors:
+    - mapping: |
+        import "/cfg/registry/alert_maps.blobl"
+        let s = this.ts.number() / 1000000000
+        root = {
+          "labels": {
+            "source": "plant",
+            "alertname": this.alert_type,
+            "rule": "%s:%s".format(this.alert_type, this.tag),
+            "asset": this.tag.apply("asset_of").or(this.device),
+            "tag": this.tag,
+            "severity": this.severity,
+            "detector": this.detector,
+          },
+          "annotations": { "detail": this.detail.or(""), "value": this.value.string(), "ts_ns": this.ts.int64().string() },
+          "startsAt": $s.ts_format("2006-01-02T15:04:05.000Z07:00", "UTC"),
+          "endsAt": ($s + 60).ts_format("2006-01-02T15:04:05.000Z07:00", "UTC"),
+        }
+output:
+  http_client:
+    url: http://alertmanager:9093/api/v2/alerts
+    verb: POST
+    headers: { Content-Type: application/json }
+    max_in_flight: 1
+    retry_period: 1s
+    max_retry_backoff: 10s
+    batching:
+      count: 100
+      period: 200ms
+      processors:
+        - archive: { format: json_array }

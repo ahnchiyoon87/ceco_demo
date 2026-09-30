@@ -1,0 +1,70 @@
+# ═══ IT 수집기 ⑥ Alertmanager 알림(webhook) → ISA-18.2 상태 기록(PostgreSQL alert 스키마) + 표시(Kafka alerts.display) ═══
+#   Alertmanager 가 (설비, 규칙)으로 묶고 억제한 뒤 새 묶음·해제·억제 상태만 알린다. 여기서는 기록하고, 새로 뜬 분석 alert 만 표시로 낸다.
+#   주소: http://it-collector:4195/alertmanager_to_display/alertmanager (Bento 스트림 모드: /<스트림 이름>/<경로>)
+input:
+  http_server:
+    path: /alertmanager
+    allowed_verbs: [ POST ]
+pipeline:
+  processors:
+    - mapping: root = this.alerts
+    - unarchive: { format: json_array }
+    - branch:
+        request_map: root = this
+        processors:
+          - switch:
+              - check: this.labels.source == "plant" && this.status == "firing"
+                processors:
+                  - sql_raw:
+                      driver: postgres
+                      dsn: postgres://ops:${PG_OPS_PASSWORD}@postgres:5432/plant?sslmode=disable
+                      query: |
+                        WITH g AS (
+                          INSERT INTO alert.alert_group (asset_id, rule_id, first_ts, last_ts) VALUES ($1, $2, $3::timestamptz, $3::timestamptz)
+                          ON CONFLICT (asset_id, rule_id) WHERE state = 'ACTIVE' DO UPDATE SET last_ts = EXCLUDED.last_ts
+                          RETURNING id)
+                        INSERT INTO alert.alert_event (ts, asset_id, rule_id, tag, value, severity, detector, detail, display_state, group_id)
+                        SELECT $3::timestamptz, $1, $2, $4, $5::double precision, $6, $7, $8, 'DISPLAYED', id FROM g
+                        RETURNING group_id
+                      args_mapping: |
+                        root = [ this.labels.asset, this.labels.rule, this.startsAt, this.labels.tag, this.annotations.value,
+                                 this.labels.severity, this.labels.detector, this.annotations.detail ]
+              - check: this.labels.source == "plant" && this.status == "resolved"
+                processors:
+                  - sql_raw:
+                      driver: postgres
+                      dsn: postgres://ops:${PG_OPS_PASSWORD}@postgres:5432/plant?sslmode=disable
+                      exec_only: true
+                      query: |
+                        UPDATE alert.alert_group SET state = 'CLEARED', last_ts = $3::timestamptz
+                        WHERE asset_id IS NOT DISTINCT FROM $1 AND rule_id = $2 AND state = 'ACTIVE'
+                      args_mapping: root = [ this.labels.asset, this.labels.rule, this.endsAt ]
+              - check: this.labels.source == "plant-state"
+                processors:
+                  - sql_raw:
+                      driver: postgres
+                      dsn: postgres://ops:${PG_OPS_PASSWORD}@postgres:5432/plant?sslmode=disable
+                      exec_only: true
+                      query: |
+                        INSERT INTO alert.alert_event (ts, asset_id, rule_id, display_state, detail)
+                        VALUES ($1::timestamptz, $2, $3, $4, $5)
+                      args_mapping: |
+                        root = [ if this.status == "firing" { this.startsAt } else { this.endsAt }, this.labels.asset, this.labels.alertname,
+                                 if this.labels.alertname == "OutOfService" { "OUT_OF_SERVICE" } else { "SUPPRESSED_BY_DESIGN" },
+                                 if this.status == "firing" { "억제 시작" } else { "억제 해제" } ]
+        result_map: root.group_id = this.index(0).group_id.catch(null)
+    - mapping: |
+        root = if this.labels.source == "plant" && this.status == "firing" { {
+          "ts": this.annotations.ts_ns.number(),
+          "text": "%s UTC | %s | %s | %s".format(this.startsAt.ts_parse("2006-01-02T15:04:05Z07:00").ts_format("01-02 15:04:05", "UTC"),
+                                                 this.labels.severity, this.labels.tag, this.labels.alertname),
+          "asset": this.labels.asset, "tag": this.labels.tag, "alert_type": this.labels.alertname,
+          "severity": this.labels.severity, "group_id": this.group_id,
+        } } else { deleted() }
+output:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topic: alerts.display
+    key: ${! json("asset") }
+    client_id: it-collector-display-out
+    max_in_flight: 1

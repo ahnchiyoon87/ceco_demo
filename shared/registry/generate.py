@@ -191,6 +191,13 @@ def build() -> dict[pathlib.Path, str]:
         sql.append(f"INSERT INTO work_master(id, equipment_id, parameters, description) VALUES "
                    f"({q(w['work_master_id'])},{q(w['equipment_id'])},{q(json.dumps(w['parameters'], ensure_ascii=False))}::jsonb,{q(w['desc'])});")
     out[ROOT / "4_it" / "db-postgres" / "init" / "20_registry.sql"] = "\n".join(sql) + "\n"
+    # 분석 alert 를 Alertmanager 로 넘길 때 쓰는 Bloblang 맵(IT 수집기): 태그 → 설비, 운전 여부 신호(switch 명령의 상태)
+    asset_cases = "\n".join(f'    "{t["tag"]}" => "{t["asset"]}",' for t in tags)
+    run_cases = "\n".join(f'    "{c["asset"]}/{c["name"]}" => true,' for c in reg_doc["commands"] if c["kind"] == "switch")
+    out[gen / "alert_maps.blobl"] = (
+        "# shared/registry/generate.py 가 equipment.yaml 에서 만든다. 손으로 고치지 않는다.\n"
+        f"map asset_of {{\n  root = match this {{\n{asset_cases}\n    _ => null,\n  }}\n}}\n\n"
+        f"map run_signal {{\n  root = match this {{\n{run_cases}\n    _ => false,\n  }}\n}}\n")
     out.update(build_plc(tags))
     out.update(build_nodered(reg_doc))
     return out

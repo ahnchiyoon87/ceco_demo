@@ -4,14 +4,33 @@ route:
   group_wait: 10s
   group_interval: 1m
   repeat_interval: 1h
+  routes:
+    # 공정 분석 alert(Flink·업무 서비스)와 억제 상태: (설비, 규칙)으로 묶어 새 묶음·해제만 IT 수집기로 알린다(ISA-18.2)
+    - matchers: [ 'source=~"plant|plant-state"' ]
+      receiver: plant
+      group_by: [asset, rule, alertname]
+      group_wait: 0s
+      group_interval: 5s
+      repeat_interval: 24h
 
 receivers:
-  # 데모 구성이라 수신처는 로그 전용입니다.
-  # 실제 운영에서는 webhook/email/slack 수신자를 여기에 추가하세요.
+  # 인프라 경보는 로그 전용(데모). 운영에서는 webhook/email/slack 수신자를 더한다
   - name: default
+  - name: plant
+    webhook_configs:
+      - url: http://it-collector:4195/alertmanager_to_display/alertmanager
+        send_resolved: true
 
 inhibit_rules:
   # 서비스 자체가 죽었으면 그 서비스에서 파생된 경보는 억제한다
   - source_matchers: [alertname = "PipelineServiceDown"]
     target_matchers: [severity = "warning"]
     equal: [tier]
+  # ISA-18.2: 정비 모드 = Out of Service, PLC 정지·설비 운전 꺼짐 = Suppressed by Design
+  - source_matchers: [alertname = "OutOfService"]
+    target_matchers: [source = "plant"]
+  - source_matchers: [alertname = "PlantStopped"]
+    target_matchers: [source = "plant"]
+  - source_matchers: [alertname = "SuppressedByDesign"]
+    target_matchers: [source = "plant"]
+    equal: [asset]

@@ -1,0 +1,28 @@
+# shared/registry/generate.py 가 equipment.yaml 에서 만든다. 손으로 고치지 않는다.
+map asset_of {
+  root = match this {
+    "LT-101" => "TK-101",
+    "LT-102" => "R-101",
+    "TT-101" => "R-101",
+    "TT-102" => "HX-101",
+    "PT-101" => "R-101",
+    "FT-101" => "P-101",
+    "FT-102" => "CV-101",
+    "IT-101" => "P-101",
+    "IT-102" => "M-101",
+    "VT-101" => "M-101",
+    "pH-101" => "R-101",
+    "CT-101" => "R-101",
+    _ => null,
+  }
+}
+
+map run_signal {
+  root = match this {
+    "HX-101/enable" => true,
+    "HX-102/enable" => true,
+    "P-101/run" => true,
+    "M-101/run" => true,
+    _ => false,
+  }
+}

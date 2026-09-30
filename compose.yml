@@ -362,7 +362,7 @@ services:
     networks: [it-net]
     depends_on: { kafka: { condition: service_healthy } }
 
-  it-collector:   # Bento: DMZ 브로커 → Kafka / Kafka 결과 → IT InfluxDB / 표시 alert → DMZ (모두 IT 가 여는 연결)
+  it-collector:   # Bento: DMZ 브로커 → Kafka / Kafka 결과 → IT InfluxDB / 분석 alert → Alertmanager → 기록·표시 → DMZ (모두 IT 가 여는 연결)
     image: ${BENTO_IMAGE}
     restart: unless-stopped
     command: ["-c", "/cfg/bento-global.yaml", "streams", "/cfg/streams"]
@@ -371,12 +371,15 @@ services:
       INFLUX_ORG: ${INFLUX_ORG}
       IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
       IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
-    volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./4_it/collector-bento/streams:/cfg/streams:ro" ]
+      PG_OPS_PASSWORD: ${PG_OPS_PASSWORD}
+    volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./4_it/collector-bento/streams:/cfg/streams:ro",
+               "./shared/registry/generated:/cfg/registry:ro" ]
     networks: [it-net]
     depends_on:
       router: { condition: service_healthy }
       kafka-init: { condition: service_completed_successfully }
       it-influx: { condition: service_healthy }
+      postgres: { condition: service_healthy }
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4195/ready"]
       interval: 10s
@@ -405,6 +408,7 @@ services:
 
   flink-taskmanager:
     image: ceco-flink-onnx:base
+    pull_policy: never   # 이미지는 같은 compose 의 다른 서비스가 빌드한다
     restart: unless-stopped
     command: taskmanager
     volumes: [ "./4_it/detection-flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./4_it/detection-flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./4_it/detection-flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
@@ -426,6 +430,7 @@ services:
 
   flink-job-submitter:
     image: ceco-flink-onnx:base
+    pull_policy: never   # 이미지는 같은 compose 의 다른 서비스가 빌드한다
     restart: "no"
     entrypoint: ["/bin/bash", "/submit-jobs.sh"]
     volumes: [ "./4_it/detection-flink/sql:/opt/flink/sql:ro", "./4_it/detection-flink/submit-jobs.sh:/submit-jobs.sh:ro", "./4_it/detection-flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
@@ -596,6 +601,7 @@ services:
   graph-seed:   # 기동 때 1회: 등록부·교육 문서·고장 온톨로지 묶음 게시 + 매뉴얼 절·개체 임베딩(멱등)
     <<: *ai-llm
     image: ceco-ai-knowledge:base
+    pull_policy: never   # 이미지는 같은 compose 의 다른 서비스가 빌드한다
     restart: "no"
     working_dir: /app
     command: ["python", "/repo/5_ai/server/seed_graph.py"]
@@ -663,6 +669,7 @@ services:
 
   business:   # 업무 서비스: Kafka alert·응답·PLC 상태 → 사건·alert 상태·workflow·audit, 5 s·10 s 타이머
     image: ceco-ai-knowledge:base
+    pull_policy: never   # 이미지는 같은 compose 의 다른 서비스가 빌드한다
     restart: unless-stopped
     command: ["python", "-m", "backend.src.modules.operations.business"]
     environment:

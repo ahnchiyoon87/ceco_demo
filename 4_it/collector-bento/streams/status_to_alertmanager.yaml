@@ -1,0 +1,43 @@
+# ═══ IT 수집기 ⑤ Kafka plant.status → Alertmanager 억제 상태(ISA-18.2 Out of Service · Suppressed by Design) ═══
+#   정비 모드 = OutOfService, PLC 정지 = PlantStopped, 설비 운전 꺼짐 = SuppressedByDesign(asset). 켜지면 끝 시각을 하루 뒤로,
+#   풀리면 지금으로 보내 해제한다. Alertmanager 억제 규칙이 이 상태 동안 해당 분석 alert 를 표시하지 않는다.
+input:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topics: [ plant.status ]
+    consumer_group: it-collector-suppression
+    start_from_oldest: false
+pipeline:
+  processors:
+    - mapping: |
+        import "/cfg/registry/alert_maps.blobl"
+        let key = "%s/%s".format(this.asset, this.name)
+        let now = timestamp_unix()
+        let active = match {
+          $key == "PLC-01/maintenance" => this.value == true,
+          $key == "PLC-01/run_state" => this.value == "STOP",
+          $key.apply("run_signal") => this.value == false,
+          _ => null,
+        }
+        root = if $active == null { deleted() } else { {
+          "labels": match {
+            $key == "PLC-01/maintenance" => { "source": "plant-state", "alertname": "OutOfService", "asset": "PLC-01" },
+            $key == "PLC-01/run_state" => { "source": "plant-state", "alertname": "PlantStopped", "asset": "PLC-01" },
+            _ => { "source": "plant-state", "alertname": "SuppressedByDesign", "asset": this.asset },
+          },
+          "startsAt": $now.ts_format("2006-01-02T15:04:05Z07:00", "UTC"),
+          "endsAt": (if $active { $now + 86400 } else { $now }).ts_format("2006-01-02T15:04:05Z07:00", "UTC"),
+        } }
+output:
+  http_client:
+    url: http://alertmanager:9093/api/v2/alerts
+    verb: POST
+    headers: { Content-Type: application/json }
+    max_in_flight: 1
+    retry_period: 1s
+    max_retry_backoff: 10s
+    batching:
+      count: 50
+      period: 200ms
+      processors:
+        - archive: { format: json_array }
