@@ -10,15 +10,15 @@
 # ═══════════════════════════════════════════════════════════════════════════
 name: ${COMPOSE_PROJECT_NAME:-rot-base}
 
-networks:
+networks:   # 고정 주소(라우터·브로커 등)는 .2~.127, 자동 배정은 ip_range(.128~)로 나눠 기동 순서와 무관하게 겹치지 않게 한다
   ot-net:
     internal: true
-    ipam: { config: [ { subnet: "${NET_PREFIX}.10.0/24", gateway: "${NET_PREFIX}.10.1" } ] }
+    ipam: { config: [ { subnet: "${NET_PREFIX}.10.0/24", ip_range: "${NET_PREFIX}.10.128/25", gateway: "${NET_PREFIX}.10.1" } ] }
   dmz-net:
     internal: true
-    ipam: { config: [ { subnet: "${NET_PREFIX}.20.0/24", gateway: "${NET_PREFIX}.20.1" } ] }
+    ipam: { config: [ { subnet: "${NET_PREFIX}.20.0/24", ip_range: "${NET_PREFIX}.20.128/25", gateway: "${NET_PREFIX}.20.1" } ] }
   it-net:
-    ipam: { config: [ { subnet: "${NET_PREFIX}.30.0/24", gateway: "${NET_PREFIX}.30.1" } ] }
+    ipam: { config: [ { subnet: "${NET_PREFIX}.30.0/24", ip_range: "${NET_PREFIX}.30.128/25", gateway: "${NET_PREFIX}.30.1" } ] }
 
 volumes:
   plc-data:
