@@ -1,0 +1,27 @@
+input:
+  http_server:
+    address: 0.0.0.0:8088
+    path: /request
+    allowed_verbs: [POST]
+    sync_response:
+      status: '${! meta("gw_status").or("202") }'
+pipeline:
+  processors:
+    - mapping: |
+        root = this
+        root.expires_at = (now().ts_unix() + 30)
+        meta gw_status = "202"
+output:
+  broker:
+    pattern: fan_out_sequential
+    outputs:
+      - mqtt:
+          urls: [tcp://dmzbroker:1883]
+          client_id: gw-test
+          user: gw
+          password: gwpw
+          topic: site/req/bento
+          qos: 1
+          write_timeout: 2s
+      - sync_response: {}
+logger: { level: INFO, format: logfmt }

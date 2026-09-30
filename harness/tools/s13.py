@@ -11,6 +11,11 @@ L4-12b: 장치 g 하나에 60행을 발행하되 일부 태그를 3초·8초·25
       clean 레코드는 기준 후보(첫 후보)와 (ts, tag, value, quality) 가 모두 같아야 한다.
 
   python /repo/harness/tools/s13.py --exp EXP-L4 --run s13_1 --cands flinksql,flink22,cep,python
+
+새 베이스(K4, 17번): 스코어러가 스캔 순번(seq)·설비 시각(pts)으로 창을 만든다. --mode k4 는 실제 순차 창 10행을
+seq 1..10, pts = j × 학습 표본 간격으로 발행하므로 처리 시각과 무관하게 창 k 의 첫 점수가 행 0..9 를 본다.
+모델은 기동 때 학습기가 만든 모델 볼륨(--model-dir, 기본 /models)을 읽는다(옛 harness/l4bench/models 는 지웠다).
+  python /repo/harness/tools/s13.py --exp BASE-VERIFY --run s13_base --cands base --mode k4 --model-dir /models
 """
 import argparse
 import json
@@ -30,7 +35,7 @@ from plant import ReactorPlant  # noqa: E402
 
 BOOT = "kafka:9092"
 RAW = "exp.l4.raw"
-MODEL, META = "/repo/harness/l4bench/models/model.onnx", "/repo/harness/l4bench/models/model_meta.json"
+MODEL, META = "/models/model.onnx", "/models/model_meta.json"
 SEGMENTS = [None, "bearing_wear", "drift", "heater_stuck"]      # 정상 + 고장 3종, 구간마다 창 25개
 
 
@@ -41,7 +46,9 @@ def series(scenario, seed, tags, n=130):
     for _ in range(1800):
         plant.step(1.0)
     if scenario:
-        plant.inject(scenario, n)
+        # process 고장의 지속 시간은 설비 초다. 배속 600 설비의 한 스텝(1 s)은 600 설비 초이므로 n 스텝만큼 걸어 둔다
+        # (n 그대로면 첫 스텝에 끝나 고장 창이 정상 창이 된다 — 09-30 첫 k4 실행 ref_anomalies 0, 결함 S6 과 같은 종류)
+        plant.inject(scenario, n * getattr(plant, "time_scale", 1.0))
     rows = []
     for _ in range(n):
         r = plant.step(1.0)
@@ -102,9 +109,13 @@ def main():
     ap.add_argument("--cands", default="flinksql,flink22,cep,python")
     ap.add_argument("--seed", type=int, default=13)
     ap.add_argument("--wait-s", type=float, default=30.0)
-    ap.add_argument("--mode", choices=["steady", "sequence"], default="steady",
-                    help="steady(기본, #50): 장치당 1행 → 창=같은 벡터×10 정상상태 점수 비교. sequence: 순차 창(방법 결함으로 무효 처리됨)")
+    ap.add_argument("--mode", choices=["steady", "sequence", "k4"], default="steady",
+                    help="steady(기본, #50): 장치당 1행 → 창=같은 벡터×10 정상상태 점수 비교. sequence: 순차 창(방법 결함으로 무효 처리됨). "
+                         "k4: 순차 창을 seq·pts 와 함께 발행(새 베이스 스코어러)")
+    ap.add_argument("--model-dir", default="/models")
     a = ap.parse_args()
+    global MODEL, META
+    MODEL, META = f"{a.model_dir}/model.onnx", f"{a.model_dir}/model_meta.json"
     raw = pathlib.Path(f"/experiments/{a.exp}/raw")
     raw.mkdir(parents=True, exist_ok=True)
     res_path = raw / f"s13_{a.run}.json"
@@ -132,11 +143,21 @@ def main():
     prod = Producer({"bootstrap.servers": BOOT, "acks": "all", "linger.ms": 0})
     base = time.time_ns()
 
-    def send(ts, dev, tag, v):
-        prod.produce(RAW, partition=0, value=json.dumps({"ts": ts, "site": "EXP", "device": dev, "tag": tag, "value": v}))
+    def send(ts, dev, tag, v, seq=None, pts=None):
+        rec = {"ts": ts, "site": "EXP", "device": dev, "tag": tag, "value": v}
+        if seq is not None:
+            rec |= {"seq": seq, "pts": pts}
+        prod.produce(RAW, partition=0, value=json.dumps(rec))
 
     t0 = time.time()
-    for j in range(1 if a.mode == "steady" else 10):
+    if a.mode == "k4":
+        step_s = int(meta.get("sample_interval_s") or 1)
+        for j in range(10):
+            for k, dev in enumerate(devs):
+                for ti, tag in enumerate(tags):
+                    send(base + j * 1_000_000_000 + k, dev, tag, windows[k][j][ti], seq=j + 1, pts=j * step_s)
+            prod.flush(10)
+    for j in range(0 if a.mode == "k4" else (1 if a.mode == "steady" else 10)):
         if j:
             while time.time() < t0 + j + 0.5:
                 time.sleep(0.01)
@@ -164,7 +185,7 @@ def main():
     prod.flush(10)
     time.sleep(a.wait_s)
 
-    result = {"mode": a.mode, "run": a.run, "token": token, "windows": len(windows), "emit_s": emit_s, "tol": 1e-6,
+    result = {"model_dir": a.model_dir, "sample_interval_s": meta.get("sample_interval_s"), "mode": a.mode, "run": a.run, "token": token, "windows": len(windows), "emit_s": emit_s, "tol": 1e-6,
               "threshold": meta["threshold"], "ref_anomalies": sum(x > meta["threshold"] for x in ref),
               "labels": {l: labels.count(l) for l in set(labels)}, "gap_sent": gsent, "cands": {}}
     clean_base = None
@@ -176,11 +197,12 @@ def main():
                 first[s["device"]] = s                                # 정상상태: 마지막 점수(정렬 끝)
             else:
                 first.setdefault(s["device"], s)
-        diffs, anom_mismatch, missing = [], 0, 0
+        diffs, anom_mismatch, missing, missing_devs = [], 0, 0, []
         for k, dev in enumerate(devs):
             s = first.get(dev)
             if s is None:
                 missing += 1
+                missing_devs.append(f"w{k:03d}:{labels[k]}")
                 continue
             diffs.append(abs(s["reconstruction_error"] - ref[k]))
             anom_mismatch += int(bool(s["is_anomaly"]) != (ref[k] > meta["threshold"]))
@@ -189,7 +211,7 @@ def main():
         q = {}
         for x in clean:
             q[x[3]] = q.get(x[3], 0) + 1
-        entry = {"scored": len(first), "missing": missing, "max_abs_diff": max(diffs) if diffs else None,
+        entry = {"scored": len(first), "missing": missing, "missing_windows": missing_devs, "max_abs_diff": max(diffs) if diffs else None,
                  "within_tol": sum(d <= 1e-6 for d in diffs), "anomaly_flag_mismatch": anom_mismatch,
                  "ml_alerts_total": len(alerts), "clean_records": len(clean), "clean_quality": q}
         if clean_base is None:

@@ -1,0 +1,10 @@
+{
+ "mqe": {
+  "user": "edge",
+  "password": "${MQTT_EDGE_PASSWORD}"
+ },
+ "mqr": {
+  "user": "ot-receiver",
+  "password": "${MQTT_RECEIVER_PASSWORD}"
+ }
+}

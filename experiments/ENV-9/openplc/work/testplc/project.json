@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "name": "testplc",
+    "type": "plc-project"
+  },
+  "data": {
+    "pous": [],
+    "dataTypes": [],
+    "libraries": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#100ms",
+            "priority": 1
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "program": "main",
+            "task": "task0"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "servers": [
+      {
+        "name": "modbus_server",
+        "protocol": "modbus-tcp",
+        "modbusSlaveConfig": {
+          "enabled": true,
+          "networkInterface": "0.0.0.0",
+          "port": 502
+        }
+      }
+    ],
+    "remoteDevices": [
+      {
+        "name": "plant",
+        "protocol": "modbus-tcp",
+        "modbusTcpConfig": {
+          "transport": "tcp",
+          "host": "sim",
+          "port": 502,
+          "timeout": 1000,
+          "slaveId": 1,
+          "ioGroups": [
+            {
+              "id": "g1",
+              "name": "hr_in",
+              "functionCode": "3",
+              "cycleTime": 100,
+              "offset": "0",
+              "length": 4,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "IW0",
+                  "name": "IW0",
+                  "type": "WORD",
+                  "iecLocation": "%IW0"
+                },
+                {
+                  "id": "IW1",
+                  "name": "IW1",
+                  "type": "WORD",
+                  "iecLocation": "%IW1"
+                },
+                {
+                  "id": "IW2",
+                  "name": "IW2",
+                  "type": "WORD",
+                  "iecLocation": "%IW2"
+                },
+                {
+                  "id": "IW3",
+                  "name": "IW3",
+                  "type": "WORD",
+                  "iecLocation": "%IW3"
+                }
+              ]
+            },
+            {
+              "id": "g2",
+              "name": "sp_out",
+              "functionCode": "16",
+              "cycleTime": 100,
+              "offset": "100",
+              "length": 1,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "QW0",
+                  "name": "QW0",
+                  "type": "WORD",
+                  "iecLocation": "%QW100"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

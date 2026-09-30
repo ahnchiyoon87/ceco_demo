@@ -1,0 +1,23 @@
+[trainer] 정상 운전 데이터 21,600행 × 12태그 생성 (autopilot=True, 배속 600, 표본 간격 설비 600 s)
+[trainer] 학습 텐서 21,591 × 120 (윈도우 10스텝 × 12태그)
+[trainer]   epoch   1/60  train=0.504384  val=0.143239
+[trainer]   epoch  10/60  train=0.055449  val=0.054356
+[trainer]   epoch  20/60  train=0.046745  val=0.046860
+[trainer]   epoch  30/60  train=0.046241  val=0.046257
+[trainer]   epoch  40/60  train=0.042803  val=0.042707
+[trainer]   epoch  50/60  train=0.042153  val=0.042425
+[trainer]   epoch  60/60  train=0.039510  val=0.039694
+[trainer] 정상 재구성오차: 중앙 0.035388  p99.5 0.144695
+[trainer] 이상 임계치 = 0.166399 (여유계수 1.15)
+/app/train.py:156: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter will be the default. To switch now, set dynamo=True in torch.onnx.export. This new exporter supports features like exporting LLMs with DynamicCache. We encourage you to try it and share feedback to help improve the experience. Learn more about the new export logic: https://pytorch.org/docs/stable/onnx_dynamo.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html.
+  torch.onnx.export(
+[trainer] ONNX 저장 완료: /opt/models/model.onnx (0.07 MB)
+[trainer] 메타 저장 완료: /opt/models/model_meta.json
+[trainer] 
+[trainer] ═══ 모델 판별력 자가 검증 ═══
+[trainer]   정상             평균오차 0.03237  탐지율   0.0%   (오탐률)
+[trainer]   drift          평균오차 24.78619  탐지율 100.0%   탐지되어야 함 (단일 임계치로는 불가)
+[trainer]   bearing_wear   평균오차 272.91748  탐지율 100.0%   탐지되어야 함
+[trainer]   noise          평균오차 0.03830  탐지율   0.0%   Tier-1 롤링 Z-Score 담당 (ML 은 미반응이 정상)
+[trainer]   spike          평균오차 0.78017  탐지율 100.0%   Tier-1 이 먼저 잡지만 ML 도 반응
+[trainer]   임계치 = 0.16640

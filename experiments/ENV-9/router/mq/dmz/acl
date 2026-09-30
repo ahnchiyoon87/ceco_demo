@@ -1,0 +1,8 @@
+user bridge-ot
+topic write site/data/#
+topic read site/req/#
+topic read site/alert/#
+user gw
+topic write site/req/#
+user tester
+topic readwrite #

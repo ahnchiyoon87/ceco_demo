@@ -1,0 +1,15 @@
+{"window_ms": [1790727869000, 1790728049000], "device": "reactor-line-01", "alerts": 75, "by_type_tag": {"ZSCORE:pH-101": 9, "ZSCORE:LT-102": 18, "ZSCORE:FT-101": 7, "ZSCORE:FT-102": 7, "ZSCORE:TT-101": 14, "ZSCORE:PT-101": 6, "ZSCORE:TT-102": 14}}
+{"window_ms": [1790728051000, 1790728231000], "device": "reactor-line-01", "alerts": 30, "by_type_tag": {"ZSCORE:LT-102": 11, "ZSCORE:TT-101": 9, "ZSCORE:TT-102": 10}}
+Traceback (most recent call last):
+  File "/repo/harness/e2e/alerts_window.py", line 4, in <module>
+    import argparse, collections, json
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1262, in _find_spec
+  File "<frozen importlib._bootstrap_external>", line 1532, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 1506, in _get_spec
+  File "<frozen importlib._bootstrap_external>", line 1609, in find_spec
+  File "<frozen importlib._bootstrap_external>", line 1652, in _fill_cache
+OSError: [Errno 12] Cannot allocate memory: '/repo/harness/e2e'
+{"window_ms": [1790728439000, 1790728619000], "device": "reactor-line-01", "alerts": 140, "by_type_tag": {"ZSCORE:FT-101": 17, "ZSCORE:LT-102": 23, "ZSCORE:FT-102": 15, "ZSCORE:pH-101": 9, "ZSCORE:IT-101": 18, "ZSCORE:TT-102": 19, "ZSCORE:PT-101": 20, "ZSCORE:TT-101": 19}}
+{"window_ms": [1790728555000, 1790728735000], "device": "reactor-line-01", "alerts": 108, "by_type_tag": {"ZSCORE:FT-101": 15, "ZSCORE:IT-101": 16, "ZSCORE:LT-102": 16, "ZSCORE:TT-102": 14, "ZSCORE:PT-101": 15, "ZSCORE:TT-101": 15, "ZSCORE:FT-102": 14, "ZSCORE:pH-101": 3}}

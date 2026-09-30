@@ -1,0 +1,50 @@
+# 플랫폼 경보(인프라 역할만). 공정 이상은 Flink → sensor.alerts → 업무 서비스·FUXA·Grafana 가 맡는다.
+groups:
+  - name: pipeline-health
+    rules:
+      - alert: KafkaConsumerLagHigh
+        expr: sum by (consumergroup, topic) (kafka_consumergroup_lag) > 5000
+        for: 2m
+        labels: { severity: warning, tier: "2" }
+        annotations:
+          summary: "Kafka 컨슈머 랙 과다 ({{ $labels.consumergroup }}/{{ $labels.topic }})"
+      - alert: FlinkCheckpointFailing
+        expr: increase(flink_jobmanager_job_numberOfFailedCheckpoints[5m]) > 2
+        for: 1m
+        labels: { severity: critical, tier: "3" }
+        annotations: { summary: "Flink 체크포인트 실패 누적" }
+      - alert: FlinkJobRestarting
+        expr: increase(flink_jobmanager_job_numRestarts[10m]) > 3
+        for: 1m
+        labels: { severity: critical, tier: "3" }
+        annotations: { summary: "Flink 잡 반복 재시작" }
+      # V1 EMQXDisconnectSpike 를 Mosquitto(OT 허브·DMZ 브로커)용으로 바꿈(기능 대응표)
+      - alert: MosquittoBridgeDown
+        expr: mosquitto_sys{topic=~".+/connection/.+/state"} == 0
+        for: 30s
+        labels: { severity: critical, tier: "2" }
+        annotations: { summary: "OT 허브 → DMZ 브리지 끊김 ({{ $labels.zone }}) — OT 는 계속 돌고 데이터는 허브 버퍼에 쌓임" }
+      - alert: MosquittoClientDisconnectSpike
+        expr: delta(mosquitto_sys{topic="$SYS/broker/clients/connected"}[5m]) < -2
+        for: 1m
+        labels: { severity: warning, tier: "2" }
+        annotations: { summary: "브로커 연결 해제 급증 ({{ $labels.zone }}) — 엣지·수집기 단절 의심" }
+      - alert: MosquittoMessagesDropped
+        expr: increase(mosquitto_sys{topic="$SYS/broker/publish/messages/dropped"}[5m]) > 0
+        labels: { severity: warning, tier: "2" }
+        annotations: { summary: "브로커가 대기열 한도로 메시지를 버림 ({{ $labels.zone }})" }
+      - alert: EdgeStoreAndForwardBacklog
+        expr: edge_saf_queue > 0
+        for: 1m
+        labels: { severity: warning, tier: "1" }
+        annotations: { summary: "엣지 끊김 버퍼에 {{ $value }}건 쌓임 — OT 허브 연결 확인" }
+      - alert: TelemetryIngestStalled
+        expr: sum(rate(kafka_topic_partition_current_offset{topic="sensor.telemetry.raw"}[2m])) == 0
+        for: 2m
+        labels: { severity: critical, tier: "2" }
+        annotations: { summary: "sensor.telemetry.raw 에 2분간 새 메시지 없음 — 엣지~DMZ~수집 구간 점검" }
+      - alert: PipelineServiceDown
+        expr: up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: "{{ $labels.job }} 스크랩 실패 — 서비스 다운 의심" }

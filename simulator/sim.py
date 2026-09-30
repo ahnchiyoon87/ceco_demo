@@ -1,15 +1,17 @@
-"""AR-100 반응기 라인 시뮬레이터.
+"""AR-100 반응기 라인 가상설비(현장 장치).
 
-  · Modbus/TCP 슬레이브  — EdgeX device-modbus 수집 + FUXA 양방향 제어
-  · REST API             — 고장 주입 / 상태 조회
-  · (선택) MQTT 직발행    — EdgeX 를 우회하는 lite 프로파일용
+  · Modbus/TCP 슬레이브 — soft-PLC 하나만 붙는다(계측값 읽기, 구동기·설정값 쓰기, 현장 패널 읽기)
+  · 강사·실습 도구 API(API_PORT)    — 고장 주입·해제·상태 조회. 강사 계정(Basic 인증), 호스트 전용 포트
+  · 현장 패널(API_PANEL_PORT)       — 모드 선택·현장 기동정지·정비·비상정지 스위치. 패널 계정(Basic 인증)
+  두 계정은 어떤 컨테이너에도 주지 않는다(사람이 호스트에서만 쓴다).
 
 동작에 필요한 모든 값은 plant.yaml 과 환경변수에서 읽는다.
 """
 from __future__ import annotations
 
 import asyncio
-import json
+import base64
+import hmac
 import logging
 import os
 import struct
@@ -35,14 +37,10 @@ log = logging.getLogger("sim")
 CONFIG_PATH = os.getenv("PLANT_CONFIG", "/app/plant.yaml")
 MODBUS_PORT = int(os.getenv("MODBUS_PORT", "502"))
 API_PORT = int(os.getenv("API_PORT", "8080"))
+PANEL_PORT = int(os.getenv("API_PANEL_PORT", "8081"))
+INSTRUCTOR = (os.getenv("INSTRUCTOR_USER", ""), os.getenv("INSTRUCTOR_PASSWORD", ""))
+PANEL = (os.getenv("FIELD_PANEL_USER", ""), os.getenv("FIELD_PANEL_PASSWORD", ""))
 
-# lite 프로파일: EdgeX 를 거치지 않고 EMQX 로 직접 발행
-DIRECT_MQTT = os.getenv("DIRECT_MQTT_ENABLE", "false").lower() == "true"
-MQTT_HOST = os.getenv("MQTT_HOST", "emqx")
-MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
-MQTT_TOPIC_PREFIX = os.getenv("MQTT_TOPIC_PREFIX", "iiot")
-
-# Modbus 함수코드 → 데이터스토어 선택자
 FC_COIL = 1
 FC_HOLDING = 3
 
@@ -67,116 +65,89 @@ class Simulator:
         self.coils = cfg["commands"]["coils"]
         self.holding = cfg["commands"]["holding"]
         self.seq_addr = cfg["commands"]["sequence"]["addr"]
+        self.pts_addr = cfg["commands"]["plant_time"]["addr"]
+        self.panel = cfg["field_panel"]["registers"]
 
         self.context = ModbusServerContext(
             slaves=ModbusSlaveContext(
                 co=ModbusSequentialDataBlock(0, [0] * 64),
                 di=ModbusSequentialDataBlock(0, [0] * 64),
-                hr=ModbusSequentialDataBlock(0, [0] * 256),
+                hr=ModbusSequentialDataBlock(0, [0] * 512),
                 ir=ModbusSequentialDataBlock(0, [0] * 256),
             ),
             single=True,
         )
         self.store = self.context[0]
-
-        # 외부(FUXA/EdgeX) 쓰기와 autopilot 쓰기를 구분하기 위한 마지막 기록값
-        self._last_written: dict[str, int] = {}
         self._seed_defaults()
-        self.mqtt = self._init_mqtt() if DIRECT_MQTT else None
         self.started = time.time()
 
-    # ── 초기 설정치 적재 ──────────────────────────────────────
+    # ── 초기값: 제어기가 붙기 전의 현장 상태(구동기 켜짐, 설정값 기본, 현장 스위치 REMOTE) ──
     def _seed_defaults(self) -> None:
-        self.store.setValues(FC_COIL, self.coils["pump_run"]["addr"], [1])
-        self.store.setValues(FC_COIL, self.coils["agitator_run"]["addr"], [1])
-        self.store.setValues(FC_COIL, self.coils["heater_enable"]["addr"], [1])
-        if "cooler_enable" in self.coils:
-            self.store.setValues(FC_COIL, self.coils["cooler_enable"]["addr"], [0])
-        for key, spec in self.holding.items():
+        for key in ("pump_run", "agitator_run", "heater_enable"):
+            self.store.setValues(FC_COIL, self.coils[key]["addr"], [1])
+        self.store.setValues(FC_COIL, self.coils["cooler_enable"]["addr"], [0])
+        for spec in self.holding.values():
             self.store.setValues(FC_HOLDING, spec["addr"], [int(spec["default"])])
-            self._last_written[key] = int(spec["default"])
-        self.plant.sp_pump_speed = float(self.holding["pump_speed_sp"]["default"])
-        self.plant.sp_valve_open = float(self.holding["valve_open_sp"]["default"])
-        self.plant.sp_temp_c = self.holding["temp_sp_x10"]["default"] / 10.0
-
-    def _init_mqtt(self):
-        import paho.mqtt.client as mqtt
-
-        c = mqtt.Client(
-            mqtt.CallbackAPIVersion.VERSION2,
-            client_id=f"sim-{self.cfg['device']}",
-            clean_session=False,      # 세션 영속 (PDF p.4 권고)
-        )
-        c.connect_async(MQTT_HOST, MQTT_PORT, keepalive=30)
-        c.loop_start()
-        log.info("MQTT 직발행 활성화 → %s:%s", MQTT_HOST, MQTT_PORT)
-        return c
+        self.store.setValues(FC_HOLDING, self.panel["mode_selector"], [1])
 
     # ── 1 스캔 ────────────────────────────────────────────────
     def scan(self) -> None:
         self._read_commands()
         readings = self.plant.step(self.dt)
         self._write_readings(readings)
-        if self.mqtt:
-            self._publish(readings)
 
     def _read_commands(self) -> None:
         p = self.plant
-        p.cmd_pump = bool(self.store.getValues(FC_COIL, self.coils["pump_run"]["addr"], 1)[0])
-        p.cmd_agitator = bool(self.store.getValues(FC_COIL, self.coils["agitator_run"]["addr"], 1)[0])
-        p.cmd_heater = bool(self.store.getValues(FC_COIL, self.coils["heater_enable"]["addr"], 1)[0])
-        p.cmd_cooler = bool(self.store.getValues(FC_COIL, self.coils["cooler_enable"]["addr"], 1)[0]) if "cooler_enable" in self.coils else False
-
-        for key, spec in self.holding.items():
-            raw = self.store.getValues(FC_HOLDING, spec["addr"], 1)[0]
-            if raw != self._last_written.get(key):
-                # 직전에 우리가 쓴 값과 다르다 ⇒ 운전원(FUXA/EdgeX)의 수동 조작
-                raw = min(max(raw, spec["min"]), spec["max"])
-                p.note_manual("temp_sp_c" if key == "temp_sp_x10" else key)
-                log.info("수동 조작 감지: %s = %s", key, raw)
-            if key == "pump_speed_sp":
-                p.sp_pump_speed = float(raw)
-            elif key == "valve_open_sp":
-                p.sp_valve_open = float(raw)
-            elif key == "temp_sp_x10":
-                p.sp_temp_c = raw / 10.0
+        coil = lambda k: bool(self.store.getValues(FC_COIL, self.coils[k]["addr"], 1)[0])
+        p.cmd_pump, p.cmd_agitator = coil("pump_run"), coil("agitator_run")
+        p.cmd_heater, p.cmd_cooler = coil("heater_enable"), coil("cooler_enable")
+        hr = lambda k: min(max(self.store.getValues(FC_HOLDING, self.holding[k]["addr"], 1)[0],
+                               self.holding[k]["min"]), self.holding[k]["max"])
+        p.sp_pump_speed = float(hr("pump_speed_sp"))
+        p.sp_valve_open = float(hr("valve_open_sp"))
+        p.sp_temp_c = hr("temp_sp_x10") / 10.0
+        p.estop = bool(self.store.getValues(FC_HOLDING, self.panel["estop"], 1)[0])
 
     def _write_readings(self, readings: dict[str, float]) -> None:
         for t in self.tags:
             self.store.setValues(FC_HOLDING, t["hr"], f32_regs(readings[t["name"]]))
         self.store.setValues(FC_HOLDING, self.seq_addr, u32_regs(self.plant.seq))
-        self.store.setValues(FC_COIL, self.coils["interlock"]["addr"], [int(self.plant.interlocked)])
+        self.store.setValues(FC_HOLDING, self.pts_addr, u32_regs(int(self.plant.sim_time)))
 
-        # autopilot 이 움직인 설정치를 레지스터에 반영 (운전원 화면 동기화)
-        p = self.plant
-        for key, value in (
-            ("pump_speed_sp", int(round(p.sp_pump_speed))),
-            ("valve_open_sp", int(round(p.sp_valve_open))),
-            ("temp_sp_x10", int(round(p.sp_temp_c * 10))),
-        ):
-            self.store.setValues(FC_HOLDING, self.holding[key]["addr"], [value])
-            self._last_written[key] = value
+    # ── 현장 패널 ─────────────────────────────────────────────
+    def panel_state(self) -> dict:
+        get = lambda k: self.store.getValues(FC_HOLDING, self.panel[k], 1)[0]
+        return {"mode_selector": "REMOTE" if get("mode_selector") else "LOCAL",
+                "operator_id": get("operator_id"), "estop": bool(get("estop"))}
 
-    def _publish(self, readings: dict[str, float]) -> None:
-        ts = time.time_ns()
-        site, dev = self.cfg["site"], self.cfg["device"]
-        for tag, value in readings.items():
-            if value == BAD_QUALITY:
-                continue      # 통신 불량 → 아예 발행하지 않음 (실제 결측 구간 생성)
-            payload = json.dumps(
-                {
-                    "ts": ts,
-                    "site": site,
-                    "device": dev,
-                    "tag": tag,
-                    "value": round(value, 4),
-                    "quality": "GOOD",
-                    "seq": self.plant.seq,
-                }
-            )
-            self.mqtt.publish(f"{MQTT_TOPIC_PREFIX}/{site}/{dev}/{tag}", payload, qos=1)
+    def panel_action(self, action: str, body: dict) -> dict:
+        reg = self.panel
+        get = lambda k: self.store.getValues(FC_HOLDING, reg[k], 1)[0]
+        put = lambda k, v: self.store.setValues(FC_HOLDING, reg[k], [int(v) & 0xFFFF])
+        bump = lambda k: put(k, get(k) + 1)
+        if action == "mode":
+            put("mode_selector", 1 if body.get("value") == "REMOTE" else 0)
+        elif action == "local":
+            code = {"pump": 1, "agitator": 2, "heater": 3, "cooler": 4}[body["equipment"]]
+            put("local_cmd_code", code)
+            put("local_cmd_value", 1 if body.get("value") else 0)
+            bump("local_cmd_seq")
+        elif action == "maintenance_on":
+            put("operator_id", int(body.get("operator_id", 0)))
+            bump("maint_on_seq")
+        elif action == "maintenance_release":
+            bump("maint_release_seq")
+        elif action == "estop":
+            put("estop", 1)
+        elif action == "reset":
+            put("estop", 0)
+            bump("reset_seq")
+        else:
+            raise KeyError(action)
+        log.warning("현장 패널: %s %s", action, {k: v for k, v in body.items() if k != "action"})
+        return self.panel_state()
 
-    # ── 상태 스냅샷 ───────────────────────────────────────────
+    # ── 상태 스냅샷(강사 도구용. 제어 시스템 경로가 아니다) ─────────────
     def snapshot(self) -> dict:
         p = self.plant
         return {
@@ -186,30 +157,38 @@ class Simulator:
             "sim_time_s": round(p.sim_time, 1),
             "physics_time_scale": p.time_scale,
             "seq": p.seq,
-            "readings": {
-                k: (None if v == BAD_QUALITY else round(v, 4)) for k, v in p.readings.items()
-            },
-            "commands": {
-                "pump_run": p.cmd_pump,
-                "agitator_run": p.cmd_agitator,
-                "heater_enable": p.cmd_heater,
-                "cooler_enable": p.cmd_cooler,
-                "pump_speed_sp": round(p.sp_pump_speed, 1),
-                "valve_open_sp": round(p.sp_valve_open, 1),
-                "temp_sp_c": round(p.sp_temp_c, 1),
-            },
-            "interlock": p.interlocked,
+            "readings": {k: (None if v == BAD_QUALITY else round(v, 4)) for k, v in p.readings.items()},
+            "commands": {"pump_run": p.cmd_pump, "agitator_run": p.cmd_agitator,
+                          "heater_enable": p.cmd_heater, "cooler_enable": p.cmd_cooler,
+                          "pump_speed_sp": round(p.sp_pump_speed, 1), "valve_open_sp": round(p.sp_valve_open, 1),
+                          "temp_sp_c": round(p.sp_temp_c, 1)},
             "thermal_model": {key: round(value, 3) for key, value in p.thermal.items()},
+            "field_panel": self.panel_state(),
             "active_faults": {
-                k: {"elapsed_s": round(f.elapsed, 1),
-                    "remaining_s": round(f.expires_at - p.sim_time, 1)}
+                k: {"elapsed_s": round(f.elapsed, 1), "remaining_s": round(f.expires_at - p._clock(f.clock), 1)}
                 for k, f in p.faults.items()
             },
         }
 
 
-def build_api(sim: Simulator) -> web.Application:
-    app = web.Application()
+def basic_auth(expected: tuple[str, str]):
+    """Basic 인증 미들웨어. 계정이 비어 있으면 모든 요청을 거부한다(기본값으로 열리지 않게)."""
+    user, password = expected
+    token = base64.b64encode(f"{user}:{password}".encode()).decode() if user and password else None
+
+    @web.middleware
+    async def mw(request: web.Request, handler):
+        if request.path == "/health":
+            return await handler(request)
+        got = request.headers.get("Authorization", "")
+        if token is None or not hmac.compare_digest(got, f"Basic {token}"):
+            return web.Response(status=401, headers={"WWW-Authenticate": 'Basic realm="ar100"'})
+        return await handler(request)
+    return mw
+
+
+def build_instructor_api(sim: Simulator) -> web.Application:
+    app = web.Application(middlewares=[basic_auth(INSTRUCTOR)])
 
     async def health(_):
         return web.json_response({"status": "ok", "seq": sim.plant.seq})
@@ -217,28 +196,19 @@ def build_api(sim: Simulator) -> web.Application:
     async def state(_):
         return web.json_response(sim.snapshot())
 
-    async def tags(_):
-        return web.json_response(sim.cfg["tags"])
-
     async def faults(_):
-        return web.json_response(
-            {k: v["desc"] for k, v in sim.cfg["faults"].items()}
-        )
+        return web.json_response({k: v["desc"] for k, v in sim.cfg["faults"].items()})
 
     async def inject(request: web.Request):
         body = await request.json()
         scenario = body.get("scenario")
         if scenario not in sim.cfg["faults"]:
-            return web.json_response(
-                {"error": f"unknown scenario '{scenario}'",
-                 "available": list(sim.cfg["faults"])}, status=400)
+            return web.json_response({"error": f"unknown scenario '{scenario}'",
+                                      "available": list(sim.cfg["faults"])}, status=400)
         f = sim.plant.inject(scenario, body.get("duration_s"))
         log.warning("고장 주입: %s (%.0fs, 대상 %s)", scenario, f.expires_at - f.started_at, list(f.targets))
-        return web.json_response(
-            {"injected": scenario,
-             "duration_s": round(f.expires_at - f.started_at, 1),
-             "targets": list(f.targets),
-             "desc": sim.cfg["faults"][scenario]["desc"]})
+        return web.json_response({"injected": scenario, "duration_s": round(f.expires_at - f.started_at, 1),
+                                  "targets": list(f.targets), "desc": sim.cfg["faults"][scenario]["desc"]})
 
     async def clear(_):
         sim.plant.clear_faults()
@@ -247,10 +217,57 @@ def build_api(sim: Simulator) -> web.Application:
 
     app.router.add_get("/health", health)
     app.router.add_get("/state", state)
-    app.router.add_get("/tags", tags)
     app.router.add_get("/faults", faults)
     app.router.add_post("/fault", inject)
     app.router.add_post("/fault/clear", clear)
+    return app
+
+
+PANEL_HTML = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>AR-100 현장 패널</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font-family:system-ui,sans-serif;background:#0f141b;color:#e6edf3;margin:16px}
+h1{font-size:18px}section{border:1px solid #30363d;border-radius:8px;padding:12px;margin:10px 0}
+button{margin:4px;padding:8px 12px;border-radius:6px;border:0;background:#2f6feb;color:#fff;cursor:pointer}
+button.stop{background:#b62324}button.estop{background:#da3633;font-weight:700;font-size:16px}
+pre{background:#161b22;padding:8px;border-radius:6px}</style></head><body>
+<h1>AR-100 현장 패널 (가상설비 현장 스위치)</h1>
+<section><b>모드 선택 스위치</b><br><button onclick="act('mode',{value:'LOCAL'})">LOCAL</button>
+<button onclick="act('mode',{value:'REMOTE'})">REMOTE</button></section>
+<section><b>현장 기동·정지 (LOCAL 에서만 PLC 가 받음)</b><br>
+<span id="loc"></span></section>
+<section><b>정비 모드</b><br>담당자 ID <input id="op" type="number" value="101" style="width:80px">
+<button onclick="act('maintenance_on',{operator_id:+document.getElementById('op').value})">정비 모드 켜기</button>
+<button class="stop" onclick="act('maintenance_release',{})">정비 해제 키</button></section>
+<section><button class="estop" onclick="act('estop',{})">비상정지</button>
+<button onclick="act('reset',{})">리셋</button></section>
+<pre id="out"></pre>
+<script>
+const eq=['pump','agitator','heater','cooler'];
+document.getElementById('loc').innerHTML=eq.map(e=>`${e} <button onclick="act('local',{equipment:'${e}',value:1})">기동</button><button class="stop" onclick="act('local',{equipment:'${e}',value:0})">정지</button>`).join('<br>');
+async function act(a,b){const r=await fetch('panel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:a,...b})});document.getElementById('out').textContent=await r.text();}
+fetch('panel').then(r=>r.text()).then(t=>document.getElementById('out').textContent=t);
+</script></body></html>"""
+
+
+def build_panel_app(sim: Simulator) -> web.Application:
+    app = web.Application(middlewares=[basic_auth(PANEL)])
+
+    async def page(_):
+        return web.Response(text=PANEL_HTML, content_type="text/html")
+
+    async def get_state(_):
+        return web.json_response(sim.panel_state())
+
+    async def post(request: web.Request):
+        body = await request.json()
+        try:
+            return web.json_response(sim.panel_action(body.get("action", ""), body))
+        except (KeyError, ValueError, TypeError) as exc:
+            return web.json_response({"error": f"잘못된 패널 동작: {exc}"}, status=400)
+
+    app.router.add_get("/", page)
+    app.router.add_get("/panel", get_state)
+    app.router.add_post("/panel", post)
     return app
 
 
@@ -261,12 +278,13 @@ async def main() -> None:
         cfg["scan_interval_ms"] = int(os.environ["SCAN_INTERVAL_MS"])
 
     sim = Simulator(cfg)
-    log.info("AR-100 시뮬레이터 기동 | 태그 %d점 | 스캔 %dms | Modbus :%d | API :%d",
-             len(cfg["tags"]), cfg["scan_interval_ms"], MODBUS_PORT, API_PORT)
+    log.info("AR-100 가상설비 기동 | 태그 %d점 | 스캔 %dms | 배속 %g | Modbus :%d | 강사 API :%d | 현장 패널 :%d",
+             len(cfg["tags"]), cfg["scan_interval_ms"], sim.plant.time_scale, MODBUS_PORT, API_PORT, PANEL_PORT)
 
-    runner = web.AppRunner(build_api(sim))
-    await runner.setup()
-    await web.TCPSite(runner, "0.0.0.0", API_PORT).start()
+    for app, port in ((build_instructor_api(sim), API_PORT), (build_panel_app(sim), PANEL_PORT)):
+        runner = web.AppRunner(app, access_log=None)
+        await runner.setup()
+        await web.TCPSite(runner, "0.0.0.0", port).start()
 
     async def loop():
         interval = cfg["scan_interval_ms"] / 1000.0

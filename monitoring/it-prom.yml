@@ -1,0 +1,27 @@
+# ═══ IT 본 Prometheus — 플랫폼 감시(공정 센서 값은 저장하지 않는다. 센서는 InfluxDB 로만) ═══
+# OT·DMZ 지표는 DMZ 수신 Prometheus 에서 /federate 로 가져온다(IT 가 DMZ 로 여는 연결, 17번 G5).
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  external_labels: { pipeline: ar100-iiot }
+alerting:
+  alertmanagers: [ { static_configs: [ { targets: ["alertmanager:9093"] } ] } ]
+rule_files: [ /etc/prometheus/rules.yml ]
+scrape_configs:
+  - job_name: prometheus
+    static_configs: [ { targets: ["localhost:9090"] } ]
+  - job_name: federate-dmz
+    honor_labels: true
+    metrics_path: /federate
+    params: { "match[]": ['{job=~".+"}'] }
+    static_configs: [ { targets: ["dmz-prom:9090"] } ]
+  - job_name: kafka
+    static_configs: [ { targets: ["kafka-exporter:9308"] } ]
+  - job_name: flink
+    static_configs: [ { targets: ["flink-jobmanager:9249", "flink-taskmanager:9249"] } ]
+  - job_name: it-influx
+    static_configs: [ { targets: ["it-influx:8086"] } ]
+  - job_name: it-collector
+    static_configs: [ { targets: ["it-collector:4195"] } ]
+  - job_name: cadvisor
+    static_configs: [ { targets: ["cadvisor:8080"] } ]

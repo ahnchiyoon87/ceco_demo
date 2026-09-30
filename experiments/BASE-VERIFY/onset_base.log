@@ -1,0 +1,19 @@
+spike 0 {'kafka': 0.52}
+spike 1 {'kafka': 1.51}
+spike 2 {'kafka': 1.08}
+heater_stuck 0 {'kafka': 4.15, 'screen': 7.6}
+heater_stuck 1 {'kafka': 3.48, 'screen': 4.77}
+heater_stuck 2 {'kafka': 3.66, 'screen': 5.0}
+bearing_wear 0 {'kafka': 6.78, 'screen': 6.8}
+bearing_wear 1 {'kafka': 6.79, 'screen': 6.81}
+bearing_wear 2 {'kafka': 7.12, 'screen': 7.13}
+noise 0 {}
+noise 1 {'kafka': 9.81, 'screen': 9.85}
+noise 2 {}
+dropout 0 {'kafka': 4.73}
+dropout 1 {'kafka': 4.73}
+dropout 2 {'kafka': 4.83}
+drift 0 {'kafka': 1.67, 'screen': 1.69}
+drift 1 {'kafka': 1.91}
+drift 2 {'kafka': 1.89}
+{"spike": [1.51, null, false], "heater_stuck": [4.15, 7.6, true], "bearing_wear": [7.12, 7.13, true], "noise": [9.81, 9.85, false], "dropout": [4.83, null, false], "drift": [1.91, 1.69, false]} False

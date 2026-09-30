@@ -1,0 +1,8 @@
+user tester
+topic read #
+topic read $SYS/#
+topic write site/data/#
+user reader
+topic read #
+user operator
+topic write site/cmd/#

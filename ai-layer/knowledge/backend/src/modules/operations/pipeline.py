@@ -13,7 +13,7 @@ router = APIRouter(prefix='/api/operations', tags=['manufacturing-evidence'])
 
 def flink_status():
     try:
-        url = os.environ.get('SCADA_FLINK_URL', 'http://host.docker.internal:27081')
+        url = os.environ.get('SCADA_FLINK_URL', 'http://flink-jobmanager:8081')
         with urlopen(url + '/jobs/overview', timeout=4) as response:
             jobs = json.load(response)['jobs']
         running = [job for job in jobs if job.get('state') == 'RUNNING']
@@ -48,7 +48,7 @@ def historian_status(state):
     return {'key':'history','name':'센서 이력 수집',
             'status':'available' if tags and len(good) == len(tags) else 'degraded' if data['status'] in ('available','missing') else 'unavailable',
             'detail':f'{len(good)}/{len(tags)} 센서 · 15초 이내 GOOD',
-            'source':'InfluxDB/process_raw','boundary':'최근 30초 이력에서 각 센서의 마지막 값과 품질을 확인합니다.'}
+            'source':'DMZ InfluxDB/process_raw(OT 원시값 사본)','boundary':'최근 30초 이력에서 각 센서의 마지막 값과 품질을 확인합니다.'}
 
 
 @router.get('/pipeline')
@@ -61,5 +61,5 @@ def pipeline_status():
     return {'checked_at':datetime.now(timezone.utc).isoformat(), 'items':[
         {'key':'plant','name':'공정 상태 조회','status':state['status'],
          'detail':f"스캔 {state.get('seq', '—')}",
-         'boundary':'시뮬레이터 API 조회 가능 여부. EdgeX·MQTT·Kafka 각 구간의 개별 정상 판정은 아닙니다.'},
+         'boundary':'DMZ 설비 사본 조회 가능 여부. 엣지·브리지·Kafka 각 구간의 개별 정상 판정은 아닙니다.'},
         stored, analysis], 'notice':'관측 지점별 상태이며 전체 경로의 무손실 또는 AI 분석 성공을 보증하지 않습니다.'}

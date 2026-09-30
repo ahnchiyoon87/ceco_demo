@@ -1,0 +1,522 @@
+# registry/generate.py 가 registry/equipment.yaml 에서 생성. 손으로 고치지 않는다.
+name: AR100-PLC
+manufacturer: OpenPLC
+model: Runtime v4
+labels:
+- AR-100
+- modbus-tcp
+description: AR-100 soft-PLC — 계측 12점·순번·설비 시각 / 상태·ACK / 명령 채널 (registry/generate.py
+  생성)
+deviceResources:
+- name: LT-101
+  isHidden: false
+  description: 원료탱크 레벨
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 0
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: '%'
+- name: LT-201
+  isHidden: false
+  description: '보조 탱크 레벨(시험: 가상설비 TK-101 레지스터를 새 이름으로)'
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 0
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: '%'
+- name: LT-102
+  isHidden: false
+  description: 반응기 레벨
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 2
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: '%'
+- name: TT-101
+  isHidden: false
+  description: 반응기 온도
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 4
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: degC
+- name: TT-102
+  isHidden: false
+  description: 재킷 온도
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 6
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: degC
+- name: PT-101
+  isHidden: false
+  description: 반응기 압력
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 8
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: barg
+- name: FT-101
+  isHidden: false
+  description: 공급 유량
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 10
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: m3/h
+- name: FT-102
+  isHidden: false
+  description: 배출 유량
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 12
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: m3/h
+- name: IT-101
+  isHidden: false
+  description: 펌프 전류
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 14
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: A
+- name: IT-102
+  isHidden: false
+  description: 교반기 전류
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 16
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: A
+- name: VT-101
+  isHidden: false
+  description: 교반기 진동
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 18
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: mm/s
+- name: pH-101
+  isHidden: false
+  description: 반응기 pH
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 20
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: pH
+- name: CT-101
+  isHidden: false
+  description: 전도도
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 22
+  properties:
+    valueType: Float32
+    readWrite: R
+    units: mS/cm
+- name: SEQ
+  isHidden: false
+  description: 가상설비 스캔 순번
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 24
+  properties:
+    valueType: Uint32
+    readWrite: R
+- name: PTS
+  isHidden: false
+  description: 설비 시각(초)
+  attributes:
+    primaryTable: INPUT_REGISTERS
+    startingAddress: 26
+  properties:
+    valueType: Uint32
+    readWrite: R
+- name: ST_SP_PUMP
+  isHidden: false
+  description: PLC 상태 sp_pump
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 100
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_SP_VALVE
+  isHidden: false
+  description: PLC 상태 sp_valve
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 101
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_SP_TEMP_X10
+  isHidden: false
+  description: PLC 상태 sp_temp_x10
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 102
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_RUN
+  isHidden: false
+  description: PLC 상태 run
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 103
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_MODE
+  isHidden: false
+  description: PLC 상태 mode
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 104
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_MAINTENANCE
+  isHidden: false
+  description: PLC 상태 maintenance
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 105
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_MAINT_OPERATOR
+  isHidden: false
+  description: PLC 상태 maint_operator
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 106
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_INTERLOCK
+  isHidden: false
+  description: PLC 상태 interlock
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 107
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_FIELD_COMM
+  isHidden: false
+  description: PLC 상태 field_comm
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 108
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_ESTOP
+  isHidden: false
+  description: PLC 상태 estop
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 109
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_OUTPUTS
+  isHidden: false
+  description: PLC 상태 outputs
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 110
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_OP_ACK_SEQ
+  isHidden: false
+  description: PLC 상태 op_ack_seq
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 111
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_OP_ACK_CODE
+  isHidden: false
+  description: PLC 상태 op_ack_code
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 112
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_RQ_ACK_SEQ
+  isHidden: false
+  description: PLC 상태 rq_ack_seq
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 113
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_RQ_ACK_CODE
+  isHidden: false
+  description: PLC 상태 rq_ack_code
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 114
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_RQ_ACK_HASH_HI
+  isHidden: false
+  description: PLC 상태 rq_ack_hash_hi
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 115
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_RQ_ACK_HASH_LO
+  isHidden: false
+  description: PLC 상태 rq_ack_hash_lo
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 116
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_HEARTBEAT
+  isHidden: false
+  description: PLC 상태 heartbeat
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 117
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: ST_FB_FAULT
+  isHidden: false
+  description: PLC 상태 fb_fault
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 118
+  properties:
+    valueType: Uint16
+    readWrite: R
+- name: TIME_HI
+  isHidden: false
+  description: PLC 명령 레지스터 TIME_HI
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1024
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: TIME_LO
+  isHidden: false
+  description: PLC 명령 레지스터 TIME_LO
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1025
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: OP_CODE
+  isHidden: false
+  description: PLC 명령 레지스터 OP_CODE
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1035
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: OP_VALUE
+  isHidden: false
+  description: PLC 명령 레지스터 OP_VALUE
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1036
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: OP_SEQ
+  isHidden: false
+  description: PLC 명령 레지스터 OP_SEQ
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1034
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_CODE
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_CODE
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1045
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_VALUE
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_VALUE
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1046
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_EXP_HI
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_EXP_HI
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1047
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_EXP_LO
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_EXP_LO
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1048
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_ACC
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_ACC
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1049
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_HASH_HI
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_HASH_HI
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1050
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_HASH_LO
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_HASH_LO
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1051
+  properties:
+    valueType: Uint16
+    readWrite: RW
+- name: RQ_SEQ
+  isHidden: false
+  description: PLC 명령 레지스터 RQ_SEQ
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 1044
+  properties:
+    valueType: Uint16
+    readWrite: RW
+deviceCommands:
+- name: Values
+  readWrite: R
+  isHidden: false
+  resourceOperations:
+  - deviceResource: LT-101
+  - deviceResource: LT-201
+  - deviceResource: LT-102
+  - deviceResource: TT-101
+  - deviceResource: TT-102
+  - deviceResource: PT-101
+  - deviceResource: FT-101
+  - deviceResource: FT-102
+  - deviceResource: IT-101
+  - deviceResource: IT-102
+  - deviceResource: VT-101
+  - deviceResource: pH-101
+  - deviceResource: CT-101
+  - deviceResource: SEQ
+  - deviceResource: PTS
+- name: Status
+  readWrite: R
+  isHidden: false
+  resourceOperations:
+  - deviceResource: ST_SP_PUMP
+  - deviceResource: ST_SP_VALVE
+  - deviceResource: ST_SP_TEMP_X10
+  - deviceResource: ST_RUN
+  - deviceResource: ST_MODE
+  - deviceResource: ST_MAINTENANCE
+  - deviceResource: ST_MAINT_OPERATOR
+  - deviceResource: ST_INTERLOCK
+  - deviceResource: ST_FIELD_COMM
+  - deviceResource: ST_ESTOP
+  - deviceResource: ST_OUTPUTS
+  - deviceResource: ST_OP_ACK_SEQ
+  - deviceResource: ST_OP_ACK_CODE
+  - deviceResource: ST_RQ_ACK_SEQ
+  - deviceResource: ST_RQ_ACK_CODE
+  - deviceResource: ST_RQ_ACK_HASH_HI
+  - deviceResource: ST_RQ_ACK_HASH_LO
+  - deviceResource: ST_HEARTBEAT
+  - deviceResource: ST_FB_FAULT
+- name: TimeSync
+  readWrite: W
+  isHidden: false
+  resourceOperations:
+  - deviceResource: TIME_HI
+  - deviceResource: TIME_LO
+- name: OpCmd
+  readWrite: W
+  isHidden: false
+  resourceOperations:
+  - deviceResource: OP_CODE
+  - deviceResource: OP_VALUE
+- name: OpSeq
+  readWrite: W
+  isHidden: false
+  resourceOperations:
+  - deviceResource: OP_SEQ
+- name: RqCmd
+  readWrite: W
+  isHidden: false
+  resourceOperations:
+  - deviceResource: RQ_CODE
+  - deviceResource: RQ_VALUE
+  - deviceResource: RQ_EXP_HI
+  - deviceResource: RQ_EXP_LO
+  - deviceResource: RQ_ACC
+  - deviceResource: RQ_HASH_HI
+  - deviceResource: RQ_HASH_LO
+- name: RqSeq
+  readWrite: W
+  isHidden: false
+  resourceOperations:
+  - deviceResource: RQ_SEQ

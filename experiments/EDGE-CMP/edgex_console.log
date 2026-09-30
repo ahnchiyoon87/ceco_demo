@@ -1,0 +1,51 @@
+[08:55:22] == edgex 엣지 측정 시작 (컨테이너: rot-base-edgex-adapter-1 rot-base-edgex-device-modbus-1 rot-base-edgex-app-mqtt-export-1 rot-base-edgex-core-command-1 rot-base-edgex-core-data-1 rot-base-edgex-core-metadata-1 rot-base-edgex-core-keeper-1 rot-base-edgex-postgres-1 rot-base-edgex-mqtt-broker-1)
+합계 180.3 MiB
+[08:55:44] 1) 정상 3분: 누락·지연
+기록 2222건, 스캔 181개
+{"scans": 177, "expected_tag_scans": 2124, "missing_tag_scans": 0, "duplicates": 0, "latency_p50_ms": 98.2, "latency_p95_ms": 107.4}
+[08:58:54] 2) 운전원 명령 왕복 10회
+{"reps": 10, "accepted_and_reflected": 10, "ack_p50_s": 0.2355, "state_p50_s": 0.235}
+[08:59:16] 3) OT 작업 요청 수신기
+PASS REMOTE_MANUAL → 운전원 대기: OPERATOR_WAIT STORED 0.005s
+PASS 운전원 수락 → OPERATOR_ACCEPTED: OPERATOR_ACCEPTED OPERATOR 0.047s
+PASS 운전원 수락 → PLC 수용: ACCEPTED ACCEPTED 0.232s
+PASS 스키마 오류 거부: REJECTED SCHEMA_INVALID 0.044s
+PASS 파라미터 범위 밖 거부: REJECTED PARAMETER_RANGE 0.045s
+PASS 만료 거부: REJECTED EXPIRED 0.041s
+PASS 설비 불일치 거부: REJECTED EQUIPMENT_MISMATCH 0.042s
+PASS REMOTE_AUTO 자동 수용 1: AUTO_ACCEPTED REMOTE_AUTO 0.005s
+PASS REMOTE_AUTO PLC 수용 1: ACCEPTED ACCEPTED 0.293s
+PASS REMOTE_AUTO 자동 수용 2: AUTO_ACCEPTED REMOTE_AUTO 0.04s
+PASS REMOTE_AUTO PLC 수용 2: ACCEPTED ACCEPTED 0.246s
+PASS REMOTE_AUTO 자동 수용 3: AUTO_ACCEPTED REMOTE_AUTO 0.004s
+PASS REMOTE_AUTO PLC 수용 3: ACCEPTED ACCEPTED 0.244s
+PASS REMOTE_AUTO 자동 수용 4: AUTO_ACCEPTED REMOTE_AUTO 0.004s
+PASS REMOTE_AUTO PLC 수용 4: ACCEPTED ACCEPTED 0.247s
+PASS REMOTE_AUTO 자동 수용 5: AUTO_ACCEPTED REMOTE_AUTO 0.006s
+PASS REMOTE_AUTO PLC 수용 5: ACCEPTED ACCEPTED 0.24s
+PASS REMOTE_AUTO 자동 수용 6: AUTO_ACCEPTED REMOTE_AUTO 0.05s
+PASS REMOTE_AUTO PLC 수용 6: ACCEPTED ACCEPTED 0.243s
+PASS REMOTE_AUTO 자동 수용 7: AUTO_ACCEPTED REMOTE_AUTO 0.007s
+PASS REMOTE_AUTO PLC 수용 7: ACCEPTED ACCEPTED 0.246s
+PASS REMOTE_AUTO 자동 수용 8: AUTO_ACCEPTED REMOTE_AUTO 0.005s
+PASS REMOTE_AUTO PLC 수용 8: ACCEPTED ACCEPTED 0.243s
+PASS REMOTE_AUTO 자동 수용 9: AUTO_ACCEPTED REMOTE_AUTO 0.008s
+PASS REMOTE_AUTO PLC 수용 9: ACCEPTED ACCEPTED 0.248s
+PASS REMOTE_AUTO 자동 수용 10: AUTO_ACCEPTED REMOTE_AUTO 0.05s
+PASS REMOTE_AUTO PLC 수용 10: ACCEPTED ACCEPTED 0.246s
+PASS 중복 요청 첫 응답 1번
+{"pass": 28, "fail": 0, "receipt_p95_s": 0.05, "receipt_max_s": 0.05}
+[08:59:36] 4-1) OT 허브 10초 정지 → 재기동
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 0, "duplicates": 24, "latency_p50_ms": 101.2, "latency_p95_ms": 11363.5, "recover_s": 4.54, "outage_window_tag_scans": 252, "outage_missing_tag_scans": 0}
+[09:01:11] 4-2) OT 허브 10초 정지 → 재기동
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 0, "duplicates": 12, "latency_p50_ms": 99.0, "latency_p95_ms": 12122.2, "recover_s": 4.59, "outage_window_tag_scans": 264, "outage_missing_tag_scans": 0}
+[09:02:44] 4-3) OT 허브 10초 정지 → 재기동
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 0, "duplicates": 24, "latency_p50_ms": 102.6, "latency_p95_ms": 11869.1, "recover_s": 4.53, "outage_window_tag_scans": 264, "outage_missing_tag_scans": 0}
+[09:04:19] 5-1) 엣지 재시작 → 사람 손 없이 복귀
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 12, "duplicates": 0, "latency_p50_ms": 242.4, "latency_p95_ms": 257.9, "recover_s": 1.12, "outage_window_tag_scans": 276, "outage_missing_tag_scans": 12}
+[09:05:53] 5-2) 엣지 재시작 → 사람 손 없이 복귀
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 24, "duplicates": 0, "latency_p50_ms": 198.4, "latency_p95_ms": 255.0, "recover_s": 0.72, "outage_window_tag_scans": 276, "outage_missing_tag_scans": 24}
+[09:07:27] 5-3) 엣지 재시작 → 사람 손 없이 복귀
+{"scans": 72, "expected_tag_scans": 864, "missing_tag_scans": 12, "duplicates": 0, "latency_p50_ms": 206.7, "latency_p95_ms": 288.0, "recover_s": 0.67, "outage_window_tag_scans": 264, "outage_missing_tag_scans": 12}
+합계 143.7 MiB
+[09:09:03] == edgex 끝

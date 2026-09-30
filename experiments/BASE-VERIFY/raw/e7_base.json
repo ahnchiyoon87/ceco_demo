@@ -1,0 +1,969 @@
+{
+ "pairs": 120,
+ "influx_within": 120,
+ "daq_within": 120,
+ "rate_influx": 1.0,
+ "rate_daq": 1.0,
+ "samples": [
+  {
+   "tag": "LT-101",
+   "screen": 69.8792,
+   "dmz_influx": 69.8792,
+   "fuxa_daq": 69.8792,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 58.9498,
+   "dmz_influx": 58.9498,
+   "fuxa_daq": 58.9498,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 70.5673,
+   "dmz_influx": 70.5673,
+   "fuxa_daq": 70.5673,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 91.1185,
+   "dmz_influx": 91.1185,
+   "fuxa_daq": 91.1185,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.6532,
+   "dmz_influx": 3.6532,
+   "fuxa_daq": 3.6532,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 6.0075,
+   "dmz_influx": 6.0075,
+   "fuxa_daq": 6.0075,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.9938,
+   "dmz_influx": 5.9938,
+   "fuxa_daq": 5.9938,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.4264,
+   "dmz_influx": 6.4264,
+   "fuxa_daq": 6.4264,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.5539,
+   "dmz_influx": 6.5539,
+   "fuxa_daq": 6.5539,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0622,
+   "dmz_influx": 2.0622,
+   "fuxa_daq": 2.0622,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.423,
+   "dmz_influx": 7.423,
+   "fuxa_daq": 7.423,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.369,
+   "dmz_influx": 3.369,
+   "fuxa_daq": 3.369,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.962,
+   "dmz_influx": 69.962,
+   "fuxa_daq": 69.962,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 58.9044,
+   "dmz_influx": 58.9044,
+   "fuxa_daq": 58.9044,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 70.0681,
+   "dmz_influx": 70.0681,
+   "fuxa_daq": 70.0681,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 90.3373,
+   "dmz_influx": 90.3373,
+   "fuxa_daq": 90.3373,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.5837,
+   "dmz_influx": 3.5837,
+   "fuxa_daq": 3.5837,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.9734,
+   "dmz_influx": 5.9734,
+   "fuxa_daq": 5.9734,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.9755,
+   "dmz_influx": 5.9755,
+   "fuxa_daq": 5.9755,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.376,
+   "dmz_influx": 6.376,
+   "fuxa_daq": 6.376,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.5485,
+   "dmz_influx": 6.5485,
+   "fuxa_daq": 6.5485,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0237,
+   "dmz_influx": 2.0237,
+   "fuxa_daq": 2.0237,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4294,
+   "dmz_influx": 7.4294,
+   "fuxa_daq": 7.4294,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3724,
+   "dmz_influx": 3.3724,
+   "fuxa_daq": 3.3724,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.9353,
+   "dmz_influx": 69.9353,
+   "fuxa_daq": 69.9353,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.2476,
+   "dmz_influx": 59.2476,
+   "fuxa_daq": 59.2476,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 67.4189,
+   "dmz_influx": 67.4189,
+   "fuxa_daq": 67.4189,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 85.5046,
+   "dmz_influx": 85.5046,
+   "fuxa_daq": 85.5046,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.5954,
+   "dmz_influx": 3.5954,
+   "fuxa_daq": 3.5954,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.5102,
+   "dmz_influx": 5.5102,
+   "fuxa_daq": 5.5102,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.438,
+   "dmz_influx": 5.438,
+   "fuxa_daq": 5.438,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 6.0981,
+   "dmz_influx": 6.0981,
+   "fuxa_daq": 6.0981,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.658,
+   "dmz_influx": 6.658,
+   "fuxa_daq": 6.658,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.126,
+   "dmz_influx": 2.126,
+   "fuxa_daq": 2.126,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4569,
+   "dmz_influx": 7.4569,
+   "fuxa_daq": 7.4569,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.334,
+   "dmz_influx": 3.334,
+   "fuxa_daq": 3.334,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.9728,
+   "dmz_influx": 69.9728,
+   "fuxa_daq": 69.9728,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.7666,
+   "dmz_influx": 59.7666,
+   "fuxa_daq": 59.7666,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 66.2406,
+   "dmz_influx": 66.2406,
+   "fuxa_daq": 66.2406,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 83.3762,
+   "dmz_influx": 83.3762,
+   "fuxa_daq": 83.3762,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.6189,
+   "dmz_influx": 3.6189,
+   "fuxa_daq": 3.6189,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.4199,
+   "dmz_influx": 5.4199,
+   "fuxa_daq": 5.4199,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.3585,
+   "dmz_influx": 5.3585,
+   "fuxa_daq": 5.3585,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.9299,
+   "dmz_influx": 5.9299,
+   "fuxa_daq": 5.9299,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.6911,
+   "dmz_influx": 6.6911,
+   "fuxa_daq": 6.6911,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0585,
+   "dmz_influx": 2.0585,
+   "fuxa_daq": 2.0585,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4618,
+   "dmz_influx": 7.4618,
+   "fuxa_daq": 7.4618,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3327,
+   "dmz_influx": 3.3327,
+   "fuxa_daq": 3.3327,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 70.0186,
+   "dmz_influx": 70.0186,
+   "fuxa_daq": 70.0186,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 60.1828,
+   "dmz_influx": 60.1828,
+   "fuxa_daq": 60.1828,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.6855,
+   "dmz_influx": 65.6855,
+   "fuxa_daq": 65.6855,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 82.2736,
+   "dmz_influx": 82.2736,
+   "fuxa_daq": 82.2736,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.6743,
+   "dmz_influx": 3.6743,
+   "fuxa_daq": 3.6743,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.3174,
+   "dmz_influx": 5.3174,
+   "fuxa_daq": 5.3174,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.2488,
+   "dmz_influx": 5.2488,
+   "fuxa_daq": 5.2488,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.8834,
+   "dmz_influx": 5.8834,
+   "fuxa_daq": 5.8834,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.7542,
+   "dmz_influx": 6.7542,
+   "fuxa_daq": 6.7542,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.1459,
+   "dmz_influx": 2.1459,
+   "fuxa_daq": 2.1459,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4814,
+   "dmz_influx": 7.4814,
+   "fuxa_daq": 7.4814,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3108,
+   "dmz_influx": 3.3108,
+   "fuxa_daq": 3.3108,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.9672,
+   "dmz_influx": 69.9672,
+   "fuxa_daq": 69.9672,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 60.0924,
+   "dmz_influx": 60.0924,
+   "fuxa_daq": 60.0924,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.3257,
+   "dmz_influx": 65.3257,
+   "fuxa_daq": 65.3257,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 81.7219,
+   "dmz_influx": 81.7219,
+   "fuxa_daq": 81.7219,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.6323,
+   "dmz_influx": 3.6323,
+   "fuxa_daq": 3.6323,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.1251,
+   "dmz_influx": 5.1251,
+   "fuxa_daq": 5.1251,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.2649,
+   "dmz_influx": 5.2649,
+   "fuxa_daq": 5.2649,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.8245,
+   "dmz_influx": 5.8245,
+   "fuxa_daq": 5.8245,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.7588,
+   "dmz_influx": 6.7588,
+   "fuxa_daq": 6.7588,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0158,
+   "dmz_influx": 2.0158,
+   "fuxa_daq": 2.0158,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4828,
+   "dmz_influx": 7.4828,
+   "fuxa_daq": 7.4828,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.291,
+   "dmz_influx": 3.291,
+   "fuxa_daq": 3.291,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 70.0116,
+   "dmz_influx": 70.0116,
+   "fuxa_daq": 70.0116,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.6477,
+   "dmz_influx": 59.6477,
+   "fuxa_daq": 59.6477,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.2969,
+   "dmz_influx": 65.2969,
+   "fuxa_daq": 65.2969,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 81.4912,
+   "dmz_influx": 81.4912,
+   "fuxa_daq": 81.4912,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.6176,
+   "dmz_influx": 3.6176,
+   "fuxa_daq": 3.6176,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.2248,
+   "dmz_influx": 5.2248,
+   "fuxa_daq": 5.2248,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.2088,
+   "dmz_influx": 5.2088,
+   "fuxa_daq": 5.2088,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.8005,
+   "dmz_influx": 5.8005,
+   "fuxa_daq": 5.8005,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.7514,
+   "dmz_influx": 6.7514,
+   "fuxa_daq": 6.7514,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0081,
+   "dmz_influx": 2.0081,
+   "fuxa_daq": 2.0081,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4837,
+   "dmz_influx": 7.4837,
+   "fuxa_daq": 7.4837,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3157,
+   "dmz_influx": 3.3157,
+   "fuxa_daq": 3.3157,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.9133,
+   "dmz_influx": 69.9133,
+   "fuxa_daq": 69.9133,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.6536,
+   "dmz_influx": 59.6536,
+   "fuxa_daq": 59.6536,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.2198,
+   "dmz_influx": 65.2198,
+   "fuxa_daq": 65.2198,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 81.4953,
+   "dmz_influx": 81.4953,
+   "fuxa_daq": 81.4953,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.5737,
+   "dmz_influx": 3.5737,
+   "fuxa_daq": 3.5737,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.1358,
+   "dmz_influx": 5.1358,
+   "fuxa_daq": 5.1358,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.2142,
+   "dmz_influx": 5.2142,
+   "fuxa_daq": 5.2142,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.8507,
+   "dmz_influx": 5.8507,
+   "fuxa_daq": 5.8507,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.7576,
+   "dmz_influx": 6.7576,
+   "fuxa_daq": 6.7576,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.2099,
+   "dmz_influx": 2.2099,
+   "fuxa_daq": 2.2099,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4835,
+   "dmz_influx": 7.4835,
+   "fuxa_daq": 7.4835,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.3091,
+   "dmz_influx": 3.3091,
+   "fuxa_daq": 3.3091,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 69.935,
+   "dmz_influx": 69.935,
+   "fuxa_daq": 69.935,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.609,
+   "dmz_influx": 59.609,
+   "fuxa_daq": 59.609,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.2088,
+   "dmz_influx": 65.2088,
+   "fuxa_daq": 65.2088,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 81.5064,
+   "dmz_influx": 81.5064,
+   "fuxa_daq": 81.5064,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.5944,
+   "dmz_influx": 3.5944,
+   "fuxa_daq": 3.5944,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.1522,
+   "dmz_influx": 5.1522,
+   "fuxa_daq": 5.1522,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.236,
+   "dmz_influx": 5.236,
+   "fuxa_daq": 5.236,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.7676,
+   "dmz_influx": 5.7676,
+   "fuxa_daq": 5.7676,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.772,
+   "dmz_influx": 6.772,
+   "fuxa_daq": 6.772,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.0338,
+   "dmz_influx": 2.0338,
+   "fuxa_daq": 2.0338,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4887,
+   "dmz_influx": 7.4887,
+   "fuxa_daq": 7.4887,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.2779,
+   "dmz_influx": 3.2779,
+   "fuxa_daq": 3.2779,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-101",
+   "screen": 70.0369,
+   "dmz_influx": 70.0369,
+   "fuxa_daq": 70.0369,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "LT-102",
+   "screen": 59.6592,
+   "dmz_influx": 59.6592,
+   "fuxa_daq": 59.6592,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-101",
+   "screen": 65.0816,
+   "dmz_influx": 65.0816,
+   "fuxa_daq": 65.0816,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "TT-102",
+   "screen": 81.5507,
+   "dmz_influx": 81.5507,
+   "fuxa_daq": 81.5507,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "PT-101",
+   "screen": 3.594,
+   "dmz_influx": 3.594,
+   "fuxa_daq": 3.594,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-101",
+   "screen": 5.1809,
+   "dmz_influx": 5.1809,
+   "fuxa_daq": 5.1809,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "FT-102",
+   "screen": 5.1543,
+   "dmz_influx": 5.1543,
+   "fuxa_daq": 5.1543,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-101",
+   "screen": 5.8239,
+   "dmz_influx": 5.8239,
+   "fuxa_daq": 5.8239,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "IT-102",
+   "screen": 6.7554,
+   "dmz_influx": 6.7554,
+   "fuxa_daq": 6.7554,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "VT-101",
+   "screen": 2.1108,
+   "dmz_influx": 2.1108,
+   "fuxa_daq": 2.1108,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "pH-101",
+   "screen": 7.4846,
+   "dmz_influx": 7.4846,
+   "fuxa_daq": 7.4846,
+   "ok_influx": true,
+   "ok_daq": true
+  },
+  {
+   "tag": "CT-101",
+   "screen": 3.2895,
+   "dmz_influx": 3.2895,
+   "fuxa_daq": 3.2895,
+   "ok_influx": true,
+   "ok_daq": true
+  }
+ ]
+}

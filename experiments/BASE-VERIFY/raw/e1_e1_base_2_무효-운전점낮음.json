@@ -1,0 +1,157 @@
+{
+ "run": "e1_base_2",
+ "reps": 10,
+ "args": {
+  "exp": "BASE-VERIFY",
+  "run": "e1_base_2",
+  "reps": 10,
+  "sim": "http://plant-sim:8080",
+  "mqtt": "ot-hub",
+  "mqtt_topics": "",
+  "kafka": "kafka:9092",
+  "kafka_topic": "sensor.alerts",
+  "match": "THRESHOLD_USL",
+  "tag": "PT-101",
+  "scenario": "spike",
+  "quiet_s": 3.0,
+  "timeout_s": 60.0,
+  "fault_duration": 2.0,
+  "incident_api": "http://knowledge:8000/api/operations/incidents",
+  "fuxa_alarms": "http://fuxa:1881/api/alarms",
+  "fuxa_match": "PT-101,인터록"
+ },
+ "summary": {
+  "kafka:sensor.alerts": {
+   "n": 5,
+   "missing": 5,
+   "p50": 591.5,
+   "p95": 1291.2,
+   "max": 1291.2,
+   "mean": 842.1
+  },
+  "incident": {
+   "n": 9,
+   "missing": 1,
+   "p50": 783.0,
+   "p95": 8760.4,
+   "max": 8760.4,
+   "mean": 1855.6
+  },
+  "fuxa:alarm": {
+   "n": 3,
+   "missing": 7,
+   "p50": 2366.3,
+   "p95": 2528.9,
+   "max": 2528.9,
+   "mean": 2377.4
+  }
+ },
+ "reps_detail": [
+  {
+   "i": 0,
+   "t0_ms": 1790733323699.2183,
+   "lat_ms": {
+    "kafka:sensor.alerts": 549.7,
+    "incident": 714.4,
+    "fuxa:alarm": 2237.0
+   },
+   "missing": []
+  },
+  {
+   "i": 1,
+   "t0_ms": 1790733330516.6423,
+   "lat_ms": {
+    "kafka:sensor.alerts": 540.0,
+    "incident": 692.9,
+    "fuxa:alarm": 2366.3
+   },
+   "missing": []
+  },
+  {
+   "i": 2,
+   "t0_ms": 1790733342485.586,
+   "lat_ms": {
+    "kafka:sensor.alerts": 591.5,
+    "incident": 663.2,
+    "fuxa:alarm": 2528.9
+   },
+   "missing": []
+  },
+  {
+   "i": 3,
+   "t0_ms": 1790733355600.773,
+   "lat_ms": {},
+   "missing": [
+    "kafka:sensor.alerts",
+    "incident",
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 4,
+   "t0_ms": 1790733415627.0435,
+   "lat_ms": {
+    "incident": 714.8
+   },
+   "missing": [
+    "kafka:sensor.alerts",
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 5,
+   "t0_ms": 1790733475674.4143,
+   "lat_ms": {
+    "incident": 783.0
+   },
+   "missing": [
+    "kafka:sensor.alerts",
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 6,
+   "t0_ms": 1790733535702.7617,
+   "lat_ms": {
+    "incident": 1655.9
+   },
+   "missing": [
+    "kafka:sensor.alerts",
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 7,
+   "t0_ms": 1790733595741.3916,
+   "lat_ms": {
+    "incident": 8760.4
+   },
+   "missing": [
+    "kafka:sensor.alerts",
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 8,
+   "t0_ms": 1790733655786.9312,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1291.2,
+    "incident": 1379.4
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 9,
+   "t0_ms": 1790733715818.5417,
+   "lat_ms": {
+    "kafka:sensor.alerts": 1238.3,
+    "incident": 1336.4
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  }
+ ]
+}

@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, defineAsyncComponent } from 'vue'
-import PlantControls from './PlantControls.vue'
 const PipelineStatus = defineAsyncComponent(() => import('./PipelineStatus.vue'))
 const emit=defineEmits(['control'])
 const plant = ref(null), error = ref(''), history = ref({}), lastChanged = ref(0), now = ref(Date.now())
@@ -71,7 +70,7 @@ onUnmounted(() => { generation++; clearTimeout(timer); clearInterval(clockTimer)
       <footer><span :class="{alarm:plant?.interlock}">인터록 {{stale ? '확인 불가' : plant?.interlock ? '발동' : '미발동'}}</span><span>애니메이션: 조회된 운전 상태 · 도형 높이는 레벨값이 아닙니다.</span></footer>
     </div>
     <div class="telemetry-grid"><article v-for="[tag,label,unit] in tags" :key="tag" :class="{stale}"><header><b>{{tag}}</b><span>{{label}}</span></header><p>{{value(tag)}}<small>{{unit}}</small></p><svg viewBox="0 0 200 48" role="img" :aria-label="tag+' 최근 조회 추세'"><polyline :points="spark(tag)" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><small>{{stale ? '마지막 조회값' : '현재 조회값'}} · {{history[tag]?.length || 0}}개 샘플</small></article></div>
-    </div><PlantControls :plant="plant" :stale="stale" @updated="load"/></div><details class="pipeline-details"><summary>수집·분석 연결 상태 확인</summary><PipelineStatus /></details><div class="scada-foot"><p>추세는 이 화면을 연 후 수집한 최근 45개 조회값입니다. 자동 축척이므로 센서 간 높이를 비교하지 마세요. 조회 시각은 센서 측정 시각과 다릅니다.</p><button class="console-button" @click="emit('control')">설비 제어 패널 열기</button></div>
+    </div><p class="control-note">설비 조작은 공장(OT) 안의 운전원 화면 FUXA 에서만 합니다. 이 화면은 DMZ 에 올라온 설비 사본을 읽기만 합니다.</p></div><details class="pipeline-details"><summary>수집·분석 연결 상태 확인</summary><PipelineStatus /></details><div class="scada-foot"><p>추세는 이 화면을 연 후 수집한 최근 45개 조회값입니다. 자동 축척이므로 센서 간 높이를 비교하지 마세요. 조회 시각은 센서 측정 시각과 다릅니다.</p><button class="console-button" @click="emit('control')">설비 제어 패널 열기</button></div>
   </section>
 </template>
 

@@ -143,6 +143,7 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
     <li><span>4</span><b>스택</b>현업이 쓰는 무료 본체 그대로 7칸, 현업이 상용이라 무료로 대신 5칸, 맞는 무료 제품이 없어 자체 1칸</li>
     <li><span>5</span><b>흐름</b>우리 AI(외부 시스템)는 명령하지 않고 요청한다. 담당자 승인 → 공장이 받을지 정하고 PLC가 물리 검사 후 적용</li>
     <li><span>6</span><b>결과</b>설비부터 업무·승인까지 10개 층 한 장(6장). 설계 판단 70개를 근거와 대조: 근거 56 · 추천 14 · 미해소 0(7장)</li>
+<li><span>7</span><b>검증</b>조립해 V1과 같은 방법으로 쟀다: 탐지 70/70·ML 점수 같음, 정상 오경보 105 → 75건, 알람 → 화면 1.84 → 1.21 s, 메모리 5,918 → 5,588 MiB, 제어·안전 18항목 통과, 브로커 정지 뒤 스스로 복구(9장)</li>
   </ol>
 </section>
 
@@ -173,7 +174,7 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
     <div class="card"><b>① 구조</b><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12번</a><span class="q">현업 IIoT·SCADA의 층·길·망은?</span>공장·완충지대·사무실 세 구역, 받을지는 공장 안에서 정하고 PLC는 물리적으로 되는지 마지막 검사, 설비가 늘어도 층은 그대로.</div>
     <div class="card"><b>② 세부</b><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13번</a><span class="q">토픽·명령·알람·저장은 어떻게?</span>값마다 시각·품질, 계층 토픽, 알람과 분석 경고 분리, 설비 등록부 하나에서 설정 생성.</div>
     <div class="card"><b>③ 스택</b><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14번</a><span class="q">칸마다 현업 주류 제품과 판은?</span>Kafka·Flink·Grafana·Prometheus·Neo4j·PostgreSQL은 현업이 쓰는 무료 본체 그대로(제조 한정 순위 자료는 없음).</div>
-    <div class="card"><b>④ 무료 대체품</b><a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15번</a><span class="q">현업이 상용인 칸은 무엇으로?</span>PLC는 OpenPLC, 화면은 FUXA, 엣지는 Node-RED·EdgeX.</div>
+    <div class="card"><b>④ 무료 대체품</b><a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15번</a><span class="q">현업이 상용인 칸은 무엇으로?</span>PLC는 OpenPLC, 화면은 FUXA, 엣지는 Node-RED(EdgeX와 나란히 재서 선택).</div>
     <div class="card"><b>⑤ 외부 시스템 연결</b><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16번</a><span class="q">외부와 IoT-SCADA는 어떻게 주고받나?</span>공장이 먼저 연결을 열고, 외부는 사본만 보고, 명령 대신 요청을 보낸다.</div>
   </div>
   <p class="muted">다섯 건의 결과로 만든 설계에서 판단 하나하나가 근거를 갖는지 다시 확인했다. 근거가 없거나 약하거나 과장된 70개를 현업 사례·표준·규칙과 대조한 결과는 7장에 있다(<a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17-judgment-check.md</a>).</p>
@@ -278,7 +279,7 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
   <div class="tbl"><table>
     <tr><th>칸</th><th>현업에서 주로</th><th>우리</th><th>왜</th></tr>
     <tr><td>PLC</td><td>제조사 PLC, CODESYS 등(상용)</td><td class="swap">OpenPLC v4.2.4</td><td>상용은 유료·체험판(CODESYS 2시간 데모). 무료 중 공식 배포 이미지가 있는 유일한 후보(4diac는 Dockerfile로 직접 빌드), IEC 61131-3 다섯 언어, 논문 138편, 대학 PLC 과목. 공장 사례는 없음</td></tr>
-    <tr><td>엣지 연결</td><td>Kepware·Ignition Edge·Litmus(상용)</td><td class="swap">Node-RED 또는 EdgeX</td><td>상용은 유료. Node-RED는 산업 제어기 제조사 여러 곳이 탑재·지원(Siemens·WAGO·Opto 22·Bosch Rexroth). EdgeX는 장치 등록·명령·끊김 시 저장을 기본 제공. 조립 때 나란히 재서 정한다</td></tr>
+    <tr><td>엣지 연결</td><td>Kepware·Ignition Edge·Litmus(상용)</td><td class="swap">Node-RED 5.0.7</td><td>상용은 유료. Node-RED는 산업 제어기 제조사 여러 곳이 탑재·지원(Siemens·WAGO·Opto 22·Bosch Rexroth). EdgeX와 나란히 재서 유실·복구·등록부 생성·메모리로 골랐다(아래)</td></tr>
     <tr><td>MQTT 브로커</td><td>EMQX·HiveMQ·Mosquitto</td><td class="same">Mosquitto 2.1.2</td><td>널리 배포된 브로커(점유율 자료는 없음). EMQX는 5.9부터 BSL 라이선스</td></tr>
     <tr><td>MQTT→Kafka</td><td>브로커 확장(상용), Kafka Connect(독점 커넥터 많음)</td><td class="swap">Bento 1.21.2</td><td>상용·독점 제외. MIT이고 원본과 같은 결과를 냈다</td></tr>
     <tr><td>이벤트 장부</td><td>Kafka</td><td class="same">Kafka 4.3.1</td><td>현업과 같음</td></tr>
@@ -293,12 +294,23 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
   </table></div>
   <p class="muted" style="margin-top:10px">초록 = 현업이 쓰는 무료 본체 그대로. 주황 = 현업 주류가 상용이라 무료 제품으로 대신한 칸(학생에게 "현업은 보통 상용"이라고 설명).</p>
 
-    <h3>엣지는 둘 다 해 보고 고른다</h3>
+    <h3>엣지는 둘 다 해 보고 Node-RED를 골랐다</h3>
   <div class="vs">
     <div class="card"><b>EdgeX 4.0.2 · 공장용 엣지 플랫폼</b>장치 등록부·명령 창구·끊김 시 저장을 기본 제공. 도입 기업 사례(Eaton·Wipro 등). 산업 논문 33편. 컨테이너 약 10개.</div>
     <div class="card"><b>Node-RED 5.0.x · 범용 연결 도구</b>산업 제어기 제조사 여러 곳이 탑재·지원(Siemens IOT2050·WAGO PFC200·Opto 22·Bosch Rexroth ctrlX). OpenJS 재단, 산업 논문 486편. 컨테이너 1개. 위 세 기능은 흐름(서브플로 템플릿)으로 만든다.</div>
   </div>
-  <p>조립 때 같은 가상설비·PLC에 붙여 <b>12태그 누락, 명령 → PLC → 응답, 10초 단절 뒤 복구·유실, 등록부에서 설비 자동 추가, 외부 요청 수신</b>을 나란히 재고, <b>메모리 · 재시작 뒤 사람 손 없이 복귀·유실 · p95 지연</b>을 비교값으로 함께 본다. 엣지를 고르는 공공 표준은 없어 현업 점검 안내가 공통으로 보는 값을 썼다. 숫자와 고른 이유를 보고서에 남긴다.</p>
+  <p>같은 가상설비·PLC에 붙여 나란히 쟀다(<code>experiments/EDGE-CMP/summary.json</code>). 엣지를 고르는 공공 표준은 없어 현업 점검 안내가 공통으로 보는 값을 쓰고, 정하는 순서(① 누락·유실·복구 ② 수신기 ③ 등록부 생성 ④ p95 ⑤ 메모리)를 결과 전에 정했다.</p>
+<div class="tbl"><table><tr><th>재는 것</th><th>Node-RED</th><th>EdgeX</th></tr>
+<tr><td>12태그 누락·중복(정상 운전)</td><td>0 · 0</td><td>0 · 0</td></tr>
+<tr><td>명령 → PLC → 응답</td><td>10/10, 0.235 s</td><td>10/10, 0.235 s</td></tr>
+<tr><td>외부 요청 수신기</td><td>28/28</td><td>28/28</td></tr>
+<tr><td>브로커 끊김 뒤 복구 · 중복</td><td><b>2.42 s · 0</b></td><td>4.53 s · 12~24</td></tr>
+<tr><td>등록부에서 설비 추가</td><td><b>자동 반영</b></td><td>바뀐 프로파일을 무시(API로 다시 올려야 함)</td></tr>
+<tr><td>원시값 p95 지연</td><td>299 ms</td><td><b>107 ms</b></td></tr>
+<tr><td>엣지 재시작 뒤 복구 · 유실</td><td>1.55 s · 24</td><td><b>0.67~1.12 s · 12~24</b></td></tr>
+<tr><td>메모리 · 컨테이너</td><td><b>약 80 MiB · 1</b></td><td>144~180 MiB · 9</td></tr>
+</table></div>
+<p>정한 순서의 앞 항목(끊김 복구의 중복, 등록부 생성)에서 Node-RED가 앞서 <b>Node-RED 5.0.7</b>로 정했다. 수업이 쓰는 <code>edgex/telemetry</code>는 엣지가 같은 EdgeX 이벤트 모양으로 계속 낸다.</p>
 </section>
 
 <section>
@@ -387,7 +399,7 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
 <text class="bs" x="370" y="870">인터록 · 운전 모드 · 범위·중복 검사 · 정비 모드(켜지면 원격 요청 거부)</text>
 <text class="bs" x="370" y="884">물리적으로 되는지 마지막 검사 → 설비에 씀 → 수용·거부 응답(ACK)</text>
 <rect class="bx ot" x="360" y="734" width="820" height="64" rx="7"/>
-<text class="bt" x="370" y="753">엣지: Node-RED 또는 EdgeX(둘 다 해 보고 결정)</text>
+<text class="bt" x="370" y="753">엣지: Node-RED 5.0.7(EdgeX와 비교해 선택)</text>
 <text class="bs" x="370" y="770">통신 변환 · 값마다 시각·품질(끊기면 STALE) · 장치 통신 상태 발행</text>
 <text class="bs" x="370" y="784">작업 요청 수신기(전용 흐름): 받을지 결정 — 허용 범위·만료·모드, 필요하면 운전원</text>
 <rect class="bx ot" x="170" y="634" width="148" height="64" rx="7"/>
@@ -701,31 +713,31 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
 </section>
 
 <section>
-  <h2>9. 검증 계획 — 원본(V1) 기준값과 비교</h2>
-
-
-  <div class="tbl"><table>
-    <tr><th>항목</th><th>원본 V1 실측(배속 600)</th><th>새 베이스 합격선</th></tr>
-    <tr><td>탐지 정확도</td><td>판정 70/70</td><td>같음(조금도 나빠지면 안 됨)</td></tr>
-    <tr><td>ML 점수</td><td>오토인코더 ONNX 점수</td><td>새로 학습한 모델로 Flink와 Python이 같은 점수를 냄(소수점 여섯째 자리까지). 원본과는 탐지율(드리프트·베어링 100 %)로 비교</td></tr>
-    <tr><td>정상 운전 오경보</td><td>조립 전에 안정화 V1로 한 번 잼</td><td>V1보다 많지 않음</td></tr>
-    <tr><td>화면값 = 이력값</td><td>99.17 %</td><td>나빠지지 않음</td></tr>
-    <tr><td>제어·안전(회귀 S14~S22)</td><td>V1 쓰기 길 기준</td><td>새 명령 길로 다시 정의해 통과</td></tr>
-    <tr><td>Kafka 재시작</td><td>복구 11.6초 · 유실 0</td><td>더 나쁘지 않음</td></tr>
-    <tr><td>한 사이클</td><td>—</td><td>이상 → 감지 → AI 조치 제안 1분 안</td></tr>
-    <tr><td>고장 → 알람</td><td>최대 8.1초(베어링)</td><td>모든 고장 10초 안</td></tr>
-    <tr><td>잡음 고장(Z-Score)</td><td>확률적, 약 10.8초</td><td>원본보다 나빠지지 않음</td></tr>
-    <tr><td>알람 → 화면 지연 p95</td><td>FUXA 1.84초</td><td>+5% 이내</td></tr>
-    <tr><td>브로커 10초 정지</td><td>3회 중 2회 스스로 복구 못 함</td><td>3회 모두 스스로 복구</td></tr>
-    <tr><td>수집기 10초 단절</td><td>복구 7.3초 · 유실 120</td><td>더 나쁘지 않음</td></tr>
-    <tr><td>탐지기 재시작</td><td>잡 소멸 · 알람 유실</td><td>스스로 복구(HA)</td></tr>
-    <tr><td>메모리</td><td>5,918 MiB · 컨테이너 29(SCADA 24 + AI 5)</td><td>전체(SCADA + AI)가 도커 7.6 GB 안에서 오류 없이</td></tr>
-      <tr><td>연결 방향</td><td>망 하나(구분 없음)</td><td>라우터가 거꾸로 여는 새 연결(DMZ→공장, IT→공장, DMZ→IT. 마지막은 규칙이 아니라 설계 선택)을 실제로 막는지 시도해 확인. DMZ·IT의 어떤 컨테이너도 공장으로 먼저 연결하지 않음</td></tr>
-    <tr><td>격리</td><td>—</td><td>공장과 DMZ 사이 연결(브리지)을 30초 넘게 끊어도 감시·수동 조작·인터록·공장 안 기록 유지, 다시 이으면 만료된 요청은 버려짐(두 겹의 만료가 각각 동작), 브리지 큐가 한도에 닿은 뒤에도 다시 이어 보냄</td></tr>
-    <tr><td>AI 조치 요청</td><td>Modbus 직접 쓰기 후 상태 API 확인</td><td>요청마다 "받음·거절"과 결과가 돌아오고 같은 요청 ID로 기록, 정비 모드 중에는 거부, 5초 무응답은 "결과 모름", 운전원이 60초 안에 정하지 않으면 거절, 10초 안에 새 상태가 없으면 명령 불일치 경고</td></tr>
-    <tr><td>감사 기록</td><td>—</td><td>감사 표에 수정·삭제가 거부됨</td></tr>
-  </table></div>
-  <p class="muted" style="margin-top:10px">과부하·장시간 시험은 개인 실습 목적에 과해서 하지 않는다. 성능·복구 시간은 3회 중앙값.</p>
+  <h2>9. 검증 결과 — 원본(V1) 기준값과 비교</h2>
+<p>같은 가상설비(배속 600)에서 V1과 같은 방법으로 쟀다(2026-09-30). 수치는 증거 파일에서 다시 계산했다(<code>harness/tools/summarize_base.py</code> → <code>experiments/BASE-VERIFY/summary_base.json</code>). 항목별 파일은 <code>reports/BASE_VERIFY.md</code>.</p>
+<div class="tbl"><table>
+<tr><th>항목</th><th>원본 V1</th><th>새 베이스 실측</th><th>판정</th></tr>
+<tr><td>탐지 판정(리플레이 70건)</td><td>70/70</td><td>70/70</td><td>같음</td></tr>
+<tr><td>ML 점수 Flink = Python</td><td>1e-6 안</td><td>창 100개 최대 차 0.0, 이상 판정 불일치 0</td><td>같음</td></tr>
+<tr><td>ML 탐지율(학습기 검증)</td><td>드리프트·베어링 100 %</td><td>드리프트·베어링·스파이크 100 %, 정상 0 %</td><td>같음</td></tr>
+<tr><td>정상 운전 3분 알람(3회 중앙)</td><td>안정화 V1 105건(ML 52)</td><td>75건(ML 0)</td><td>나아짐</td></tr>
+<tr><td>화면값 = 이력값</td><td>99.17 %</td><td>DMZ 사본 100 % · FUXA DAQ 100 %</td><td>나아짐</td></tr>
+<tr><td>고장 → 알람(Kafka, 최대)</td><td>스파이크 1.9 · 히터 5.9 · 베어링 8.1 · 결측 5.8 · 드리프트 2.8 s</td><td>1.18 · 4.27 · 7.12 · 4.83 · 2.08 s(모두 10 s 안)</td><td>나아짐</td></tr>
+<tr><td>잡음 고장(Z-Score)</td><td>12 s 안 10회 중 1회(10.8 s)</td><td>3회 중 1회(9.81 s), 다시 3회 중 1회(9.13 s)</td><td>나쁘지 않음</td></tr>
+<tr><td>알람 → Kafka p95</td><td>1.67 s</td><td>0.78 s</td><td>나아짐</td></tr>
+<tr><td>알람 → FUXA 표시 p95</td><td>FUXA 1.84 · 최근알람 1.98 s</td><td>분석 경고 표시 1.21 s(공정 알람은 FUXA가 OT 안에서 판정: 고장 → 화면 2.8~3.0 s)</td><td>나아짐</td></tr>
+<tr><td>알람 → AI 사건 p95</td><td>2.06 s</td><td>0.94 s</td><td>나아짐</td></tr>
+<tr><td>제어·안전(S14~S22, 새 명령 길로 정의)</td><td>V1 쓰기 길 기준</td><td>OT 14항목 · AI 4항목 모두 통과(인터록, 사람 승인, 실행 직전 재검사, 중복 1회, 감사, 명령 ≠ 상태)</td><td>통과</td></tr>
+<tr><td>외부 요청 전체 길</td><td>(없음 — AI가 Modbus 직접)</td><td>승인 → 게이트웨이 → 수신기 → PLC → 재관측 1.36~1.61 s</td><td>—</td></tr>
+<tr><td>연결 방향</td><td>망 하나</td><td>거꾸로 여는 연결 모두 막힘(DMZ 19·IT 52·OT 14건 시도), 연결 목록 위반 0</td><td>통과</td></tr>
+<tr><td>격리(브리지 55 s 끊음)</td><td>—</td><td>공장 감시·조작·인터록·기록 계속, 만료 두 겹 각각 동작, 끊긴 구간 유실 0</td><td>통과</td></tr>
+<tr><td>브리지 큐 한도 뒤 재연결</td><td>—</td><td>한도 넘은 값 버림(설계), 다시 이은 뒤 6.4 s 에 복구</td><td>통과</td></tr>
+<!--RESTART-->
+<tr><td>메모리(3분 중앙)</td><td>5,918 MiB · 29개</td><td>5,588 MiB · 30개(SCADA + AI 전부)</td><td>나아짐</td></tr>
+<tr><td>CPU 합계(3분 중앙)</td><td>51.2 %</td><td>54.8 %</td><td>3.6 %p 높음</td></tr>
+<tr><td>한 사이클(이상 → 감지 → AI 조치 제안 1분)</td><td>—</td><td>미검증 — AI 매뉴얼 검색의 임베딩(호스트 Ollama) 미설치</td><td>미검증</td></tr>
+</table></div>
+<p class="muted" style="margin-top:10px">판정: 정확도·유실·중복은 V1보다 조금도 나쁘면 안 됨, 지연 p95·복구 시간은 +5 % 이내면 같음(3회 중앙). 과부하·장시간 시험은 하지 않았다.</p>
 </section>
 
 <section>
@@ -734,14 +746,18 @@ details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;ma
     <li>"현업 주류"의 근거는 표준·공공 지침·독립 분석·설문이다. 이름 있는 공장의 내부 구성과 방법별 사용 비율은 공개 자료에 없다.</li>
     <li>유료 본문(NAMUR NE 178, IEC 62443, ISA-112)은 공개 요약·목차만 봤다.</li>
     <li>추천 14개는 근거가 정말 없는 곳이다(7장). 값은 설정으로 바꿀 수 있게 두고 조립·검증에서 실제로 확인한다.</li>
-    <li>새 베이스는 아직 조립·실측 전이다. 메모리 합계, 엣지 두 제품의 비교, 문서로만 확인한 10가지는 조립 때 잰다.</li>
+    <li>조립·검증은 끝났다(9장). <b>아직 못 잰 것:</b> 한 사이클(이상 → 감지 → AI 조치 제안 1분) — AI 매뉴얼 검색의 임베딩 모델을 PC에 설치(Ollama, bge-m3·qwen3-embedding)해야 한다.</li>
+<li><b>설계로 정할 것(사용자 판단):</b> 인터록이 1초도 안 되게 걸렸다 풀리면 FUXA(알람 검사 1초 주기)가 보지 못한다. 현업은 보통 PLC가 트립을 붙잡아 두고 운전원이 리셋한다 — V1처럼 자동 해제로 둘지, 트립 기억·리셋으로 바꿀지.</li>
+<li>Z-Score 정상 알람은 3회 중앙 75건으로 V1 비-ML 53건보다 많다(범위 겹침, 입력 표본 수는 같음, 원인 미확인). CPU 합계는 V1보다 3.6 %p 높다.</li>
+<li>수업 자료 <code>docs/DEMO.md</code>는 V1 명령(EdgeX·EMQX)이라 새 베이스용으로 다시 써야 한다. FUXA는 이제 운전원 로그인이 필요하다.</li>
   </ul>
   <div class="flow">
-    <div><b>1</b> 조립 첫 단계: 조립의 전제가 되는 확인(라우터·브리지·OpenPLC 등)을 먼저 돌려 본다(안 되면 정해 둔 조치)</div>
-    <div><b>2</b> 원본(안정화 V1)으로 정상 운전 오경보 기준을 잰다 → 엣지 둘 다 해 보고 선택 → 전체 조립</div>
-    <div><b>3</b> 원본 기준값 대비 한 번에 검증 → 나빠진 곳만 고침</div>
-    <div><b>4</b> 이 문서에 실측을 채운다 → 설비 확장 → 시나리오·온톨로지</div>
-  </div>
+<div><b>1</b> 호스트 Ollama 설치 → 한 사이클(1분) 한 번 측정(LLM 호출은 필요한 만큼만)</div>
+<div><b>2</b> 인터록 트립 기억 여부를 정한다 → 수업 자료(DEMO)를 새 베이스로 고쳐 쓴다</div>
+<div><b>3</b> 설비 확장(종류·대수, OPC UA 섞기) — 등록부 한 줄 추가로 흐름·토픽·PLC·화면이 따라오는지</div>
+<div><b>4</b> 시나리오·온톨로지 보강</div>
+</div>
+
 </section>
 
 <footer>근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a> · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a> · <a href="../docs/research/deep-2026-09-29/16-external-integration.md">16-external-integration.md</a> · <a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17-judgment-check.md</a> · 기준·상태 정본: <code>HANDOFF.md</code> · 질문과 답: <code>reports/QA.md</code> · 결정 경위: <code>reports/decision-log.md</code></footer>

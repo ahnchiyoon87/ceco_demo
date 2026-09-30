@@ -4,10 +4,8 @@ const DashboardActivity = defineAsyncComponent(() => import('./features/operatio
 const ScadaLive = defineAsyncComponent(() => import('./features/operations/ScadaLive.vue'))
 const OntologyGraphPanel = defineAsyncComponent(() => import('./features/ontology/OntologyGraphPanel.vue'))
 import './manufacturing.css'
-import SimulationControls from './features/operations/SimulationControls.vue'
 import OperatorConsole from './features/operations/OperatorConsole.vue'
 const controlsOpen=ref(false)
-function focusControls(){const panel=document.querySelector('.plant-controls');panel?.scrollIntoView({block:'center',behavior:'smooth'});panel?.focus({preventScroll:true})}
 import KnowledgeCoverage from './features/ontology/KnowledgeCoverage.vue'
 import ObservationComparison from './features/operations/ObservationComparison.vue'
 import KnowledgeReview from './features/ontology/KnowledgeReview.vue'
@@ -18,8 +16,6 @@ import { graphContext } from './features/ontology/graphContext.js'
 const detailTab=ref('review'), query=ref(''), statusFilter=ref('all')
 const filteredIncidents=computed(()=>list.value.filter(x=>(statusFilter.value==='all'||x.status===statusFilter.value)&&[x.device,x.alarm?.tag,x.correlation_key,x.id].join(' ').toLowerCase().includes(query.value.toLowerCase())))
 const evidencePanel=ref(null)
-const liveIncident=ref(null)
-function trackIncident(item){liveIncident.value=item}
 function jumpToEvidence(selector){evidencePanel.value?.querySelector(selector)?.scrollIntoView({block:'start',behavior:'instant'})}
 const knowledgeTab=ref('work'), knowledgeVisited=ref(false)
 const operationsVisited=ref(false)
@@ -79,7 +75,7 @@ onUnmounted(()=>{mounted=false;clearInterval(timer);selectionGeneration++;graphG
       <main>
         <div v-if="page!=='scada'" class="page-heading"><div><p class="eyebrow">{{page==='knowledge'?'CONNECTED KNOWLEDGE':'OPERATIONS / AR-100'}}</p><h1>{{page==='knowledge'?'설비 지식 스튜디오':'이상 대응 현황'}}</h1><p>{{page==='knowledge'?'설비·센서·문서의 관계를 탐색하고 판단 근거를 확인하세요.':'관련 신호를 하나의 사건으로 모으고, 데이터와 절차를 함께 확인하세요.'}}</p></div><span class="heading-note">{{loaded?time(loaded)+' 갱신':'데이터 불러오는 중'}}<small>2초마다 공정 상태 갱신</small></span></div>
         <div v-if="error" class="mfg-error" role="alert">{{error}} · 이전 표시값은 최신 상태가 아닐 수 있습니다. <button @click="refresh">다시 연결</button></div>
-        <div v-show="page==='scada'"><ScadaLive @control="controlsOpen=true" /><SimulationControls @control="focusControls" :incidents="incidents" @incident="trackIncident" @inspect="go('operations');refresh()"/><section v-if="liveIncident" class="mfg-panel live-response"><div class="panel-heading"><h2>실습에서 연결된 사건</h2><button @click="go('operations');choose(liveIncident)">센서·매뉴얼 상세</button></div><IncidentReview :incident-id="liveIncident.id" :incident-status="incidents.find(x=>x.id===liveIncident.id)?.status||liveIncident.status" @updated="reviewUpdated"/></section><DashboardActivity :incidents="incidents" :model="model" :model-error="modelError" @inspect="item=>{go('operations');choose(item)}" /></div>
+        <div v-show="page==='scada'"><ScadaLive @control="controlsOpen=true" /><p class="training-note">실습 이상(고장) 주입은 강사 도구(가상설비 강사 화면, 호스트 전용 계정)에서 합니다. AI 업무 화면은 설비에 명령하지 않습니다.</p><DashboardActivity :incidents="incidents" :model="model" :model-error="modelError" @inspect="item=>{go('operations');choose(item)}" /></div>
         <div v-if="operationsVisited" v-show="page==='operations'">
           <section class="metric-grid"><article><span>표시 중인 대응 사건</span><strong>{{list.length}}<small>건</small></strong><p>최근 100건 조회 · 사건별 처리 상태 확인</p></article><article><span>연결된 원본 알람</span><strong>{{totalSignals}}<small>건</small></strong><p>묶인 신호도 원본 이력은 보존</p></article><article><span>교반기 상태</span><strong class="state-text">{{plant?.status==='available'?(plant.commands.agitator_run?'운전 중':'정지'):'확인 불가'}}</strong><p>기동 상태 · 정비 완료 여부와 구분</p></article><article class="ai-status"><span>AI 업무도우미</span><strong class="state-text">{{modelError?'설정 확인 실패':model?.configured?'모델 설정됨':model?'모델 연결 대기':'설정 확인 중'}}</strong><p>{{modelError||model?.note||'모델 설정을 조회하고 있습니다.'}}</p></article></section>
           <section class="workspace-grid">

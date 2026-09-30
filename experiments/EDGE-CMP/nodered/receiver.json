@@ -1,0 +1,337 @@
+{
+ "pass": 28,
+ "fail": 0,
+ "receipt_p95_s": 0.048,
+ "receipt_max_s": 0.048,
+ "cases": [
+  {
+   "case": "REMOTE_MANUAL → 운전원 대기",
+   "stage": "receipt",
+   "latency_s": 0.044,
+   "status": "OPERATOR_WAIT",
+   "reason": "STORED",
+   "expected": [
+    "OPERATOR_WAIT",
+    "STORED"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "운전원 수락 → OPERATOR_ACCEPTED",
+   "stage": "operator",
+   "latency_s": 0.132,
+   "status": "OPERATOR_ACCEPTED",
+   "reason": "OPERATOR",
+   "expected": [
+    "OPERATOR_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "운전원 수락 → PLC 수용",
+   "stage": "plc",
+   "latency_s": 0.356,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "스키마 오류 거부",
+   "stage": "receipt",
+   "latency_s": 0.091,
+   "status": "REJECTED",
+   "reason": "SCHEMA_INVALID",
+   "expected": [
+    "REJECTED",
+    "SCHEMA_INVALID"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "파라미터 범위 밖 거부",
+   "stage": "receipt",
+   "latency_s": 0.086,
+   "status": "REJECTED",
+   "reason": "PARAMETER_RANGE",
+   "expected": [
+    "REJECTED",
+    "PARAMETER_RANGE"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "만료 거부",
+   "stage": "receipt",
+   "latency_s": 0.088,
+   "status": "REJECTED",
+   "reason": "EXPIRED",
+   "expected": [
+    "REJECTED",
+    "EXPIRED"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "설비 불일치 거부",
+   "stage": "receipt",
+   "latency_s": 0.089,
+   "status": "REJECTED",
+   "reason": "EQUIPMENT_MISMATCH",
+   "expected": [
+    "REJECTED",
+    "EQUIPMENT_MISMATCH"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 1",
+   "stage": "receipt",
+   "latency_s": 0.006,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 1",
+   "stage": "plc",
+   "latency_s": 0.132,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 2",
+   "stage": "receipt",
+   "latency_s": 0.043,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 2",
+   "stage": "plc",
+   "latency_s": 0.256,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 3",
+   "stage": "receipt",
+   "latency_s": 0.044,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 3",
+   "stage": "plc",
+   "latency_s": 0.248,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 4",
+   "stage": "receipt",
+   "latency_s": 0.043,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 4",
+   "stage": "plc",
+   "latency_s": 0.239,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 5",
+   "stage": "receipt",
+   "latency_s": 0.047,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 5",
+   "stage": "plc",
+   "latency_s": 0.242,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 6",
+   "stage": "receipt",
+   "latency_s": 0.046,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 6",
+   "stage": "plc",
+   "latency_s": 0.254,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 7",
+   "stage": "receipt",
+   "latency_s": 0.046,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 7",
+   "stage": "plc",
+   "latency_s": 0.242,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 8",
+   "stage": "receipt",
+   "latency_s": 0.048,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 8",
+   "stage": "plc",
+   "latency_s": 0.246,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 9",
+   "stage": "receipt",
+   "latency_s": 0.048,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 9",
+   "stage": "plc",
+   "latency_s": 0.252,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO 자동 수용 10",
+   "stage": "receipt",
+   "latency_s": 0.044,
+   "status": "AUTO_ACCEPTED",
+   "reason": "REMOTE_AUTO",
+   "expected": [
+    "AUTO_ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "REMOTE_AUTO PLC 수용 10",
+   "stage": "plc",
+   "latency_s": 0.243,
+   "status": "ACCEPTED",
+   "reason": "ACCEPTED",
+   "expected": [
+    "ACCEPTED",
+    null
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "case": "중복 요청 → 첫 응답 1번",
+   "count": 1,
+   "verdict": "PASS"
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "model_dir": "/models",
+ "sample_interval_s": 600.0,
+ "mode": "k4",
+ "run": "s13_base",
+ "token": "ecb662",
+ "windows": 100,
+ "emit_s": 2.379,
+ "tol": 1e-06,
+ "threshold": 0.16639938950538635,
+ "ref_anomalies": 55,
+ "labels": {
+  "heater_stuck": 25,
+  "bearing_wear": 25,
+  "normal": 25,
+  "drift": 25
+ },
+ "gap_sent": 685,
+ "cands": {
+  "base": {
+   "scored": 100,
+   "missing": 0,
+   "missing_windows": [],
+   "max_abs_diff": 0.0,
+   "within_tol": 100,
+   "anomaly_flag_mismatch": 0,
+   "ml_alerts_total": 55,
+   "clean_records": 715,
+   "clean_quality": {
+    "GOOD": 684,
+    "INTERPOLATED_LINEAR": 11,
+    "INTERPOLATED_LOCF": 20
+   },
+   "verdict": "PASS"
+  }
+ }
+}

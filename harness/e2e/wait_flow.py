@@ -9,12 +9,15 @@
 import argparse, json, os, time, urllib.parse, urllib.request
 
 
+SINK = {"url": "http://influxdb:8086", "bucket_env": "INFLUX_BUCKET", "token_env": "INFLUX_TOKEN", "measurement": "process_raw"}
+
+
 def flowing(window_s):
-    q = (f'from(bucket:"{os.environ["INFLUX_BUCKET"]}") |> range(start:-{window_s}s) '
-         '|> filter(fn:(r)=>r._measurement=="process_raw" and r.tag=="TT-101") |> count()')
-    req = urllib.request.Request("http://influxdb:8086/api/v2/query?" + urllib.parse.urlencode({"org": os.environ["INFLUX_ORG"]}),
+    q = (f'from(bucket:"{os.environ[SINK["bucket_env"]]}") |> range(start:-{window_s}s) '
+         f'|> filter(fn:(r)=>r._measurement=="{SINK["measurement"]}" and r.tag=="TT-101") |> count()')
+    req = urllib.request.Request(SINK["url"] + "/api/v2/query?" + urllib.parse.urlencode({"org": os.environ["INFLUX_ORG"]}),
                                  json.dumps({"query": q, "type": "flux"}).encode(),
-                                 {"Authorization": "Token " + os.environ["INFLUX_TOKEN"], "Content-Type": "application/json", "Accept": "application/csv"})
+                                 {"Authorization": "Token " + os.environ[SINK["token_env"]], "Content-Type": "application/json", "Accept": "application/csv"})
     try:
         return ",_value" in urllib.request.urlopen(req, timeout=5).read().decode()
     except Exception:
@@ -27,7 +30,12 @@ def main():
     ap.add_argument("--sustain-s", type=int, default=120)
     ap.add_argument("--window-s", type=int, default=5)
     ap.add_argument("--timeout-s", type=int, default=420)
+    # 새 베이스 끝단: DMZ 원시 사본 = --influx http://dmz-influx:8086 --bucket-env DMZ_INFLUX_BUCKET --token-env DMZ_INFLUX_TOKEN
+    #               IT 결과 = --influx http://it-influx:8086 --bucket-env IT_INFLUX_BUCKET --token-env IT_INFLUX_TOKEN --measurement process
+    ap.add_argument("--influx", default=SINK["url"]); ap.add_argument("--bucket-env", default=SINK["bucket_env"])
+    ap.add_argument("--token-env", default=SINK["token_env"]); ap.add_argument("--measurement", default=SINK["measurement"])
     a = ap.parse_args()
+    SINK.update(url=a.influx, bucket_env=a.bucket_env, token_env=a.token_env, measurement=a.measurement)
     start, flaps = None, 0
     while True:
         now = time.time()

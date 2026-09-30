@@ -1,0 +1,38 @@
+# ═══ IT 수집기 ② Kafka Flink 결과 → IT InfluxDB (정제값·이상 점수·alert 이력, V1 Grafana 02·03 화면이 쓰는 값) ═══
+input:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topics: [ sensor.telemetry.clean, sensor.anomaly.score, sensor.alerts ]
+    consumer_group: it-collector-influx
+    start_from_oldest: false
+pipeline:
+  processors:
+    - mapping: |
+        let p = this
+        let topic = meta("kafka_topic")
+        root = match $topic {
+          "sensor.telemetry.clean" => "process,site=%s,device=%s,tag=%s,quality=%s value=%v %v".format(
+              $p.site, $p.device, $p.tag, $p.quality, $p.value.number(), $p.ts.int64()),
+          "sensor.anomaly.score" => "anomaly,site=%s,device=%s,top_contributors=%s reconstruction_error=%v,threshold=%v,inference_ms=%v,is_anomaly=%v %v".format(
+              $p.site, $p.device, ($p.top_contributors | "").replace_all(" ", "\\ ").replace_all(",", "\\,").replace_all("=", "\\="),
+              $p.reconstruction_error.number(), $p.threshold.number(), $p.inference_ms.number(), $p.is_anomaly, $p.ts.int64()),
+          "sensor.alerts" => "alerts,site=%s,device=%s,tag=%s,alert_type=%s,severity=%s,detector=%s value=%v,detail=\"%s\" %v".format(
+              $p.site, $p.device, $p.tag, $p.alert_type, $p.severity, $p.detector, $p.value.number(),
+              ($p.detail | "").replace_all("\\", "\\\\").replace_all("\"", "\\\""), $p.ts.int64()),
+          _ => deleted(),
+        }
+output:
+  http_client:
+    url: http://it-influx:8086/api/v2/write?org=${INFLUX_ORG}&bucket=${IT_INFLUX_BUCKET}&precision=ns
+    verb: POST
+    headers:
+      Authorization: Token ${IT_INFLUX_TOKEN}
+      Content-Type: text/plain; charset=utf-8
+    max_in_flight: 1
+    retry_period: 1s
+    max_retry_backoff: 10s
+    batching:
+      count: 1000
+      period: 1s
+      processors:
+        - archive: { format: lines }

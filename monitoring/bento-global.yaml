@@ -1,0 +1,8 @@
+# Bento 공통 설정(스트림 모드): 지표·상태 HTTP, 로그. 각 스트림 파일은 입력·처리·출력만 둔다.
+http:
+  address: 0.0.0.0:4195
+metrics:
+  prometheus: {}
+logger:
+  level: WARN
+  format: logfmt

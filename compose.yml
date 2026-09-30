@@ -1,0 +1,679 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# AR-100 IIoT·SCADA 베이스 — 2026 제조 현업 주류 구조(HANDOFF §2-1~§2-3)
+#
+#   OT(ot-net, internal)   가상설비 → soft-PLC → 엣지 → OT 허브(UNS) · FUXA(HMI) · OT 감시 agent
+#   DMZ(dmz-net, internal) DMZ 브로커 · 원시 사본 InfluxDB · 요청 게이트웨이 · 감시 수신
+#   IT(it-net)             수집기 → Kafka → Flink → 결과 InfluxDB · PostgreSQL · Grafana · 감시 · AI
+#   router                 세 망에 붙는 유일한 컨테이너. 구역 사이 새 연결은 OT→DMZ, IT→DMZ 만(router/rules.sh)
+#
+# 기동: docker compose up -d --build     (설정·이미지 판은 .env, 설비는 registry/equipment.yaml)
+# ═══════════════════════════════════════════════════════════════════════════
+name: ${COMPOSE_PROJECT_NAME:-rot-base}
+
+networks:
+  ot-net:
+    internal: true
+    ipam: { config: [ { subnet: "${NET_PREFIX}.10.0/24", gateway: "${NET_PREFIX}.10.1" } ] }
+  dmz-net:
+    internal: true
+    ipam: { config: [ { subnet: "${NET_PREFIX}.20.0/24", gateway: "${NET_PREFIX}.20.1" } ] }
+  it-net:
+    ipam: { config: [ { subnet: "${NET_PREFIX}.30.0/24", gateway: "${NET_PREFIX}.30.1" } ] }
+
+volumes:
+  plc-data:
+  edge-data:
+  ot-hub-data:
+  ot-agent-data:
+  fuxa-appdata:
+  fuxa-db:
+  dmz-broker-data:
+  dmz-influx-data:
+  dmz-influx-config:
+  dmz-prom-data:
+  kafka-data:
+  zookeeper-data:
+  zookeeper-datalog:
+  flink-checkpoints:
+  model-store:
+  it-influx-data:
+  it-influx-config:
+  pg-data:
+  grafana-data:
+  prometheus-data:
+  alertmanager-data:
+  graph-data:
+  graph-logs:
+  knowledge-data:
+  knowledge-uploads:
+  knowledge-output:
+
+x-mqtt-common: &mqtt-common
+  image: ${MOSQUITTO_IMAGE}
+  restart: unless-stopped
+  user: root   # 계정 파일을 만든 뒤 mosquitto 가 스스로 mosquitto 사용자로 내려간다
+  entrypoint: ["sh", "/cfg/entrypoint.sh"]
+
+services:
+  # ─────────────────────────── 구역 사이 방화벽 ───────────────────────────
+  router:
+    build: ./router
+    image: rot-router:base
+    restart: unless-stopped
+    cap_add: [NET_ADMIN]
+    sysctls: { net.ipv4.ip_forward: "1" }
+    environment: { NET_PREFIX: "${NET_PREFIX}" }
+    networks:
+      it-net: { ipv4_address: "${NET_PREFIX}.30.2", gw_priority: 1, aliases: [dmz-broker, dmz-influx, dmz-prom, dmz-gateway] }
+      ot-net: { ipv4_address: "${NET_PREFIX}.10.2", aliases: [dmz-broker, dmz-prom] }
+      dmz-net: { ipv4_address: "${NET_PREFIX}.20.2" }
+    ports:   # 사람·도구용 공개 포트(1안: OT·DMZ 는 internal 망이라 라우터가 받아 넘긴다)
+      - "127.0.0.1:${PORT_FUXA}:21881"
+      - "127.0.0.1:${PORT_SIM_API}:28080"
+      - "127.0.0.1:${PORT_FIELD_PANEL}:28081"
+      - "127.0.0.1:${PORT_OT_MQTT}:21883"
+      - "127.0.0.1:${PORT_EDGE_UI}:21880"
+      - "127.0.0.1:${PORT_PLC_API}:28443"
+      - "127.0.0.1:${PORT_DMZ_MQTT}:1883"
+      - "127.0.0.1:${PORT_DMZ_INFLUX}:8086"
+
+  # ─────────────────────────────── OT ───────────────────────────────
+  plant-sim:
+    build: ./simulator
+    image: rot-plant-simulator:base
+    restart: unless-stopped
+    environment:
+      INSTRUCTOR_USER: ${INSTRUCTOR_USER}
+      INSTRUCTOR_PASSWORD: ${INSTRUCTOR_PASSWORD}
+      FIELD_PANEL_USER: ${FIELD_PANEL_USER}
+      FIELD_PANEL_PASSWORD: ${FIELD_PANEL_PASSWORD}
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.11" } }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  plc:
+    build: ./plc
+    image: rot-openplc:base
+    restart: unless-stopped
+    cap_add: [SYS_NICE, SYS_RESOURCE]
+    environment:
+      PLC_ADMIN_USER: ${PLC_ADMIN_USER}
+      PLC_ADMIN_PASSWORD: ${PLC_ADMIN_PASSWORD}
+    volumes: [ "plc-data:/var/run/runtime" ]
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.14" } }
+    depends_on: { plant-sim: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "curl", "-skf", "-o", "/dev/null", "https://127.0.0.1:8443/api/version"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  ot-hub:
+    <<: *mqtt-common
+    environment:
+      MQTT_MAX_QUEUED_MESSAGES: ${MQTT_MAX_QUEUED_MESSAGES}   # 끊김 버퍼 한도(건). 시험 때만 낮춘다
+      MQTT_USERS: "edge:MQTT_EDGE_PASSWORD ot-receiver:MQTT_RECEIVER_PASSWORD fuxa:MQTT_FUXA_PASSWORD viewer:MQTT_VIEWER_PASSWORD ot-exporter:MQTT_OT_EXPORTER_PASSWORD"
+      MQTT_EDGE_PASSWORD: ${MQTT_EDGE_PASSWORD}
+      MQTT_RECEIVER_PASSWORD: ${MQTT_RECEIVER_PASSWORD}
+      MQTT_FUXA_PASSWORD: ${MQTT_FUXA_PASSWORD}
+      MQTT_VIEWER_PASSWORD: ${MQTT_VIEWER_PASSWORD}
+      MQTT_OT_EXPORTER_PASSWORD: ${MQTT_OT_EXPORTER_PASSWORD}
+      MQTT_BRIDGE_PASSWORD: ${MQTT_BRIDGE_PASSWORD}
+    volumes: [ "./mqtt/entrypoint.sh:/cfg/entrypoint.sh:ro", "./mqtt/ot-hub/mosquitto.conf:/cfg/mosquitto.conf:ro", "./mqtt/ot-hub/acl:/cfg/acl:ro", "ot-hub-data:/mosquitto/data" ]
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.12" } }
+    depends_on:
+      router: { condition: service_healthy }
+      dmz-broker: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -u viewer -P \"$$MQTT_VIEWER_PASSWORD\" -t '$$SYS/broker/uptime' -C 1 -W 5 >/dev/null"]
+      interval: 10s
+      timeout: 8s
+      retries: 6
+
+  edge:
+    build: { context: ., dockerfile: edge/nodered/Dockerfile }
+    image: rot-edge-nodered:base
+    restart: unless-stopped
+    environment:
+      EDGE_ADMIN_USER: ${EDGE_ADMIN_USER}
+      EDGE_ADMIN_PASSWORD: ${EDGE_ADMIN_PASSWORD}
+      MQTT_EDGE_PASSWORD: ${MQTT_EDGE_PASSWORD}
+      MQTT_RECEIVER_PASSWORD: ${MQTT_RECEIVER_PASSWORD}
+    volumes: [ "edge-data:/data" ]
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.13" } }
+    depends_on:
+      plc: { condition: service_healthy }
+      ot-hub: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:1880/metrics"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
+  fuxa:   # SCADA/HMI: UNS 구독 + 운전원 명령 발행 + DAQ(OT 이력) + 받은 요청 + 분석 경고(참고)
+    image: ${FUXA_IMAGE}
+    restart: unless-stopped
+    # 로그인(보안)·JWT 비밀·DAQ(OT 이력) 보존 7일은 FUXA 가 기동 때 읽는 사용자 설정(_appdata/mysettings.json)에
+    # 없는 값만 채운다(fuxa/seed_settings.js). 설정 API 로 넣으면 프로젝트 넣기와 함께 런타임이 1초 안에 두 번 재시작돼
+    # 같은 이름의 DAQ 파일을 FUXA 가 스스로 지운다(SQLITE_READONLY, 09-30 실측).
+    command: [ "sh", "-c", "node /seed/seed_settings.js && exec node main.js" ]
+    environment:
+      FUXA_JWT_SECRET: ${FUXA_JWT_SECRET}
+    volumes: [ "fuxa-appdata:/usr/src/app/FUXA/server/_appdata", "fuxa-db:/usr/src/app/FUXA/server/_db",
+               "./fuxa/mysettings.json:/seed/mysettings.json:ro", "./fuxa/seed_settings.js:/seed/seed_settings.js:ro" ]
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.15" } }
+    depends_on: { ot-hub: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:1881/api/settings',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  fuxa-provisioner:   # 기동 때 1회: 관리자 비밀번호·운전원 계정, 등록부에서 만든 화면·태그·공정 알람 넣기(보안·DAQ 보존은 확인만)
+    image: python:3.12-slim
+    restart: "no"
+    working_dir: /work
+    command: ["python", "-u", "provision.py"]
+    environment:
+      FUXA_URL: http://fuxa:1881
+      MQTT_FUXA_PASSWORD: ${MQTT_FUXA_PASSWORD}
+      FUXA_ADMIN_PASSWORD: ${FUXA_ADMIN_PASSWORD}
+      FUXA_OPERATOR_PASSWORD: ${FUXA_OPERATOR_PASSWORD}
+    volumes: [ "./fuxa:/work:ro" ]
+    networks: [ot-net]
+    depends_on: { fuxa: { condition: service_healthy } }
+
+  # ─────────────────────────────── DMZ ───────────────────────────────
+  dmz-broker:
+    <<: *mqtt-common
+    environment:
+      MQTT_MAX_QUEUED_MESSAGES: ${MQTT_MAX_QUEUED_MESSAGES}   # 끊김 버퍼 한도(건). 시험 때만 낮춘다
+      MQTT_USERS: "bridge-ot:MQTT_BRIDGE_PASSWORD dmz-loader:MQTT_DMZ_LOADER_PASSWORD gateway:MQTT_GATEWAY_PASSWORD it-collector:MQTT_IT_COLLECTOR_PASSWORD viewer:MQTT_VIEWER_PASSWORD dmz-exporter:MQTT_DMZ_EXPORTER_PASSWORD"
+      MQTT_BRIDGE_PASSWORD: ${MQTT_BRIDGE_PASSWORD}
+      MQTT_DMZ_LOADER_PASSWORD: ${MQTT_DMZ_LOADER_PASSWORD}
+      MQTT_GATEWAY_PASSWORD: ${MQTT_GATEWAY_PASSWORD}
+      MQTT_IT_COLLECTOR_PASSWORD: ${MQTT_IT_COLLECTOR_PASSWORD}
+      MQTT_VIEWER_PASSWORD: ${MQTT_VIEWER_PASSWORD}
+      MQTT_DMZ_EXPORTER_PASSWORD: ${MQTT_DMZ_EXPORTER_PASSWORD}
+    volumes: [ "./mqtt/entrypoint.sh:/cfg/entrypoint.sh:ro", "./mqtt/dmz-broker/mosquitto.conf:/cfg/mosquitto.conf:ro", "./mqtt/dmz-broker/acl:/cfg/acl:ro", "dmz-broker-data:/mosquitto/data" ]
+    networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.11" } }
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -u viewer -P \"$$MQTT_VIEWER_PASSWORD\" -t '$$SYS/broker/uptime' -C 1 -W 5 >/dev/null"]
+      interval: 10s
+      timeout: 8s
+      retries: 6
+
+  dmz-influx:   # OT 원시값 사본 전용(보존 7일). IT 는 읽기 전용 계정으로 조회만
+    image: ${INFLUXDB_IMAGE}
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${DMZ_INFLUX_USER}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DMZ_INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${DMZ_INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: 7d
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${DMZ_INFLUX_TOKEN}
+      DMZ_INFLUX_READER_USER: ${DMZ_INFLUX_READER_USER}
+      DMZ_INFLUX_READER_PASSWORD: ${DMZ_INFLUX_READER_PASSWORD}
+      INFLUXD_LOG_LEVEL: warn
+    volumes: [ "dmz-influx-data:/var/lib/influxdb2", "dmz-influx-config:/etc/influxdb2", "./dmz/influx/10-it-reader.sh:/docker-entrypoint-initdb.d/10-it-reader.sh:ro" ]
+    networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.12" } }
+    healthcheck: { test: ["CMD", "influx", "ping"], interval: 10s, timeout: 5s, retries: 15, start_period: 15s }
+
+  dmz-loader:   # Bento: DMZ 브로커 → DMZ InfluxDB(원시 사본) + DMZ 브로커 $SYS 지표
+    image: ${BENTO_IMAGE}
+    restart: unless-stopped
+    command: ["-c", "/cfg/bento-global.yaml", "streams", "/cfg/loader.yaml", "/cfg/sys_metrics.yaml"]
+    environment:
+      MQTT_DMZ_LOADER_PASSWORD: ${MQTT_DMZ_LOADER_PASSWORD}
+      INFLUX_ORG: ${INFLUX_ORG}
+      DMZ_INFLUX_BUCKET: ${DMZ_INFLUX_BUCKET}
+      DMZ_INFLUX_TOKEN: ${DMZ_INFLUX_TOKEN}
+      BROKER_URL: tcp://dmz-broker:1883
+      MQTT_USER: dmz-exporter
+      MQTT_PASS: ${MQTT_DMZ_EXPORTER_PASSWORD}
+    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./dmz/loader/loader.yaml:/cfg/loader.yaml:ro", "./monitoring/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
+    networks: [dmz-net]
+    depends_on:
+      dmz-broker: { condition: service_healthy }
+      dmz-influx: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4195/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  dmz-gateway:   # DMZ 요청 게이트웨이(1차 검사, 자체 코드)
+    build: { context: ., dockerfile: dmz/gateway/Dockerfile }
+    image: rot-dmz-gateway:base
+    restart: unless-stopped
+    environment:
+      GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
+      MQTT_GATEWAY_PASSWORD: ${MQTT_GATEWAY_PASSWORD}
+    networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.14" } }
+    depends_on: { dmz-broker: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8088/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  dmz-prom:   # DMZ 수신 Prometheus: OT agent remote_write 수신(짧게 보관) + DMZ 대상 수집, IT 가 /federate 로 가져감
+    image: ${PROMETHEUS_IMAGE}
+    restart: unless-stopped
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=2h",
+              "--web.enable-remote-write-receiver", "--log.level=warn"]
+    volumes: [ "./monitoring/dmz-prom.yml:/etc/prometheus/prometheus.yml:ro", "dmz-prom-data:/prometheus" ]
+    networks: { dmz-net: { ipv4_address: "${NET_PREFIX}.20.13" } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  # ──────────────────────────── OT 감시 ────────────────────────────
+  ot-hub-exporter:   # Bento: OT 허브 $SYS → Prometheus 지표
+    image: ${BENTO_IMAGE}
+    restart: unless-stopped
+    command: ["-c", "/cfg/bento-global.yaml", "streams", "/cfg/sys_metrics.yaml"]
+    environment:
+      BROKER_URL: tcp://ot-hub:1883
+      MQTT_USER: ot-exporter
+      MQTT_PASS: ${MQTT_OT_EXPORTER_PASSWORD}
+    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./monitoring/broker-exporter/sys_metrics.yaml:/cfg/sys_metrics.yaml:ro" ]
+    networks: [ot-net]
+    depends_on: { ot-hub: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4195/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  ot-agent:   # OT 쪽 Prometheus(--agent): OT 대상만 읽어 DMZ 로 보낸다(OT 가 여는 연결)
+    image: ${PROMETHEUS_IMAGE}
+    restart: unless-stopped
+    command: ["--agent", "--config.file=/etc/prometheus/prometheus.yml", "--storage.agent.path=/prometheus", "--log.level=warn"]
+    volumes: [ "./monitoring/ot-agent.yml:/etc/prometheus/prometheus.yml:ro", "ot-agent-data:/prometheus" ]
+    networks: [ot-net]
+    depends_on: { router: { condition: service_healthy }, dmz-prom: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  # ─────────────────────────────── IT ───────────────────────────────
+  kafka:
+    image: ${KAFKA_IMAGE}
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:${PORT_KAFKA}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data          # 결함 S21: 지정하지 않으면 /tmp 에 쌓여 볼륨이 빈다
+      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
+      CLUSTER_ID: ar100-base-kraft-cluster
+    ports: [ "127.0.0.1:${PORT_KAFKA}:19092" ]
+    volumes: [ "kafka-data:/var/lib/kafka/data" ]
+    networks: [it-net]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 20s
+
+  kafka-init:
+    image: ${KAFKA_IMAGE}
+    restart: "no"
+    entrypoint: ["/bin/bash", "/create-topics.sh"]
+    volumes: [ "./it/kafka/create-topics.sh:/create-topics.sh:ro" ]
+    networks: [it-net]
+    depends_on: { kafka: { condition: service_healthy } }
+
+  it-collector:   # Bento: DMZ 브로커 → Kafka / Kafka 결과 → IT InfluxDB / 표시 alert → DMZ (모두 IT 가 여는 연결)
+    image: ${BENTO_IMAGE}
+    restart: unless-stopped
+    command: ["-c", "/cfg/bento-global.yaml", "streams", "/cfg/streams"]
+    environment:
+      MQTT_IT_COLLECTOR_PASSWORD: ${MQTT_IT_COLLECTOR_PASSWORD}
+      INFLUX_ORG: ${INFLUX_ORG}
+      IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
+      IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
+    volumes: [ "./monitoring/bento-global.yaml:/cfg/bento-global.yaml:ro", "./it/collector/streams:/cfg/streams:ro" ]
+    networks: [it-net]
+    depends_on:
+      router: { condition: service_healthy }
+      kafka-init: { condition: service_completed_successfully }
+      it-influx: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4195/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  zookeeper:   # Flink JobManager HA(결함 S1: 재시작 뒤 잡 자동 복구)
+    image: ${ZOOKEEPER_IMAGE}
+    restart: unless-stopped
+    environment: { ZOO_4LW_COMMANDS_WHITELIST: "ruok" }
+    volumes: [ "zookeeper-data:/data", "zookeeper-datalog:/datalog" ]
+    networks: [it-net]
+    healthcheck: { test: ["CMD-SHELL", "echo ruok | nc -w 2 localhost 2181 | grep -q imok"], interval: 10s, timeout: 5s, retries: 10 }
+
+  flink-jobmanager:
+    build: { context: ./flink, dockerfile: Dockerfile.v2 }
+    image: rot-flink-onnx:base
+    restart: unless-stopped
+    command: jobmanager
+    ports: [ "127.0.0.1:${PORT_FLINK_UI}:8081" ]
+    volumes: [ "./flink/conf/config.v2.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    networks: [it-net]
+    depends_on: { zookeeper: { condition: service_healthy } }
+    healthcheck: { test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"], interval: 10s, timeout: 5s, retries: 20, start_period: 30s }
+
+  flink-taskmanager:
+    image: rot-flink-onnx:base
+    restart: unless-stopped
+    command: taskmanager
+    volumes: [ "./flink/conf/config.v2.yaml:/opt/flink/conf/config.yaml:ro", "./flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
+    networks: [it-net]
+    depends_on: { flink-jobmanager: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:9249/metrics"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  model-trainer:   # 오토인코더 학습(기동 때 1회). 가상설비 물리로 정상 데이터를 만들어 ONNX 로 낸다
+    build: { context: ., dockerfile: ml/Dockerfile }
+    image: rot-model-trainer:base
+    restart: "no"
+    volumes: [ "model-store:/opt/models" ]
+    networks: [it-net]
+
+  flink-job-submitter:
+    image: rot-flink-onnx:base
+    restart: "no"
+    entrypoint: ["/bin/bash", "/submit-jobs.sh"]
+    volumes: [ "./flink/sql:/opt/flink/sql:ro", "./flink/submit-jobs.sh:/submit-jobs.sh:ro", "./flink/conf/client-config.v2.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
+    networks: [it-net]
+    depends_on:
+      flink-jobmanager: { condition: service_healthy }
+      flink-taskmanager: { condition: service_healthy }
+      kafka-init: { condition: service_completed_successfully }
+      model-trainer: { condition: service_completed_successfully }
+
+  it-influx:   # Flink 결과(정제값·이상 점수·alert 이력) — 원래 해상도 30일(§2-2 보존)
+    image: ${INFLUXDB_IMAGE}
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${IT_INFLUX_USER}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${IT_INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${IT_INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: 30d
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${IT_INFLUX_TOKEN}
+      INFLUXD_LOG_LEVEL: warn
+    ports: [ "127.0.0.1:${PORT_IT_INFLUX}:8086" ]
+    volumes: [ "it-influx-data:/var/lib/influxdb2", "it-influx-config:/etc/influxdb2" ]
+    networks: [it-net]
+    healthcheck: { test: ["CMD", "influx", "ping"], interval: 10s, timeout: 5s, retries: 15, start_period: 15s }
+
+  postgres:   # 공용 업무 DB: plant(registry·workflow·alert·audit) + ai
+    image: ${POSTGRES_IMAGE}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: plant
+      POSTGRES_PASSWORD: ${PG_SUPERUSER_PASSWORD}
+      PG_OPS_PASSWORD: ${PG_OPS_PASSWORD}
+      PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
+      PG_AI_PASSWORD: ${PG_AI_PASSWORD}
+      PG_READER_PASSWORD: ${PG_READER_PASSWORD}
+    ports: [ "127.0.0.1:${PORT_PG}:5432" ]
+    volumes: [ "pg-data:/var/lib/postgresql", "./postgres/init:/docker-entrypoint-initdb.d:ro" ]
+    networks: [it-net]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d plant"], interval: 5s, timeout: 5s, retries: 24 }
+
+  dispatcher:   # IT 발송기: 승인된 작업 요청 → DMZ 게이트웨이(HTTP POST), 응답 ⓐ 기록
+    build: { context: ., dockerfile: it/dispatcher/Dockerfile }
+    image: rot-dispatcher:base
+    restart: unless-stopped
+    environment:
+      GATEWAY_URL: http://dmz-gateway:8088/requests
+      GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
+      PG_HOST: postgres
+      PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
+      KAFKA_BOOTSTRAP: kafka:9092
+    networks: [it-net]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka-init: { condition: service_completed_successfully }
+      router: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import os,sys,time; sys.exit(0 if time.time() - os.path.getmtime('/tmp/alive') < 30 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  grafana:
+    image: ${GRAFANA_IMAGE}
+    restart: unless-stopped
+    ports: [ "127.0.0.1:${PORT_GRAFANA}:3000" ]
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_LOG_LEVEL: warn
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
+      GF_NEWS_NEWS_FEED_ENABLED: "false"
+      INFLUX_ORG: ${INFLUX_ORG}
+      IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
+      IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
+      DMZ_INFLUX_BUCKET: ${DMZ_INFLUX_BUCKET}
+      DMZ_INFLUX_READER_USER: ${DMZ_INFLUX_READER_USER}
+      DMZ_INFLUX_READER_PASSWORD: ${DMZ_INFLUX_READER_PASSWORD}
+    volumes: [ "./grafana/provisioning:/etc/grafana/provisioning:ro", "./grafana/dashboards:/var/lib/grafana/dashboards:ro", "grafana-data:/var/lib/grafana" ]
+    networks: [it-net]
+    depends_on: { it-influx: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  prometheus:   # IT 본 Prometheus: IT 대상 직접 + DMZ /federate(OT·DMZ 지표)
+    image: ${PROMETHEUS_IMAGE}
+    restart: unless-stopped
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=7d", "--log.level=warn"]
+    ports: [ "127.0.0.1:${PORT_PROMETHEUS}:9090" ]
+    volumes: [ "./monitoring/it-prom.yml:/etc/prometheus/prometheus.yml:ro", "./monitoring/rules.yml:/etc/prometheus/rules.yml:ro", "prometheus-data:/prometheus" ]
+    networks: [it-net]
+    depends_on: { router: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  alertmanager:
+    image: ${ALERTMANAGER_IMAGE}
+    restart: unless-stopped
+    command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager", "--log.level=warn"]
+    ports: [ "127.0.0.1:${PORT_ALERTMANAGER}:9093" ]
+    volumes: [ "./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro", "alertmanager-data:/alertmanager" ]
+    networks: [it-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9093/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  kafka-exporter:
+    image: ${KAFKA_EXPORTER_IMAGE}
+    restart: unless-stopped
+    command: ["--kafka.server=kafka:9092", "--log.level=warn"]
+    networks: [it-net]
+    depends_on: { kafka: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9308/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  cadvisor:   # 한 PC 의 모든 컨테이너를 본다(구역별 배치는 흉내, §2-2 감시)
+    image: ${CADVISOR_IMAGE}
+    restart: unless-stopped
+    privileged: true
+    command: ["--docker_only=true", "--housekeeping_interval=10s", "--store_container_labels=false"]
+    volumes: [ "/:/rootfs:ro", "/var/run:/var/run:ro", "/sys:/sys:ro", "/var/lib/docker/:/var/lib/docker:ro" ]
+    networks: [it-net]
+
+  # ──────────────────────────── IT · AI 층(외부 시스템) ────────────────────────────
+  graph:   # 지식 그래프(Neo4j CE)
+    image: ${NEO4J_IMAGE}
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512m
+    ports: [ "127.0.0.1:${PORT_GRAPH_HTTP}:7474", "127.0.0.1:${PORT_GRAPH_BOLT}:7687" ]
+    volumes: [ "graph-data:/data", "graph-logs:/logs" ]
+    networks: [it-net]
+    healthcheck:
+      test: ["CMD-SHELL", "NEO4J_USERNAME=neo4j NEO4J_PASSWORD=$${NEO4J_AUTH#*/} cypher-shell 'RETURN 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 30s
+
+  graph-seed:   # 기동 때 1회: 등록부·교육 문서·고장 온톨로지 묶음을 검토·게시 모듈로 넣는다(멱등, LLM 없음)
+    image: rot-ai-knowledge:base
+    restart: "no"
+    working_dir: /app
+    command: ["python", "/repo/ai-layer/seed_graph.py"]
+    environment:
+      NEO4J_URI: bolt://graph:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+    volumes: [ "./ai-layer:/repo/ai-layer:ro", "./registry:/repo/registry:ro", "./knowledge-docs:/repo/knowledge-docs:ro", "./ontology:/repo/ontology:ro" ]
+    networks: [it-net]
+    depends_on: { graph: { condition: service_healthy } }
+
+  knowledge:   # AI 업무 도우미 백엔드(에이전트·온톨로지·매뉴얼 검색·승인). 설비에는 작업 요청으로만 닿는다
+    build: { context: ./ai-layer/knowledge, dockerfile: backend/Dockerfile }
+    image: rot-ai-knowledge:base
+    restart: unless-stopped
+    env_file: [ { path: ./ai-layer/.env.local, required: false } ]   # LLM 키(저장소 밖)
+    command: ["sh", "-c", "export OPENAI_API_KEY=\"$${LITELLM_API_KEY:-}\" OPENAI_BASE_URL=\"$${LITELLM_BASE_URL:-}\" MAJOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\" MINOR_MODEL=\"openai:$${LITELLM_MODEL:-not-configured}\"; exec ontology-studio-backend"]
+    environment:
+      NEO4J_URI: bolt://graph:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      MAJOR_MODEL_REASONING_EFFORT: medium
+      MINOR_MODEL_REASONING_EFFORT: medium
+      INFLUX_URL: http://dmz-influx:8086             # DMZ 원시 사본(라우터 경유, 읽기 전용 계정)
+      INFLUX_DB: ${DMZ_INFLUX_BUCKET}
+      INFLUX_USER: ${DMZ_INFLUX_READER_USER}
+      INFLUX_PASSWORD: ${DMZ_INFLUX_READER_PASSWORD}
+      SCADA_FLINK_URL: http://flink-jobmanager:8081
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ai
+      DB_USER: ai_app
+      DB_PASSWORD: ${PG_AI_PASSWORD}
+      PLANT_DB_HOST: postgres
+      PLANT_DB_USER: ai_app
+      PLANT_DB_PASSWORD: ${PG_AI_PASSWORD}
+      AI_APPROVER_ID: operator-01
+      SANDBOX_BACKEND: local
+      LOCAL_SANDBOX_ROOT: /workspace
+      SANDBOX_WORKDIR: /workspace
+      OLLAMA_BASE_URL: http://host.docker.internal:11434   # 임베딩은 호스트 Ollama(도커 예산 밖, ⑨-10)
+      V2_EMBED_URL: http://host.docker.internal:11434      # 매뉴얼 절 검색(bge-m3)도 같은 호스트 Ollama. 없으면 V1 의 embed 컨테이너를 찾는다
+    extra_hosts: [ "host.docker.internal:host-gateway" ]
+    ports: [ "127.0.0.1:${PORT_AI_KNOWLEDGE}:8000" ]
+    volumes: [ "knowledge-data:/app/backend/data", "knowledge-uploads:/workspace/uploads", "knowledge-output:/workspace/output" ]
+    networks: [it-net]
+    depends_on:
+      postgres: { condition: service_healthy }
+      graph: { condition: service_healthy }
+      graph-seed: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/openapi.json >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 30s
+
+  web:   # AI 업무 화면(담당자 승인). 설비 조작 화면은 없다(FUXA 가 대신)
+    build: { context: ./ai-web, args: { VITE_FUXA_URL: "http://127.0.0.1:${PORT_FUXA}/" } }
+    image: rot-ai-web:base
+    restart: unless-stopped
+    ports: [ "127.0.0.1:${PORT_AI_WEB}:8080" ]
+    networks: [it-net]
+    depends_on: { knowledge: { condition: service_healthy } }
+    healthcheck: { test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/healthz"], interval: 10s, timeout: 3s, retries: 3 }
+
+  business:   # 업무 서비스: Kafka alert·응답·PLC 상태 → 사건·alert 상태·workflow·audit, 5 s·10 s 타이머
+    image: rot-ai-knowledge:base
+    restart: unless-stopped
+    command: ["python", "-m", "backend.src.modules.operations.business"]
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ai
+      DB_USER: ai_app
+      DB_PASSWORD: ${PG_AI_PASSWORD}
+      PLANT_DB_HOST: postgres
+      PLANT_DB_USER: ops
+      PLANT_DB_PASSWORD: ${PG_OPS_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      REGISTRY_TAGS: /opt/ar100/registry/tags.json
+      REGISTRY_WM: /opt/ar100/registry/work_masters.ot.json
+    volumes: [ "./registry/generated:/opt/ar100/registry:ro" ]
+    networks: [it-net]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka-init: { condition: service_completed_successfully }
+      knowledge: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import os,sys,time; sys.exit(0 if time.time() - os.path.getmtime('/tmp/alive') < 30 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s

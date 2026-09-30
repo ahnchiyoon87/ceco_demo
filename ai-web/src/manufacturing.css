@@ -40,3 +40,6 @@
 .mfg-nav .nav-caption{color:#a9bfcc}.mfg-top{color:#4b6170}.dashboard-kpis small,.recent-cases header span,.recent-cases button span,.recent-cases button small,.dashboard-run header p{color:#4f6678!important}.no-analysis{color:#4d6679!important}.nav-bottom small{color:#a8bfcd}.telemetry-grid article>small,.scada-foot p{color:#a9c2d2!important}
 .analysis-control>div>p,.execution-trace .trace-caption,.execution-trace .trace-caption code,.execution-trace>footer,.execution-trace header small{color:#496172!important}.console-button{color:#a5f0d9;background:#173d38;border:1px solid #518c7b;padding:12px;border-radius:8px;white-space:nowrap}
 .knowledge-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid #d5e2e7;padding-bottom:16px}.knowledge-tabs button{border:1px solid #b9ced7;background:#f7fafb;color:#31576a;border-radius:8px;padding:12px 18px;min-height:44px;font-weight:650}.knowledge-tabs button[aria-pressed=true]{background:#173e49;color:white;border-color:#173e49}
+
+/* 설비 조작·실습 주입이 IT 화면 밖(FUXA·강사 도구)에 있다는 안내 */
+.training-note,.control-note{margin:12px 0;padding:10px 14px;border-radius:8px;background:#eef6f3;color:#1d5b4f;font-size:13px;line-height:1.5}

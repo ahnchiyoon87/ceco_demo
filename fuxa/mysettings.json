@@ -1,0 +1,5 @@
+{
+    "secureEnabled": true,
+    "tokenExpiresIn": "12h",
+    "daqstore": { "type": "SQlite", "retention": "days7" }
+}

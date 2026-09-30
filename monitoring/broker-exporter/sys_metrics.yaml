@@ -1,0 +1,27 @@
+# ═══ Mosquitto $SYS → Prometheus 지표(Bento metric 처리기) ═══
+# 브로커 주소·계정은 환경변수(BROKER_URL, MQTT_USER, MQTT_PASS). 지표 이름 mosquitto_sys{topic="…"}
+# 브리지 연결 상태는 $SYS/broker/connection/<브리지>/state (1 = 연결)
+# 토픽의 $SYS 는 그대로 쓴다: Bento 치환은 ${…} 만 보므로 "$$SYS" 로 쓰면 글자 그대로 구독해 한 건도 못 받는다(09-30 실측)
+input:
+  mqtt:
+    urls: [ ${BROKER_URL} ]
+    client_id: ${MQTT_USER}-sys
+    user: ${MQTT_USER}
+    password: ${MQTT_PASS}
+    topics: [ "$SYS/broker/clients/connected", "$SYS/broker/publish/messages/dropped", "$SYS/broker/messages/received",
+              "$SYS/broker/messages/sent", "$SYS/broker/store/messages/count", "$SYS/broker/connection/+/state",
+              "$SYS/broker/uptime" ]
+    qos: 0
+pipeline:
+  processors:
+    - mapping: |
+        root = content().string().re_replace_all(" seconds$", "")
+        root = if root.re_match("^-?[0-9.]+$") { root } else { deleted() }
+    - metric:
+        type: gauge
+        name: mosquitto_sys
+        labels:
+          topic: ${! meta("mqtt_topic") }
+        value: ${! content() }
+output:
+  drop: {}

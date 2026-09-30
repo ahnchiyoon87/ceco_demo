@@ -1,0 +1,27 @@
+[12:19:53] == 재시작 복구 시작 (othub dmzb kafka coll flink itinflux dmzinflux pg)
+[12:19:53] othub #1 주입: docker stop rot-base-ot-hub-1
+rot-base-ot-hub-1
+rot-base-ot-hub-1
+[12:22:12] othub #1 복구 DMZ {"recover_s": 5.6, "flaps": 0, "waited_s": 126.3} | IT {"recover_s": 5.6, "flaps": 0, "waited_s": 126.4} | Flink RUNNING 4
+[12:22:28] othub #2 주입: docker stop rot-base-ot-hub-1
+rot-base-ot-hub-1
+rot-base-ot-hub-1
+[12:24:48] othub #2 복구 DMZ {"recover_s": 5.4, "flaps": 0, "waited_s": 125.9} | IT {"recover_s": 5.4, "flaps": 0, "waited_s": 125.9} | Flink RUNNING 4
+[12:25:04] othub #3 주입: docker stop rot-base-ot-hub-1
+rot-base-ot-hub-1
+rot-base-ot-hub-1
+[12:27:22] othub #3 복구 DMZ {"recover_s": 5.7, "flaps": 0, "waited_s": 126.2} | IT {"recover_s": 5.7, "flaps": 0, "waited_s": 126.1} | Flink RUNNING 4
+[12:27:37] dmzb #1 주입: docker stop rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+[12:29:56] dmzb #1 복구 DMZ {"recover_s": 5.7, "flaps": 0, "waited_s": 126.3} | IT {"recover_s": 5.7, "flaps": 0, "waited_s": 126.2} | Flink RUNNING 4
+[12:30:13] dmzb #2 주입: docker stop rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+[12:32:32] dmzb #2 복구 DMZ {"recover_s": 5.8, "flaps": 0, "waited_s": 126.4} | IT {"recover_s": 5.8, "flaps": 0, "waited_s": 126.4} | Flink RUNNING 4
+[12:32:47] dmzb #3 주입: docker stop rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+rot-base-dmz-broker-1
+[12:35:07] dmzb #3 복구 DMZ {"recover_s": 5.5, "flaps": 0, "waited_s": 126.1} | IT {"recover_s": 5.5, "flaps": 0, "waited_s": 126.0} | Flink RUNNING 4
+[12:35:23] kafka #1 주입: docker restart rot-base-kafka-1
+rot-base-kafka-1

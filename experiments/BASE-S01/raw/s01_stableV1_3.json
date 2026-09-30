@@ -1,0 +1,18 @@
+{
+ "window_ms": [
+  1790721709000,
+  1790721889000
+ ],
+ "device": "reactor-line-01",
+ "alerts": 201,
+ "by_type_tag": {
+  "ML_AUTOENCODER:MULTIVARIATE": 164,
+  "ZSCORE:TT-101": 9,
+  "ZSCORE:TT-102": 8,
+  "ZSCORE:PT-101": 6,
+  "ZSCORE:pH-101": 5,
+  "ZSCORE:IT-102": 1,
+  "ZSCORE:LT-102": 5,
+  "ZSCORE:FT-102": 3
+ }
+}

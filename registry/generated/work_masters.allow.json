@@ -1,0 +1,36 @@
+{
+ "work_masters": [
+  {
+   "work_master_id": "WM-M101-STOP",
+   "equipment_id": "M-101",
+   "parameters": [],
+   "desc": "교반기 정지(AI stop_mixer)"
+  },
+  {
+   "work_master_id": "WM-HX102-ENABLE",
+   "equipment_id": "HX-102",
+   "parameters": [],
+   "desc": "냉각기 기동(AI enable_cooling)"
+  },
+  {
+   "work_master_id": "WM-R101-TEMPSP",
+   "equipment_id": "R-101",
+   "parameters": [
+    {
+     "id": "temp_sp_c",
+     "min": 60.0,
+     "max": 80.0,
+     "unit": "degC"
+    }
+   ],
+   "desc": "반응기 온도 설정값 변경(운전 범위 안 조정)"
+  }
+ ],
+ "requesters": [
+  "ai-ops"
+ ],
+ "approvers": [
+  "operator-01",
+  "operator-02"
+ ]
+}

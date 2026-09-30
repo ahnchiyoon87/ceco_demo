@@ -1,0 +1,11 @@
+{
+ "scans": 72,
+ "expected_tag_scans": 864,
+ "missing_tag_scans": 0,
+ "duplicates": 24,
+ "latency_p50_ms": 102.6,
+ "latency_p95_ms": 11869.1,
+ "recover_s": 4.53,
+ "outage_window_tag_scans": 264,
+ "outage_missing_tag_scans": 0
+}

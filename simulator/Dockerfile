@@ -3,6 +3,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY plant.py sim.py plant.yaml ./
-ENV PLANT_CONFIG=/app/plant.yaml MODBUS_PORT=502 API_PORT=8080
-EXPOSE 502 8080
+ENV PLANT_CONFIG=/app/plant.yaml MODBUS_PORT=502 API_PORT=8080 API_PANEL_PORT=8081
+EXPOSE 502 8080 8081
 CMD ["python", "-u", "sim.py"]

@@ -16,7 +16,6 @@ from ..modules.operations.api import router as operations_router, initialize as 
 from ..modules.ontology.review import router as knowledge_review_router
 from ..modules.operations.evidence import router as evidence_router
 from ..modules.operations.pipeline import router as pipeline_router
-from ..modules.operations.simulation import router as simulation_router
 from ..modules.operations.actions import router as actions_router, initialize as initialize_actions
 from ..modules.operations.agent import router as manufacturing_agent_router, initialize as initialize_agent_runs, mark_interrupted_runs
 from ..modules.ontology.prepare import router as knowledge_prepare_router
@@ -63,7 +62,6 @@ def create_app() -> FastAPI:
     app.include_router(knowledge_review_router)
     app.include_router(evidence_router)
     app.include_router(pipeline_router)
-    app.include_router(simulation_router)
     app.include_router(actions_router)
     app.include_router(manufacturing_agent_router)
     app.include_router(knowledge_prepare_router)

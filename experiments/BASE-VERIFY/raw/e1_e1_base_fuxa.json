@@ -1,0 +1,144 @@
+{
+ "run": "e1_base_fuxa",
+ "reps": 10,
+ "args": {
+  "exp": "BASE-VERIFY",
+  "run": "e1_base_fuxa",
+  "reps": 10,
+  "sim": "http://plant-sim:8080",
+  "mqtt": "ot-hub",
+  "mqtt_topics": "",
+  "kafka": "kafka:9092",
+  "kafka_topic": "sensor.alerts",
+  "match": "THRESHOLD_USL",
+  "tag": "PT-101",
+  "scenario": "spike",
+  "quiet_s": 3.0,
+  "timeout_s": 15.0,
+  "fault_duration": 2.0,
+  "incident_api": null,
+  "fuxa_alarms": "http://fuxa:1881/api/alarms",
+  "min_before": "PT-101=3.0",
+  "fuxa_match": "PT-101,highhigh"
+ },
+ "summary": {
+  "kafka:sensor.alerts": {
+   "n": 10,
+   "missing": 0,
+   "p50": 428.6,
+   "p95": 672.5,
+   "max": 672.5,
+   "mean": 461.3
+  },
+  "fuxa:alarm": {
+   "n": 0,
+   "missing": 10,
+   "p50": null,
+   "p95": null,
+   "max": null,
+   "mean": null
+  }
+ },
+ "reps_detail": [
+  {
+   "i": 0,
+   "t0_ms": 1790737019166.7566,
+   "lat_ms": {
+    "kafka:sensor.alerts": 672.5
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 1,
+   "t0_ms": 1790737034180.1467,
+   "lat_ms": {
+    "kafka:sensor.alerts": 480.1
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 2,
+   "t0_ms": 1790737049193.5474,
+   "lat_ms": {
+    "kafka:sensor.alerts": 290.3
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 3,
+   "t0_ms": 1790737064199.4678,
+   "lat_ms": {
+    "kafka:sensor.alerts": 407.9
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 4,
+   "t0_ms": 1790737079210.8008,
+   "lat_ms": {
+    "kafka:sensor.alerts": 618.8
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 5,
+   "t0_ms": 1790737094222.534,
+   "lat_ms": {
+    "kafka:sensor.alerts": 428.6
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 6,
+   "t0_ms": 1790737109278.09,
+   "lat_ms": {
+    "kafka:sensor.alerts": 395.7
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 7,
+   "t0_ms": 1790737128298.5715,
+   "lat_ms": {
+    "kafka:sensor.alerts": 499.1
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 8,
+   "t0_ms": 1790737146311.994,
+   "lat_ms": {
+    "kafka:sensor.alerts": 505.4
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  },
+  {
+   "i": 9,
+   "t0_ms": 1790737167332.344,
+   "lat_ms": {
+    "kafka:sensor.alerts": 314.7
+   },
+   "missing": [
+    "fuxa:alarm"
+   ]
+  }
+ ]
+}

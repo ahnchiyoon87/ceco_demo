@@ -1,0 +1,28 @@
+{
+ "limit": 300,
+ "cut_s": 60,
+ "dropped_before": 0,
+ "dropped_during": 0,
+ "dropped_after": 108,
+ "flow_after": {
+  "recover_s": 6.4,
+  "flaps": 0,
+  "waited_s": 66.7
+ },
+ "completeness": {
+  "kafka_raw": {
+   "expected": 1668,
+   "missing_s_total": 623,
+   "dup_total": 0,
+   "max_gap_s": 43.41
+  },
+  "influx_process_raw": {
+   "expected": 1668,
+   "missing_s_total": 623,
+   "dup_total": 0,
+   "max_gap_s": 43.41
+  }
+ },
+ "pass": true,
+ "note": "Mosquitto 는 버린 건수($SYS)를 다시 이을 때 반영한다(끊긴 동안 값 0). 판정 = 시험 전보다 늘었고 다시 이은 뒤 흐름 복구(판정 식 수정 뒤 같은 측정값으로 다시 계산)"
+}

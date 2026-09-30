@@ -1,0 +1,228 @@
+{
+ "assets": [
+  {
+   "id": "TK-101",
+   "type": "Tank",
+   "name": "원료탱크",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "R-101",
+   "type": "Reactor",
+   "name": "반응기",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "HX-101",
+   "type": "Heater",
+   "name": "재킷 히터",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "HX-102",
+   "type": "Cooler",
+   "name": "냉각기",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "P-101",
+   "type": "Pump",
+   "name": "공급 펌프",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "CV-101",
+   "type": "ControlValve",
+   "name": "배출 밸브",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "M-101",
+   "type": "Agitator",
+   "name": "교반기",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
+   "id": "PLC-01",
+   "type": "Controller",
+   "name": "제어기",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  }
+ ],
+ "sensors": [
+  {
+   "tag": "LT-101",
+   "asset": "TK-101",
+   "unit": "%",
+   "lsl": 10.0,
+   "usl": 95.0,
+   "desc": "원료탱크 레벨"
+  },
+  {
+   "tag": "LT-102",
+   "asset": "R-101",
+   "unit": "%",
+   "lsl": 15.0,
+   "usl": 90.0,
+   "desc": "반응기 레벨"
+  },
+  {
+   "tag": "TT-101",
+   "asset": "R-101",
+   "unit": "degC",
+   "lsl": 40.0,
+   "usl": 95.0,
+   "desc": "반응기 온도"
+  },
+  {
+   "tag": "PT-101",
+   "asset": "R-101",
+   "unit": "barg",
+   "lsl": null,
+   "usl": 6.0,
+   "desc": "반응기 압력"
+  },
+  {
+   "tag": "pH-101",
+   "asset": "R-101",
+   "unit": "pH",
+   "lsl": 6.2,
+   "usl": 8.4,
+   "desc": "반응기 pH"
+  },
+  {
+   "tag": "CT-101",
+   "asset": "R-101",
+   "unit": "mS/cm",
+   "lsl": null,
+   "usl": null,
+   "desc": "전도도"
+  },
+  {
+   "tag": "TT-102",
+   "asset": "HX-101",
+   "unit": "degC",
+   "lsl": null,
+   "usl": 125.0,
+   "desc": "재킷 온도"
+  },
+  {
+   "tag": "FT-101",
+   "asset": "P-101",
+   "unit": "m3/h",
+   "lsl": null,
+   "usl": null,
+   "desc": "공급 유량"
+  },
+  {
+   "tag": "IT-101",
+   "asset": "P-101",
+   "unit": "A",
+   "lsl": null,
+   "usl": 14.0,
+   "desc": "펌프 전류"
+  },
+  {
+   "tag": "FT-102",
+   "asset": "CV-101",
+   "unit": "m3/h",
+   "lsl": null,
+   "usl": null,
+   "desc": "배출 유량"
+  },
+  {
+   "tag": "IT-102",
+   "asset": "M-101",
+   "unit": "A",
+   "lsl": null,
+   "usl": 9.6,
+   "desc": "교반기 전류"
+  },
+  {
+   "tag": "VT-101",
+   "asset": "M-101",
+   "unit": "mm/s",
+   "lsl": null,
+   "usl": 7.1,
+   "desc": "교반기 진동"
+  }
+ ],
+ "relations": [
+  {
+   "from": "TK-101",
+   "type": "HAS_SENSOR",
+   "to": "LT-101"
+  },
+  {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "LT-102"
+  },
+  {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "TT-101"
+  },
+  {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "PT-101"
+  },
+  {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "pH-101"
+  },
+  {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "CT-101"
+  },
+  {
+   "from": "HX-101",
+   "type": "HAS_SENSOR",
+   "to": "TT-102"
+  },
+  {
+   "from": "P-101",
+   "type": "HAS_SENSOR",
+   "to": "FT-101"
+  },
+  {
+   "from": "P-101",
+   "type": "HAS_SENSOR",
+   "to": "IT-101"
+  },
+  {
+   "from": "CV-101",
+   "type": "HAS_SENSOR",
+   "to": "FT-102"
+  },
+  {
+   "from": "M-101",
+   "type": "HAS_SENSOR",
+   "to": "IT-102"
+  },
+  {
+   "from": "M-101",
+   "type": "HAS_SENSOR",
+   "to": "VT-101"
+  }
+ ]
+}

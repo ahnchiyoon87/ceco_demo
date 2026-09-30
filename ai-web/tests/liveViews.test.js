@@ -9,33 +9,13 @@ const flush = async () => { await new Promise(r => setImmediate(r)); await nextT
 async function component(name) {
   const source = await readFile(new URL(`../src/features/operations/${name}.vue`, import.meta.url), 'utf8')
   const { descriptor } = parse(source)
-  const code = compileScript(descriptor, {id:name}).content.replace(/from 'vue'/g, `from '${import.meta.resolve('vue')}'`).replace(/import (ExecutionTrace|PlantControls) from '.\/(ExecutionTrace|PlantControls).vue'/g, 'const $1 = {}')
+  const code = compileScript(descriptor, {id:name}).content.replace(/from 'vue'/g, `from '${import.meta.resolve('vue')}'`).replace(/import (ExecutionTrace) from '.\/(ExecutionTrace).vue'/g, 'const $1 = {}')
   const {default: C} = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'))
   C.render = () => null
   return C
 }
 const Live = await component('ScadaLive'), Trace = await component('ExecutionTrace')
 const Activity = await component('DashboardActivity')
-const Simulation = await component('SimulationControls')
-
-test('simulation restores only the saved incident from fresh server data',async()=>{
-  const originalFetch=globalThis.fetch, originalStorage=globalThis.sessionStorage
-  const saved={started:Date.now()-10000,incidentId:'saved'}
-  globalThis.sessionStorage={getItem:()=>JSON.stringify(saved),setItem(){}}
-  globalThis.fetch=async()=>({ok:true,json:async()=>({active_faults:{}})})
-  let view,selected
-  const incidents=ref([])
-  const app=renderer.createApp({render:()=>h(Simulation,{incidents:incidents.value,onIncident:item=>selected=item,ref:x=>view=x})})
-  try{
-    app.mount({});await flush()
-    assert.equal(view.$.setupState.tracked,null)
-    incidents.value=[{id:'other',correlation_key:'mixer',last_ts:Date.now()*1000000}];await flush()
-    assert.equal(selected,undefined)
-    incidents.value.push({id:'saved',status:'awaiting_maintenance'});await flush()
-    assert.equal(selected.id,'saved')
-    assert.equal(selected.status,'awaiting_maintenance')
-  }finally{app.unmount();globalThis.fetch=originalFetch;globalThis.sessionStorage=originalStorage}
-})
 
 test('dashboard clears loading when incidents disappear and ignores the late response', async () => {
   const original = globalThis.fetch

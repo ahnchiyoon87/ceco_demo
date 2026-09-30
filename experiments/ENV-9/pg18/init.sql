@@ -1,0 +1,2 @@
+CREATE ROLE ai_app LOGIN PASSWORD 'aitestpw';
+CREATE DATABASE ai OWNER ai_app;

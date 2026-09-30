@@ -1,0 +1,126 @@
+# 엣지 비교(HANDOFF §2-3 결정 ①) — EdgeX 4.0.2 후보. 베이스 compose.yml 위에 얹고 Node-RED 엣지(edge)는 멈춘 채 잰다.
+#   docker compose -f compose.yml -f experiments/EDGE-CMP/compose.edgex.yml up -d edgex-adapter ...
+x-edgex: &edgex
+  restart: unless-stopped
+  networks: [ot-net]
+  read_only: true
+  security_opt: ["no-new-privileges:true"]
+  user: "2002:2001"
+  profiles: [edge-edgex]
+x-env: &env
+  EDGEX_SECURITY_SECRET_STORE: "false"
+
+services:
+  edgex-postgres:
+    image: postgres:16.3-alpine3.20
+    restart: unless-stopped
+    networks: [ot-net]
+    profiles: [edge-edgex]
+    # EdgeX 비보안 모드는 내부 DB 비밀번호를 기본값으로만 읽는다(엣지 안에만 있는 DB)
+    environment: { POSTGRES_DB: edgex_db, POSTGRES_PASSWORD: postgres }
+    volumes: ["edgex-db:/var/lib/postgresql/data"]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d edgex_db"], interval: 5s, timeout: 5s, retries: 20 }
+  edgex-mqtt-broker:   # EdgeX 내부 메시지 버스(엣지 안에만, 17번 A18)
+    <<: *edgex
+    image: ${MOSQUITTO_IMAGE}
+    command: ["/usr/sbin/mosquitto", "-c", "/mosquitto-no-auth.conf"]
+  edgex-core-keeper:
+    <<: *edgex
+    image: edgexfoundry/core-keeper:${EDGEX_VERSION}
+    depends_on: { edgex-postgres: { condition: service_healthy }, edgex-mqtt-broker: { condition: service_started } }
+    environment:
+      <<: *env
+      DATABASE_HOST: edgex-postgres
+      MESSAGEBUS_AUTHMODE: none
+      MESSAGEBUS_HOST: edgex-mqtt-broker
+      MESSAGEBUS_PORT: "1883"
+      MESSAGEBUS_PROTOCOL: tcp
+      MESSAGEBUS_SECRETNAME: ""
+      MESSAGEBUS_TYPE: mqtt
+      SERVICE_HOST: edgex-core-keeper
+  edgex-common-config:
+    <<: *edgex
+    image: edgexfoundry/core-common-config-bootstrapper:${EDGEX_VERSION}
+    restart: "no"
+    command: ["/core-common-config-bootstrapper", "--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-core-keeper: { condition: service_started } }
+    environment:
+      <<: *env
+      ALL_SERVICES_DATABASE_HOST: edgex-postgres
+      ALL_SERVICES_MESSAGEBUS_HOST: edgex-mqtt-broker
+      ALL_SERVICES_REGISTRY_HOST: edgex-core-keeper
+      APP_SERVICES_CLIENTS_CORE_METADATA_HOST: edgex-core-metadata
+      DEVICE_SERVICES_CLIENTS_CORE_METADATA_HOST: edgex-core-metadata
+      APP_SERVICES_WRITABLE_STOREANDFORWARD_RETRYINTERVAL: "1s"
+      APP_SERVICES_WRITABLE_STOREANDFORWARD_MAXRETRYCOUNT: "0"
+  edgex-core-metadata:
+    <<: *edgex
+    image: edgexfoundry/core-metadata:${EDGEX_VERSION}
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-common-config: { condition: service_started } }
+    environment: { <<: *env, SERVICE_HOST: edgex-core-metadata }
+  edgex-core-data:
+    <<: *edgex
+    image: edgexfoundry/core-data:${EDGEX_VERSION}
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-core-metadata: { condition: service_started } }
+    environment: { <<: *env, SERVICE_HOST: edgex-core-data }
+  edgex-core-command:
+    <<: *edgex
+    image: edgexfoundry/core-command:${EDGEX_VERSION}
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-core-metadata: { condition: service_started } }
+    environment: { <<: *env, SERVICE_HOST: edgex-core-command }
+  edgex-device-modbus:
+    <<: *edgex
+    image: edgexfoundry/device-modbus:${EDGEX_VERSION}
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-core-data: { condition: service_started }, plc: { condition: service_healthy } }
+    environment:
+      <<: *env
+      SERVICE_HOST: edgex-device-modbus
+      DEVICE_PROFILESDIR: /res/profiles
+      DEVICE_DEVICESDIR: /res/devices
+      DEVICE_UPDATELASTCONNECTED: "true"
+    volumes: ["./experiments/EDGE-CMP/edgex-candidate/profiles:/res/profiles:ro", "./experiments/EDGE-CMP/edgex-candidate/devices:/res/devices:ro"]
+  edgex-app-mqtt-export:   # 끊김 시 저장 후 전송(S&F) → OT 허브 edgex/telemetry
+    <<: *edgex
+    image: edgexfoundry/app-service-configurable:${EDGEX_VERSION}
+    command: ["--registry", "-cp=keeper.http://edgex-core-keeper:59890", "-o"]
+    depends_on: { edgex-core-data: { condition: service_started }, ot-hub: { condition: service_healthy } }
+    environment:
+      <<: *env
+      EDGEX_PROFILE: mqtt-export
+      SERVICE_HOST: edgex-app-mqtt-export
+      WRITABLE_STOREANDFORWARD_ENABLED: "true"
+      WRITABLE_INSECURESECRETS_MQTT_SECRETNAME: mqtt
+      WRITABLE_INSECURESECRETS_MQTT_SECRETDATA_USERNAME: edge
+      WRITABLE_INSECURESECRETS_MQTT_SECRETDATA_PASSWORD: ${MQTT_EDGE_PASSWORD}
+      WRITABLE_PIPELINE_EXECUTIONORDER: "Transform, MQTTExport"
+      WRITABLE_PIPELINE_FUNCTIONS_TRANSFORM_PARAMETERS_TYPE: "json"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_BROKERADDRESS: "tcp://ot-hub:1883"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_TOPIC: "edgex/telemetry"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_CLIENTID: "edgex-mqtt-export"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_QOS: "1"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_AUTHMODE: "usernamepassword"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_SECRETNAME: "mqtt"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_AUTORECONNECT: "true"
+      WRITABLE_PIPELINE_FUNCTIONS_MQTTEXPORT_PARAMETERS_PERSISTONERROR: "true"
+  edgex-adapter:
+    build: { context: ., dockerfile: experiments/EDGE-CMP/edgex-candidate/adapter/Dockerfile }
+    image: rot-edgex-adapter:dev
+    restart: unless-stopped
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.13" } }
+    profiles: [edge-edgex]
+    environment:
+      MQTT_EDGE_PASSWORD: ${MQTT_EDGE_PASSWORD}
+      MQTT_RECEIVER_PASSWORD: ${MQTT_RECEIVER_PASSWORD}
+    depends_on: { edgex-core-command: { condition: service_started }, ot-hub: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:1880/metrics')"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+volumes:
+  edgex-db:

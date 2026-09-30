@@ -1,0 +1,252 @@
+"""업무 서비스(HANDOFF §2-3) — Kafka 를 소비해 사건·alert 상태·작업 요청 결과를 정리한다. 설비에 명령하지 않는다.
+
+  sensor.alerts     → AI 사건 접수(consumer.persist_message, V1 과 같음)
+                    → alert 스키마: ISA-18.2 상태(설비 정지 = Suppressed by Design, 정비 모드 = Out of Service),
+                      사건 키 asset_id + rule_id 로 묶기(열린 묶음이면 건수·마지막 시각만), 표시할 것만 alerts.display 로
+  plant.status      → PLC 상태 기억(억제 판단·재관측), 정비 모드 켜기·끄기를 감사에 기록
+  request.responses → OT 수신기 응답 ⓑⓒ 를 workflow 사건·감사로(같은 요청 ID)
+  타이머(0.5 s)     → ACK 5 s(게이트웨이 수용 ⓐ 부터 수신 응답 ⓑ 까지, 넘으면 '결과 모름'), 만료 + 5 s(ⓑ 없음),
+                      운전원 대기 60 + 30 + 5 s(ⓒ 없음), 재관측 10 s(PLC 수용부터 새 상태까지, 넘으면 command-disagree alert)
+시간 값은 벽시계(17번 E18·E38). 늦게 온 응답은 사건으로 덧붙어 현재 상태(뷰)를 덮는다.
+"""
+from __future__ import annotations
+
+import json
+import logging
+import os
+import threading
+import time
+from datetime import datetime, timezone
+
+from confluent_kafka import Consumer, KafkaException, Producer
+
+from .consumer import initialize_inbox, persist_message
+from .plant_db import audit, plant_connection, request_event
+
+log = logging.getLogger("business")
+REG = json.load(open(os.environ.get("REGISTRY_TAGS", "/opt/ar100/registry/tags.json"), encoding="utf-8"))
+WM = {w["work_master_id"]: w for w in json.load(open(os.environ.get("REGISTRY_WM", "/opt/ar100/registry/work_masters.ot.json"), encoding="utf-8"))}
+TAG_ASSET = {t["tag"]: t["asset"] for t in REG["tags"]}
+RUN_STATUS = {"P-101": "run", "M-101": "run", "HX-101": "enable", "HX-102": "enable"}   # 운전 여부를 가진 설비
+ACK_S, REOBS_S, OP_WAIT_S, EXPIRY_S = 5.0, 10.0, 60.0, 30.0
+GROUP_CLEAR_S = 60.0
+ALIVE = __import__("pathlib").Path("/tmp/alive")   # compose healthcheck 가 수정 시각을 본다
+BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
+producer = Producer({"bootstrap.servers": BOOTSTRAP, "linger.ms": 5})
+state: dict[tuple[str, str], object] = {}      # (asset, name) → 값 (PLC 상태 토픽)
+lock = threading.Lock()
+
+
+def now() -> float:
+    return time.time()
+
+
+def publish(topic: str, key: str, value: dict) -> None:
+    producer.produce(topic, key=key, value=json.dumps(value, ensure_ascii=False, default=str))
+    producer.poll(0)
+
+
+def audited(conn, actor_type, actor_id, action, jid, subject, detail):
+    audit(conn, actor_type, actor_id, action, jid, subject, detail)
+    publish("audit.copy", jid or subject or action, {"actor_type": actor_type, "actor_id": actor_id, "action": action,
+                                                       "job_order_id": jid, "subject": subject, "detail": detail, "at": now()})
+
+
+# ── alert 상태(ISA-18.2) ─────────────────────────────────────────────
+def display_state(asset: str | None) -> tuple[str, int | None]:
+    with lock:
+        if state.get(("PLC-01", "maintenance")) is True:
+            return "OUT_OF_SERVICE", state.get(("PLC-01", "maint_operator"))
+        if asset in RUN_STATUS and state.get((asset, RUN_STATUS[asset])) is False:
+            return "SUPPRESSED_BY_DESIGN", None
+        if state.get(("PLC-01", "run_state")) == "STOP":
+            return "SUPPRESSED_BY_DESIGN", None
+    return "DISPLAYED", None
+
+
+def on_alert(conn, a: dict) -> None:
+    asset = TAG_ASSET.get(a.get("tag"), a.get("device"))
+    rule = f'{a.get("alert_type")}:{a.get("tag")}'
+    ts = datetime.fromtimestamp(a["ts"] / 1e9, timezone.utc)
+    shown, maint_op = display_state(asset)
+    g = conn.execute("""UPDATE alert.alert_group SET count = count + 1, last_ts = %s
+                        WHERE asset_id IS NOT DISTINCT FROM %s AND rule_id = %s AND state = 'ACTIVE' RETURNING id""",
+                     (ts, asset, rule)).fetchone()
+    new_group = g is None
+    if new_group:
+        g = conn.execute("""INSERT INTO alert.alert_group(asset_id, rule_id, first_ts, last_ts, suppressed_by, maint_operator)
+                            VALUES (%s,%s,%s,%s,%s,%s) RETURNING id""",
+                         (asset, rule, ts, ts, {"OUT_OF_SERVICE": "OUT_OF_SERVICE", "SUPPRESSED_BY_DESIGN": "DESIGN"}.get(shown),
+                          maint_op)).fetchone()
+    conn.execute("""INSERT INTO alert.alert_event(ts, asset_id, rule_id, tag, value, severity, detector, detail, display_state, group_id)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                 (ts, asset, rule, a.get("tag"), a.get("value"), a.get("severity"), a.get("detector"), a.get("detail"), shown, g["id"]))
+    # 표시: 새 묶음이고 억제·정비 중이 아닐 때만(반복 alert 는 건수만 올린다, 17번 F4)
+    if new_group and shown == "DISPLAYED":
+        text = f'{ts.strftime("%m-%d %H:%M:%S")} UTC | {a.get("severity")} | {a.get("tag")} | {a.get("alert_type")}'
+        publish("alerts.display", asset or "-", {"ts": a["ts"], "text": text, "asset": asset, "tag": a.get("tag"),
+                                                "alert_type": a.get("alert_type"), "severity": a.get("severity"), "group_id": g["id"]})
+
+
+def clear_groups(conn) -> None:
+    """마지막 alert 뒤 60초 조용하면 묶음을 닫는다. 억제·정비가 풀리면 억제 표시를 자동으로 되돌린다(17번 F5)."""
+    conn.execute("UPDATE alert.alert_group SET state = 'CLEARED' WHERE state = 'ACTIVE' AND last_ts < now() - interval '60 seconds'")
+    with lock:
+        maint = state.get(("PLC-01", "maintenance")) is True
+        running = {a for a, f in RUN_STATUS.items() if state.get((a, f)) is not False}
+    if not maint:
+        conn.execute("UPDATE alert.alert_group SET suppressed_by = NULL, maint_operator = NULL WHERE state = 'ACTIVE' AND suppressed_by = 'OUT_OF_SERVICE'")
+    if running:
+        conn.execute("UPDATE alert.alert_group SET suppressed_by = NULL WHERE state = 'ACTIVE' AND suppressed_by = 'DESIGN' AND asset_id = ANY(%s)",
+                     (list(running),))
+
+
+# ── PLC 상태 ───────────────────────────────────────────────────────
+def on_status(conn, s: dict) -> None:
+    key = (s.get("asset"), s.get("name"))
+    value = s.get("value")
+    if s.get("kind") not in ("status", "state"):
+        return
+    with lock:
+        prev = state.get(key)
+        state[key] = value
+    if key == ("PLC-01", "maintenance") and prev is not None and prev != value:
+        op = state.get(("PLC-01", "maint_operator"))
+        audited(conn, "human", f"operator-{op}" if op else "field-panel", "maintenance_on" if value else "maintenance_off",
+                None, "PLC-01", {"maint_operator": op, "source": "plant.status"})
+
+
+# ── 작업 요청 응답·타이머 ─────────────────────────────────────────
+def known(conn, jid: str) -> bool:
+    return conn.execute("SELECT 1 FROM workflow.request WHERE job_order_id = %s", (jid,)).fetchone() is not None
+
+
+def on_response(conn, r: dict) -> None:
+    jid = r.get("job_order_id")
+    if not jid or not known(conn, jid):
+        log.info("등록되지 않은 요청의 응답(기록 안 함): %s", jid)
+        return
+    request_event(conn, jid, r["stage"], r.get("status"), r.get("reason"), r, "ot-receiver")
+    audited(conn, "system", "ot-receiver", f'response_{r["stage"]}', jid, r.get("status"), {"reason": r.get("reason")})
+
+
+EXPECT = {  # 재관측: 작업 정의 → (설비, 상태 이름, 기대값을 만드는 함수)
+    "WM-M101-STOP": ("M-101", "run", lambda req: False),
+    "WM-HX102-ENABLE": ("HX-102", "enable", lambda req: True),
+    "WM-R101-TEMPSP": ("R-101", "temp_sp", lambda req: next(p["value"] for p in req["job_order_parameters"] if p["id"] == "temp_sp_c")),
+}
+
+
+def timers(conn) -> None:
+    """진행 중 요청의 시간 판정. 각 판정은 한 번만 남긴다(사건 종류로 확인)."""
+    rows = conn.execute("""
+        SELECT r.job_order_id, r.work_master_id, r.job_order_parameters, r.created_at,
+               jsonb_object_agg(e.kind || ':' || coalesce(e.status, ''), extract(epoch FROM e.at)) AS ev,
+               max(CASE WHEN e.kind = 'gateway_accepted' THEN (e.detail ->> 'expires_at')::double precision END) AS expires_at
+        FROM workflow.request r JOIN workflow.request_event e USING (job_order_id)
+        WHERE r.created_at > now() - interval '15 minutes'
+        GROUP BY r.job_order_id, r.work_master_id, r.job_order_parameters, r.created_at""").fetchall()
+    t = now()
+    for row in rows:
+        jid, ev = row["job_order_id"], row["ev"]
+        has = lambda prefix: any(k.startswith(prefix) for k in ev)
+        at = lambda prefix: min((v for k, v in ev.items() if k.startswith(prefix)), default=None)
+        # 판정이 끝난 요청(만료·미확인·재관측 일치·불일치). ACK 시간 초과는 늦은 응답이 올 수 있어 끝이 아니다
+        final = has("expired_unconfirmed") or has("unconfirmed") or has("observed") or has("command_disagree")
+        if final or has("gateway_rejected") or not has("gateway_accepted"):
+            continue
+        a = at("gateway_accepted")
+        receipt = at("receipt:")
+        if receipt is None:
+            if row["expires_at"] and t > row["expires_at"] + 5:
+                note(conn, jid, "expired_unconfirmed", "UNKNOWN", "만료 + 5 s 까지 수신 응답(ⓑ) 없음 — 결과 미확인")
+            elif t - a > ACK_S and not has("ack_timeout"):
+                note(conn, jid, "ack_timeout", "UNKNOWN", "ACK 5 s 안에 수신 응답(ⓑ) 없음 — 응답 없음(결과 모름). 다시 보내지 않는다")
+            continue
+        if has("receipt:REJECTED") or has("operator:REJECTED") or has("operator:OPERATOR_REJECTED") or has("plc:REJECTED"):
+            continue
+        wait = at("receipt:OPERATOR_WAIT")
+        if wait is not None and not has("operator:") and t - wait > OP_WAIT_S + EXPIRY_S + 5:
+            note(conn, jid, "unconfirmed", "UNKNOWN", "운전원 대기 뒤 60 + 30 + 5 s 안에 운전원·PLC 응답(ⓒ) 없음 — 결과 미확인")
+            continue
+        plc_ok = at("plc:ACCEPTED")
+        if plc_ok is None:
+            continue
+        asset, name, want = EXPECT[row["work_master_id"]]
+        expected = want(row)
+        with lock:
+            current = state.get((asset, name))
+        if current == expected:
+            note(conn, jid, "observed", "OK", f"재관측: {asset}/{name} = {current}", {"asset": asset, "name": name, "value": current})
+        elif t - plc_ok > REOBS_S:
+            note(conn, jid, "command_disagree", "DISAGREE",
+                 f"PLC 수용 뒤 10 s 안에 {asset}/{name} 가 {expected} 로 보이지 않음(현재 {current})",
+                 {"asset": asset, "name": name, "expected": expected, "current": current})
+            # 명령 ≠ 상태 alert 는 분석 alert 와 같은 길(sensor.alerts)로 낸다 → 사건 접수·alert 상태·표시·이력이 한 길
+            publish("sensor.alerts", asset, {"ts": time.time_ns(), "site": REG["hierarchy"]["site"], "device": REG["hierarchy"]["line"],
+                                             "tag": f"{asset}/{name}", "value": 0.0, "alert_type": "COMMAND_DISAGREE",
+                                             "severity": "WARNING", "detector": "BUSINESS",
+                                             "detail": f"작업 요청 {jid}: 명령 ≠ 상태(기대 {expected}, 현재 {current})"})
+
+
+def note(conn, jid, kind, status, reason, detail=None):
+    request_event(conn, jid, kind, status, reason, detail or {}, "business")
+    audited(conn, "system", "business-service", kind, jid, status, {"reason": reason, **(detail or {})})
+    publish("request.events", jid, {"job_order_id": jid, "kind": kind, "status": status, "reason": reason, "at": now()})
+    log.info("%s %s %s", jid, kind, reason)
+
+
+def intake_loop() -> None:
+    """AI 사건 접수(AI DB). 요청 판정과 다른 스레드·연결로 돈다 — AI 승인이 사건 행을 잠근 동안(작업 요청 결과 대기)
+    접수가 멈춰도 작업 요청의 시간 판정(ACK 5 s·만료·재관측)은 멈추지 않는다(09-30 제어 회귀 S21 에서 20 s 멈춤 실측)."""
+    # 사건 접수는 V1 과 같은 소비자 그룹(earliest, 처음부터 빠짐없이)으로 따로 소비한다
+    intake = Consumer({"bootstrap.servers": BOOTSTRAP, "group.id": "ar100-ai-incidents-v1", "auto.offset.reset": "earliest",
+                       "enable.auto.commit": False, "enable.auto.offset.store": False})
+    intake.subscribe(["sensor.alerts"])
+    while True:
+        try:
+            m = intake.poll(0.5)
+            if m is None:
+                continue
+            if m.error():
+                raise KafkaException(m.error())
+            persist_message(m.topic(), m.partition(), m.offset(), m.value() or b"")
+            intake.commit(message=m, asynchronous=False)
+        except Exception:
+            log.exception("사건 접수 오류 — 다시 시도")
+            time.sleep(2)
+
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s | %(message)s")
+    initialize_inbox()
+    threading.Thread(target=intake_loop, name="ai-intake", daemon=True).start()
+    consumer = Consumer({"bootstrap.servers": BOOTSTRAP, "group.id": "ar100-business-v2", "auto.offset.reset": "latest",
+                         "enable.auto.commit": False, "enable.auto.offset.store": False})
+    consumer.subscribe(["sensor.alerts", "plant.status", "request.responses"])
+    last_tick = 0.0
+    while True:
+        try:
+            with plant_connection(autocommit=True) as conn:
+                log.info("공용 업무 DB 연결")
+                while True:
+                    m = consumer.poll(0.2)
+                    if m is not None:
+                        if m.error():
+                            raise KafkaException(m.error())
+                        v = json.loads(m.value() or b"{}")
+                        {"sensor.alerts": on_alert, "plant.status": on_status, "request.responses": on_response}[m.topic()](conn, v)
+                        consumer.commit(message=m, asynchronous=False)
+                    if now() - last_tick >= 0.5:
+                        timers(conn)
+                        clear_groups(conn)
+                        producer.poll(0)
+                        last_tick = now()
+                        ALIVE.touch()   # healthcheck: 업무 DB 에 붙은 채 타이머 루프가 돈다
+        except Exception:
+            log.exception("업무 서비스 오류 — 다시 연결")
+            time.sleep(2)
+
+
+if __name__ == "__main__":
+    main()

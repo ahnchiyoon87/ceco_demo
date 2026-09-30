@@ -1,6 +1,4 @@
-# 데이터소스 이원화 (PDF p.7 · p.11)
-#   InfluxDB  → 공정 히스토리안 (센서 트렌드 · 이상 점수 · 알람 이력)
-#   Prometheus → 파이프라인 인프라 건전성 (컨슈머 랙 · 체크포인트 · 리소스)
+# 데이터소스(HANDOFF §2-1 ③): 공정 결과는 IT InfluxDB, OT 원시값은 DMZ 사본(읽기 전용 계정·InfluxQL), 플랫폼은 Prometheus
 apiVersion: 1
 
 datasources:
@@ -8,15 +6,27 @@ datasources:
     uid: influx
     type: influxdb
     access: proxy
-    url: http://influxdb:8086
+    url: http://it-influx:8086
     isDefault: true
     jsonData:
       version: Flux
       organization: ${INFLUX_ORG}
-      defaultBucket: ${INFLUX_BUCKET}
+      defaultBucket: ${IT_INFLUX_BUCKET}
       httpMode: POST
     secureJsonData:
-      token: ${INFLUX_TOKEN}
+      token: ${IT_INFLUX_TOKEN}
+
+  - name: DMZ 원시 사본
+    uid: dmz-raw
+    type: influxdb
+    access: proxy
+    url: http://dmz-influx:8086
+    user: ${DMZ_INFLUX_READER_USER}
+    jsonData:
+      dbName: ${DMZ_INFLUX_BUCKET}
+      httpMode: GET
+    secureJsonData:
+      password: ${DMZ_INFLUX_READER_PASSWORD}
 
   - name: Prometheus
     uid: prom

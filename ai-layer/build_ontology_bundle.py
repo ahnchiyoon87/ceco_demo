@@ -124,9 +124,9 @@ def arm_b():
 def arm_c():
     batch, kg = Batch(), knowledge()
     assets = {"M-101", "R-101", "P-101", "TK-101"}
-    inventory = export_inventory(root / "simulator/plant.yaml")
+    inventory = export_inventory(root / "registry/equipment.yaml")
     points = {n["properties"]["name"]: n for n in inventory["nodes"] if n["class"] == "ControlPoint"}
-    aliases = {"temp_sp_c": "temp_sp_x10"}
+    aliases = {"temp_sp_c": "temp_sp_x10"}   # 온톨로지 문장은 °C 설정값, 제어점 이름은 V1 레지스터 이름(temp_sp_x10)
 
     def target(name):
         return batch.asset(name) if name in assets else batch.node(f"v2/component/{name}", "Component")

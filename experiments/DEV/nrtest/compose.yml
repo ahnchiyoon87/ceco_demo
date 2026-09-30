@@ -1,0 +1,11 @@
+name: rot-dev-nrtest
+services:
+  hub:
+    image: eclipse-mosquitto:2.1.2-alpine
+    command: ["mosquitto","-c","/mosquitto-no-auth.conf"]
+  nr:
+    image: nodered/node-red:5.0.7
+    volumes: ["./flows.json:/data/flows.json"]
+  sub:
+    image: eclipse-mosquitto:2.1.2-alpine
+    entrypoint: ["sh","-c","sleep 5; while true; do mosquitto_sub -h hub -t t/x -q 1 -c -i subrec >> /tmp/rec.txt; sleep 1; done"]

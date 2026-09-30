@@ -1,0 +1,17 @@
+# ═══ IT 수집기 ③ Kafka alerts.display → DMZ 브로커 AR-100/alert/display (선택 기능: FUXA "분석 경고(참고)", §2-2 알람) ═══
+# 이 토픽 하나에만 발행할 수 있는 계정(it-collector)으로 IT 가 연다. OT 허브 브리지 in 이 읽기 전용으로 가져간다.
+input:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topics: [ alerts.display ]
+    consumer_group: it-collector-display
+    start_from_oldest: false
+output:
+  mqtt:
+    urls: [ tcp://dmz-broker:1883 ]
+    client_id: it-collector-display
+    user: it-collector
+    password: ${MQTT_IT_COLLECTOR_PASSWORD}
+    topic: AR-100/alert/display
+    qos: 1
+    retained: true

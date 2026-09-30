@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "name": "ar100-plc",
+    "type": "plc-project"
+  },
+  "data": {
+    "pous": [],
+    "dataTypes": [],
+    "libraries": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#100ms",
+            "priority": 1
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "program": "main",
+            "task": "task0"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "servers": [
+      {
+        "name": "edge_server",
+        "protocol": "modbus-tcp",
+        "modbusSlaveConfig": {
+          "enabled": true,
+          "networkInterface": "0.0.0.0",
+          "port": 502
+        }
+      }
+    ],
+    "remoteDevices": [
+      {
+        "name": "plant",
+        "protocol": "modbus-tcp",
+        "modbusTcpConfig": {
+          "transport": "tcp",
+          "host": "plant-sim",
+          "port": 502,
+          "timeout": 1000,
+          "slaveId": 1,
+          "ioGroups": [
+            {
+              "id": "tags",
+              "name": "계측 12점·스캔 순번·설비 시각",
+              "functionCode": "3",
+              "cycleTime": 100,
+              "offset": "0",
+              "length": 28,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "tags-0",
+                  "name": "tags-0",
+                  "type": "WORD",
+                  "iecLocation": "%IW0"
+                }
+              ]
+            },
+            {
+              "id": "panel",
+              "name": "현장 패널",
+              "functionCode": "3",
+              "cycleTime": 100,
+              "offset": "300",
+              "length": 9,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "panel-0",
+                  "name": "panel-0",
+                  "type": "WORD",
+                  "iecLocation": "%IW300"
+                }
+              ]
+            },
+            {
+              "id": "coils",
+              "name": "구동기",
+              "functionCode": "15",
+              "cycleTime": 100,
+              "offset": "0",
+              "length": 4,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "coils-0",
+                  "name": "coils-0",
+                  "type": "WORD",
+                  "iecLocation": "%QX0.0"
+                }
+              ]
+            },
+            {
+              "id": "sp",
+              "name": "설정값",
+              "functionCode": "16",
+              "cycleTime": 100,
+              "offset": "100",
+              "length": 3,
+              "errorHandling": "keep-last-value",
+              "ioPoints": [
+                {
+                  "id": "sp-0",
+                  "name": "sp-0",
+                  "type": "WORD",
+                  "iecLocation": "%QW100"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

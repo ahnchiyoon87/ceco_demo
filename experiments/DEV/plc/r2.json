@@ -1,0 +1,146 @@
+{
+ "results": [
+  {
+   "item": "PLC 재시작 뒤 정비 모드 유지(RETAIN)·모드 REMOTE_MANUAL",
+   "expected": [
+    1,
+    101,
+    1
+   ],
+   "actual": [
+    1,
+    101,
+    1
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "item": "현장 해제 키로 정비 모드 끔",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "현장 모드 스위치 LOCAL",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "LOCAL: 운전원 조작 거부",
+   "expected": "LOCAL_MODE",
+   "actual": "LOCAL_MODE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "LOCAL: 외부 요청 거부",
+   "expected": "LOCAL_MODE",
+   "actual": "LOCAL_MODE",
+   "verdict": "PASS"
+  },
+  {
+   "item": "LOCAL: 현장 버튼으로 교반기 정지",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "LOCAL: 현장 버튼으로 교반기 기동",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "LOCAL: 운전원 정비 모드 켜기만 수용",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "REMOTE 로 돌아오면 REMOTE_MANUAL",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "PT-101 6.5 barg 이상 → 인터록",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "인터록 중 펌프 출력 꺼짐",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "인터록 중 펌프 기동 명령 거부",
+   "expected": "INTERLOCK",
+   "actual": "INTERLOCK",
+   "verdict": "PASS"
+  },
+  {
+   "item": "PT-101 5.2 barg 이하로 내려오면 인터록 해제·펌프 출력 복귀",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "비상정지 → 모든 출력 꺼짐",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "비상정지 중 가상설비 전류 0(제어와 독립)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "비상정지 중 기동 거부",
+   "expected": "ESTOP",
+   "actual": "ESTOP",
+   "verdict": "PASS"
+  },
+  {
+   "item": "리셋 뒤에도 저절로 다시 돌지 않음",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "리셋 뒤 운전원 기동으로 복귀(펌프·교반기·히터)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "생산 스케줄로 설정값 변동(15초)",
+   "expected": true,
+   "actual": true,
+   "verdict": "PASS"
+  },
+  {
+   "item": "운전원: 온도 설정 70.0",
+   "expected": "ACCEPTED",
+   "actual": "ACCEPTED",
+   "verdict": "PASS"
+  },
+  {
+   "item": "수동 조작 뒤 온도 설정 보류(15초 동안 700 유지)",
+   "expected": 700,
+   "actual": 700,
+   "verdict": "PASS"
+  },
+  {
+   "item": "되읽기 감시 이상 없음",
+   "expected": 0,
+   "actual": 0,
+   "verdict": "PASS"
+  }
+ ],
+ "pass": 22,
+ "fail": 0
+}

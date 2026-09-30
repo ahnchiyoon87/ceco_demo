@@ -1,0 +1,10 @@
+[10:00:17] êµë°˜ê¸° ì‚¬ê±´: bfa2a403-08c2-4d46-9235-387a1dbcdd7f (3s)
+[10:00:22] S17
+{"step": "reject", "proposal_id": "82b308e7-6d13-48d7-b8a9-2972ef2eac03", "decision": {"status": "rejected", "result": null, "replayed": false}, "requests": 0, "pass": true}
+[10:00:27] S21
+{"step": "approve2", "proposal_id": "24561be5-10ce-4dc3-9afb-01efd85c0cb1", "decisions": [{"status": "executing", "result": null, "replayed": true}, {"status": "unresolved", "result": "awaiting_operator", "replayed": false}], "requests": 1, "events": ["approved:APPROVED", "dispatched:None", "gateway_accepted:ACCEPTED", "receipt:OPERATOR_WAIT"], "receipt_after_gateway_s": 0.19, "pass": true}
+[10:00:29] S18
+{"step": "stale", "proposal_id": "37c67cd5-a836-4454-989f-971a3d0da7b8", "decision": {"http": 409, "detail": "ìš´ì „ ëª…ë ¹ ë˜ëŠ” ì¸í„°ë¡ ìƒíƒœê°€ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤. ì¬ë¶„ì„ì´ í•„ìš”í•©ë‹ˆë‹¤."}, "requests": 0, "pass": true}
+[10:00:51] S22
+{"step": "pg_down", "proposal_id": "4ab28a0d-73dd-4d84-b105-4bff8bd549a4", "response": "{\"detail\":\"¾÷¹« DB¿¡ ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù. »ç°ÇÀ» ÀúÀåÇÏÁö ¸øÇß½À´Ï´Ù.\"} HTTP503", "requests_after_recovery": 0, "pass": true}
+[10:01:16] ë

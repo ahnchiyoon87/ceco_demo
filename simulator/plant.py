@@ -51,7 +51,8 @@ class ReactorPlant:
         self.p_heater = ph["heater"]
         self.p_cooler = ph.get("cooler", {"max_power_kw": 0.0, "kp": 0.0})
         self.p_agit = ph["agitator"]
-        self.p_ilk = ph["interlock"]
+        # 릴리프 밸브식 압력 상한(제어와 독립인 마지막 보호). 없으면 상한 없음(V1 과 같음).
+        self.relief_barg = float(ph.get("relief", {}).get("set_barg", float("inf")))
         self.p_rxn = ph["reaction"]
         self.noise = cfg["noise"]
         # 트랜스미터 하한(LRV): 물리적으로 음수가 불가능한 계측점은 0 에서 클램프
@@ -68,7 +69,8 @@ class ReactorPlant:
         # 진동은 전류보다 늦게 반응한다. 전류 상승이 선행하고 진동이 뒤따라야
         # CEP 의 시간 선후 패턴이 의미를 갖는다 (단순 AND 와 구별됨).
         self.vib_wear = 0.0
-        self.interlocked = False
+        # 비상정지: 가상설비 안의 래치. 켜져 있으면 제어 명령과 무관하게 모든 구동기를 끈다.
+        self.estop = False
         self.seq = 0
         self.sim_time = 0.0          # 적분된 물리 시각 [s] (= 실제 시간 × 배속)
         self.wall_time = 0.0         # 스캔 시계 [s]: 고장·autopilot·수동 유지는 이 시계로 센다
@@ -76,7 +78,6 @@ class ReactorPlant:
         # 큰 배속에서도 적분이 안정하도록 스캔 한 번을 max_substep 이하 소구간으로 나눠 푼다.
         self.time_scale = float(cfg.get("physics_time_scale", 1.0))
         self.max_substep = float(cfg.get("physics_max_substep_s", 5.0))
-        self.measured_pressure = 0.0  # 인터록이 참조하는 '트랜스미터 지시값' 
 
         # ── 명령 (Modbus 로부터 매 스캔 갱신) ──
         self.cmd_pump = True
@@ -174,15 +175,10 @@ class ReactorPlant:
         rx_level_frac = self.rx_vol / (rx_area * rx_h)
         rx_level_m = rx_level_frac * rx_h
 
-        # ── 고압 인터록 (결정론적 안전 로직, 히스테리시스 적용) ──
-        # 실제 PLC 와 동일하게 물리 진값이 아니라 직전 스캔의 '트랜스미터 지시값'을
-        # 참조한다. 따라서 계기 고장(spike)으로도 트립이 발생한다.
-        press_now = self.measured_pressure or self._pressure(rx_level_frac, self.temp_c)
-        if press_now >= self.p_ilk["pressure_trip_barg"]:
-            self.interlocked = True
-        elif press_now <= self.p_ilk["pressure_reset_barg"]:
-            self.interlocked = False
-        pump_active = self.cmd_pump and not self.interlocked
+        # 고압 인터록은 soft-PLC 가 한다(PT-101 지시값으로 펌프 명령을 끈다). 여기서는 명령을 그대로 따른다.
+        # 비상정지는 제어와 독립으로 모든 구동기를 끈다.
+        press_now = self._pressure(rx_level_frac, self.temp_c)
+        pump_active = self.cmd_pump and not self.estop
 
         # ── 공급 유량 (펌프 특성 × 흡입측 레벨) ──
         if pump_active and feed_level_frac > 0.02:
@@ -217,7 +213,7 @@ class ReactorPlant:
         mass = max(self.rx_vol * rho, 1.0)
         ambient = self.p_rx["ambient_c"]
 
-        if self.cmd_heater:
+        if self.cmd_heater and not self.estop:
             err = self.sp_temp_c - self.temp_c
             duty = min(max(self.p_heater["kp"] * err / 100.0, 0.0), 1.0)
         else:
@@ -228,7 +224,7 @@ class ReactorPlant:
             duty = 1.0
         q_heat = self.p_heater["max_power_kw"] * duty
         cooling_duty = 0.0
-        if self.cmd_cooler and "cooling_loss" not in self.faults:
+        if self.cmd_cooler and not self.estop and "cooling_loss" not in self.faults:
             cooling_duty = min(max(self.p_cooler["kp"] * (self.temp_c - self.sp_temp_c) / 100.0, 0.0), 1.0)
         q_cool = self.p_cooler["max_power_kw"] * cooling_duty
         # Do not remove more energy than the contents hold above ambient in a
@@ -291,9 +287,6 @@ class ReactorPlant:
         )
 
         self.readings = {t: self._measure(t, v) for t, v in raw.items()}
-        pt = self.readings["PT-101"]
-        if pt != BAD_QUALITY:
-            self.measured_pressure = pt
         return self.readings
 
     # ── 헤드스페이스 압력: 레벨·온도와 물리적으로 결합 ──
@@ -303,7 +296,8 @@ class ReactorPlant:
         charge = self.p_rx["charge_pressure_bara"]
         p_abs = charge * (temp_c + ABS_ZERO_C) / (self.p_rx["ambient_c"] + ABS_ZERO_C) * (ref_head / head_frac)
         p_vap = 0.0061094 * math.exp(17.625 * temp_c / (temp_c + 243.04))
-        return max(p_abs + p_vap - ATM_BAR, 0.0)
+        # 릴리프 밸브가 설정 압력에서 열려 그 이상 오르지 않는다(계기 튐 spike 는 지시값만이라 무관).
+        return min(max(p_abs + p_vap - ATM_BAR, 0.0), self.relief_barg)
 
     def _pump_current(self, active: bool, q_in: float, pressure: float) -> float:
         if not active:
@@ -314,14 +308,14 @@ class ReactorPlant:
         return nl + (rated - nl) * load * (0.62 + 0.38 * min(pressure / 3.0, 1.6))
 
     def _agitator_current(self, level_frac: float) -> float:
-        if not self.cmd_agitator:
+        if not self.cmd_agitator or self.estop:
             return 0.02
         rated = self.p_agit["rated_current_a"]
         visc = 1.0 + 0.0045 * (72.0 - self.temp_c)      # 저온일수록 점도 ↑ → 부하 ↑
         return rated * (0.55 + 0.45 * level_frac) * visc * (1.0 + 0.62 * self.bearing_wear)
 
     def _vibration(self, level_frac: float) -> float:
-        if not self.cmd_agitator:
+        if not self.cmd_agitator or self.estop:
             return 0.03
         base = self.p_agit["base_vibration_mms"]
         v = base * (0.82 + 0.30 * level_frac)

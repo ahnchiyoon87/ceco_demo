@@ -1,0 +1,10 @@
+spike 0 {}
+spike 1 {}
+spike 2 {}
+noise 0 {'kafka': 9.13, 'screen': 9.15}
+noise 1 {}
+noise 2 {}
+drift 0 {'kafka': 1.47, 'screen': 1.51}
+drift 1 {'kafka': 1.83, 'screen': 1.87}
+drift 2 {'kafka': 2.08, 'screen': 2.09}
+{"spike": [null, null, false], "noise": [9.13, 9.15, false], "drift": [2.08, 2.09, true]} False

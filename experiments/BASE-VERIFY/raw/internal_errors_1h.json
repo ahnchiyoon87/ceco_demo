@@ -1,0 +1,411 @@
+{
+ "containers": {
+  "rot-base-alertmanager-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-business-1": {
+   "lines": 65,
+   "error_like": 19,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "Traceback (most recent call last):",
+     5
+    ],
+    [
+     "#-#-# #:#:#,# ERROR business | 사건 접수 오류 — 다시 시도",
+     2
+    ],
+    [
+     "    raise ex.with_traceback(None)",
+     2
+    ],
+    [
+     "psycopg.errors.AdminShutdown: terminating connection due to administrator command",
+     2
+    ],
+    [
+     "#-#-# #:#:#,# ERROR business | 업무 서비스 오류 — 다시 연결",
+     2
+    ]
+   ]
+  },
+  "rot-base-cadvisor-1": {
+   "lines": 47,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-dispatcher-1": {
+   "lines": 4,
+   "error_like": 2,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARNING dispatcher | 업무 DB 연결 실패(다시 시도): consuming input failed: terminating connection due to administrator command",
+     1
+    ],
+    [
+     "#-#-# #:#:#,# WARNING dispatcher | 업무 DB 연결 실패(다시 시도): [Errno -#] Name or service not known",
+     1
+    ]
+   ]
+  },
+  "rot-base-dmz-broker-1": {
+   "lines": 1068,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-dmz-gateway-1": {
+   "lines": 1,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-dmz-influx-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-dmz-loader-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-dmz-prom-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-edge-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-flink-job-submitter-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-base-flink-jobmanager-1": {
+   "lines": 4680,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-flink-taskmanager-1": {
+   "lines": 4324,
+   "error_like": 4324,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARN  org.apache.flink.metrics.MetricGroup                         [] - Name collision: Group already contains a Metric with the name 'pendingComm",
+     4320
+    ],
+    [
+     "#-#-# #:#:#,# INFO  org.apache.flink.cep.nfa.sharedbuffer.SharedBuffer           [] - Statistics details of eventsBufferCache: CacheStats{hitCount=#, missCount=",
+     4
+    ]
+   ]
+  },
+  "rot-base-fuxa-1": {
+   "lines": 17422,
+   "error_like": 34,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'UNS' try to connect error! Error: client disconnecting\u001b[#m",
+     12
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'UNS' try to connect error! Error: Connection refused: Not authorized\u001b[#m",
+     9
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \t'UNS' connect error! Error: Connection refused: Not authorized (#)\u001b[#m",
+     9
+    ],
+    [
+     "\u001b[#m#-#-#T#:#:#Z [ERR] \tusers.usrstorage-set-users failed! SyntaxError: Unexpected token u in JSON at position #\u001b[#m",
+     4
+    ]
+   ]
+  },
+  "rot-base-fuxa-provisioner-1": {
+   "lines": 13,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-base-grafana-1": {
+   "lines": 5,
+   "error_like": 5,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "logger=provisioning.dashboard type=file name=iiot t=#-#-#T#:#:#Z level=error msg=\"failed to walk provisioned dashboards\" error=\"readdirent /var/lib/grafana/dash",
+     5
+    ]
+   ]
+  },
+  "rot-base-graph-1": {
+   "lines": 13,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-graph-seed-1": {
+   "lines": 3,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-base-it-collector-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 11,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-it-influx-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-kafka-1": {
+   "lines": 1928,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-kafka-exporter-1": {
+   "lines": 416,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-kafka-init-1": {
+   "lines": 11,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-base-knowledge-1": {
+   "lines": 2206,
+   "error_like": 7,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "Traceback (most recent call last):",
+     2
+    ],
+    [
+     "    return psycopg.connect(uri, row_factory=dict_row, connect_timeout=#)",
+     1
+    ],
+    [
+     "psycopg.OperationalError: failed to resolve host 'postgres': [Errno -#] No address associated with hostname",
+     1
+    ],
+    [
+     "The above exception was the direct cause of the following exception:",
+     1
+    ],
+    [
+     "    raise HTTPException(#, \"업무 DB에 연결할 수 없습니다. 사건을 저장하지 못했습니다.\") from exc",
+     1
+    ]
+   ]
+  },
+  "rot-base-model-trainer-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "exited",
+   "top": []
+  },
+  "rot-base-ot-agent-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-ot-hub-1": {
+   "lines": 1139,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-ot-hub-exporter-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-plant-sim-1": {
+   "lines": 129,
+   "error_like": 57,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: spike (#s, 대상 ['PT-#'])",
+     32
+    ],
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: heater_stuck (#s, 대상 ['TT-#', 'TT-#'])",
+     6
+    ],
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: noise (#s, 대상 ['TT-#'])",
+     6
+    ],
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: drift (#s, 대상 ['pH-#', 'CT-#'])",
+     6
+    ],
+    [
+     "#-#-# #:#:#,# WARNING sim | 고장 주입: bearing_wear (#s, 대상 ['IT-#', 'VT-#'])",
+     4
+    ]
+   ]
+  },
+  "rot-base-plc-1": {
+   "lines": 357,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-postgres-1": {
+   "lines": 46,
+   "error_like": 3,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": [
+    [
+     "#-#-# #:#:# UTC [#] FATAL:  terminating connection due to administrator command",
+     3
+    ]
+   ]
+  },
+  "rot-base-prometheus-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-router-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-web-1": {
+   "lines": 0,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  },
+  "rot-base-zookeeper-1": {
+   "lines": 358,
+   "error_like": 0,
+   "restarts": 0,
+   "oom_killed": false,
+   "status": "running",
+   "top": []
+  }
+ },
+ "flink": {},
+ "flink_jobs": [
+  [
+   "AR100-Tier2-OnnxAnomalyDetection",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-CEP",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-ZScore",
+   "RUNNING"
+  ],
+  [
+   "AR100-Tier1-Threshold",
+   "RUNNING"
+  ]
+ ]
+}

@@ -1,16 +1,12 @@
-"""Kafka intake: commit only after durable ingestion or explicit quarantine."""
+"""Kafka alert → AI 사건 접수(commit 은 저장·격리 뒤에만). 소비 루프는 업무 서비스(business.py)가 돈다."""
 from __future__ import annotations
 
 import json
-import logging
-import os
 
-from confluent_kafka import Consumer, KafkaException
 from pydantic import ValidationError
 
 from .api import Alarm, connection, initialize, ingest
 
-log = logging.getLogger(__name__)
 
 
 def initialize_inbox():
@@ -45,32 +41,3 @@ def persist_message(topic: str, partition: int, offset: int, raw: bytes):
             ON CONFLICT (topic, partition_id, offset_id) DO NOTHING
         """, (topic, partition, offset, "rejected" if error else "accepted", incident_id, raw, error))
     return "rejected" if error else "accepted"
-
-
-def main():
-    logging.basicConfig(level=logging.INFO)
-    initialize_inbox()
-    consumer = Consumer({
-        "bootstrap.servers": os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092"),
-        "group.id": "ar100-ai-incidents-v1",
-        "auto.offset.reset": "earliest",
-        "enable.auto.commit": False,
-        "enable.auto.offset.store": False,
-    })
-    consumer.subscribe(["sensor.alerts"])
-    try:
-        while True:
-            message = consumer.poll(1.0)
-            if message is None:
-                continue
-            if message.error():
-                raise KafkaException(message.error())
-            result = persist_message(message.topic(), message.partition(), message.offset(), message.value() or b"")
-            consumer.commit(message=message, asynchronous=False)
-            log.info("%s %s/%s/%s", result, message.topic(), message.partition(), message.offset())
-    finally:
-        consumer.close()
-
-
-if __name__ == "__main__":
-    main()

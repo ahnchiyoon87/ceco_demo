@@ -1,0 +1,8 @@
+# 로컬 계정: 명령 토픽 발행은 operator 만. 브리지 in 으로 들어온 메시지에 이 ACL 이 걸리는지 본다.
+user tester
+topic read #
+topic write site/data/#
+user reader
+topic read #
+user operator
+topic write site/cmd/#

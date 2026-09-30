@@ -1,0 +1,6 @@
+global: { scrape_interval: 15s }
+scrape_configs:
+  - job_name: ot-agent
+    static_configs: [ { targets: ['localhost:9090'] } ]
+remote_write:
+  - url: http://dmz-broker:9090/api/v1/write

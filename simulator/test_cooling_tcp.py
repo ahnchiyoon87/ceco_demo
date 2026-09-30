@@ -13,6 +13,7 @@ class CoolingTCPTest(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         cfg = yaml.safe_load(Path(__file__).with_name("plant.yaml").read_text(encoding="utf-8"))
         cfg["autopilot"]["enabled"] = False
+        cfg["physics_time_scale"] = 1   # 레지스터·열량 계약은 설비 시간 1초 스캔으로 본다(배속 시험은 test_time_scale.py)
         cfg["noise"] = {tag: 0 for tag in cfg["noise"]}
         self.sim = Simulator(cfg)
         self.sim.plant.temp_c = self.sim.plant.jacket_c = 100

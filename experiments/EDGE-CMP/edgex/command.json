@@ -1,0 +1,68 @@
+{
+ "reps": 10,
+ "accepted_and_reflected": 10,
+ "ack_p50_s": 0.2355,
+ "state_p50_s": 0.235,
+ "runs": [
+  {
+   "i": 0,
+   "ack_s": 0.318,
+   "ack": "ACCEPTED",
+   "state_s": 0.317
+  },
+  {
+   "i": 1,
+   "ack_s": 0.232,
+   "ack": "ACCEPTED",
+   "state_s": 0.232
+  },
+  {
+   "i": 2,
+   "ack_s": 0.24,
+   "ack": "ACCEPTED",
+   "state_s": 0.239
+  },
+  {
+   "i": 3,
+   "ack_s": 0.231,
+   "ack": "ACCEPTED",
+   "state_s": 0.23
+  },
+  {
+   "i": 4,
+   "ack_s": 0.235,
+   "ack": "ACCEPTED",
+   "state_s": 0.234
+  },
+  {
+   "i": 5,
+   "ack_s": 0.236,
+   "ack": "ACCEPTED",
+   "state_s": 0.236
+  },
+  {
+   "i": 6,
+   "ack_s": 0.234,
+   "ack": "ACCEPTED",
+   "state_s": 0.233
+  },
+  {
+   "i": 7,
+   "ack_s": 0.236,
+   "ack": "ACCEPTED",
+   "state_s": 0.236
+  },
+  {
+   "i": 8,
+   "ack_s": 0.231,
+   "ack": "ACCEPTED",
+   "state_s": 0.231
+  },
+  {
+   "i": 9,
+   "ack_s": 0.28,
+   "ack": "ACCEPTED",
+   "state_s": 0.28
+  }
+ ]
+}

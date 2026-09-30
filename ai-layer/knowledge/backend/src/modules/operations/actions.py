@@ -208,62 +208,76 @@ def list_proposals(incident_id: UUID):
         return {"items": conn.execute("SELECT * FROM manufacturing_proposals WHERE incident_id=%s ORDER BY created_at DESC", (incident_id,)).fetchall()}
 
 
-def stop_mixer(before):
-    return _reviewed_binary_action(before, "stop_mixer")
+# ── 조치 실행 = 작업 요청(HANDOFF §2-1 외부 시스템 연결 ④~⑥) ──────────────────────────────
+# V1 은 이 자리에서 가상설비 Modbus 코일에 직접 쓰고 HTTP /state 로 다시 읽었다. 새 구조에서 AI(외부 시스템)는
+# 명령하지 않고 "작업 요청"만 남긴다: 공용 DB workflow 에 요청·승인을 추가(정본) → IT 발송기가 DMZ 게이트웨이로 보냄(ⓐ)
+# → OT 수신기가 받을지 정함(ⓑ) → PLC 가 물리적으로 되는지 검사(ⓒ) → 업무 서비스가 새 상태를 재관측.
+# 이 함수는 그 결과 사건을 기다려 읽기만 한다. 설비에 닿는 연결은 없다.
+WORK_MASTERS = {"stop_mixer": ("WM-M101-STOP", "M-101", "stop_verified", "교반기 정지"),
+                "enable_cooling": ("WM-HX102-ENABLE", "HX-102", "cooling_command_verified", "냉각기 기동")}
+WAIT_S = 20
 
 
-def enable_cooling(before):
+def stop_mixer(before, *, proposal=None, note=""):
+    return _request_action(before, "stop_mixer", proposal, note)
+
+
+def enable_cooling(before, *, proposal=None, note=""):
     """Adapter only; caller must enforce grounded approval and current conditions."""
     if type(before.get("commands", {}).get("cooler_enable")) is not bool:
         return {"status": "not_executed", "reason": "현재 가상 설비의 냉각 기능을 확인하지 못했습니다."}
-    return _reviewed_binary_action(before, "enable_cooling")
+    return _request_action(before, "enable_cooling", proposal, note)
 
 
-def _reviewed_binary_action(before, action):
-    """One write attempt. An uncertain acknowledgement is not automatically retried."""
-    specs = {
-        "stop_mixer": (1, False, "agitator_run", "교반기 정지", "stop_verified"),
-        "enable_cooling": (3, True, "cooler_enable", "냉각기 기동", "cooling_command_verified"),
-    }
-    address, requested, command_key, label, verified_status = specs[action]
-    from pymodbus.client import ModbusTcpClient
-    if os.environ.get("SIMULATOR_ACTIONS_ENABLED") != "true":
-        return {"status": "not_executed", "reason": "시뮬레이터 조치가 활성화되지 않았습니다."}
-    client = ModbusTcpClient(os.environ.get("SIMULATOR_MODBUS_HOST", "host.docker.internal"),
-                              port=int(os.environ.get("SIMULATOR_MODBUS_PORT", "27002")), timeout=3, retries=0)
-    attempted = False
+def _request_action(before, action, proposal, note):
+    """승인된 조치를 작업 요청 한 건으로 남기고 결과 사건을 기다린다. 요청은 다시 보내지 않는다."""
+    from .plant_db import audit, plant_connection, request_event
+    wm, equipment, verified_status, label = WORK_MASTERS[action]
+    jid = f"ai-{uuid4().hex}"
+    approver = os.environ.get("AI_APPROVER_ID", "operator-01")
+    context = {"summary": f"{label} — 사건 {proposal['incident_id']}" if proposal else label,
+               "proposal_id": str(proposal["id"]) if proposal else None}
     try:
-        action_progress("action_connecting", {"protocol": "Modbus TCP", "reason": "허용된 가상 설비에 연결 중"})
-        if not client.connect():
-            return {"status": "not_executed", "reason": "Modbus 연결 실패"}
-        action_progress("action_dispatch_started", {"address": address, "value": requested, "reason": f"{label} 명령 전송을 시작합니다. 수신·반영 확인 전입니다."})
-        attempted = True
-        response = client.write_coil(address, requested, slave=1)
-        if response.isError():
-            return {"status": "uncertain", "reason": "명령 응답 오류. 수동 확인이 필요합니다."}
-        action_progress("action_acknowledged", {"reason": "Modbus 정상 응답 수신. 새 설비 상태를 별도로 확인합니다."})
-        deadline = time.monotonic() + 8
-        observations = []
-        while time.monotonic() < deadline:
-            state = live_state()
-            observations.append(state)
-            action_progress("action_observed", {"observation": state, "attempt": len(observations), "reason": "명령 후 HTTP /state 재조회"})
-            if (state.get("status") == "available" and state.get("seq", -1) > before["seq"]
-                    and state.get("site") == before["site"] and state.get("device") == before["device"]
-                    and state["commands"].get(command_key) is requested):
-                return {"status": verified_status, "observations": observations,
-                        "reason": "새 시뮬레이터 상태에서 교반기 정지를 확인했습니다. 원인 제거·정비 완료를 뜻하지 않습니다." if action == "stop_mixer" else "새 상태에서 냉각 명령 켜짐을 확인했습니다. 실제 온도 하강·안정 유지·고장 해소는 별도 관측이 필요합니다."}
-            time.sleep(.5)
-        return {"status": "uncertain", "observations": observations, "reason": "명령 반영 확인 시간 초과"}
-    except ActionProgressError:
-        return {"status": "uncertain" if attempted else "not_executed",
-                "reason": ("명령 전송 후 진행 기록 저장에 실패했습니다. 명령을 다시 보내지 않았습니다. 설비 상태를 수동 확인하세요."
-                           if attempted else "진행 기록을 저장하지 못해 설비 명령을 보내지 않았습니다."),
-                "error_type": "ActionProgressError"}
+        with plant_connection() as pc:
+            pc.execute("""INSERT INTO workflow.request(job_order_id, work_master_id, equipment_id, job_order_parameters,
+                          requester, approver, context, incident_id, proposal_id) VALUES (%s,%s,%s,'[]',%s,%s,%s,%s,%s)""",
+                       (jid, wm, equipment, "ai-ops", approver, Jsonb(context),
+                        proposal["incident_id"] if proposal else None, proposal["id"] if proposal else None))
+            request_event(pc, jid, "approved", "APPROVED", note or None, {"action": action, "before_seq": before.get("seq")}, "ai-app")
+            audit(pc, "ai", "ai-ops", "propose", jid, wm, {"action": action})
+            audit(pc, "human", approver, "approve", jid, wm, {"note": note})
     except Exception as exc:
-        return {"status": "uncertain" if attempted else "not_executed", "reason": "조치 통신 실패", "error_type": type(exc).__name__}
-    finally:
-        client.close()
+        return {"status": "not_executed", "reason": "작업 요청을 공용 업무 DB 에 기록하지 못해 보내지 않았습니다(기록 실패).",
+                "error_type": type(exc).__name__}
+    action_progress("request_recorded", {"job_order_id": jid, "work_master_id": wm,
+                                         "reason": "작업 요청을 기록했습니다. IT 발송기가 DMZ 게이트웨이로 보냅니다."})
+    seen, deadline = set(), time.monotonic() + WAIT_S
+    stages = {"gateway_accepted": "action_gateway_accepted", "gateway_rejected": "action_gateway_rejected",
+              "receipt": "action_ot_receipt", "operator": "action_operator", "plc": "action_plc_ack",
+              "ack_timeout": "action_ack_timeout", "observed": "action_observed", "command_disagree": "action_command_disagree"}
+    while time.monotonic() < deadline:
+        with plant_connection() as pc:
+            events = pc.execute("SELECT id, kind, status, reason, at FROM workflow.request_event WHERE job_order_id=%s ORDER BY id",
+                                (jid,)).fetchall()
+        for e in events:
+            if e["id"] in seen:
+                continue
+            seen.add(e["id"])
+            if e["kind"] in stages:
+                action_progress(stages[e["kind"]], {"job_order_id": jid, "status": e["status"], "reason": e["reason"]})
+            k, st, why = e["kind"], e["status"], e["reason"]
+            if k == "gateway_rejected" or (k in ("receipt", "operator", "plc") and st in ("REJECTED", "OPERATOR_REJECTED")):
+                return {"status": "not_executed", "job_order_id": jid, "stage": k, "reason": f"{k} 거부: {why}"}
+            if k == "receipt" and st == "OPERATOR_WAIT":
+                return {"status": "awaiting_operator", "job_order_id": jid,
+                        "reason": "공장 안 운전원 확인 대기(REMOTE_MANUAL). FUXA '받은 요청'에서 수락·거부합니다. 결과는 요청 사건으로 이어집니다."}
+            if k == "observed":
+                return {"status": verified_status, "job_order_id": jid,
+                        "reason": f"PLC 가 수용했고 새 상태에서 {label}을 확인했습니다. 원인 제거·정비 완료를 뜻하지 않습니다."}
+            if k in ("command_disagree", "expired_unconfirmed", "unconfirmed"):
+                return {"status": "uncertain", "job_order_id": jid, "reason": f"{why} 명령을 다시 보내지 않았습니다. 설비 상태를 확인하세요."}
+        time.sleep(0.25)
+    return {"status": "uncertain", "job_order_id": jid, "reason": "결과 확인 시간(20초)이 지났습니다. 요청은 다시 보내지 않았습니다. 요청 사건에서 결과를 확인하세요."}
 
 
 def decide(proposal_id: UUID, body: Decision):
@@ -337,9 +351,9 @@ def decide(proposal_id: UUID, body: Decision):
                     except HTTPException as exc:
                         result = {"status": "not_executed", "reason": exc.detail}
                     else:
-                        result = enable_cooling(current_state)
+                        result = enable_cooling(current_state, proposal=proposal, note=body.note)
                 else:
-                    result = stop_mixer(current_state)
+                    result = stop_mixer(current_state, proposal=proposal, note=body.note)
             finally:
                 _progress_sink.reset(token)
         final = "awaiting_maintenance" if result["status"] in {"stop_verified", "inspection_requested"} else "unresolved"

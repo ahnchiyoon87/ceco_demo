@@ -138,7 +138,7 @@
     {
       "id": 5,
       "type": "timeseries",
-      "title": "EMQX 연결 세션 수",
+      "title": "MQTT 브로커 연결 수(OT 허브·DMZ 브로커)",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -153,8 +153,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "emqx_connections_count",
-          "legendFormat": "connections"
+          "expr": "mosquitto_sys{topic=\"$SYS/broker/clients/connected\"}",
+          "legendFormat": "{{zone}} 브로커 연결 수"
         }
       ],
       "fieldConfig": {

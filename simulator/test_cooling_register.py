@@ -11,6 +11,7 @@ class CoolingRegisterTest(unittest.TestCase):
     def model(self):
         cfg = yaml.safe_load(Path(__file__).with_name("plant.yaml").read_text(encoding="utf-8"))
         cfg["autopilot"]["enabled"] = False
+        cfg["physics_time_scale"] = 1   # 레지스터·열량 계약은 설비 시간 1초 스캔으로 본다(배속 시험은 test_time_scale.py)
         sim = Simulator(copy.deepcopy(cfg))
         sim.plant.temp_c = 100
         return sim

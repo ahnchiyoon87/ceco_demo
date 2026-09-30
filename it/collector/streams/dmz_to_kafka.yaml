@@ -1,0 +1,46 @@
+# ═══ IT 수집기 ① DMZ 브로커 → Kafka (IT 가 여는 연결, HANDOFF §2-1 ②) ═══
+#   계측값(품질 GOOD) → sensor.telemetry.raw  (V1 과 같은 모양 + asset·seq·pts, 키 = 설비 ID)
+#   PLC 상태·통신 상태·ACK → plant.status   (키 = 설비 ID)
+#   작업 요청 응답 ⓑⓒ → request.responses  (키 = 요청 ID)
+input:
+  mqtt:
+    urls: [ tcp://dmz-broker:1883 ]
+    client_id: it-collector
+    user: it-collector
+    password: ${MQTT_IT_COLLECTOR_PASSWORD}
+    clean_session: false
+    qos: 1
+    topics:
+      - AR-100/reaction/+/+/tag/+
+      - AR-100/reaction/+/+/status/+
+      - AR-100/reaction/+/+/state/+
+      - AR-100/reaction/+/+/ack/+
+      - AR-100/response/#
+pipeline:
+  processors:
+    - mapping: |
+        let parts = meta("mqtt_topic").split("/")
+        let p = this
+        root = match {
+          $parts.index(1) == "response" => $p,
+          $parts.index(4) == "tag" && $p.quality == "GOOD" && $p.value != null => {
+            "ts": $p.ts.int64(), "site": $parts.index(0), "device": $parts.index(2), "tag": $parts.index(5),
+            "value": $p.value.number(), "quality": $p.quality, "asset": $parts.index(3), "seq": $p.seq, "pts": $p.pts },
+          $parts.index(4) == "status" || $parts.index(4) == "state" || $parts.index(4) == "ack" => $p.merge({ "site": $parts.index(0), "device": $parts.index(2), "asset": $parts.index(3),
+                       "kind": $parts.index(4), "name": $parts.index(5), "topic": meta("mqtt_topic") }),
+          _ => deleted(),
+        }
+        meta kafka_topic = match {
+          $parts.index(1) == "response" => "request.responses",
+          $parts.index(4) == "tag" => "sensor.telemetry.raw",
+          _ => "plant.status",
+        }
+        meta kafka_key = if $parts.index(1) == "response" { $p.job_order_id } else { $parts.index(3) }
+output:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topic: ${! meta("kafka_topic") }
+    key: ${! meta("kafka_key") }
+    client_id: it-collector
+    max_in_flight: 1
+    batching: { count: 200, period: 200ms }

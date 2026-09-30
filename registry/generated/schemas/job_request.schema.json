@@ -1,0 +1,76 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "https://ar100.local/schemas/job_request.schema.json",
+ "title": "작업 요청(OPC UA ISA-95 Job Control 필드 흉내)",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "job_order_id",
+  "work_master_id",
+  "equipment_id",
+  "job_order_parameters",
+  "requester",
+  "approver",
+  "created_at"
+ ],
+ "properties": {
+  "job_order_id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9._:-]{8,80}$"
+  },
+  "work_master_id": {
+   "type": "string",
+   "enum": [
+    "WM-M101-STOP",
+    "WM-HX102-ENABLE",
+    "WM-R101-TEMPSP"
+   ]
+  },
+  "equipment_id": {
+   "type": "string",
+   "enum": [
+    "HX-102",
+    "M-101",
+    "R-101"
+   ]
+  },
+  "job_order_parameters": {
+   "type": "array",
+   "maxItems": 8,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "value"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "value": {
+      "type": "number"
+     }
+    }
+   }
+  },
+  "requester": {
+   "type": "string"
+  },
+  "approver": {
+   "type": "string"
+  },
+  "created_at": {
+   "type": "number",
+   "description": "요청 생성 시각(epoch 초)"
+  },
+  "expires_at": {
+   "type": "number",
+   "description": "게이트웨이가 붙이는 만료 시각(epoch 초, 표준에 없는 확장)"
+  },
+  "context": {
+   "type": "object",
+   "description": "원인 alert 요약(선택)"
+  }
+ }
+}

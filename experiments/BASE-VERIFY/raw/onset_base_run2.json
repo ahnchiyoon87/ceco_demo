@@ -1,0 +1,55 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "spike": {
+   "reps": [
+    {},
+    {},
+    {}
+   ],
+   "screen": "fuxa",
+   "kafka_max_s": null,
+   "screen_max_s": null,
+   "missing": 3,
+   "within_10s": false
+  },
+  "noise": {
+   "reps": [
+    {
+     "kafka": 9.13,
+     "screen": 9.15
+    },
+    {},
+    {}
+   ],
+   "screen": "display",
+   "kafka_max_s": 9.13,
+   "screen_max_s": 9.15,
+   "missing": 2,
+   "within_10s": false
+  },
+  "drift": {
+   "reps": [
+    {
+     "kafka": 1.47,
+     "screen": 1.51
+    },
+    {
+     "kafka": 1.83,
+     "screen": 1.87
+    },
+    {
+     "kafka": 2.08,
+     "screen": 2.09
+    }
+   ],
+   "screen": "display",
+   "kafka_max_s": 2.08,
+   "screen_max_s": 2.09,
+   "missing": 0,
+   "within_10s": true
+  }
+ },
+ "all_within_10s": false,
+ "physics_time_scale": 600.0
+}

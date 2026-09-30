@@ -1,0 +1,25 @@
+{
+ "struct": "stable V1 (docker-compose.stable.yml, 배속 600, V1 학습기)",
+ "window_s": 180,
+ "windows": 3,
+ "start": "스택 up 뒤 약 3.5분(Flink 잡 4개 RUNNING 확인 후 fault/clear, 5 s 뒤 첫 창)",
+ "alerts": [
+  83,
+  105,
+  201
+ ],
+ "alerts_median": 105,
+ "ml": [
+  18,
+  52,
+  164
+ ],
+ "ml_median": 52,
+ "nonml": [
+  65,
+  53,
+  37
+ ],
+ "nonml_median": 53,
+ "raw": "experiments/BASE-S01/raw/s01_stableV1_{1,2,3}.json"
+}

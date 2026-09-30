@@ -1,0 +1,276 @@
+{
+ "start": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": false,
+   "pump_speed_sp": 60.0,
+   "valve_open_sp": 56.0,
+   "temp_sp_c": 65.9
+  }
+ },
+ "S14": {
+  "pass": true,
+  "before": true,
+  "stop": {
+   "ack": "ACCEPTED",
+   "ack_s": 0.2,
+   "sim": true
+  },
+  "start": {
+   "ack": "ACCEPTED",
+   "ack_s": 0.25,
+   "sim": true
+  },
+  "took_s": 1.4
+ },
+ "S15": {
+  "pass": true,
+  "operator": {
+   "ack": "RANGE",
+   "valve_before": 56.0,
+   "valve_after": 56.0
+  },
+  "external": {
+   "job": "ctl-d3efc02672de4175a715a6f7f3fe7adc",
+   "events": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_rejected:REJECTED(PARAMETER_RANGE)"
+   ],
+   "temp_before": 65.9,
+   "temp_after": 67.0
+  },
+  "took_s": 4.3
+ },
+ "S16": {
+  "pass": true,
+  "ack_during": "INTERLOCK",
+  "trips": 1,
+  "stable_samples": 5,
+  "violations": [],
+  "released": true,
+  "external": "허용 작업(WM-M101-STOP·WM-HX102-ENABLE·WM-R101-TEMPSP)에 펌프 기동이 없다 — 외부 길은 설계로 차단",
+  "took_s": 15.2
+ },
+ "S17": {
+  "pass": true,
+  "job": "ctl-3cc3defc3c544cb5ac5e05453f205be1",
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "receipt:OPERATOR_WAIT(STORED)",
+   "operator:OPERATOR_REJECTED(OPERATOR)"
+  ],
+  "agitator_before": true,
+  "agitator_after": true,
+  "took_s": 4.1
+ },
+ "S18": {
+  "pass": true,
+  "job": "ctl-9a8895b7e6a74e1aa0c038a821819698",
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "receipt:OPERATOR_WAIT(STORED)",
+   "operator:REJECTED(MAINTENANCE)"
+  ],
+  "cooler_before": false,
+  "cooler_after": false,
+  "took_s": 5.3
+ },
+ "S20": {
+  "pass": true,
+  "job": "ctl-6b4fa1a01f57498ebc086e542d67bc57",
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "receipt:OPERATOR_WAIT(STORED)",
+   "plc:ACCEPTED(ACCEPTED)",
+   "command_disagree:DISAGREE(PLC 수용 뒤 10 s 안에 HX-102/enable 가 True 로 보이지 않음(현재 False))"
+  ],
+  "state_enable": false,
+  "disagree_after_plc_s": 10.44,
+  "injected_at_s": 1790729325.938,
+  "took_s": 11.5
+ },
+ "S21": {
+  "pass": true,
+  "job": "ctl-dup-7d63dd58b6a742f9a04927856d6fa637",
+  "receipts": 1,
+  "plc_acks": 1,
+  "ack": "ACCEPTED",
+  "temp_before": 72.9,
+  "temp_after": 66.0,
+  "note": "워크플로에 없는 요청 ID 라 업무 서비스는 기록하지 않는다(등록되지 않은 응답)",
+  "took_s": 8.2
+ },
+ "MODE": {
+  "LOCAL": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:REJECTED(LOCAL_MODE)"
+   ],
+   "operator": "LOCAL_MODE",
+   "pass": true
+  },
+  "MAINTENANCE": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:REJECTED(MAINTENANCE)"
+   ],
+   "operator_change": "MAINTENANCE",
+   "pass": true
+  },
+  "REMOTE_AUTO": {
+   "operator": "MODE",
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:AUTO_ACCEPTED(REMOTE_AUTO)",
+    "plc:ACCEPTED(ACCEPTED)",
+    "observed:OK(재관측: R-101/temp_sp = 70)"
+   ],
+   "temp_before": 66.0,
+   "temp_after": 70.0,
+   "pass": true,
+   "job": "ctl-efa91d5d061347e19e74c5fe9831e2c0",
+   "timeline_s": {
+    "approved:APPROVED": 0.0,
+    "dispatched:None": 0.06,
+    "gateway_accepted:ACCEPTED": 0.07,
+    "receipt:AUTO_ACCEPTED": 0.6,
+    "plc:ACCEPTED": 0.81,
+    "observed:OK": 1.61
+   }
+  },
+  "REMOTE_MANUAL": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:OPERATOR_WAIT(STORED)",
+    "operator:OPERATOR_ACCEPTED(OPERATOR)",
+    "plc:ACCEPTED(ACCEPTED)",
+    "observed:OK(재관측: HX-102/enable = True)"
+   ],
+   "cooler_before": false,
+   "cooler_after": true,
+   "job": "ctl-288b858452f44c15a5d369723bf1823c",
+   "timeline_s": {
+    "approved:APPROVED": 0.0,
+    "dispatched:None": 0.02,
+    "gateway_accepted:ACCEPTED": 0.04,
+    "receipt:OPERATOR_WAIT": 0.35,
+    "operator:OPERATOR_ACCEPTED": 0.75,
+    "plc:ACCEPTED": 0.95,
+    "observed:OK": 1.36
+   },
+   "pass": true
+  },
+  "pass": true,
+  "took_s": 6.7
+ },
+ "EXP": {
+  "pass": true,
+  "response": {
+   "job_order_id": "ctl-exp-88f9acc3e3fd4d9391b739bfd61c031c",
+   "stage": "receipt",
+   "status": "REJECTED",
+   "reason": "EXPIRED",
+   "ts": "2026-09-30T00:49:12.141Z"
+  },
+  "took_s": 0.5
+ },
+ "OPT": {
+  "pass": true,
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "receipt:OPERATOR_WAIT(STORED)",
+   "operator:REJECTED(OPERATOR_TIMEOUT)"
+  ],
+  "timeout_after_s": 59.4,
+  "took_s": 60.5
+ },
+ "AUD": {
+  "pass": true,
+  "job": "ctl-288b858452f44c15a5d369723bf1823c",
+  "audit_actions": [
+   "approve",
+   "dispatched",
+   "gateway_accepted",
+   "response_receipt",
+   "response_operator",
+   "response_plc",
+   "observed"
+  ],
+  "update_delete": {
+   "ops:UPDATE": "거부: InsufficientPrivilege: permission denied for table log",
+   "ops:DELETE": "거부: InsufficientPrivilege: permission denied for table log",
+   "postgres:UPDATE": "거부: InsufficientPrivilege: 추가 전용 표(audit.log)는 UPDATE 할 수 없다",
+   "postgres:DELETE": "거부: InsufficientPrivilege: 추가 전용 표(audit.log)는 DELETE 할 수 없다"
+  },
+  "took_s": 0.1
+ },
+ "restored": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": false,
+   "pump_speed_sp": 76.0,
+   "valve_open_sp": 47.0,
+   "temp_sp_c": 70.0
+  }
+ },
+ "pass_all": true,
+ "S19": {
+  "pass": true,
+  "note": "준비만(모드 REMOTE_AUTO). 엣지 정지·요청은 S19A, 재기동 뒤 확인은 S19B",
+  "temp_before": 70.0,
+  "took_s": 0.3
+ },
+ "S19A": {
+  "pass": true,
+  "job": "ctl-a2a920decd3f43939e2cb245c0fc900f",
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "ack_timeout:UNKNOWN(ACK 5 s 안에 수신 응답(ⓑ) 없음 — 응답 없음(결과 모름). 다시 보내지 않는다)",
+   "expired_unconfirmed:UNKNOWN(만료 + 5 s 까지 수신 응답(ⓑ) 없음 — 결과 미확인)"
+  ],
+  "ack_timeout_after_s": 5.38,
+  "took_s": 35.4
+ },
+ "S19B": {
+  "pass": true,
+  "job": "ctl-a2a920decd3f43939e2cb245c0fc900f",
+  "events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "ack_timeout:UNKNOWN(ACK 5 s 안에 수신 응답(ⓑ) 없음 — 응답 없음(결과 모름). 다시 보내지 않는다)",
+   "expired_unconfirmed:UNKNOWN(만료 + 5 s 까지 수신 응답(ⓑ) 없음 — 결과 미확인)"
+  ],
+  "dropped_by": "MQTT 메시지 만료(전달 안 됨)",
+  "target": 62.0,
+  "temp_before": 70.0,
+  "temp_after": 70.0,
+  "note": "온도 설정값은 REMOTE_AUTO 생산 스케줄이 움직인다 — 판정은 목표값 미도달과 수신·PLC 응답 없음",
+  "took_s": 20.0
+ }
+}

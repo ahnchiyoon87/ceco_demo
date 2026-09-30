@@ -1,8 +1,8 @@
 """Read-only evidence adapters. Never expose injected-fault ground truth to AI."""
-import csv
-import io
+import base64
 import json
 import os
+import re
 import time
 from datetime import datetime, timezone
 from urllib.parse import urlencode
@@ -16,47 +16,78 @@ from ..ontology.tools import _run_readonly_query
 router = APIRouter(prefix="/api/operations", tags=["manufacturing-evidence"])
 
 
+# ── 설비 접점: DMZ InfluxDB 의 OT 원시값 사본을 읽기 전용 계정으로 조회한다(HANDOFF §1 AI 층, §2-1 ③) ──
+# V1 은 가상설비 HTTP /state 를 직접 읽었다. 새 구조에서 IT 는 OT 에 닿지 않고 DMZ 사본만 본다.
+# 명령 상태·인터록·모드·순번은 엣지가 UNS 에 낸 PLC 상태 토픽이 DMZ 사본(plc_status)에 들어온 것이다.
+COMMANDS = {  # V1 /state 의 commands 이름 → PLC 상태(설비/이름)
+    "pump_run": ("P-101", "run"), "agitator_run": ("M-101", "run"), "heater_enable": ("HX-101", "enable"),
+    "cooler_enable": ("HX-102", "enable"), "pump_speed_sp": ("P-101", "speed_sp"), "valve_open_sp": ("CV-101", "open_sp"),
+    "temp_sp_c": ("R-101", "temp_sp")}
+SWITCHES = {"pump_run", "agitator_run", "heater_enable", "cooler_enable"}
+STALE_S = 10
+
+
+def dmz_query(influxql: str) -> list[dict]:
+    """InfluxQL(v1 호환, 읽기 전용 계정) → 행 목록. 실패하면 OSError·ValueError."""
+    url = os.environ.get("INFLUX_URL", "http://dmz-influx:8086") + "/query?" + urlencode(
+        {"db": os.environ.get("INFLUX_DB", "plant_raw"), "q": influxql})
+    auth = base64.b64encode(f'{os.environ["INFLUX_USER"]}:{os.environ["INFLUX_PASSWORD"]}'.encode()).decode()
+    with urlopen(Request(url, headers={"Authorization": f"Basic {auth}"}), timeout=10) as response:
+        body = json.load(response)
+    out = []
+    for result in body.get("results", []):
+        if "error" in result:
+            raise ValueError(result["error"])
+        for series in result.get("series", []):
+            for values in series["values"]:
+                out.append({**series.get("tags", {}), **dict(zip(series["columns"], values))})
+    return out
+
+
+def q(value: str) -> str:
+    return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
 @router.get("/plant")
-def live_state():
+def live_state(site: str = "AR-100", device: str = "reactor-line-01"):
     try:
-        with urlopen(os.environ.get("SCADA_STATE_URL", "http://host.docker.internal:27080/state"), timeout=5) as response:
-            state = json.load(response)
-        return {"status": "available", "retrieved_at": datetime.now(timezone.utc).isoformat(),
-                "site": state["site"], "device": state["device"], "seq": state["seq"],
-                "readings": state["readings"], "commands": state["commands"], "interlock": state["interlock"],
-                "timestamp_note": "조회 시각이며 센서 측정 시각은 아닙니다."}
-    except (OSError, ValueError, KeyError):
-        return {"status": "unavailable", "error": "시뮬레이터 상태 조회 실패"}
+        where = f"site={q(site)} AND device={q(device)}"
+        status = dmz_query(f'SELECT last("num") AS num, last("text") AS text FROM "plc_status" WHERE {where} '
+                           f'AND time > now() - 1h GROUP BY "asset", "name"')
+        values = dmz_query(f'SELECT last("value") AS value, last("seq") AS seq FROM "process_raw" WHERE {where} '
+                           f'AND time > now() - {STALE_S}s GROUP BY "tag"')
+        st = {(r["asset"], r["name"]): (r["text"] if r.get("text") is not None else r.get("num")) for r in status}
+        if not values or ("PLC-01", "mode") not in st:
+            return {"status": "unavailable", "error": f"최근 {STALE_S}초 설비 관측 또는 PLC 상태가 DMZ 사본에 없습니다."}
+        commands = {}
+        for name, key in COMMANDS.items():
+            v = st.get(key)
+            commands[name] = (bool(v) if name in SWITCHES else round(float(v), 1)) if v is not None else None
+        return {"status": "available", "retrieved_at": datetime.now(timezone.utc).isoformat(), "site": site, "device": device,
+                "seq": max(int(r["seq"]) for r in values if r.get("seq") is not None),
+                "readings": {r["tag"]: round(float(r["value"]), 4) for r in values},
+                "commands": commands, "interlock": bool(st.get(("PLC-01", "interlock"))),
+                "mode": st.get(("PLC-01", "mode")), "maintenance": bool(st.get(("PLC-01", "maintenance"))),
+                "field_comm": bool(st.get(("PLC-01", "field_comm"))), "run_state": st.get(("PLC-01", "run_state")),
+                "source": "DMZ InfluxDB(OT 원시값 사본)",
+                "timestamp_note": "조회 시각이며 센서 측정 시각은 아닙니다. 값은 DMZ 사본의 최근 10초 안 마지막 값입니다."}
+    except (OSError, ValueError, KeyError, TypeError):
+        return {"status": "unavailable", "error": "DMZ 설비 사본 조회 실패"}
 
 
 def history(site, device, tags, start_ns, stop_ns):
-    token, org, bucket = (os.environ.get(key, "") for key in ("INFLUX_TOKEN", "INFLUX_ORG", "INFLUX_BUCKET"))
-    if not all((token, org, bucket)):
+    if not all(os.environ.get(k) for k in ("INFLUX_USER", "INFLUX_PASSWORD")):
         return {"status": "unavailable", "error": "센서 이력 연결 설정이 없습니다.", "rows": []}
     if not tags:
         return {"status": "missing", "error": "조회할 센서 관계를 확인하지 못했습니다.", "rows": []}
-    quote = lambda value: json.dumps(value, ensure_ascii=False)
-    query = (f'from(bucket:{quote(bucket)}) |> range(start:time(v:{start_ns}), stop:time(v:{stop_ns})) '
-             f'|> filter(fn:(r)=>r._measurement=="process_raw" and r._field=="value" '
-             f'and r.site=={quote(site)} and r.device=={quote(device)} '
-             f'and contains(value:r.tag,set:{quote(tags)})) '
-             '|> group() |> sort(columns:["_time"]) |> limit(n:2001)')
-    request = Request(os.environ.get("INFLUX_URL", "http://host.docker.internal:27086") + "/api/v2/query?" + urlencode({"org": org}),
-                      data=json.dumps({"query": query, "type": "flux"}).encode(),
-                      headers={"Authorization": f"Token {token}", "Content-Type": "application/json", "Accept": "application/csv"})
+    pattern = "|".join(re.escape(t) for t in tags)
     try:
-        with urlopen(request, timeout=10) as response:
-            content = response.read().decode()
-        lines = [line for line in content.splitlines() if line and not line.startswith("#")]
-        rows = []
-        for record in csv.DictReader(lines):
-            if record.get("_value") in (None, "_value"):
-                continue
-            rows.append({"time": record["_time"], "tag": record["tag"],
-                         "value": float(record["_value"]), "quality": record.get("quality", "UNKNOWN")})
+        rows = dmz_query(f'SELECT "value", "quality", "tag" FROM "process_raw" WHERE site={q(site)} AND device={q(device)} '
+                         f'AND "tag" =~ /^({pattern})$/ AND time >= {int(start_ns)} AND time <= {int(stop_ns)} ORDER BY time LIMIT 2001')
+        rows = [{"time": r["time"], "tag": r["tag"], "value": float(r["value"]), "quality": r.get("quality", "UNKNOWN")} for r in rows]
         return {"status": "available" if rows else "missing", "rows": rows[:2000],
                 "truncated": len(rows) > 2000, "start_ns": str(start_ns), "stop_ns": str(stop_ns),
-                "source": "InfluxDB/process_raw", "limit": 2000}
+                "source": "DMZ InfluxDB/process_raw(OT 원시값 사본)", "limit": 2000}
     except (OSError, ValueError, KeyError):
         return {"status": "unavailable", "error": "센서 이력 조회 실패", "rows": []}
 

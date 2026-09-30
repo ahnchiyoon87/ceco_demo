@@ -1,0 +1,11 @@
+# ═══ OT 쪽 Prometheus(--agent): OT 대상만 읽어 DMZ 수신 Prometheus 로 보낸다(OT 가 여는 연결, 17번 G5) ═══
+global: { scrape_interval: 15s, external_labels: { zone: ot } }
+scrape_configs:
+  - job_name: edge
+    static_configs: [ { targets: ['edge:1880'] } ]
+  - job_name: ot-hub
+    static_configs: [ { targets: ['ot-hub-exporter:4195'] } ]
+  - job_name: ot-agent
+    static_configs: [ { targets: ['localhost:9090'] } ]
+remote_write:
+  - url: http://dmz-prom:9090/api/v1/write

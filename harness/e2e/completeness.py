@@ -20,7 +20,9 @@ def kafka_rows(bootstrap, topic, start_ms, end_ms):
     tps = c.offsets_for_times([TopicPartition(topic, p, start_ms) for p in parts], timeout=10)
     c.assign(tps)
     ends = {tp.partition: c.get_watermark_offsets(TopicPartition(topic, tp.partition), timeout=10)[1] for tp in tps}
-    done, rows = set(), []
+    # 구간 시작 뒤 메시지가 없는 파티션(시작 오프셋 없음 또는 끝 오프셋 이상)은 처음부터 끝난 것으로 둔다.
+    # 없으면 그 파티션을 영원히 기다린다(09-30: 리플레이 때만 데이터가 들어간 파티션에서 멈춤)
+    done, rows = {tp.partition for tp in tps if tp.offset < 0 or tp.offset >= ends[tp.partition]}, []
     while len(done) < len(ends):
         m = c.poll(1.0)
         if m is None:
@@ -38,12 +40,15 @@ def kafka_rows(bootstrap, topic, start_ms, end_ms):
     return rows
 
 
+INFLUX = {"url": "http://influxdb:8086", "bucket_env": "INFLUX_BUCKET", "token_env": "INFLUX_TOKEN", "measurement": "process_raw"}
+
+
 def influx_rows(start_ms, end_ms):
-    q = (f'from(bucket:"{os.environ["INFLUX_BUCKET"]}") |> range(start:time(v:{start_ms * 1_000_000}), stop:time(v:{end_ms * 1_000_000})) '
-         f'|> filter(fn:(r)=>r._measurement=="process_raw" and r._field=="value" and (not exists r.device or r.device=="{DEVICE}")) |> keep(columns:["_time","tag"])')
-    req = urllib.request.Request("http://influxdb:8086/api/v2/query?" + urllib.parse.urlencode({"org": os.environ["INFLUX_ORG"]}),
+    q = (f'from(bucket:"{os.environ[INFLUX["bucket_env"]]}") |> range(start:time(v:{start_ms * 1_000_000}), stop:time(v:{end_ms * 1_000_000})) '
+         f'|> filter(fn:(r)=>r._measurement=="{INFLUX["measurement"]}" and r._field=="value" and (not exists r.device or r.device=="{DEVICE}")) |> keep(columns:["_time","tag"])')
+    req = urllib.request.Request(INFLUX["url"] + "/api/v2/query?" + urllib.parse.urlencode({"org": os.environ["INFLUX_ORG"]}),
                                  json.dumps({"query": q, "type": "flux"}).encode(),
-                                 {"Authorization": "Token " + os.environ["INFLUX_TOKEN"], "Content-Type": "application/json", "Accept": "application/csv"})
+                                 {"Authorization": "Token " + os.environ[INFLUX["token_env"]], "Content-Type": "application/json", "Accept": "application/csv"})
     text = urllib.request.urlopen(req, timeout=60).read().decode()
     lines = [l for l in text.splitlines() if l and not l.startswith("#")]
     from datetime import datetime
@@ -83,8 +88,13 @@ if __name__ == "__main__":
     ap.add_argument("--topic", default="sensor.telemetry.raw")
     ap.add_argument("--out", required=True)
     ap.add_argument("--device", default="reactor-line-01")
+    # 새 베이스: 저장 지점을 고른다. DMZ 원시 사본 = --influx http://dmz-influx:8086 --bucket-env DMZ_INFLUX_BUCKET --token-env DMZ_INFLUX_TOKEN
+    #           IT 결과 = --influx http://it-influx:8086 --bucket-env IT_INFLUX_BUCKET --token-env IT_INFLUX_TOKEN --measurement process
+    ap.add_argument("--influx", default=INFLUX["url"]); ap.add_argument("--bucket-env", default=INFLUX["bucket_env"])
+    ap.add_argument("--token-env", default=INFLUX["token_env"]); ap.add_argument("--measurement", default=INFLUX["measurement"])
     a = ap.parse_args()
     DEVICE = a.device
+    INFLUX.update(url=a.influx, bucket_env=a.bucket_env, token_env=a.token_env, measurement=a.measurement)
     out = {"window_ms": [a.start_ms, a.end_ms],
            "kafka_raw": analyse(kafka_rows(a.kafka, a.topic, a.start_ms, a.end_ms), a.start_ms, a.end_ms),
            "influx_process_raw": analyse(influx_rows(a.start_ms, a.end_ms), a.start_ms, a.end_ms)}

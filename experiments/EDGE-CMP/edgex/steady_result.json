@@ -1,0 +1,8 @@
+{
+ "scans": 177,
+ "expected_tag_scans": 2124,
+ "missing_tag_scans": 0,
+ "duplicates": 0,
+ "latency_p50_ms": 98.2,
+ "latency_p95_ms": 107.4
+}

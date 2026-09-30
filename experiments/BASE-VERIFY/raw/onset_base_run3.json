@@ -1,0 +1,49 @@
+{
+ "limit_s": 12.0,
+ "results": {
+  "spike": {
+   "reps": [
+    {
+     "kafka": 1.09,
+     "screen": 3.01
+    },
+    {
+     "kafka": 1.03,
+     "screen": 2.88
+    },
+    {
+     "kafka": 1.18,
+     "screen": 2.84
+    }
+   ],
+   "screen": "fuxa",
+   "kafka_max_s": 1.18,
+   "screen_max_s": 3.01,
+   "missing": 0,
+   "within_10s": true
+  },
+  "heater_stuck": {
+   "reps": [
+    {
+     "kafka": 4.27,
+     "screen": 5.95
+    },
+    {
+     "kafka": 3.75,
+     "screen": 5.47
+    },
+    {
+     "kafka": 3.24,
+     "screen": 4.93
+    }
+   ],
+   "screen": "fuxa",
+   "kafka_max_s": 4.27,
+   "screen_max_s": 5.95,
+   "missing": 0,
+   "within_10s": true
+  }
+ },
+ "all_within_10s": true,
+ "physics_time_scale": 600.0
+}

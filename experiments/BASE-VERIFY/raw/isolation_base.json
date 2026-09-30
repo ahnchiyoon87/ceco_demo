@@ -1,0 +1,35 @@
+{
+ "during": {
+  "cut_at": 1790737485.907004,
+  "job_a": "iso-a-dd7103bd9948421c8ee5974d6ec69066",
+  "job_b": "iso-b-77b5965ea5fc4895a753709c387982eb",
+  "job_b_expires_at": 1790737506,
+  "fuxa_value_updates": true,
+  "operator_ack": "ACCEPTED",
+  "interlock_seen": true,
+  "pump_off_during_interlock": true,
+  "fuxa_daq_rows_during_cut": 55,
+  "during_s": 55.0
+ },
+ "ot_continues": true,
+ "after": {
+  "job_a_response_on_ot": null,
+  "job_a_events": [
+   "approved:APPROVED",
+   "dispatched:None",
+   "gateway_accepted:ACCEPTED",
+   "ack_timeout:UNKNOWN",
+   "expired_unconfirmed:UNKNOWN"
+  ],
+  "job_b_response_on_ot": {
+   "job_order_id": "iso-b-77b5965ea5fc4895a753709c387982eb",
+   "stage": "receipt",
+   "status": "REJECTED",
+   "reason": "EXPIRED",
+   "ts": "2026-09-30T03:05:57.774Z"
+  }
+ },
+ "mqtt_expiry_dropped": true,
+ "body_expiry_rejected": true,
+ "pass": true
+}

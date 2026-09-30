@@ -1,0 +1,3 @@
+S08b  reg_base_l4.b1eec-S08b-8 exp=1      cep=1 PASS
+S08b  reg_base_l4.b1eec-S08b-9 exp=1      cep=1 PASS
+PASS 70 FAIL 0 latency {'n': 40, 'p50': 5788.6, 'p95': 6207.6, 'max': 6212.6, 'note': '진동 주입 emit → 알람 Kafka CreateTime. 워터마크 5s 대기 포함'}

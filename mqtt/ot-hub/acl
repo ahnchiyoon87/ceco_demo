@@ -1,0 +1,36 @@
+# ═══ OT 허브 계정별 권한(최소 권한). 브리지 in 메시지에는 이 ACL 이 걸리지 않는다(실측 ⑨-4) ═══
+# 엣지: 계측·상태·ACK·통신 상태·수업용 edgex/telemetry 발행, 제어기 명령 토픽 읽기만
+user edge
+topic write AR-100/reaction/+/+/tag/+
+topic write AR-100/reaction/+/+/status/+
+topic write AR-100/reaction/+/+/ack/+
+topic write AR-100/reaction/+/+/state/+
+topic write edgex/telemetry
+topic read AR-100/reaction/+/+/cmd/+
+
+# OT 작업 요청 수신기: 요청 읽기 → 판단 → 외부 요청 명령 토픽 발행. 대기 목록 발행, 운전원 결정 읽기, 응답 발행
+user ot-receiver
+topic read AR-100/request/in
+topic write AR-100/reaction/+/+/cmd/request
+topic write AR-100/reaction/reactor-line-01/request/pending
+topic read AR-100/reaction/reactor-line-01/request/decision
+topic write AR-100/response/#
+topic read AR-100/reaction/+/PLC-01/status/+
+topic read AR-100/reaction/+/PLC-01/ack/+
+
+# FUXA(HMI): UNS 읽기, 운전원 명령 발행, 받은 요청 결정 발행, 분석 경고(참고) 읽기
+user fuxa
+topic read AR-100/reaction/#
+topic write AR-100/reaction/+/+/cmd/operator
+topic write AR-100/reaction/reactor-line-01/request/decision
+topic read AR-100/alert/display
+
+# 읽기 전용(수업 자료 edgex/telemetry 구독, 시험 도구)
+user viewer
+topic read AR-100/#
+topic read edgex/telemetry
+topic read $SYS/#
+
+# OT 감시 exporter
+user ot-exporter
+topic read $SYS/#

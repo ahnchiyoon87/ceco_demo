@@ -1,86 +1,80 @@
 # ═══════════════════════════════════════════════════════════════════════════
-# AR-100 IIoT/SCADA 파이프라인
+# AR-100 IIoT/SCADA 새 베이스 (망 3구역: OT · DMZ · IT) — 정본 compose.yml, 설정·계정 .env, 설비 registry/equipment.yaml
 # ═══════════════════════════════════════════════════════════════════════════
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
-SIM := http://localhost:$(shell grep -E '^PORT_SIM_API=' .env | cut -d= -f2)
-CURL := docker run --rm --network iiot curlimages/curl:latest -s
+env = $(shell grep -E '^$(1)=' .env | cut -d= -f2-)
+SIM := http://localhost:$(call env,PORT_SIM_API)
+AUTH := -u $(call env,INSTRUCTOR_USER):$(call env,INSTRUCTOR_PASSWORD)
+FAULT = curl -s $(AUTH) -XPOST $(SIM)/fault -H 'Content-Type: application/json'
 
-.PHONY: help up lite down clean ps logs urls train regen-edgex regen-fuxa jobs \
-        fault-dropout fault-spike fault-noise fault-bearing fault-drift fault-netdown fault-clear \
-        state verify
+.PHONY: help up down clean ps logs urls regen train jobs verify state \
+        fault-dropout fault-spike fault-noise fault-bearing fault-drift fault-heater fault-cooling fault-clear
 
 help:  ## 사용 가능한 명령
-	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-up:  ## 전체 스택 기동 (EdgeX 경유)
+up:  ## 전체 기동(직접 만드는 이미지는 빌드, 모델은 학습기가 기동 때 만든다)
 	docker compose up -d --build
-	@echo "기동 중... 최초 실행은 이미지 빌드/모델 학습으로 수 분 걸립니다."
-	@$(MAKE) --no-print-directory urls
 
-lite:  ## EdgeX 를 우회해 기동 (시뮬레이터 → EMQX 직결, 경량)
-	COMPOSE_PROFILES=lite DIRECT_MQTT_ENABLE=true docker compose up -d --build
-	@$(MAKE) --no-print-directory urls
+down:  ## 정지(볼륨 보존)
+	docker compose down
 
-down:  ## 중지 (데이터 보존)
-	docker compose --profile edgex --profile lite down
-
-clean:  ## 중지 + 볼륨/데이터 완전 삭제
-	docker compose --profile edgex --profile lite down -v --remove-orphans
+clean:  ## 정지 + 볼륨 삭제(이력·모델·DB 모두 지움)
+	docker compose down -v
 
 ps:  ## 서비스 상태
-	@docker compose ps --format "table {{.Name}}\t{{.Status}}"
+	@docker compose ps -a --format "table {{.Service}}\t{{.Status}}"
 
-logs:  ## 전체 로그 팔로우 (make logs S=flink-jobmanager 로 개별 지정)
+logs:  ## 로그 팔로우 (make logs S=edge 로 개별 지정)
 	docker compose logs -f $(S)
 
-urls:  ## 접속 주소
+urls:  ## 사람용 접속 주소(모두 127.0.0.1)
 	@echo ""
-	@echo "  FUXA (P&ID 관제·제어)  http://localhost:$$(grep -E '^PORT_FUXA=' .env | cut -d= -f2)"
-	@echo "  Grafana (트렌드·ML)    http://localhost:$$(grep -E '^PORT_GRAFANA=' .env | cut -d= -f2)"
-	@echo "  Flink (잡·체크포인트)  http://localhost:$$(grep -E '^PORT_FLINK_UI=' .env | cut -d= -f2)"
-	@echo "  Prometheus (인프라)    http://localhost:$$(grep -E '^PORT_PROMETHEUS=' .env | cut -d= -f2)"
-	@echo "  EMQX 대시보드          http://localhost:$$(grep -E '^PORT_EMQX_DASHBOARD=' .env | cut -d= -f2)  (admin/public)"
-	@echo "  InfluxDB               http://localhost:$$(grep -E '^PORT_INFLUXDB=' .env | cut -d= -f2)"
-	@echo "  EdgeX UI               http://localhost:$$(grep -E '^PORT_EDGEX_UI=' .env | cut -d= -f2)"
-	@echo "  시뮬레이터 API         http://localhost:$$(grep -E '^PORT_SIM_API=' .env | cut -d= -f2)/state"
+	@echo "  OT  FUXA (HMI, 운전원 명령은 로그인)  http://localhost:$(call env,PORT_FUXA)"
+	@echo "  OT  현장 패널(가상설비 스위치)          http://localhost:$(call env,PORT_FIELD_PANEL)"
+	@echo "  OT  강사 API(고장 주입, 계정)           http://localhost:$(call env,PORT_SIM_API)/state"
+	@echo "  OT  엣지 Node-RED 편집(로그인)          http://localhost:$(call env,PORT_EDGE_UI)"
+	@echo "  OT  OpenPLC 편집 API                    https://localhost:$(call env,PORT_PLC_API)"
+	@echo "  OT  허브 MQTT(viewer, edgex/telemetry)  localhost:$(call env,PORT_OT_MQTT)"
+	@echo "  IT  Grafana                             http://localhost:$(call env,PORT_GRAFANA)"
+	@echo "  IT  Flink                               http://localhost:$(call env,PORT_FLINK_UI)"
+	@echo "  IT  Prometheus                          http://localhost:$(call env,PORT_PROMETHEUS)"
+	@echo "  IT  AI 업무 화면                        http://localhost:$(call env,PORT_AI_WEB)"
 	@echo ""
 
-train:  ## Autoencoder 재학습 (모델 교체)
+regen:  ## 등록부(registry/equipment.yaml)를 바꾼 뒤: 태그·흐름·PLC·FUXA·스키마 다시 만들고 반영
+	python3 registry/generate.py
+	docker compose up -d --build plc edge dmz-gateway
+	docker compose up -d fuxa-provisioner
+
+train:  ## 오토인코더 다시 학습(모델 볼륨 교체) 뒤 Flink 잡 다시 제출
 	docker compose run --rm model-trainer
-
-jobs:  ## Flink 잡 재제출
 	docker compose run --rm flink-job-submitter
 
-regen-edgex:  ## plant.yaml 변경 후 EdgeX 프로파일 재생성
-	cd edgex && python3 gen_profile.py
+jobs:  ## Flink 잡 상태
+	@curl -s http://localhost:$(call env,PORT_FLINK_UI)/jobs/overview | python3 -m json.tool
 
-regen-fuxa:  ## plant.yaml 변경 후 FUXA 프로젝트 재생성 + 재주입
-	cd fuxa && python3 build_project.py
-	docker compose run --rm fuxa-provisioner
-
-# ── 고장 주입 (각 시나리오가 특정 탐지 계층을 검증) ──
-fault-dropout:  ## TT-101 결측 15초 → Flink 보간 검증
-	@$(CURL) -XPOST http://plant-simulator:8080/fault -H 'Content-Type: application/json' -d '{"scenario":"dropout"}'; echo
-fault-spike:  ## PT-101 과압 → Tier1 임계치 + 고압 인터록 검증
-	@$(CURL) -XPOST http://plant-simulator:8080/fault -H 'Content-Type: application/json' -d '{"scenario":"spike"}'; echo
-fault-noise:  ## TT-101 분산 급증 → Tier1 롤링 Z-Score 검증
-	@$(CURL) -XPOST http://plant-simulator:8080/fault -H 'Content-Type: application/json' -d '{"scenario":"noise"}'; echo
-fault-bearing:  ## 전류↑후 진동↑ → Flink CEP MATCH_RECOGNIZE 검증
-	@$(CURL) -XPOST http://plant-simulator:8080/fault -H 'Content-Type: application/json' -d '{"scenario":"bearing_wear"}'; echo
-fault-drift:  ## pH/전도도 상관 붕괴 → Autoencoder 만 탐지
-	@$(CURL) -XPOST http://plant-simulator:8080/fault -H 'Content-Type: application/json' -d '{"scenario":"drift"}'; echo
+# ── 고장 주입(강사 도구, 호스트 전용 계정). 각 시나리오가 특정 탐지 계층을 검증 ──
+fault-dropout:  ## TT-101 결측 → Flink 보간
+	@$(FAULT) -d '{"scenario":"dropout"}'; echo
+fault-spike:  ## PT-101 계기 튐 → Tier1 규격 + PLC 고압 인터록
+	@$(FAULT) -d '{"scenario":"spike"}'; echo
+fault-noise:  ## TT-101 분산 급증 → Tier1 롤링 Z-Score
+	@$(FAULT) -d '{"scenario":"noise"}'; echo
+fault-bearing:  ## 전류↑ 뒤 진동↑ → Flink CEP
+	@$(FAULT) -d '{"scenario":"bearing_wear"}'; echo
+fault-drift:  ## pH/전도도 상관 붕괴 → 오토인코더만
+	@$(FAULT) -d '{"scenario":"drift"}'; echo
+fault-heater:  ## 히터 출력 고착 → TT 상승
+	@$(FAULT) -d '{"scenario":"heater_stuck"}'; echo
+fault-cooling:  ## 냉각 능력 상실
+	@$(FAULT) -d '{"scenario":"cooling_loss"}'; echo
 fault-clear:  ## 전체 고장 해제
-	@$(CURL) -XPOST http://plant-simulator:8080/fault/clear; echo
+	@curl -s $(AUTH) -XPOST $(SIM)/fault/clear; echo
 
-fault-netdown:  ## EMQX 30초 정지 → EdgeX Store-and-Forward 무손실 검증
-	@echo "EMQX 정지 (30초)..."; docker compose pause emqx
-	@sleep 30; docker compose unpause emqx
-	@echo "복구. app-mqtt-export 로그에서 재전송을 확인하세요:"
-	@echo "  docker compose logs edgex-app-mqtt-export | grep -i 'store'"
+state:  ## 가상설비 현재 상태(강사 API)
+	@curl -s $(AUTH) $(SIM)/state | python3 -m json.tool
 
-state:  ## 시뮬레이터 현재 상태
-	@$(CURL) http://plant-simulator:8080/state | python3 -m json.tool
-
-verify:  ## 전 계층 자동 검증 실행
+verify:  ## 전 계층 자동 검증 (make verify S=edge 로 단계 지정)
 	@python3 scripts/verify.py $(S)

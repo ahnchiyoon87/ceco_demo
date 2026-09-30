@@ -1,5 +1,0 @@
-# V2 가상설비: 물리 배속 기본값은 simulator/plant.yaml(physics_time_scale: 600)에 고정. 이상 주입 후 10초 안에 나타나야 한다(#87·#88).
-# 원본 이미지 이름(iiot/plant-simulator:1.0)은 쓰지 않는다. PHYSICS_TIME_SCALE 환경변수로 조절.
-services:
-  plant-simulator:
-    image: rot-plant-simulator:v2-ts

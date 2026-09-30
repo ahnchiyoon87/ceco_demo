@@ -1,0 +1,48 @@
+[
+ {
+  "work_master_id": "WM-M101-STOP",
+  "equipment_id": "M-101",
+  "command": "run",
+  "code": 2,
+  "kind": "switch",
+  "scale": 1,
+  "fixed_value": 0,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/M-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/M-101/status/run",
+  "desc": "교반기 정지(AI stop_mixer)"
+ },
+ {
+  "work_master_id": "WM-HX102-ENABLE",
+  "equipment_id": "HX-102",
+  "command": "enable",
+  "code": 4,
+  "kind": "switch",
+  "scale": 1,
+  "fixed_value": 1,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/HX-102/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/HX-102/status/enable",
+  "desc": "냉각기 기동(AI enable_cooling)"
+ },
+ {
+  "work_master_id": "WM-R101-TEMPSP",
+  "equipment_id": "R-101",
+  "command": "temp_sp",
+  "code": 7,
+  "kind": "setpoint",
+  "scale": 10,
+  "fixed_value": null,
+  "parameters": [
+   {
+    "id": "temp_sp_c",
+    "min": 60.0,
+    "max": 80.0,
+    "unit": "degC"
+   }
+  ],
+  "command_topic": "AR-100/reaction/reactor-line-01/R-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/R-101/status/temp_sp",
+  "desc": "반응기 온도 설정값 변경(운전 범위 안 조정)"
+ }
+]

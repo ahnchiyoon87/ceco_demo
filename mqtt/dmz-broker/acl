@@ -1,0 +1,33 @@
+# ═══ DMZ 브로커 계정별 권한 ═══
+# OT 허브 브리지: 데이터·상태·ACK·응답을 올리고, 요청·분석 경고를 가져간다
+user bridge-ot
+topic write AR-100/reaction/+/+/tag/+
+topic write AR-100/reaction/+/+/status/+
+topic write AR-100/reaction/+/+/ack/+
+topic write AR-100/reaction/+/+/state/+
+topic write AR-100/response/#
+topic read AR-100/request/in
+topic read AR-100/alert/display
+
+# DMZ 적재기(→ DMZ InfluxDB 원시 사본)
+user dmz-loader
+topic read AR-100/reaction/#
+
+# DMZ 요청 게이트웨이: 요청 토픽 발행만
+user gateway
+topic write AR-100/request/in
+
+# IT 수집기: 데이터·응답 구독(IT 가 연 연결), 분석 경고 토픽 하나에만 발행
+user it-collector
+topic read AR-100/reaction/#
+topic read AR-100/response/#
+topic write AR-100/alert/display
+
+# 읽기 전용(시험 도구)
+user viewer
+topic read AR-100/#
+topic read $SYS/#
+
+# DMZ 감시 exporter
+user dmz-exporter
+topic read $SYS/#

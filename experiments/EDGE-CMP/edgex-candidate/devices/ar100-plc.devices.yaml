@@ -1,0 +1,22 @@
+# registry/generate.py 가 registry/equipment.yaml 에서 생성. 손으로 고치지 않는다.
+deviceList:
+- name: PLC-01
+  profileName: AR100-PLC
+  description: AR-100 soft-PLC (Modbus/TCP)
+  labels:
+  - AR-100
+  serviceName: device-modbus
+  protocols:
+    modbus-tcp:
+      Address: plc
+      Port: '502'
+      UnitID: '1'
+      Timeout: '5'
+      IdleTimeout: '5'
+  autoEvents:
+  - interval: 250ms
+    onChange: false
+    sourceName: Values
+  - interval: 250ms
+    onChange: false
+    sourceName: Status

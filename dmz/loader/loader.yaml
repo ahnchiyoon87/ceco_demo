@@ -1,0 +1,48 @@
+# ═══ DMZ 적재기(Bento 1.21.2) — DMZ 브로커 → DMZ InfluxDB(OT 원시값 사본 전용, HANDOFF §2-1 ③) ═══
+# IT(Grafana·AI)는 이 사본을 HTTP API 로 조회만 한다. IT 결과는 여기 쓰지 않는다(17번 D15).
+#   process_raw : 계측값(품질 BAD 인 결측은 행을 만들지 않는다 — 공백으로 남긴다)
+#   plc_status  : PLC 상태·통신 상태(현재 설비 상태 조회용: 명령·인터록·모드·정비·순번)
+input:
+  mqtt:
+    urls: [ tcp://dmz-broker:1883 ]
+    client_id: dmz-loader
+    user: dmz-loader
+    password: ${MQTT_DMZ_LOADER_PASSWORD}
+    clean_session: false
+    topics:
+      - AR-100/reaction/+/+/tag/+
+      - AR-100/reaction/+/+/status/+
+      - AR-100/reaction/+/+/state/+
+    qos: 1
+pipeline:
+  processors:
+    - mapping: |
+        let parts = meta("mqtt_topic").split("/")
+        let p = this
+        let head = "site=%s,area=%s,device=%s,asset=%s".format($parts.index(0), $parts.index(1), $parts.index(2), $parts.index(3))
+        let ts = if $p.ts != null { $p.ts.int64() } else { (timestamp_unix_nano()).int64() }
+        root = match {
+          $parts.index(4) == "tag" && $p.value != null => "process_raw,%s,tag=%s,quality=%s value=%v,seq=%vi,pts=%vi %v".format(
+              $head, $parts.index(5), $p.quality, $p.value.number(), ($p.seq | 0).int64(), ($p.pts | 0).int64(), $ts),
+          $parts.index(4) == "status" || $parts.index(4) == "state" => match $p.value.type() {
+              "string" => "plc_status,%s,kind=%s,name=%s text=\"%s\" %v".format($head, $parts.index(4), $parts.index(5), $p.value, $ts),
+              "bool" => "plc_status,%s,kind=%s,name=%s num=%v %v".format($head, $parts.index(4), $parts.index(5), if $p.value { 1 } else { 0 }, $ts),
+              _ => "plc_status,%s,kind=%s,name=%s num=%v %v".format($head, $parts.index(4), $parts.index(5), $p.value.number(), $ts),
+            },
+          _ => deleted(),
+        }
+output:
+  http_client:
+    url: http://dmz-influx:8086/api/v2/write?org=${INFLUX_ORG}&bucket=${DMZ_INFLUX_BUCKET}&precision=ns
+    verb: POST
+    headers:
+      Authorization: Token ${DMZ_INFLUX_TOKEN}
+      Content-Type: text/plain; charset=utf-8
+    max_in_flight: 1
+    retry_period: 1s
+    max_retry_backoff: 10s
+    batching:
+      count: 500
+      period: 1s
+      processors:
+        - archive: { format: lines }

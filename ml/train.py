@@ -32,9 +32,18 @@ def log(msg: str) -> None:
 # ══════════════════════════════════════════════════════════════
 # 1. 정상 운전 데이터 생성
 # ══════════════════════════════════════════════════════════════
+def plant_cfg() -> dict:
+    """학습용 설비 설정: 가상설비 plant.yaml 그대로 두고 배속만 학습 설정(train.yaml physics_time_scale)으로 덮어쓴다.
+    배속을 운영과 같게 두면 표본 한 개 = 가상설비 스캔 한 번(설비 시각 dt_s × 배속)이라 운영 ML 입력 창과 간격이 같다(17번 K4)."""
+    cfg = yaml.safe_load(yaml.safe_dump(PLANT_CFG))
+    scale = CFG["data"].get("physics_time_scale", "plant")
+    cfg["physics_time_scale"] = float(PLANT_CFG.get("physics_time_scale", 1) if scale == "plant" else scale)
+    return cfg
+
+
 def generate() -> tuple[np.ndarray, list[str]]:
     d = CFG["data"]
-    cfg = yaml.safe_load(yaml.safe_dump(PLANT_CFG))
+    cfg = plant_cfg()
     cfg["autopilot"]["enabled"] = bool(d["autopilot"])
 
     plant = ReactorPlant(cfg)
@@ -50,7 +59,8 @@ def generate() -> tuple[np.ndarray, list[str]]:
         r = plant.step(dt)
         rows[i] = [r[t] for t in tags]
 
-    log(f"정상 운전 데이터 {n:,}행 × {len(tags)}태그 생성 (autopilot={d['autopilot']})")
+    log(f"정상 운전 데이터 {n:,}행 × {len(tags)}태그 생성 (autopilot={d['autopilot']}, 배속 {plant.time_scale:g}, "
+        f"표본 간격 설비 {dt * plant.time_scale:g} s)")
     return rows, tags
 
 
@@ -161,6 +171,9 @@ def main() -> None:
         "std": [float(v) for v in std],
         "threshold": threshold,
         "train_rows": int(X.shape[0]),
+        # 표본 간격(설비 초): Flink ONNX 잡이 창 안 스캔 간격을 이 값과 견주어 창을 새로 시작할지 정한다(17번 K4)
+        "sample_interval_s": float(CFG["data"]["dt_s"]) * plant_cfg()["physics_time_scale"],
+        "physics_time_scale": plant_cfg()["physics_time_scale"],
     }
     pathlib.Path(out["meta"]).write_text(json.dumps(meta, indent=2))
     size_mb = pathlib.Path(out["model"]).stat().st_size / 1e6
@@ -187,19 +200,24 @@ def validate() -> None:
     sess = ort.InferenceSession(out["model"], providers=["CPUExecutionProvider"])
     iname = sess.get_inputs()[0].name
 
+    dt = float(CFG["data"]["dt_s"])
+
     def errors(scenario: str | None, seconds: int = 400) -> np.ndarray:
-        cfg = yaml.safe_load(yaml.safe_dump(PLANT_CFG))
+        cfg = plant_cfg()
         plant = ReactorPlant(cfg)
         for _ in range(int(CFG["data"]["warmup_s"])):
-            plant.step(1.0)
+            plant.step(dt)
         if scenario:
-            plant.inject(scenario, seconds)
+            # 고장이 시험 구간 내내 이어지게 한다. 과정 고장은 설비 시계, 순간 사건은 관측 시계로 잰다
+            # (배속을 곱하지 않으면 배속 600 에서 과정 고장이 첫 스텝 안에 끝나 탐지율이 0 %로 보인다 — 결함 S6 재검토).
+            kind = cfg["faults"][scenario].get("kind", "process")
+            plant.inject(scenario, seconds * dt * (plant.time_scale if kind == "process" else 1.0))
         # 주의: 스캔당 step() 은 정확히 한 번만 호출해야 한다.
         # 태그마다 호출하면 한 행이 서로 다른 시각의 값으로 뒤섞이고
         # 시뮬레이션 시간이 태그 수만큼 빨리 흘러 고장 램프가 왜곡된다.
         rows = np.empty((seconds, len(tags)), dtype=np.float32)
         for i in range(seconds):
-            r = plant.step(1.0)
+            r = plant.step(dt)
             rows[i] = [r[t] for t in tags]
         # 통신 불량 센티널은 파이프라인에서 걸러지므로 검증에서도 직전값으로 대체
         for i in range(1, len(rows)):

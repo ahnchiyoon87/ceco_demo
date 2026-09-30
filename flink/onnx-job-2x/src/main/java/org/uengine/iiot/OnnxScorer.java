@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,13 +58,22 @@ public class OnnxScorer extends KeyedProcessFunction<String, Reading, AnomalySco
     private transient OrtSession session;
     private transient String inputName;
 
-    /** 태그별 최신 관측치 */
+    /** 태그별 최신 관측치(직전 값 유지, LOCF) */
     private transient MapState<String, Double> latest;
+    /** 아직 벡터로 만들지 않은 스캔: 순번 → (태그 → 값) */
+    private transient MapState<Long, Map<String, Double>> pending;
+    /** 스캔 순번 → 설비 시각(초) */
+    private transient MapState<Long, Long> pendingPts;
+    /** 스캔 순번 → 그 스캔의 첫 값이 도착한 처리 시각(ms) */
+    private transient MapState<Long, Long> pendingAt;
     /** 슬라이딩 텐서 버퍼: step index → 12차원 벡터 */
     private transient MapState<Integer, double[]> window;
     private transient ValueState<Integer> filled;
-    private transient ValueState<Long> nextFireMs;
+    private transient ValueState<Long> lastEmittedSeq;
+    private transient ValueState<Long> lastEmittedPts;
     private transient ValueState<String> siteState;
+    /** 학습 표본 간격(설비 초). 창 안 스캔 간격이 이 값의 1.5배를 넘으면 창을 새로 시작한다 */
+    private transient double sampleIntervalS;
 
     public OnnxScorer(String modelPath, String metaPath, int steps,
                       long inferenceIntervalMs, Double thresholdOverride) {
@@ -93,12 +103,20 @@ public class OnnxScorer extends KeyedProcessFunction<String, Reading, AnomalySco
         session = env.createSession(modelPath, opts);
         inputName = session.getInputNames().iterator().next();
 
+        sampleIntervalS = meta.has("sample_interval_s") ? meta.get("sample_interval_s").asDouble() : 0.0;
         latest = getRuntimeContext().getMapState(
                 new MapStateDescriptor<>("latest", Types.STRING, Types.DOUBLE));
+        pending = getRuntimeContext().getMapState(
+                new MapStateDescriptor<>("pending", Types.LONG, Types.MAP(Types.STRING, Types.DOUBLE)));
+        pendingPts = getRuntimeContext().getMapState(
+                new MapStateDescriptor<>("pendingPts", Types.LONG, Types.LONG));
+        pendingAt = getRuntimeContext().getMapState(
+                new MapStateDescriptor<>("pendingAt", Types.LONG, Types.LONG));
         window = getRuntimeContext().getMapState(
                 new MapStateDescriptor<>("window", Types.INT, TypeInformation.of(double[].class)));
         filled = getRuntimeContext().getState(new ValueStateDescriptor<>("filled", Types.INT));
-        nextFireMs = getRuntimeContext().getState(new ValueStateDescriptor<>("nextFire", Types.LONG));
+        lastEmittedSeq = getRuntimeContext().getState(new ValueStateDescriptor<>("lastSeq", Types.LONG));
+        lastEmittedPts = getRuntimeContext().getState(new ValueStateDescriptor<>("lastPts", Types.LONG));
         siteState = getRuntimeContext().getState(new ValueStateDescriptor<>("site", Types.STRING));
     }
 
@@ -110,43 +128,96 @@ public class OnnxScorer extends KeyedProcessFunction<String, Reading, AnomalySco
         return a;
     }
 
+    /**
+     * 스캔 순번으로 벡터를 맞춘다(17번 K4: ML 입력 창만 설비 시각 기준). 한 스캔의 12태그가 다 오면 바로,
+     * 덜 왔으면 다음·다다음 스캔이 올 때 또는 1.5초 뒤 직전 값(LOCF)으로 채워 벡터를 만든다.
+     * 순번이 없는 보간값은 직전 값만 갱신한다. 규칙 탐지(SQL)는 V1 과 같은 벽시계 ts 기준 그대로다.
+     */
     @Override
     public void processElement(Reading in, Context ctx, Collector<AnomalyScore> out) throws Exception {
-        latest.put(in.tag, in.value);
         if (siteState.value() == null) {
             siteState.update(in.site);
         }
-        // 처리시간 타이머로 고정 주기 텐서를 만든다. 센서마다 도착 시각이 미세하게
-        // 다르므로 이벤트 단위로 추론하면 같은 시점이 중복 평가된다.
-        if (nextFireMs.value() == null) {
-            long fire = ctx.timerService().currentProcessingTime() + inferenceIntervalMs;
-            nextFireMs.update(fire);
-            ctx.timerService().registerProcessingTimeTimer(fire);
+        if (in.seq == null) {
+            latest.put(in.tag, in.value);
+            return;
         }
+        Long last = lastEmittedSeq.value();
+        if (last != null && in.seq <= last) {
+            return;   // 이미 벡터로 만든 스캔의 늦은 값(재전송 등)
+        }
+        Map<String, Double> scan = pending.get(in.seq);
+        if (scan == null) {
+            scan = new HashMap<>();
+            long now = ctx.timerService().currentProcessingTime();
+            pendingAt.put(in.seq, now);
+            ctx.timerService().registerProcessingTimeTimer(now + 1500);
+        }
+        scan.put(in.tag, in.value);
+        pending.put(in.seq, scan);
+        if (in.pts != null) {
+            pendingPts.put(in.seq, in.pts);
+        }
+        // 이 스캔이 다 모였으면, 또는 두 스캔 이상 앞선 값이 왔으면 그 전 스캔까지 벡터로 만든다
+        List<Long> ready = new ArrayList<>();
+        for (Long s : pending.keys()) {
+            if (s < in.seq - 1 || (s.equals(in.seq) && scan.size() >= tagOrder.length)) {
+                ready.add(s);
+            }
+        }
+        emitUpTo(ready, out, ctx);
     }
 
     @Override
     public void onTimer(long timestamp, OnTimerContext ctx, Collector<AnomalyScore> out) throws Exception {
-        long next = timestamp + inferenceIntervalMs;
-        nextFireMs.update(next);
-        ctx.timerService().registerProcessingTimeTimer(next);
-
-        // ── 12차원 벡터 조립 (결측은 LOCF, 미관측 태그는 학습 평균으로 대체) ──
-        double[] vec = new double[tagOrder.length];
-        int seen = 0;
-        for (int i = 0; i < tagOrder.length; i++) {
-            Double v = latest.get(tagOrder[i]);
-            if (v != null) {
-                vec[i] = v;
-                seen++;
-            } else {
-                vec[i] = mean[i];
+        // 첫 값이 온 지 1.5초가 지난 스캔은 덜 모였어도 직전 값으로 채워 벡터로 만든다
+        List<Long> ready = new ArrayList<>();
+        for (Map.Entry<Long, Long> e : pendingAt.entries()) {
+            if (e.getValue() + 1500 <= timestamp) {
+                ready.add(e.getKey());
             }
         }
-        if (seen < tagOrder.length) {
-            return;   // 전 태그가 한 번은 관측되기 전에는 추론하지 않는다
-        }
+        emitUpTo(ready, out, ctx);
+    }
 
+    private void emitUpTo(List<Long> seqs, Collector<AnomalyScore> out, Context ctx) throws Exception {
+        seqs.sort(Comparator.naturalOrder());
+        for (Long s : seqs) {
+            Map<String, Double> scan = pending.get(s);
+            Long pts = pendingPts.get(s);
+            pending.remove(s);
+            pendingPts.remove(s);
+            pendingAt.remove(s);
+            if (scan == null) {
+                continue;
+            }
+            for (Map.Entry<String, Double> e : scan.entrySet()) {
+                latest.put(e.getKey(), e.getValue());
+            }
+            infer(s, pts, out, ctx);
+        }
+    }
+
+    private void infer(long seq, Long pts, Collector<AnomalyScore> out, Context ctx) throws Exception {
+        lastEmittedSeq.update(seq);
+        // ── 12차원 벡터 조립 (결측은 LOCF, 한 번도 안 온 태그가 있으면 추론하지 않는다) ──
+        double[] vec = new double[tagOrder.length];
+        for (int i = 0; i < tagOrder.length; i++) {
+            Double v = latest.get(tagOrder[i]);
+            if (v == null) {
+                return;
+            }
+            vec[i] = v;
+        }
+        // ── 창을 설비 시각으로 자른다: 스캔 간격이 학습 표본 간격의 1.5배를 넘으면(스캔 누락·재시작) 새로 채운다 ──
+        Long prevPts = lastEmittedPts.value();
+        if (pts != null) {
+            if (prevPts != null && sampleIntervalS > 0 && (pts - prevPts > 1.5 * sampleIntervalS || pts < prevPts)) {
+                window.clear();
+                filled.update(0);
+            }
+            lastEmittedPts.update(pts);
+        }
         // ── 슬라이딩 윈도우 전진 ──
         // 윈도우가 차기 전에는 뒤에 덧붙이기만 한다. 이 단계에서 좌측 시프트를 하면
         // 아직 기록되지 않은 슬롯을 읽어 MapState 에 null 을 넣게 된다
@@ -220,6 +291,8 @@ public class OnnxScorer extends KeyedProcessFunction<String, Reading, AnomalySco
                 .collect(Collectors.joining(", "));
         score.top_contributors = top;
 
+        score.seq = seq;
+        score.pts = pts;
         out.collect(score);
 
         if (score.is_anomaly) {

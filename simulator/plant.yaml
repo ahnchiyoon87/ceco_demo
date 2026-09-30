@@ -12,36 +12,53 @@ physics_time_scale: 600
 physics_max_substep_s: 5
 
 # ── 계측 태그 (12점) ───────────────────────────────────────────
-#  hr: float32 가 기록될 홀딩 레지스터 시작 주소 (2 워드 소비)
+#  hr: float32 가 기록될 홀딩 레지스터 시작 주소 (2 워드 소비) — 현장 장치의 레지스터 맵
+#  단위·설명·규격(USL/LSL)은 설비 등록부(registry/equipment.yaml)가 정본이다.
 tags:
-  - { name: LT-101, hr: 0,  unit: "%",     desc: "원료탱크 레벨",   lsl: 10.0, usl: 95.0, clamp_lo: 0.0 }
-  - { name: LT-102, hr: 2,  unit: "%",     desc: "반응기 레벨",     lsl: 15.0, usl: 90.0, clamp_lo: 0.0 }
-  - { name: TT-101, hr: 4,  unit: "degC",  desc: "반응기 온도",     lsl: 40.0, usl: 95.0 }
-  - { name: TT-102, hr: 6,  unit: "degC",  desc: "재킷 온도",       lsl: null, usl: 125.0 }
-  - { name: PT-101, hr: 8,  unit: "barg",  desc: "반응기 압력",     lsl: null, usl: 6.0, clamp_lo: 0.0 }
-  - { name: FT-101, hr: 10, unit: "m3/h",  desc: "공급 유량",       lsl: null, usl: null, clamp_lo: 0.0 }
-  - { name: FT-102, hr: 12, unit: "m3/h",  desc: "배출 유량",       lsl: null, usl: null, clamp_lo: 0.0 }
-  - { name: IT-101, hr: 14, unit: "A",     desc: "펌프 전류",       lsl: null, usl: 14.0, clamp_lo: 0.0 }
-  - { name: IT-102, hr: 16, unit: "A",     desc: "교반기 전류",     lsl: null, usl: 9.6, clamp_lo: 0.0 }
-  - { name: VT-101, hr: 18, unit: "mm/s",  desc: "교반기 진동",     lsl: null, usl: 7.1, clamp_lo: 0.0 }
-  - { name: pH-101, hr: 20, unit: "pH",    desc: "반응기 pH",       lsl: 6.2,  usl: 8.4, clamp_lo: 0.0 }
-  - { name: CT-101, hr: 22, unit: "mS/cm", desc: "전도도",          lsl: null, usl: null, clamp_lo: 0.0 }
+  - { name: LT-101, hr: 0,  clamp_lo: 0.0 }
+  - { name: LT-102, hr: 2,  clamp_lo: 0.0 }
+  - { name: TT-101, hr: 4 }
+  - { name: TT-102, hr: 6 }
+  - { name: PT-101, hr: 8,  clamp_lo: 0.0 }
+  - { name: FT-101, hr: 10, clamp_lo: 0.0 }
+  - { name: FT-102, hr: 12, clamp_lo: 0.0 }
+  - { name: IT-101, hr: 14, clamp_lo: 0.0 }
+  - { name: IT-102, hr: 16, clamp_lo: 0.0 }
+  - { name: VT-101, hr: 18, clamp_lo: 0.0 }
+  - { name: pH-101, hr: 20, clamp_lo: 0.0 }
+  - { name: CT-101, hr: 22, clamp_lo: 0.0 }
 
-# ── 제어 포인트 (Southbound) ──────────────────────────────────
+# ── 제어 포인트 (Southbound) — 이 레지스터에 쓰는 것은 soft-PLC 하나뿐이다 ──────
 commands:
   coils:
-    pump_run:      { addr: 0,  desc: "P-101 공급펌프 기동" }
-    agitator_run:  { addr: 1,  desc: "M-101 교반기 기동" }
-    heater_enable: { addr: 2,  desc: "HX-101 재킷히터 Enable" }
-    cooler_enable: { addr: 3,  desc: "HX-102 가상 냉각기 Enable" }
-    alarm_ack:     { addr: 10, desc: "알람 Acknowledge" }
-    interlock:     { addr: 20, desc: "고압 인터록 발동 (읽기전용)", readonly: true }
+    pump_run:      { addr: 0 }   # P-101 공급펌프 기동
+    agitator_run:  { addr: 1 }   # M-101 교반기 기동
+    heater_enable: { addr: 2 }   # HX-101 재킷히터 Enable
+    cooler_enable: { addr: 3 }   # HX-102 가상 냉각기 Enable
   holding:
-    pump_speed_sp: { addr: 100, desc: "P-101 속도 SP [%]",      min: 0, max: 100, default: 60 }
-    valve_open_sp: { addr: 101, desc: "CV-101 밸브 개도 SP [%]", min: 0, max: 100, default: 45 }
-    temp_sp_x10:   { addr: 102, desc: "반응기 온도 SP [degC*10]", min: 200, max: 1000, default: 720 }
-  # 스캔 시퀀스 카운터 (UINT32, 2워드) — QoS1 중복 진단용
-  sequence: { addr: 200 }
+    pump_speed_sp: { addr: 100, min: 0, max: 100, default: 60 }     # P-101 속도 SP [%]
+    valve_open_sp: { addr: 101, min: 0, max: 100, default: 45 }     # CV-101 밸브 개도 SP [%]
+    temp_sp_x10:   { addr: 102, min: 200, max: 1000, default: 720 } # 반응기 온도 SP [degC*10]
+  # 스캔 순번 (UINT32, 2워드) — 중복·누락 진단, ML 입력 창을 설비 스캔에 맞춘다
+  # 설비 시각 [s] (UINT32, 2워드) — 배속 적용된 물리 시각. PLC 생산 스케줄·ML 입력 창이 쓴다
+  # 둘 다 계측값 바로 뒤에 두어 한 번의 Modbus 읽기로 값·순번·시각을 함께 가져가게 한다(같은 스캔).
+  sequence: { addr: 24 }
+  plant_time: { addr: 26 }
+
+# ── 현장 패널(현장 스위치 입력) — PLC 가 Modbus 로 읽는다. 사람은 패널 화면(API_PANEL_PORT)으로만 조작 ──
+#   seq 항목은 누를 때마다 1 씩 오르는 카운터(순간 버튼). PLC 는 값이 바뀐 것을 눌림으로 본다.
+field_panel:
+  base: 300
+  registers:
+    mode_selector: 300       # 0=LOCAL, 1=REMOTE (현장 모드 선택 스위치)
+    local_cmd_seq: 301       # 현장 기동·정지 버튼 눌림 카운터
+    local_cmd_code: 302      # 명령 코드(1 펌프, 2 교반기, 3 히터, 4 냉각기)
+    local_cmd_value: 303     # 1=기동, 0=정지
+    maint_on_seq: 304        # 정비 모드 켜기 버튼
+    maint_release_seq: 305   # 정비 해제 키
+    operator_id: 306         # 담당자 ID(숫자)
+    estop: 307               # 비상정지 눌림(1) — 가상설비 안에서 래치, 리셋 전까지 유지
+    reset_seq: 308           # 비상정지 리셋 버튼
 
 # ── 물리 모델 파라미터 ────────────────────────────────────────
 physics:
@@ -76,22 +93,23 @@ physics:
   agitator:
     rated_current_a: 8.0
     base_vibration_mms: 2.1
-  # 고압 인터록: PT-101 초과 시 펌프 강제 트립 (결정론적 안전 로직)
-  interlock:
-    pressure_trip_barg: 6.5
-    pressure_reset_barg: 5.2
+  # 유압 릴리프 밸브식 압력 상한: 제어기·네트워크가 끌 수 없는 마지막 보호(기계 안전 기능 흉내).
+  # 제어 인터록(PLC, 6.5 barg 트립)보다 높게 둔다. 설계 압력 흉내 값이며 실제 설비 기준이 아니다.
+  relief:
+    set_barg: 7.5
   reaction:
     ph_setpoint: 7.4
     ph_drift_per_degc: -0.012
     conductivity_base: 3.4
     conductivity_per_ph: -0.85
 
-# ── Autopilot: 생산 스케줄에 따른 정상 운전 변동 ──────────────
-# 오토인코더가 학습할 '정상적인 다변량 상관 구조'를 만들기 위해
-# 설정치를 주기적으로 완만히 변경한다. 운전원이 FUXA 에서 수동
-# 조작하면 해당 설정치는 hold_after_manual_s 동안 autopilot 에서 제외된다.
+# ── 생산 스케줄(autopilot): 정상 운전 변동 ────────────────────
+# 설정치를 주기적으로 완만히 바꾸는 생산 스케줄. 운영에서는 soft-PLC 프로그램이 이 값으로 스케줄을 돈다
+# (PLC 가 설비의 유일한 쓰기 주인, registry/generate.py 가 PLC 프로그램에 넣는다). 가상설비 자신은 스케줄을 끈다.
+# 학습기(ml/train.py)는 같은 값으로 물리를 직접 돌려 정상 데이터를 만든다(enabled 를 켜서).
+# 운전원이 설정치를 바꾸면 해당 설정치는 hold_after_manual_s(실제 초) 동안 스케줄에서 빠진다.
 autopilot:
-  enabled: true
+  enabled: false
   period_s: 86400            # 설정치 재추첨 주기(설비 1일 — 생산 스케줄, 설비 시계)
   ramp_s: 7200               # 목표까지 완만히 이동(설비 2시간)
   hold_after_manual_s: 300   # 수동 조작 후 autopilot 재개까지 대기(사람 행동 — 실제 초)
@@ -163,6 +181,4 @@ faults:
     target: [pH-101, CT-101]
     magnitude: 0.55
     ramp_s: 3600                     # 드리프트가 최대까지 오르는 설비 시간(1시간)
-  # netdown 은 시뮬레이터가 아니라 compose 레벨에서 수행합니다 (EMQX 일시정지).
-  #   → make fault-netdown
-  # EdgeX app-service 의 Store-and-Forward 가 Redis 에 적재 후 재전송하는지 검증합니다.
+  # 브로커·브리지 단절은 가상설비가 아니라 라우터 규칙·컨테이너 정지로 만든다(harness/e2e).

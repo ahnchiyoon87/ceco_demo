@@ -1,0 +1,32 @@
+{
+ "struct": "새 베이스(compose.yml, 배속 600, 학습기 운영 배속 표본 간격 600)",
+ "window_s": 180,
+ "windows": 3,
+ "start": "스택 up 약 8분 뒤 1회차(fault/clear 5 s 뒤). 3회차는 측정 클라이언트 바인드 마운트 ENOMEM 2회로 09:36 에 다시 잰 창",
+ "alerts": [
+  75,
+  30,
+  108
+ ],
+ "alerts_median": 75,
+ "ml": [
+  0,
+  0,
+  0
+ ],
+ "ml_median": 0,
+ "nonml": [
+  75,
+  30,
+  108
+ ],
+ "nonml_median": 75,
+ "input_rate": "같은 시기 60 s: Kafka 원시·DMZ 사본 태그당 60건(720/720), 유실 0·중복 0·최대 공백 1.0 s (experiments/BASE-VERIFY/raw/rate_check.json)",
+ "vs_stableV1": {
+  "alerts_median": 105,
+  "ml_median": 52,
+  "nonml_median": 53
+ },
+ "judgement": "총 알람 중앙값 75 ≤ V1 105 → 합격(HANDOFF §3-5 '많지 않다'). ML 오경보 0 (V1 52). Z-Score 만은 중앙값 75 > 53, 범위 겹침(V1 37~65, 새 30~108), 원인 미확인",
+ "raw": "experiments/BASE-S01/raw/s01_base_{1,2,3}.json"
+}

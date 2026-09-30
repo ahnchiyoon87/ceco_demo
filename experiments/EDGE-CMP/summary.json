@@ -1,0 +1,82 @@
+{
+ "nodered": {
+  "steady_missing": 0,
+  "steady_expected": 2124,
+  "steady_dup": 0,
+  "p50_ms": 162.7,
+  "p95_ms": 298.9,
+  "cmd_ok": "10/10",
+  "cmd_ack_p50_s": 0.235,
+  "receiver": "28/28",
+  "receipt_p95_s": 0.048,
+  "outage_recover_s": [
+   2.58,
+   2.42,
+   2.34
+  ],
+  "outage_recover_median": 2.42,
+  "outage_loss": [
+   0,
+   0,
+   0
+  ],
+  "outage_dup": [
+   0,
+   0,
+   0
+  ],
+  "restart_recover_s": [
+   1.52,
+   1.56,
+   1.55
+  ],
+  "restart_loss": [
+   24,
+   24,
+   24
+  ],
+  "mem_steady_MiB": 83.1,
+  "mem_end_MiB": 76.8,
+  "containers": 1
+ },
+ "edgex": {
+  "steady_missing": 0,
+  "steady_expected": 2124,
+  "steady_dup": 0,
+  "p50_ms": 98.2,
+  "p95_ms": 107.4,
+  "cmd_ok": "10/10",
+  "cmd_ack_p50_s": 0.2355,
+  "receiver": "28/28",
+  "receipt_p95_s": 0.05,
+  "outage_recover_s": [
+   4.54,
+   4.59,
+   4.53
+  ],
+  "outage_recover_median": 4.54,
+  "outage_loss": [
+   0,
+   0,
+   0
+  ],
+  "outage_dup": [
+   24,
+   12,
+   24
+  ],
+  "restart_recover_s": [
+   1.12,
+   0.72,
+   0.67
+  ],
+  "restart_loss": [
+   12,
+   24,
+   12
+  ],
+  "mem_steady_MiB": 180.3,
+  "mem_end_MiB": 143.7,
+  "containers": 9
+ }
+}

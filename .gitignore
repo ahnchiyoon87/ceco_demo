@@ -18,3 +18,6 @@ ml/model_meta.json
 # 빌드 산출물·원본 볼륨에서 복사한 모델(해시는 decision-log #42)
 candidates/*/target/
 harness/l4bench/models/
+
+# 조립 전 확인(⑨-5)에 받은 OpenPLC Editor(약 150 MB) — plc/Dockerfile 이 같은 판을 sha256 고정으로 직접 받는다
+experiments/ENV-9/openplc/*.AppImage
