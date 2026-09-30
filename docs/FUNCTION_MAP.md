@@ -35,7 +35,7 @@ V1이 하던 일을 잃지 않았는지, 빼거나 바꾼 부품마다 누가 �
 | EMQX 5.8.6 | 사이트 브로커 | Mosquitto 2.1.2 둘(OT 허브, DMZ 브로커, 브리지 mqttv50) | EMQX 5.8 지원 종료·5.9+ BSL(관문). 흐름·만료·ACL 확인(⑨ 2·3·4) |
 | Telegraf bridge(MQTT → Kafka) | 수집 | IT 수집기(Bento, `dmz_to_kafka`) | 원시 유실·중복 0(CAP-01) |
 | Telegraf sink(Kafka → InfluxDB) | 저장 | IT 수집기(Bento, `kafka_to_it_influx`) | IT InfluxDB 적재·quality 태그(verify) |
-| alert-republisher(Kafka → MQTT, FUXA 알람 토픽) | 알람을 화면으로 | 업무 서비스(`alerts.display`, 묶음·억제) → IT 수집기 → DMZ → 브리지 in → FUXA "분석 경고" | 드리프트 표시 3/3(≤ 2.09 s), E1 표시 지점 |
+| alert-republisher(Kafka → MQTT, FUXA 알람 토픽) | 알람을 화면으로 | IT 수집기 → Alertmanager(묶음·억제, ISA-18.2) → IT 수집기(`alerts.display`) → DMZ → 브리지 in → FUXA "분석 경고" | 드리프트 표시 3/3(≤ 2.09 s), E1 표시 지점 |
 | MQTT `scada/alerts/{tag}`·`scada/hmi/latest-alert` | FUXA가 구독하던 알람 글자 | FUXA 공정 알람(OT 판정) + `AR-100/alert/display` | 위와 같음 |
 | Kafka 3.9.0 | 백본 | Kafka 4.3.1(KRaft) | 모든 흐름 시험 |
 | Flink 1.20.1(HA 없음) | 탐지 | Flink 2.2.1 + ZooKeeper HA, ONNX 체크포인트 | 70/70, 재시작 복구(§3-5) |
@@ -43,7 +43,7 @@ V1이 하던 일을 잃지 않았는지, 빼거나 바꾼 부품마다 누가 �
 | ai-alarm-worker | 알람 → 사건 | 업무 서비스 안 AI 사건 접수 스레드 | CAP-08 |
 | ai-work-db(postgres:17) | AI 업무 DB | 공용 PostgreSQL 18.6(DATABASE `ai` + `plant`) | ⑨-7, AI 시험 전부 |
 | AI `simulation.py` `/controls`·`/control` | Vue에서 Modbus 직접 조작 | 없앰 → FUXA 운전원 조작 | CAP-04 |
-| AI `actions.py` Modbus 쓰기·`/state` 확인 | AI 조치 실행 | 작업 요청(workflow → 발송기 → 게이트웨이 → 수신기 → PLC) + 업무 서비스 재관측 | AI S21(요청 1건, 수신 0.19 s), 모드 표 |
+| AI `actions.py` Modbus 쓰기·`/state` 확인 | AI 조치 실행 | 작업 요청(workflow 기록 → Kafka `request.approved` → IT 수집기 발송 스트림 → DMZ 게이트웨이(Node-RED) → 수신기 → PLC) + 업무 서비스 재관측 | AI S21(요청 1건, 수신 0.19 s), 모드 표 |
 | AI `evidence.py` 가상설비 `/state` 조회 | 현재 상태 근거 | DMZ 원시 사본(InfluxQL 읽기 전용 계정) | `live_state` 12태그·명령·모드 반환 |
 | AI 훈련 고장 주입 | 수업용 고장 | 호스트 전용 강사 API(계정 필요), AI·IT에는 자격 증명 없음 | AI·IT 컨테이너에서 강사 API·현장 패널 401 |
 | 임베딩 Ollama(`embed` 컨테이너, qwen3-embedding)·매뉴얼 절 검색 bge-m3(`V2_EMBED_URL`) | 온톨로지·매뉴얼 벡터 검색 | GCP LiteLLM(`knu-litellm`)의 `embedding` 모델(text-embedding-3-small, 1536차원) 하나. 호스트·컨테이너 Ollama 없음(사용자 결정 2026-09-30) | 매뉴얼 절 26·개체 113 다시 임베딩, 빠진 벡터 0·0 벡터 0(graph-seed 로그), 이상 → AI 조치 제안 20.54 s(`BASE-VERIFY/raw/cycle_base.json`) |
@@ -58,11 +58,11 @@ V1이 하던 일을 잃지 않았는지, 빼거나 바꾼 부품마다 누가 �
 | MQTT 실시간 계측 `edgex/telemetry`(수업·시연 자료) | 엣지가 같은 EdgeX 이벤트 모양으로 초당 1건 발행(정본은 UNS). OT 허브 공개 포트에서 읽기 계정 `viewer`로 구독 | 확인(이벤트 1건에 12종) |
 | `tests/verify.py` | 새 길로 다시 씀(정규화·제어 반응·흐름·저장·역할 분리·화면 표시는 그대로). 바뀐 항목: EdgeX 이벤트 수 → UNS·`edgex/telemetry`, Modbus 코일 쓰기 → 운전원 명령(FUXA 계정), InfluxDB 하나 → IT 결과 + DMZ 사본, 감시 구역 연결·FUXA 로그인 없는 쓰기 거부 추가 | 결과는 §3-5 보고 |
 | Grafana 대시보드 4개(공정·ML·알람·인프라) | 그대로. 인프라 화면의 EMQX 패널 → Mosquitto `$SYS` | 확인(데이터 원본 3개 정상) |
-| FUXA 화면 | 등록부에서 생성. **로그인 필요:** 보기는 로그인 없이, 운전원 명령은 `operator`, 화면·설정 변경은 `admin`(비밀번호는 `.env`) | 확인(로그인 없는 쓰기 401) |
-| EdgeX UI(장치·읽기 목록 보기) | Node-RED 편집 화면(로그인), FUXA 화면 | 대체(보기 방식이 다름) |
+| FUXA 화면 | 등록부에서 생성. **계정 필요:** 화면 관문(Caddy) 계정이 있어야 보이고(`HMI_GATE_USER`), 운전원 명령은 `operator`, 화면·설정 변경은 `admin`(비밀번호는 `.env`) | 확인(관문 없이 401, 로그인 없는 쓰기 401) |
+| EdgeX UI(장치·읽기 목록 보기) | Node-RED 편집 화면(로그인, 읽기 전용), FUXA 화면 | 대체(보기 방식이 다름, 편집·배포는 막힘) |
 | 가상설비 Modbus 포트(호스트 27002) | 열지 않음 — 가상설비에 붙는 것은 PLC 하나(§2-1 ⑤). 수업에서 Modbus를 보려면 PLC 편집 화면·엣지 흐름 | 바뀐 사용법 |
 | `docs/DEMO.md` 시연 순서 | V1 명령(EdgeX·EMQX) 그대로라 새 베이스용으로 다시 써야 한다 | 수업 자료 갱신 필요(다음 단계) |
 
 ## 4. 잃은 것
 
-없음(2026-09-30 기준). 바뀐 사용법(FUXA 로그인, 강사 API 계정, 가상설비 Modbus 비공개, 포트 번호)은 §3에 적었다.
+없음(2026-09-30 기준). 바뀐 사용법(FUXA 관문 계정·로그인, 강사 API 계정, 가상설비 Modbus 비공개, 엣지 편집기 읽기 전용, 포트 번호)은 §3에 적었다. 새로 생긴 것: 두 번째 요청자(MES 흉내, `requester_type` mes).

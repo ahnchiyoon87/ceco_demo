@@ -1,0 +1,195 @@
+<title>CECO 데모 시스템 구조</title>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#f3f5f3; --card:#ffffff; --ink:#1c2328; --muted:#56616a; --rule:#d5dcd8;
+  --ot:#a8661b; --ot-bg:#f7ecdf; --dmz:#6a5a8e; --dmz-bg:#ece8f4; --it:#1d6b80; --it-bg:#e1eff2;
+  --plant:#5f7a3a; --plant-bg:#e9efdf; --out:#6b6f73; --out-bg:#ebecec;
+  --req:#cf3f4f; --data:#44525c; --mon:#9aa4ab; --file:#7d8790; --router:#2b3339;
+  --chip:#f0f2f1;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#12171a; --card:#1a2125; --ink:#e3e8ea; --muted:#9aa6ad; --rule:#2c363b;
+  --ot:#e0a25c; --ot-bg:#2a2218; --dmz:#b2a2dc; --dmz-bg:#231f2e; --it:#6cc0d4; --it-bg:#142428;
+  --plant:#a3c27a; --plant-bg:#1d2417; --out:#aab0b4; --out-bg:#1f2326;
+  --req:#ff6f7d; --data:#b3c0c8; --mon:#5d6970; --file:#7f8a92; --router:#c9d2d7; --chip:#222a2e;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#12171a; --card:#1a2125; --ink:#e3e8ea; --muted:#9aa6ad; --rule:#2c363b;
+  --ot:#e0a25c; --ot-bg:#2a2218; --dmz:#b2a2dc; --dmz-bg:#231f2e; --it:#6cc0d4; --it-bg:#142428;
+  --plant:#a3c27a; --plant-bg:#1d2417; --out:#aab0b4; --out-bg:#1f2326;
+  --req:#ff6f7d; --data:#b3c0c8; --mon:#5d6970; --file:#7f8a92; --router:#c9d2d7; --chip:#222a2e;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.7;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+.prose{max-width:760px}
+h1,h2,h3{text-wrap:balance;line-height:1.3}
+h1{font-size:2rem;margin:.2rem 0 .6rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.35rem;margin:3rem 0 .8rem;padding-top:1rem;border-top:2px solid var(--ink)}
+h3{font-size:1.05rem;margin:0}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:.4rem 0}
+.mono{font-family:var(--mono);font-size:.86em}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;margin:1rem 0 0;font-size:.92rem}
+nav.toc a{color:var(--it);text-decoration:none;border-bottom:1px solid var(--rule)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--it)}
+a:focus-visible{outline:2px solid var(--it);outline-offset:2px}
+/* 범례 */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:1rem 0}
+.legend div{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;font-size:.92rem;display:flex;gap:10px;align-items:center}
+.legend svg{flex:none}
+/* 그림 */
+.figure{background:var(--card);border:1px solid var(--rule);border-radius:10px;overflow-x:auto;margin:1rem 0;-webkit-overflow-scrolling:touch}
+svg.arch{display:block;width:100%;min-width:1100px;height:auto;font-family:var(--sans)}
+.zone{stroke:none}
+.z-plant{fill:var(--plant-bg)} .z-ot{fill:var(--ot-bg)} .z-dmz{fill:var(--dmz-bg)} .z-it{fill:var(--it-bg)} .z-out{fill:var(--out-bg)}
+.zlabel{font-size:13px;font-weight:600}
+.zl-plant{fill:var(--plant)} .zl-ot{fill:var(--ot)} .zl-dmz{fill:var(--dmz)} .zl-it{fill:var(--it)} .zl-out{fill:var(--out)}
+.routerbar{fill:var(--router);opacity:.9}
+.rlabel{fill:var(--paper);font-size:12px;font-weight:600;letter-spacing:.04em}
+.aigroup{fill:none;stroke:var(--it);stroke-dasharray:5 4;stroke-width:1.2}
+.glabel{fill:var(--it);font-size:12px;font-weight:600}
+.node rect{fill:var(--card);stroke-width:1.6}
+.nz-plant rect{stroke:var(--plant)} .nz-ot rect{stroke:var(--ot)} .nz-dmz rect{stroke:var(--dmz)} .nz-it rect{stroke:var(--it)}
+.nz-out rect{stroke:var(--out)} .nz-host rect{stroke:var(--ink)}
+.helper rect{stroke-dasharray:4 3}
+.nb{stroke:var(--card);stroke-width:2}
+.nz-plant .nb{fill:var(--plant)} .nz-ot .nb{fill:var(--ot)} .nz-dmz .nb{fill:var(--dmz)} .nz-it .nb{fill:var(--it)} .nz-out .nb{fill:var(--out)} .nz-host .nb{fill:var(--ink)}
+.nbt{fill:var(--card);font:600 11px var(--mono)}
+.nt{fill:var(--ink);font-size:13px;font-weight:600}
+.np{fill:var(--muted);font-size:10.5px}
+.npr{fill:var(--req);font-size:10.5px;font-weight:600}
+.ln{fill:none;stroke-linejoin:round}
+.ln-data{stroke:var(--data);stroke-width:1.4}
+.ln-req{stroke:var(--req);stroke-width:2.6}
+.ln-mon{stroke:var(--mon);stroke-width:1.1;stroke-dasharray:3 3}
+.ln-file{stroke:var(--file);stroke-width:1.1;stroke-dasharray:7 4}
+.mk-data{fill:var(--data)} .mk-req{fill:var(--req)} .mk-mon{fill:var(--mon)} .mk-file{fill:var(--file)}
+.opener{stroke:var(--card);stroke-width:1.4}
+.op-data{fill:var(--data)} .op-req{fill:var(--req)} .op-mon{fill:var(--mon)}
+.lt rect{fill:var(--card);stroke-width:1.2}
+.lt text{font:600 10.5px var(--mono)}
+.lt-data rect{stroke:var(--data)} .lt-data text{fill:var(--data)}
+.lt-req rect{stroke:var(--req);fill:var(--req)} .lt-req text{fill:var(--card)}
+.lt-mon rect{stroke:var(--mon)} .lt-mon text{fill:var(--muted)}
+.lt-file rect{stroke:var(--file)} .lt-file text{fill:var(--muted)}
+.port{fill:var(--paper);font:500 9.5px var(--mono)}
+.chk rect{fill:var(--req)} .chk text{fill:#fff;font-size:11px;font-weight:700}
+.figcap{font-size:.88rem;color:var(--muted);margin:.3rem 0 0}
+/* 참조 표시 */
+.nref{display:inline-grid;place-items:center;min-width:1.45em;height:1.45em;padding:0 .25em;border-radius:999px;background:var(--ink);color:var(--paper);font:600 .74em var(--mono);vertical-align:.12em}
+.lref,.lnum{display:inline-block;padding:0 .45em;border-radius:999px;font:600 .76em var(--mono);border:1.2px solid var(--data);color:var(--data);vertical-align:.1em;white-space:nowrap}
+.l-req{background:var(--req);border-color:var(--req);color:var(--card)}
+.l-mon{border-style:dashed;border-color:var(--mon);color:var(--muted)}
+.l-file{border-style:dashed;border-color:var(--file);color:var(--muted)}
+/* 구역 원칙 */
+.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.zones div{background:var(--card);border-radius:8px;padding:12px 14px;border-top:4px solid var(--rule)}
+.zones .zo{border-color:var(--ot)} .zones .zd{border-color:var(--dmz)} .zones .zi{border-color:var(--it)}
+.zones h3{font-size:1rem;margin-bottom:.3rem}
+.rules{margin:.8rem 0;padding-left:1.2rem}
+/* 흐름 */
+.flows{display:grid;gap:18px}
+.flow{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
+.flow h3{margin-bottom:.5rem}
+.flow ol{margin:0;padding-left:1.6rem;display:grid;gap:6px}
+.flow li::marker{font-family:var(--mono);font-weight:600;color:var(--muted)}
+#f3{border-color:var(--req)}
+#f3 h3{color:var(--req)}
+/* 부품 */
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.part{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:12px 14px}
+.part header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pnum{display:inline-grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;color:#fff;font:600 .82rem var(--mono);flex:none}
+.pz-plant .pnum{background:var(--plant)} .pz-ot .pnum{background:var(--ot)} .pz-dmz .pnum{background:var(--dmz)} .pz-it .pnum{background:var(--it)}
+.pz-out .pnum{background:var(--out)} .pz-host .pnum,.pz-router .pnum{background:var(--ink);color:var(--paper)}
+.zone-chip,.tag{font-size:.72rem;padding:1px 8px;border-radius:999px;background:var(--chip);color:var(--muted);letter-spacing:.02em}
+.zc-ot{color:var(--ot)} .zc-dmz{color:var(--dmz)} .zc-it{color:var(--it)} .zc-plant{color:var(--plant)}
+.prod{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.rel{font-size:.8rem;color:var(--muted);font-family:var(--mono)}
+/* 선 */
+.lines{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:10px}
+.line{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.lk-req{border-color:var(--req)}
+.line .lnum{font-size:.82rem;padding:.1em .55em}
+.ends{font-weight:500}
+.arrow{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.8rem;color:var(--muted)}
+.meta span{background:var(--chip);padding:0 7px;border-radius:5px}
+.choice{padding-left:1.2rem}
+.choice li{margin:.35rem 0}
+@media (max-width:520px){
+  .lines{grid-template-columns:1fr} .parts{grid-template-columns:1fr}
+  h1{font-size:1.6rem}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="prose">
+<p class="eyebrow">ceco_demo · 시스템 구조 · 2026-09-30 기준</p>
+<h1>CECO 데모 시스템 구조</h1>
+<p>반응 공정 한 줄을 가상으로 돌리고, 공장(OT)·완충지대(DMZ)·사무(IT) 세 구역으로 나눠 계측 → 이상 탐지 → 경보 → AI 대응 → 승인된 작업 요청 → 설비 반영까지 한 번에 보여 주는 학생 수준의 산출물 예시다. 모든 부품은 무료 공개 제품이고 도커 컴포즈 한 벌로 뜬다.</p>
+<p>그림의 부품 {{NP}}개와 선 {{NL}}개에 번호를 붙였다. 아래 본문의 같은 번호가 같은 것을 가리킨다.</p>
+<nav class="toc" aria-label="차례"><a href="#legend">그림 읽는 법</a><a href="#figure">전체 그림</a><a href="#zones">구역과 연결 원칙</a><a href="#flows">네 흐름</a><a href="#parts">부품 {{NP}}개</a><a href="#lines">선 {{NL}}개</a><a href="#choices">줄이거나 고른 것</a></nav>
+</header>
+
+<h2 id="legend">그림 읽는 법</h2>
+<div class="legend">
+  <div><svg width="64" height="16" aria-hidden="true"><line x1="8" y1="8" x2="56" y2="8" stroke="var(--data)" stroke-width="1.6"/><circle cx="8" cy="8" r="4.2" fill="var(--data)"/></svg><span><b>●</b> 이 쪽이 연결을 연다(TCP를 먼저 건다).</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><line x1="6" y1="8" x2="52" y2="8" stroke="var(--data)" stroke-width="1.6"/><path d="M50,3 L60,8 L50,13z" fill="var(--data)"/></svg><span><b>화살표</b> 데이터가 흐르는 방향. 양쪽 끝에 있으면 오고 간다.</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><line x1="6" y1="8" x2="52" y2="8" stroke="var(--req)" stroke-width="2.8"/><path d="M50,3 L60,8 L50,13z" fill="var(--req)"/></svg><span><b>빨간 굵은 선</b> 작업 요청 길. <b>검사 1·2·3</b>은 요청을 거르는 세 겹(게이트웨이 → OT 수신기 → PLC).</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><line x1="6" y1="8" x2="58" y2="8" stroke="var(--mon)" stroke-width="1.3" stroke-dasharray="3 3"/></svg><span><b>회색 점선</b> 감시 지표. 공정 데이터는 싣지 않는다.</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><line x1="6" y1="8" x2="58" y2="8" stroke="var(--file)" stroke-width="1.3" stroke-dasharray="7 4"/></svg><span><b>긴 점선</b> 기동 때 한 번 도는 도우미, 파일 전달. 점선 상자가 도우미다.</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><rect x="14" y="1" width="36" height="14" rx="7" fill="none" stroke="var(--mon)"/><text x="32" y="12" font-size="9" text-anchor="middle" fill="var(--muted)" font-family="monospace">L8</text></svg><span><b>상자 위 작은 회색 표</b> 감시 지표를 긁는 선. 선을 그리지 않고 긁는 쪽(“긁음”)과 대상에 같은 번호를 붙였다.</span></div>
+  <div><svg width="64" height="16" aria-hidden="true"><rect x="20" y="0" width="16" height="16" rx="3" fill="var(--router)"/><text x="28" y="12" font-size="9" text-anchor="middle" fill="var(--paper)" font-family="monospace">1883</text></svg><span><b>검은 막대</b> 구역 라우터. 막대 위 숫자는 라우터가 넘겨 주는 포트.</span></div>
+</div>
+
+<h2 id="figure">전체 그림</h2>
+<div class="figure">{{SVG}}</div>
+<p class="figcap">좁은 화면에서는 그림을 옆으로 밀어 본다. 한 선이 여러 곳으로 갈라지면(부채꼴) 번호는 하나다.</p>
+
+<h2 id="zones">구역과 연결 원칙</h2>
+<div class="zones">
+  <div class="zo"><h3>OT · 공장 망</h3><p>{n:plc}~{n:otag}, {n:prov}(현장 {n:sim}과 붙어 있다). 기계와 가까운 부품. 밖과 연결이 끊겨도 계측·화면·제어·안전이 그대로 돈다. 공장 안 부품은 모두 {n:hub}에만 연결한다.</p></div>
+  <div class="zd"><h3>DMZ · 완충 망</h3><p>{n:dmzb}~{n:dmzp}. 공장과 사무가 직접 만나지 않고 여기서만 주고받는다. DMZ 부품은 어느 쪽으로도 새 연결을 열지 않는다.</p></div>
+  <div class="zi"><h3>IT · 사무 망</h3><p>{n:kafka}~{n:bus}과 도우미. 분석·기록·AI·업무. 공장에는 요청만 보낼 수 있고, 그것도 DMZ 게이트웨이를 거친다.</p></div>
+</div>
+<ol class="rules prose">
+  <li>연결은 신뢰가 높은 쪽이 연다. OT → DMZ는 {l:bridge_out}·{l:otag_rw} 두 가지뿐이고, IT → DMZ는 {l:coll_sub}·{l:coll_disp}(같은 계정), {l:coll_gw}, {l:graf_dmzi}·{l:ai_dmzi}, {l:prom_fed}이다.</li>
+  <li>DMZ → OT, DMZ → IT, IT → OT로 새 연결은 없다. {n:router} 구역 라우터가 허용 목록 밖을 세고 버리며, 응답은 이미 열린 연결로만 돌아간다.</li>
+  <li>DMZ의 요청이 OT로 들어오는 것도 OT가 연 브리지 {l:bridge_in}으로 가져오는 방식이다. 연결 방향(●)과 데이터 방향(화살표)이 다를 수 있어 그림에 둘을 따로 표시했다.</li>
+  <li>MQTT 계정마다 읽기·쓰기 토픽을 ACL로 좁혔다. 예: IT 수집기는 DMZ에서 표시 토픽 하나에만 쓸 수 있다.</li>
+</ol>
+
+<h2 id="flows">네 흐름</h2>
+<p class="prose">번호 순서대로 따라가면 된다. 동그라미 숫자는 부품, L 숫자는 선이다.</p>
+<div class="flows">{{FLOWS}}</div>
+
+<h2 id="parts">부품 {{NP}}개</h2>
+<div class="parts">{{PARTS}}</div>
+
+<h2 id="lines">선 {{NL}}개</h2>
+<p class="prose">● 뒤가 연결을 연 부품, 화살표 뒤가 받는 부품이다. '데이터' 칸은 실제 값이 흐르는 방향이다.</p>
+<ol class="lines">{{LINES}}</ol>
+
+<h2 id="choices">줄이거나 고른 것</h2>
+<ul class="choice prose">
+  <li>세 구역은 망 세 개와 라우터 규칙 {n:router}로 흉내 냈다. 실제 공장은 방화벽 장비(응용 계층 검사 포함)를 둔다.</li>
+  <li>브리지는 연결 하나로 양방향({l:bridge_out}·{l:bridge_in})이고, TLS와 강한 인증은 뺐다. 2026 연결 원칙은 DMZ 복제에 단방향·강한 인증을 권한다(교육용 축소).</li>
+  <li>IT는 DMZ 원시 사본 {n:dmzi}을 조회하고, DMZ 브로커 {n:dmzb}도 직접 구독한다. 지침은 DMZ 히스토리언을 강한 인증 HTTPS API로 조회하라고 권한다.</li>
+  <li>MQTT 브로커를 두 개({n:hub}·{n:dmzb}) 둔 것은 공장 화면이 DMZ 없이도 돌아야 한다는 격리 원칙 때문이다. 현업에는 DMZ 브로커 하나에 공장이 밖으로 접속하는 방식도 흔하다.</li>
+  <li>REMOTE_AUTO 자동 수용은 "분석 시스템은 관찰만 하고 운전을 바꾸지 않는다"는 2026 지침 문장과 부딪힌다. 검증을 거친 자동 반영을 허용하는 NAMUR NE 178 쪽을 택했고, 안전(인터록·범위·되읽기)은 PLC {n:plc}가 지킨다.</li>
+  <li>DMZ에 원시값을 7일 저장한다. "DMZ는 데이터를 영구 저장하지 않는다"는 Cisco CPwE와 달리 DMZ 히스토리언을 두는 2026 지침 쪽을 택했다.</li>
+  <li>대시보드를 IT에 둔 것은 지침에 없는 우리 판단이다. 운전원 화면 {n:fuxa}는 공장 안에 둔다.</li>
+  <li>작업 요청을 보내는 외부 시스템은 AI({n:ai})와 MES 흉내({n:coll} 스트림 ⑧) 둘이다. 요청 필드(job_order_id·work_master_id)는 ISA-95 작업 지시를 흉내 냈고, 만료 필드는 표준에 없는 확장이다.</li>
+</ul>
+</div>
