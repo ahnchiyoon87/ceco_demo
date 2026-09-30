@@ -1,844 +1,101 @@
-<meta charset="utf-8">
-<title>SCADA 베이스 설계</title>
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>SCADA 새 베이스</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{
   --bg:#f6f7f5; --panel:#ffffff; --ink:#1d2320; --muted:#5b645f; --line:#d9ddd8;
   --ot:#b8452f; --ot-bg:#fbeee9; --dmz:#9a6b12; --dmz-bg:#fbf3e2; --it:#1f6f8b; --it-bg:#e8f3f7;
-  --ok:#2f7a4a; --warn:#a15c07; --accent:#1f6f8b; --code:#eef1ee; --f-data:#1f5fa8; --f-cmd:#c2571a; --f-alm:#23804a; --f-read:#7d8580; --f-nt:#ffffff;
+  --ok:#2f7a4a; --ok-bg:#e7f3ec; --warn:#a15c07; --accent:#1f6f8b; --code:#eef1ee; --f-data:#1f5fa8; --f-cmd:#c2571a; --f-read:#7d8580;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
     --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
-    --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-alm:#6cc48c; --f-read:#9aa49f; --f-nt:#10140f;
+    --ok:#6cc48c; --ok-bg:#1c3325; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-read:#9aa49f;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141816; --panel:#1c211f; --ink:#e6ebe8; --muted:#9aa49f; --line:#303733;
   --ot:#e58b75; --ot-bg:#3a2520; --dmz:#e0b45c; --dmz-bg:#352b17; --it:#6fbad6; --it-bg:#172c35;
-  --ok:#6cc48c; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-alm:#6cc48c; --f-read:#9aa49f; --f-nt:#10140f;
+  --ok:#6cc48c; --ok-bg:#1c3325; --warn:#e3a24f; --accent:#6fbad6; --code:#252b28; --f-data:#74aef2; --f-cmd:#f2a064; --f-read:#9aa49f;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;padding-inline:16px;padding-block:24px 64px}
-.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
-header .kicker{font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
-h1{font-size:28px;line-height:1.3;margin:4px 0 8px;text-wrap:balance}
-h2{font-size:20px;margin:0 0 12px;text-wrap:balance;border-bottom:2px solid var(--line);padding-bottom:6px}
-h3{font-size:16px;margin:16px 0 6px}
-p{margin:0 0 10px;max-width:72ch}
-section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
-.lead{font-size:16px;max-width:75ch}
-.muted{color:var(--muted)}
-code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:13px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media (max-width:760px){.grid3,.grid2{grid-template-columns:1fr}}
-.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px}
-.card b{display:block;margin-bottom:4px}
-.zone{border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px}
-.zone h4{margin:0 0 4px;font-size:14px;letter-spacing:.04em}
-.z-ot{background:var(--ot-bg);border:1px solid var(--ot)} .z-ot h4{color:var(--ot)}
-.z-dmz{background:var(--dmz-bg);border:1px solid var(--dmz)} .z-dmz h4{color:var(--dmz)}
-.z-it{background:var(--it-bg);border:1px solid var(--it)} .z-it h4{color:var(--it)}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:13.5px}
-.box small{color:var(--muted);display:block}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Pretendard","Malgun Gothic",system-ui,sans-serif;padding-inline:16px}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 40px}
+h1{font-size:30px;line-height:1.25;margin:4px 0 6px;text-wrap:balance}
+.sub{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:16px 0}
+h2{font-size:21px;margin:0 0 12px;display:flex;gap:10px;align-items:baseline}
+h2 .n{color:var(--accent);font-variant-numeric:tabular-nums}
+.chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.chip{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.chip b{display:block;color:var(--ink);font-size:15.5px}
+.fig{overflow-x:auto}
+.fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+.note{color:var(--muted);font-size:13.5px;margin:8px 0 0}
+.stack{display:grid;grid-template-columns:140px 1fr;gap:6px 14px;align-items:center}
+.stack .lay{font-weight:700;font-size:14.5px;color:var(--muted)}
+.stack .row{display:flex;flex-wrap:wrap;gap:6px}
+.p{display:inline-block;border-radius:6px;padding:3px 10px;font-size:14.5px;font-weight:650;border:1.5px solid var(--line)}
+.p.same{border-color:var(--ok);color:var(--ok)} .p.free{border-color:var(--warn);color:var(--warn)} .p.own{border-color:var(--accent);color:var(--accent);background:var(--it-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);margin:10px 0 0}
 .tbl{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
-th{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.03em}
-td.same{color:var(--ok);font-weight:600}
-td.swap{color:var(--warn);font-weight:600}
-ul{margin:0;padding-left:20px} li{margin:3px 0}
-.flow{font-size:14px;display:flex;flex-direction:column;gap:8px}
-.flow div{padding:8px 10px;border-left:4px solid var(--accent);background:var(--code);border-radius:4px}
-.tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--muted);margin-left:4px}
-footer{font-size:13px;color:var(--muted)}
-.src{font-size:.85em;color:var(--muted);margin:-.3em 0 .8em}
-.src a,footer a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:650;font-size:13px}
+td.k{font-weight:700;white-space:nowrap}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.good{color:var(--ok);font-weight:700} .bad{color:var(--warn);font-weight:700} .na{color:var(--muted);font-weight:700}
+ul.left{margin:0;padding-left:20px} ul.left li{margin:4px 0}
+@media (max-width:760px){.chips{grid-template-columns:1fr 1fr}.stack{grid-template-columns:1fr}h1{font-size:24px}}
+/* svg */
+.z-ot{fill:var(--ot-bg)} .z-dmz{fill:var(--dmz-bg)} .z-it{fill:var(--it-bg)} .z-pilot{fill:var(--ok-bg)}
+.zt{font-size:13px;font-weight:800;letter-spacing:.06em} .zt.ot{fill:var(--ot)} .zt.dmz{fill:var(--dmz)} .zt.it{fill:var(--it)} .zt.pl{fill:var(--ok)}
+.bx{fill:var(--panel);stroke:var(--line);stroke-width:1.4}
+.bx.own{stroke:var(--ok);stroke-width:2.6}
+.bt{font-size:15px;font-weight:700;fill:var(--ink)} .bs{font-size:12.5px;fill:var(--muted)}
+.lab{font-size:12.5px;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.big{font-size:17px;font-weight:800;fill:var(--ok)} .bigs{font-size:13px;fill:var(--muted)}
+.d{stroke:var(--f-data);stroke-width:2.4;fill:none}
+.c{stroke:var(--f-cmd);stroke-width:2.4;fill:none;stroke-dasharray:7 4}
+.r{stroke:var(--f-read);stroke-width:1.8;fill:none;stroke-dasharray:3 3}
+.zl{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:8 5;opacity:.45}
+.zr{font-size:11.5px;font-weight:700;fill:var(--muted)}
+.mk-d{fill:var(--f-data)} .mk-c{fill:var(--f-cmd)} .mk-r{fill:var(--f-read)}
+.rule{font-size:13.5px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
 
-.archwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
-.arch{display:block;font-family:inherit;width:100%;height:auto;min-width:900px}
-.arch .band-ot{fill:var(--ot-bg)} .arch .band-dmz{fill:var(--dmz-bg)} .arch .band-it{fill:var(--it-bg)}
-.arch .zline{stroke:var(--ink);stroke-width:1.4;stroke-dasharray:8 5;opacity:.45}
-.arch .bx{fill:var(--panel);stroke:var(--line);stroke-width:1.3}
-.arch .bx.ot{stroke:var(--ot)} .arch .bx.dmz{stroke:var(--dmz)} .arch .bx.it{stroke:var(--it)} .arch .bx.sub{stroke-dasharray:4 3}
-.arch .bt{font-size:14px;font-weight:700;fill:var(--ink)} .arch .bs{font-size:11.8px;fill:var(--muted)}
-.arch .bdg{font-size:10.5px;font-weight:700;fill:var(--warn)}
-.arch .ln{font-size:19px;font-weight:800;fill:var(--ink)} .arch .lname{font-size:13px;font-weight:600;fill:var(--ink)}
-.arch .zr{font-size:10.5px;font-weight:700;fill:var(--muted)}
-.arch .zt{font-size:11px;font-weight:800;letter-spacing:.1em} .arch .zt-ot{fill:var(--ot)} .arch .zt-dmz{fill:var(--dmz)} .arch .zt-it{fill:var(--it)}
-.arch .l-data{stroke:var(--f-data);stroke-width:2.4} .arch .l-alm{stroke:var(--f-alm);stroke-width:2.4}
-.arch .l-cmd{stroke:var(--f-cmd);stroke-width:2.4;stroke-dasharray:8 4} .arch .l-read{stroke:var(--f-read);stroke-width:1.7;stroke-dasharray:3 3}
-.arch .mk-data,.arch .n-data{fill:var(--f-data)} .arch .mk-cmd,.arch .n-cmd{fill:var(--f-cmd)}
-.arch .mk-alm,.arch .n-alm{fill:var(--f-alm)} .arch .mk-read,.arch .n-read{fill:var(--f-read)}
-.arch .nt{font-size:9px;font-weight:800;fill:var(--f-nt)}
-.arch .al{font-size:11.5px;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin:8px 0 12px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.sw{display:inline-block;width:26px;height:0;border-top:3px solid}
-.sw.d{border-color:var(--f-data)} .sw.c{border-color:var(--f-cmd);border-top-style:dashed} .sw.a{border-color:var(--f-alm)} .sw.r{border-color:var(--f-read);border-top-style:dotted}
-.steps{font-size:13.5px;margin:0;padding-left:0;list-style:none}
-.steps li{margin:4px 0;padding-left:0}
-.steps b{display:inline-block;min-width:30px;text-align:center;border-radius:9px;color:var(--f-nt);font-size:11px;padding:1px 5px;margin-right:6px}
-.steps.d b{background:var(--f-data)} .steps.c b{background:var(--f-cmd)} .steps.a b{background:var(--f-alm)}
-td.diff{color:var(--warn);font-weight:600}
-
-.story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.story li{border:1px solid var(--line);border-radius:8px;padding:10px 12px 10px 44px;position:relative;font-size:14px}
-.story li b{display:block}
-.story li span{position:absolute;left:10px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--panel);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
-.timeline{list-style:none;margin:6px 0 14px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.timeline li{border-top:4px solid var(--accent);background:var(--code);border-radius:4px;padding:8px 10px;font-size:13px}
-.timeline li b{display:block;font-size:14px}
-.timeline li span{display:block;color:var(--muted);margin-top:4px}
-.timeline li.now{border-top-color:var(--warn)}
-.ladder{list-style:none;margin:6px 0 10px;padding:0;display:flex;flex-direction:column;gap:8px}
-.ladder li{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
-.ladder li span{font-size:20px;font-weight:800;color:var(--accent);line-height:1.2}
-.ladder li b{display:block}
-.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
-.conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.conf div{border-radius:8px;padding:10px 12px;font-size:14px;border:1px solid var(--line)}
-.conf b{display:block;margin-bottom:4px}
-.conf .c-ok{border-left:6px solid var(--ok)} .conf .c-mid{border-left:6px solid var(--dmz)} .conf .c-own{border-left:6px solid var(--it)}
-.note{background:var(--code);border-left:4px solid var(--warn);padding:10px 12px;border-radius:4px;max-width:none;font-size:14px}
-@media (max-width:760px){.story,.timeline,.vs,.conf{grid-template-columns:1fr}}
-
-.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.five .card{overflow-wrap:anywhere}
-.five .card{font-size:13.5px}.five .card b{font-size:15px}.five .card a{font-size:12px}
-.five .q{display:block;color:var(--accent);font-weight:600;margin:4px 0}
-.rplist{display:flex;flex-direction:column;gap:10px}
-.rp{display:grid;grid-template-columns:1fr 36px 1fr;align-items:stretch;gap:0}
-.rp .r,.rp .o{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
-.rp .r{background:var(--code)} .rp .o{border-left:5px solid var(--ok)}
-.rp small{display:block;color:var(--muted);font-size:12px;margin-bottom:3px}
-.rp .arrowcell{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--accent);font-weight:800}
-.stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
-.stat3>div{border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:14px}
-.stat3 b{display:block;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
-.stat3 .c-ok{border-left:5px solid var(--ok)}.stat3 .c-mid{border-left:5px solid var(--warn,#c77d00)}.stat3 .c-own{border-left:5px solid var(--muted)}
-td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
-@media (max-width:900px){.five{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:760px){.five{grid-template-columns:1fr}.rp{grid-template-columns:1fr}.rp .arrowcell{transform:rotate(90deg);height:24px}}
-details.evid{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:10px 0}details.evid>summary{cursor:pointer;font-weight:700;color:var(--accent)}
-
-ol.rot{list-style:none;counter-reset:r;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:0;margin:14px 0 0}
-ol.rot li{counter-increment:r;background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--muted)}
-ol.rot li b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:3px}
-ol.rot li b:before{content:counter(r) " · ";color:var(--accent)}
-.parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-.part{border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:8px;padding:12px 14px;background:var(--panel)}
-.part.same{border-left-color:var(--ok)} .part.free{border-left-color:var(--warn)} .part.own{border-left-color:var(--accent)} .part.base{border-left-color:var(--muted)}
-.part .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.part .ph b{font-size:15.5px;color:var(--ink)}
-.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
-.tag.same{color:var(--ok);border-color:var(--ok)} .tag.free{color:var(--warn);border-color:var(--warn)} .tag.own{color:var(--accent);border-color:var(--accent)}
-.part .what{margin:6px 0 8px;font-size:14.5px;color:var(--ink);background:var(--code);border-radius:6px;padding:6px 9px}
-.part dl{display:grid;grid-template-columns:62px 1fr;gap:4px 8px;margin:0;font-size:13.5px}
-.part dt{color:var(--muted);font-weight:700} .part dd{margin:0;color:var(--ink)}
-td.got{font-weight:600;color:var(--ok)}
-td.nw,th.nw{white-space:nowrap}
-.parts .part:last-child:nth-child(odd){grid-column:1/-1}
-@media (max-width:900px){ol.rot{grid-template-columns:repeat(2,minmax(0,1fr))}.parts{grid-template-columns:1fr}}
-@media (max-width:520px){ol.rot{grid-template-columns:1fr}}
 </style>
-
+</head><body>
 <div class="wrap">
-<header>
-  <div class="kicker">경남대 제조 AI 과정 · IIoT·SCADA 실습 시스템 · 2026-09-30</div>
-  <h1>IIoT·SCADA 실습 시스템 — 현업 기준 프로토타입 확정과 검증</h1>
-  <p class="lead">오늘은 학생 실습 시스템의 원본(V1)에서 출발해 <b>여러 번의 회전</b>을 거쳐 <b>2026년 제조 현업과 같은 구조·흐름·스택</b>의 프로토타입을 확정했다. 확정안대로 조립하고 원본과 같은 방법으로 검증까지 마쳤다. 아래는 그 과정을 순서대로 담았다: 무엇을 기준으로 조사했고, 현업은 어떻게 하고, 그래서 우리는 무엇을 왜 골랐는지.</p>
-  <ol class="rot">
-    <li><b>원본 다시 재기</b>빠르게 도는 가상설비(배속 600)로 원본의 성능·복구 기준값을 다시 쟀다.</li>
-    <li><b>경량화 실험</b>가볍게 줄인 판(V2)을 만들어 봤지만 층을 빼는 데모식이라 현업과 멀어져 접었다.</li>
-    <li><b>방향 전환</b>"현업이 실제로 쓰는 구조·흐름·스택"을 기준으로 다시 잡았다.</li>
-    <li><b>조사 다섯 건</b>구조·세부·스택·무료 대체품·외부 연결을 조사하고, 설계 판단 70개를 표준·사례와 하나씩 대조했다.</li>
-    <li><b>조립·검증</b>확정안대로 조립하고 원본과 같은 방법으로 쟀다. 합격선 항목은 모두 원본과 같거나 나았고, CPU만 3.6 %p 높았다(10장).</li>
-  </ol>
-</header>
+<h1>IoT-SCADA · Pilot — 현업 기준 새 베이스</h1>
+<p class="sub">2026-09-30 · 원본에서 출발해 조사 → 확정 → 조립 → 검증까지</p>
 
-<section>
-  <h2>한눈에</h2>
-  <ol class="story">
-    <li><span>1</span><b>기준</b>현업과 똑같이. 단 비용 0, 금지 라이선스 없음, PC 한 대 도커</li>
-    <li><span>2</span><b>조사 다섯 건</b>구조 · 세부 · 스택 · 무료 대체품 · 외부 시스템 연결</li>
-    <li><span>3</span><b>현업은</b>공장·완충지대·사무실 세 구역. 공장이 먼저 연결을 열고, 외부는 사본만 본다</li>
-    <li><span>4</span><b>스택</b>현업이 쓰는 무료 본체 그대로 7칸, 현업이 상용이라 무료로 대신 5칸, 맞는 제품이 없어 직접 만든 2칸(요청 검문소·설비 등록부). 부품마다 "무엇·왜"는 4장</li>
-    <li><span>5</span><b>흐름</b>우리 AI(외부 시스템)는 명령하지 않고 요청한다. 담당자 승인 → 공장이 받을지 정하고 PLC가 물리 검사 후 적용</li>
-    <li><span>6</span><b>결과</b>설비부터 업무·승인까지 10개 층 한 장(6장). 설계 판단 70개를 근거와 대조: 근거 56 · 추천 14 · 미해소 0(8장)</li>
-<li><span>7</span><b>검증</b>조립해 V1과 같은 방법으로 쟀다: 탐지 70/70·ML 점수 같음, 정상 오경보 105 → 75건, 알람 → 화면 1.84 → 1.21 s, 메모리 5,918 → 5,588 MiB, 제어·안전 18항목 통과, 브로커 정지 뒤 스스로 복구(10장)</li>
-  </ol>
-</section>
+<section><h2><span class="n">1</span>무엇을 조사했나</h2>
+<div class="chips"><div class="chip"><b>① 구조</b>현업의 층 · 망 · 길</div><div class="chip"><b>② 세부</b>토픽 · 명령 · 알람 · 저장</div><div class="chip"><b>③ 스택</b>칸마다 쓰는 제품</div><div class="chip"><b>④ 무료 대체품</b>상용 칸을 무엇으로</div><div class="chip"><b>⑤ 외부 연결</b>공장 ↔ 외부(AI)</div></div>
+<p class="note">+ 설계 판단 70개를 표준·사례와 하나씩 대조했다(근거 56 · 추천 14).</p></section>
 
-<section>
-  <h2>1. 어떤 기준으로 조사했나</h2>
-  <p>목표는 경남대 제조 AI 과정 학생이 <b>각자 PC 한 대</b>에서 돌리는 IIoT·SCADA 실습 시스템을 <b>2026년 제조 현업과 똑같은 구조·흐름·스택</b>으로 만드는 것이다. 현업을 그대로 옮길 수는 없어서 칸마다 아래 순서로 걸렀다.</p>
-  <ol class="ladder">
-    <li><span>①</span><div><b>현업에서 주로 쓰는가</b>표준·공공 지침·독립 분석·설문에 나온 주류. 무료 본체가 있으면 그대로 쓴다.</div></li>
-    <li><span>②</span><div><b>관문을 통과하는가</b>비용 0 · 상용·제한형 라이선스 아님(BSL·SSPL·TSL·RCL·체험판·상용 전용 기능) · 공식 도커 이미지가 있고 PC 한 대(도커 약 7.6 GB)에서 돈다 · 제품 계열이 계속 개발된다. 판마다 있는 지원 종료일은 제외 이유가 아니다(학기마다 최신 판으로 올림).</div></li>
-    <li><span>③</span><div><b>가볍게 할 수 있는가</b>현업 수준을 유지한 채 가벼운 판·설정·중복 합치기로 줄인다. 층을 빼지 않는다.</div></li>
-  </ol>
-  <p class="muted">구조와 흐름은 <b>적용되는 규칙(법령·표준·공공 지침)이 있으면 따르고, 없으면 현업이 흔히 하는 방식</b>을 따른다.</p>
-  <h3>관문에 걸려 현업 주류를 그대로 못 쓴 것</h3>
-  <div class="grid3">
-    <div class="card"><b>CODESYS(PLC)</b>라이선스 없이 2시간 데모</div>
-    <div class="card"><b>Ignition(화면·엣지)</b>무료판은 비상업·개인 교육용만</div>
-    <div class="card"><b>HiveMQ Edge</b>설비 쓰기 기능이 유료</div>
-    <div class="card"><b>EMQX(MQTT)</b>5.9부터 BSL 라이선스</div>
-    <div class="card"><b>ThingsBoard</b>4.4부터 BUSL 라이선스</div>
-    <div class="card"><b>TimescaleDB</b>압축·연속 집계가 TSL</div>
-  </div>
-</section>
+<section><h2><span class="n">2</span>현업은 이렇게 한다</h2>
+<div class="fig"><svg viewBox="0 0 1040 360" width="1040" height="360" role="img" aria-label="현업 구조: 공장, 완충지대, 사무실 세 구역과 세 가지 규칙"><defs><marker id="m-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-d" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-c" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-r" d="M0,0 L10,5 L0,10 z"/></marker></defs><rect class="z-ot" x="20" y="20" width="330" height="320" rx="12"/><text class="zt ot" x="36" y="46">OT · 공장</text><rect class="z-dmz" x="380" y="20" width="280" height="320" rx="12"/><text class="zt dmz" x="396" y="46">DMZ · 완충지대</text><rect class="z-it" x="690" y="20" width="330" height="320" rx="12"/><text class="zt it" x="706" y="46">IT · 사무실</text><rect class="bx" x="45" y="64" width="280" height="52" rx="8"/><text class="bt" x="185.0" y="87.0" text-anchor="middle">공장 게시판(UNS)</text><text class="bs" x="185.0" y="105.0" text-anchor="middle">모든 설비의 지금 상태</text><path class="d" d="M185,130 L185,116" marker-end="url(#m-d)"/><rect class="bx" x="45" y="130" width="280" height="52" rx="8"/><text class="bt" x="185.0" y="153.0" text-anchor="middle">SCADA 화면 · 엣지</text><text class="bs" x="185.0" y="171.0" text-anchor="middle">운전원 화면, 통신 변환</text><path class="d" d="M185,196 L185,182" marker-end="url(#m-d)"/><rect class="bx" x="45" y="196" width="280" height="52" rx="8"/><text class="bt" x="185.0" y="219.0" text-anchor="middle">제어기(PLC)</text><text class="bs" x="185.0" y="237.0" text-anchor="middle">인터록 · 물리 검사</text><path class="d" d="M185,262 L185,248" marker-end="url(#m-d)"/><rect class="bx" x="45" y="262" width="280" height="52" rx="8"/><text class="bt" x="185.0" y="293.0" text-anchor="middle">설비 · 센서</text><rect class="bx" x="405" y="64" width="230" height="56" rx="8"/><text class="bt" x="520.0" y="89.0" text-anchor="middle">중계 창구</text><text class="bs" x="520.0" y="107.0" text-anchor="middle">공장 · 사무실이 만나는 곳</text><rect class="bx" x="405" y="152" width="230" height="56" rx="8"/><text class="bt" x="520.0" y="177.0" text-anchor="middle">공장 값 사본</text><text class="bs" x="520.0" y="195.0" text-anchor="middle">사무실은 이것만 본다</text><rect class="bx" x="405" y="240" width="230" height="56" rx="8"/><text class="bt" x="520.0" y="265.0" text-anchor="middle">요청 검문소</text><text class="bs" x="520.0" y="283.0" text-anchor="middle">들어오는 요청 검사</text><rect class="bx" x="715" y="64" width="280" height="52" rx="8"/><text class="bt" x="855.0" y="87.0" text-anchor="middle">AI(Pilot)</text><text class="bs" x="855.0" y="105.0" text-anchor="middle">읽고 조사 · 제안만</text><path class="d" d="M855,130 L855,116" marker-end="url(#m-d)"/><rect class="bx" x="715" y="130" width="280" height="52" rx="8"/><text class="bt" x="855.0" y="161.0" text-anchor="middle">기록 · 대시보드</text><path class="d" d="M855,196 L855,182" marker-end="url(#m-d)"/><rect class="bx" x="715" y="196" width="280" height="52" rx="8"/><text class="bt" x="855.0" y="227.0" text-anchor="middle">실시간 탐지</text><path class="d" d="M855,262 L855,248" marker-end="url(#m-d)"/><rect class="bx" x="715" y="262" width="280" height="52" rx="8"/><text class="bt" x="855.0" y="293.0" text-anchor="middle">공통 장부</text><path class="d" d="M325,90 L405,90" marker-end="url(#m-d)"/><text class="rule" x="365" y="80" text-anchor="middle">①</text><path class="d" d="M635,92 L652,92 L652,290 L715,290" marker-end="url(#m-d)"/><text class="rule" x="652" y="82" text-anchor="middle">②</text><path class="c" d="M715,100 L698,100 L698,262 L635,262" marker-end="url(#m-c)"/><path class="c" d="M405,262 L365,262 L365,222 L325,222" marker-end="url(#m-c)"/><text class="rule" x="385" y="288" text-anchor="middle">③</text></svg></div>
+<div class="legend"><span>① 연결은 공장이 먼저 연다</span><span>② 사무실은 사본만 가져간다</span><span>③ AI는 명령 대신 요청서 → 공장이 받을지 정한다</span></div></section>
 
-<section>
-  <h2>2. 조사 다섯 건 — 무엇을 묻고 무엇을 얻었나</h2>
-  <p>우리 구조를 정답으로 두지 않고 "우리는 이렇다, 현업은 어떤가"로 물었다. 근거마다 표준·공공 지침·독립 분석·사례·벤더를 표시하고, 원문을 읽었는지와 못 찾은 것을 구분했다.</p>
-  <div class="five">
-    <div class="card"><b>① 구조</b><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12번</a><span class="q">현업 IIoT·SCADA의 층·길·망은?</span>공장·완충지대·사무실 세 구역, 받을지는 공장 안에서 정하고 PLC는 물리적으로 되는지 마지막 검사, 설비가 늘어도 층은 그대로.</div>
-    <div class="card"><b>② 세부</b><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13번</a><span class="q">토픽·명령·알람·저장은 어떻게?</span>값마다 시각·품질, 계층 토픽, 알람과 분석 경고 분리, 설비 등록부 하나에서 설정 생성.</div>
-    <div class="card"><b>③ 스택</b><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14번</a><span class="q">칸마다 현업 주류 제품과 판은?</span>Kafka·Flink·Grafana·Prometheus·Neo4j·PostgreSQL은 현업이 쓰는 무료 본체 그대로(제조 한정 순위 자료는 없음).</div>
-    <div class="card"><b>④ 무료 대체품</b><a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15번</a><span class="q">현업이 상용인 칸은 무엇으로?</span>PLC는 OpenPLC, 화면은 FUXA, 엣지는 Node-RED(EdgeX와 나란히 재서 선택).</div>
-    <div class="card"><b>⑤ 외부 시스템 연결</b><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16번</a><span class="q">외부와 IoT-SCADA는 어떻게 주고받나?</span>공장이 먼저 연결을 열고, 외부는 사본만 보고, 명령 대신 요청을 보낸다.</div>
-  </div>
-  <p class="muted">다섯 건의 결과로 만든 설계에서 판단 하나하나가 근거를 갖는지 다시 확인했다. 근거가 없거나 약하거나 과장된 70개를 현업 사례·표준·규칙과 대조한 결과는 8장에 있다(<a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17-judgment-check.md</a>).</p>
-</section>
+<section><h2><span class="n">3</span>스택</h2>
+<div class="stack"><div class="lay">Pilot</div><div class="row"><span class="p own">Pilot(원본 코드)</span></div><div class="lay">데이터 · 분석</div><div class="row"><span class="p same">Kafka 4.3.1</span><span class="p same">Flink 2.2.1</span><span class="p free">InfluxDB 2.9.1</span><span class="p same">PostgreSQL 18.6</span><span class="p same">Grafana 13.2.3</span><span class="p same">Prometheus 3.13</span><span class="p same">Neo4j 5.26</span><span class="p free">Bento 1.21.2</span></div><div class="lay">완충지대</div><div class="row"><span class="p same">Mosquitto 2.1.2</span><span class="p free">InfluxDB 2.9.1</span><span class="p own">요청 검문소</span><span class="p own">라우터(iptables)</span></div><div class="lay">공장</div><div class="row"><span class="p same">Mosquitto 2.1.2</span><span class="p free">FUXA 1.3.4</span><span class="p free">Node-RED 5.0.7</span><span class="p free">OpenPLC 4.2.4</span><span class="p own">가상 설비(원본)</span></div></div>
+<div class="legend"><span class="p same">현업과 같은 제품</span><span class="p free">현업은 상용 → 무료 대체</span><span class="p own">우리가 만든 것</span></div>
+<h2 style="margin-top:18px;font-size:17px">경쟁 후보가 있던 칸만 — 왜 이것</h2>
+<div class="tbl"><table><tr><th>칸</th><th>고른 것</th><th>경쟁</th><th>이유</th></tr><tr><td class="k">엣지</td><td><b>Node-RED</b></td><td>EdgeX</td><td>나란히 재 보니 끊김 복구 때 중복 0(EdgeX 12~24), 설비 추가 자동 반영, 메모리 절반</td></tr><tr><td class="k">MQTT 브로커</td><td><b>Mosquitto</b></td><td>EMQX</td><td>EMQX는 5.9부터 유료 제한형(BSL), 마지막 무료판 5.8은 지원 종료</td></tr><tr><td class="k">PLC</td><td><b>OpenPLC</b></td><td>4diac · Beremiz</td><td>공식 배포 이미지가 있는 유일한 무료 PLC</td></tr><tr><td class="k">화면</td><td><b>FUXA</b></td><td>Rapid SCADA</td><td>공식 이미지와 MQTT · OPC UA · Modbus를 모두 무료로</td></tr><tr><td class="k">기록 저장</td><td><b>InfluxDB</b></td><td>TimescaleDB · QuestDB</td><td>TimescaleDB 핵심 기능은 유료 제한형, 산업 논문 수 1위</td></tr><tr><td class="k">데이터 운반</td><td><b>Bento</b></td><td>Telegraf · Vector</td><td>Vector는 Kafka 재시작 뒤 멈추는 버그. Bento는 원본 Telegraf와 같은 결과, MIT 무료</td></tr><tr><td class="k">요청 검문소</td><td><b>직접 만듦</b></td><td>Bento 설정</td><td>Bento는 만료 표시 · 즉시 거절이 안 됨(실측)</td></tr></table></div></section>
 
-<section>
-  <h2>3. 결과 ① 현업의 구조와 흐름</h2>
+<section><h2><span class="n">4</span>우리 아키텍처</h2>
+<div class="fig"><svg viewBox="0 0 1110 640" width="1110" height="640" role="img" aria-label="우리 아키텍처: Pilot, 데이터·분석, 완충지대, 공장 층"><defs><marker id="m-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-d" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-c" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-r" d="M0,0 L10,5 L0,10 z"/></marker></defs><rect class="z-pilot" x="0" y="10" width="1110" height="118"/><text class="zt pl" x="12" y="40">IT</text><text class="bt" x="12" y="62">Pilot</text><rect class="z-it" x="0" y="128" width="1110" height="118"/><text class="zt it" x="12" y="158">IT</text><text class="bt" x="12" y="180">데이터 · 분석</text><rect class="z-dmz" x="0" y="246" width="1110" height="116"/><text class="zt dmz" x="12" y="276">DMZ</text><text class="bt" x="12" y="298">완충지대</text><rect class="z-ot" x="0" y="362" width="1110" height="112"/><text class="zt ot" x="12" y="392">OT</text><text class="bt" x="12" y="414">게시판 · 화면</text><rect class="z-ot" x="0" y="474" width="1110" height="80"/><text class="zt ot" x="12" y="504">OT</text><text class="bt" x="12" y="526">제어기</text><rect class="z-ot" x="0" y="554" width="1110" height="80"/><text class="zt ot" x="12" y="584">OT</text><text class="bt" x="12" y="606">설비</text><line class="zl" x1="0" y1="246" x2="1110" y2="246"/><line class="zl" x1="0" y1="362" x2="1110" y2="362"/><text class="zr" x="12" y="262">라우터: 사무실이 연 연결만</text><text class="zr" x="12" y="378">라우터: 공장이 연 연결만</text><text class="big" x="150" y="58">Pilot — 우리가 만든 업무 서비스</text><text class="bigs" x="150" y="80">이상 사건 → AI 조사 → 담당자 승인 → 조치 요청 → 결과 확인</text><rect class="bx own" x="530" y="34" width="170" height="64" rx="8"/><text class="bt" x="615.0" y="63.0" text-anchor="middle">알람 접수</text><text class="bs" x="615.0" y="81.0" text-anchor="middle">사건으로 등록</text><rect class="bx own" x="720" y="34" width="170" height="64" rx="8"/><text class="bt" x="805.0" y="63.0" text-anchor="middle">Agent 조사 · 제안</text><text class="bs" x="805.0" y="81.0" text-anchor="middle">Neo4j · LLM(LiteLLM)</text><rect class="bx own" x="910" y="34" width="170" height="64" rx="8"/><text class="bt" x="995.0" y="63.0" text-anchor="middle">담당자 승인</text><text class="bs" x="995.0" y="81.0" text-anchor="middle">승인되면 요청서</text><path class="c" d="M700,66 L720,66" marker-end="url(#m-c)"/><path class="c" d="M890,66 L910,66" marker-end="url(#m-c)"/><rect class="bx" x="150" y="156" width="170" height="62" rx="8"/><text class="bt" x="235.0" y="184.0" text-anchor="middle">Grafana · Prometheus</text><text class="bs" x="235.0" y="202.0" text-anchor="middle">추세 · 감시 화면</text><rect class="bx" x="340" y="156" width="170" height="62" rx="8"/><text class="bt" x="425.0" y="184.0" text-anchor="middle">Kafka</text><text class="bs" x="425.0" y="202.0" text-anchor="middle">공통 장부</text><rect class="bx" x="530" y="156" width="170" height="62" rx="8"/><text class="bt" x="615.0" y="184.0" text-anchor="middle">Flink</text><text class="bs" x="615.0" y="202.0" text-anchor="middle">실시간 이상 탐지</text><rect class="bx" x="720" y="156" width="170" height="62" rx="8"/><text class="bt" x="805.0" y="184.0" text-anchor="middle">InfluxDB · PostgreSQL</text><text class="bs" x="805.0" y="202.0" text-anchor="middle">분석 결과 · 업무 기록</text><path class="d" d="M510,187 L530,187" marker-end="url(#m-d)"/><path class="d" d="M700,187 L720,187" marker-end="url(#m-d)"/><path class="d" d="M615,156 L615,98" marker-end="url(#m-d)"/><text class="lab" x="623" y="132" text-anchor="start">알람</text><rect class="bx" x="150" y="274" width="170" height="62" rx="8"/><text class="bt" x="235.0" y="302.0" text-anchor="middle">공장 값 사본</text><text class="bs" x="235.0" y="320.0" text-anchor="middle">InfluxDB</text><rect class="bx" x="340" y="274" width="170" height="62" rx="8"/><text class="bt" x="425.0" y="302.0" text-anchor="middle">DMZ 창구</text><text class="bs" x="425.0" y="320.0" text-anchor="middle">Mosquitto</text><rect class="bx own" x="910" y="274" width="170" height="62" rx="8"/><text class="bt" x="995.0" y="302.0" text-anchor="middle">요청 검문소</text><text class="bs" x="995.0" y="320.0" text-anchor="middle">우리가 만듦</text><path class="d" d="M340,305 L320,305" marker-end="url(#m-d)"/><path class="d" d="M390,274 L390,218" marker-end="url(#m-d)"/><text class="lab" x="398" y="242" text-anchor="start">사무실이 가져감(Bento)</text><path class="r" d="M235,274 L235,218" marker-end="url(#m-r)"/><path class="c" d="M995,98 L995,274" marker-end="url(#m-c)"/><text class="lab" x="1003" y="190" text-anchor="start">요청서</text><path class="c" d="M910,316 L510,316" marker-end="url(#m-c)"/><text class="lab" x="700" y="308" text-anchor="middle">검사 통과</text><rect class="bx" x="150" y="386" width="170" height="62" rx="8"/><text class="bt" x="235.0" y="414.0" text-anchor="middle">엣지</text><text class="bs" x="235.0" y="432.0" text-anchor="middle">Node-RED · 요청 수신</text><rect class="bx" x="340" y="386" width="170" height="62" rx="8"/><text class="bt" x="425.0" y="414.0" text-anchor="middle">공장 게시판</text><text class="bs" x="425.0" y="432.0" text-anchor="middle">Mosquitto(UNS)</text><rect class="bx" x="530" y="386" width="170" height="62" rx="8"/><text class="bt" x="615.0" y="414.0" text-anchor="middle">운전원 화면</text><text class="bs" x="615.0" y="432.0" text-anchor="middle">FUXA</text><path class="d" d="M390,386 L390,336" marker-end="url(#m-d)"/><text class="lab" x="334" y="356" text-anchor="end">공장이 먼저 연결</text><path class="c" d="M460,336 L460,386" marker-end="url(#m-c)"/><path class="d" d="M320,405 L340,405" marker-end="url(#m-d)"/><path class="c" d="M340,430 L320,430" marker-end="url(#m-c)"/><path class="d" d="M510,417 L530,417" marker-end="url(#m-d)"/><rect class="bx" x="150" y="492" width="170" height="46" rx="8"/><text class="bt" x="235.0" y="512.0" text-anchor="middle">PLC</text><text class="bs" x="235.0" y="530.0" text-anchor="middle">OpenPLC · 물리 검사</text><rect class="bx" x="150" y="572" width="170" height="46" rx="8"/><text class="bt" x="235.0" y="592.0" text-anchor="middle">가상 설비</text><text class="bs" x="235.0" y="610.0" text-anchor="middle">7대 · 센서 12개</text><path class="d" d="M200,492 L200,448" marker-end="url(#m-d)"/><path class="c" d="M270,448 L270,492" marker-end="url(#m-c)"/><path class="d" d="M200,572 L200,538" marker-end="url(#m-d)"/><path class="c" d="M270,538 L270,572" marker-end="url(#m-c)"/></svg></div>
+<div class="legend"><span style="color:var(--f-data)">━ 데이터가 올라가는 길</span><span style="color:var(--f-cmd)">┅ 요청이 내려가는 길</span><span style="color:var(--ok)">굵은 초록 테두리 = 우리가 만든 것</span></div></section>
 
+<section><h2><span class="n">5</span>검증 — 원본과 같은 방법으로</h2>
+<div class="tbl"><table><tr><th>항목</th><th>원본</th><th>새 베이스</th><th>판정</th></tr><tr><td>탐지 판정(70건)</td><td class="num">70/70</td><td class="num">70/70</td><td class="good">같음</td></tr><tr><td>정상 운전 오경보(3분)</td><td class="num">105건</td><td class="num">75건</td><td class="good">나아짐</td></tr><tr><td>고장 → 알람(최대)</td><td class="num">8.1 s</td><td class="num">7.1 s</td><td class="good">모두 10 s 안</td></tr><tr><td>알람 → 화면(p95)</td><td class="num">1.84 s</td><td class="num">1.21 s</td><td class="good">나아짐</td></tr><tr><td>화면값 = 기록값</td><td class="num">99.17 %</td><td class="num">100 %</td><td class="good">나아짐</td></tr><tr><td>제어 · 안전 18항목</td><td class="num">—</td><td class="num">모두 통과</td><td class="good">통과</td></tr><tr><td>거꾸로 여는 연결</td><td class="num">구분 없음</td><td class="num">85건 모두 막힘</td><td class="good">통과</td></tr><tr><td>메모리</td><td class="num">5,918 MiB</td><td class="num">5,588 MiB</td><td class="good">나아짐</td></tr><tr><td>CPU 합계</td><td class="num">51.2 %</td><td class="num">54.8 %</td><td class="bad">3.6 %p 높음</td></tr><tr><td>이상 → AI 제안 1분</td><td class="num">—</td><td class="num">—</td><td class="na">미검증</td></tr></table></div></section>
 
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
-  <p>공공 표준 원문(NIST SP 800-82r3, CISA 망 분리 권고 2016, CISA 등 9개 기관 AI-OT 지침 2025, NAMUR NE 178, Sparkplug 3.0)으로 확인한 공통 모양이다.</p>
-  <div class="grid3">
-    <div class="zone z-ot"><h4>OT · 공장</h4>
-      <div class="box">설비 · 센서</div>
-      <div class="box">PLC(제어기)<small>인터록·운전 모드·물리적으로 되는지 마지막 검사</small></div>
-      <div class="box">엣지 연결<small>프로토콜 변환, 끊기면 저장 후 전송</small></div>
-      <div class="box">MQTT 허브(UNS)<small>모든 설비의 "지금 상태"</small></div>
-      <div class="box">SCADA 화면<small>IT가 멈춰도 동작</small></div>
-    </div>
-    <div class="zone z-dmz"><h4>DMZ · 완충지대</h4>
-      <div class="box">위로 복제<small>OT 데이터를 IT로 밀어냄</small></div>
-      <div class="box">명령 검증 통로<small>IT→OT 명령은 여기 하나로</small></div>
-      <div class="box">감시 수집</div>
-    </div>
-    <div class="zone z-it"><h4>IT · 분석</h4>
-      <div class="box">Kafka형 장부<small>보관·다시 읽기·여러 소비자</small></div>
-      <div class="box">실시간 탐지<small>ML 탐지는 OT 가까이(엣지·SCADA)에도 흔함</small></div>
-      <div class="box">이력 저장 · 대시보드</div>
-      <div class="box">플랫폼 감시<small>공정 알람과 분리</small></div>
-      <div class="box">AI(LLM·에이전트)<small>OT 밖에서 읽고 추천만, 설비 직접 쓰기 없음</small></div>
-    </div>
-  </div>
-  <h3>현업 원칙</h3>
-  <ul>
-    <li>IT에서 OT로 바로 가는 길은 없다. 명령은 사람 승인 → 검증 통로 → 공장 안에서 받을지 정하고 제어기가 물리적으로 되는지 마지막 검사한다.</li>
-    <li>설비가 늘어도 층은 그대로다. 설비 이름 체계(ISA-95), 토픽 규칙, 설비 종류별 모델, 엣지 노드로 흡수한다.</li>
-    <li>2026 흐름: UNS와 Kafka의 결합, 설비 모델·맥락화(DataOps), 에이전트형 AI 시작, AI는 OT 밖 읽기 전용.</li>
-  </ul>
-  <h3>현업 흐름</h3>
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부 근거 90곳 중 62곳은 검색 요약만 확인. 근거가 없거나 약한 판단은 8장에서 다시 확인했다. EEMUA 191·ISA-18.2 본문은 유료라 해설·목차로만 봄)</p>
-  <div class="flow">
-    <div><b>데이터 ↑</b> 설비 → 제어기(PLC) → 엣지(프로토콜 변환, 끊기면 저장 후 전송) → MQTT 허브(UNS, 공장/구역/라인/설비 이름 체계) → DMZ에서 위로 복제 → Kafka형 장부·이력 저장 → 분석·대시보드·AI(OT가 밀어낸 데이터를 읽기만). 주기 샘플링과 변화 필터, 값마다 시각과 품질(끊기면 STALE).</div>
-    <div><b>명령 ↓</b> 운전원은 SCADA 화면 → 제어기. 외부·AI 명령은 사람 승인 → DMZ 검증 통로 → 공장 안에서 받을지 정하고 제어기가 물리적으로 되는지 판단(2026 공동 지침 p.25, OPC UA Job Control). 확인은 제어기 응답과 바뀐 값 두 겹. IT에서 OT로 바로 가는 길은 없다.</div>
-    <div><b>알람</b> 공정 알람은 제어기·SCADA가 만들고 수명주기(인지·억제)를 가진다. 분석 결과는 ISA-18.2의 "경고(alert)"로 알람 목록과 따로 둔다. 서버·컨테이너 경보는 인프라 담당에게만 간다.</div>
-    <div><b>AI 위치</b> 현업에 "AI 층"은 따로 없다. ML 이상 탐지는 주로 L1~L3(PLC·엣지·SCADA 쪽), LLM·에이전트는 L4~5(OT 밖)에서 OT가 브로커·감사되는 버퍼로 내보낸 데이터를 읽기 전용으로 쓴다(CISA 등 9개 기관 AI-OT 지침 2025 표1·p.15·p.19). "Kafka를 거쳐 AI로"는 이 원칙과 UNS+Kafka 트렌드를 합친 구성이고, 표준이 제품을 지목하지는 않는다. 지식 그래프·LLM 에이전트의 현장 운영 비율은 설문 수치가 없다.</div>
-    <div><b>저장</b> 현업 권장 배치는 사이트 히스토리언(OT L3) + DMZ 복제이고, 외부는 DMZ 사본을 조회한다(CISA 2016, 2026 공동 지침 p.19). 명령·승인·감사 기록은 추가만 하고 무단 수정·삭제를 막는다(보존 기간은 조직이 정함).</div>
-    <div><b>설비 추가</b> 층은 그대로. 설비 종류 모델과 설비 목록(등록부)에 더하면 이름·토픽·키·규칙이 같은 ID로 이어진다.</div>
-  </div>
-  <h3>근거 기준 목록 — 법·표준·지침</h3>
-  <p>위 구조·흐름은 법령 1(산업안전보건기준 규칙), 국내 공공 지침 1(KISA), 여러 나라 공공 지침 4(2026 OT 연결 원칙·NIST·CISA 2016·CISA AI-OT), 국제 표준·명세 13, 모두 19개 문서에 근거한다. 문서별 요지와 우리 설계에 쓰인 곳은 아래를 펼쳐 본다.</p>
-  <details class="evid"><summary>근거 문서 19개 펼치기</summary>
-  <p>위 구조·흐름의 근거가 된 문서다. <b>적용되는 규칙(법령·표준·공공 지침)이 있으면 따르고, 없으면 현업이 흔히 하는 방식을 따른다.</b> 아래는 조사에서 확인한 법령·표준·공공 지침이다. 제조 공장의 공장망–외부 연결 구조를 직접 정한 국내 법 조문은 일반 공장에는 찾지 못했다(정보통신기반 보호법은 지정 시설만). 법으로 반드시인 것은 정비 때 기계를 멈추고 잠그는 산업안전 규칙이다.</p>
-  <div class="tbl"><table>
-    <tr><th>기준</th><th>누가 낸 무엇</th><th>핵심 내용(원문 요지)</th><th>우리 설계에 쓰인 곳</th><th>원문 확인</th><th>조사</th></tr>
-    <tr><td>산업안전보건기준에 관한 규칙 제92조·제224조</td><td>국내 법령(고용노동부령)</td><td>정비·수리 때 위험하면 기계를 멈춘다. 다른 사람이 켜지 못하게 기동 장치를 잠그거나 표지를 단다. 로봇은 기동스위치를 남이 조작 못 하게 한다</td><td>PLC 정비 모드(원격 금지). 법이 요구하는 물리 잠금을 대신하지 않음</td><td>법령 원문 확인</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
-    <tr><td>KISA 스마트공장 보안모델 Part Ⅱ(2021)</td><td>국내 공공 지침(참고용 권고)</td><td>외부와 이어지는 MES·엣지 컴퓨터는 Industrial DMZ로 분리하고 공장망 접근을 막는다. 일방향 구성</td><td>외부와 닿는 것은 DMZ에서 끝남</td><td>요약본 원문 확인</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
-    <tr><td>OPC UA for ISA-95 Job Control(OPC 10031-4)</td><td>OPC Foundation 명세</td><td>작업 지시를 받는 쪽이 저장·시작 허락·실제 시작을 나눠 다루고 "받을 수 없음"으로 거부할 수 있다</td><td>공장 안에서 받을지 정함, 수용·거부 응답</td><td>명세 원문 확인</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
-    <tr><td>Secure connectivity principles for OT(2026-01)</td><td>NCSC-UK·CISA·FBI·BSI 등 여러 나라 기관 공동 지침</td><td>"OT와의 모든 연결은 OT 안에서 밖으로 시작"(p.11). OT·IT 데이터 교환은 DMZ로 중개, OPC UA/MQTT over TLS·HTTPS. OT 히스토리언을 DMZ 히스토리언으로 단방향 복제, IT는 DMZ를 HTTP API로 조회(p.19). 분석·업무 시스템은 관찰·분석만, 명령·운전 변경 없음(p.25)</td><td>연결 방향, 사이트 히스토리언 + DMZ 복제, 외부 조치 경로</td><td>원문 확인</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
-    <tr><td>NIST SP 800-82r3</td><td>미국 정부 기관(NIST) OT 보안 지침</td><td>"DMZ 망 구조와 방화벽으로 기업망과 OT망 사이에 트래픽이 직접 지나가지 않게 한다"(§1). L2~L3 사이 단방향 게이트웨이(데이터 다이오드)를 방화벽 대안으로 듦(§5.2.3.1). Purdue·ISA-95·IIRA를 인정 모델로 듦</td><td>망 3구역, IT→OT 직접 길 없음</td><td>원문 확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
-    <tr><td>CISA Defense in Depth(2016)</td><td>미국 정부 기관(CISA, 당시 DHS ICS-CERT) 권고</td><td>"기업이 접근하는 구성요소를 DMZ에 두면 기업망에서 제어망으로 가는 직접 경로가 필요 없다. 모든 경로는 DMZ에서 끝난다." "제어망 장치가 먼저 연 연결만 허용". "DMZ 없는 2구역 구성은 겨우 허용되는 수준"(§2.4.2). L3에 사이트 히스토리언, DMZ에 복제(§2.4.1~2)</td><td>DMZ 중계, OT가 밀어냄, 히스토리언 배치 설명</td><td>12번에 원문 문장 인용</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
-    <tr><td>CISA 등 9개 기관 AI-OT 원칙(2025-12)</td><td>CISA 등 9개 기관 공동 지침</td><td>OT 밖으로 밀어내는(push)·브로커 방식(p.15, p.20). "사람이 개입하지 않는 AI의 OT 능동 제어를 제한하라", "AI·LLM은 OT 안전 결정에 쓰면 안 된다"(p.8, p.16). ML은 주로 L1~L3, LLM은 L4~5(표1). 읽기 전용 예시(p.19). AI 입출력 로그(p.18~19)</td><td>AI 읽기 전용·사람 승인·기록, 탐지 위치 차이 표시</td><td>원문 확인(쪽 인용)</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12</a></td></tr>
-    <tr><td>NAMUR NE 178(2025-03) · NE 175·177</td><td>화학·제약 업계 사용자 단체(NAMUR) 권고</td><td>바깥의 변경 요청을 가용성·안전에 나쁜 영향 없이 OT로 넘기는 검증 절차, 요청자와 공장 소유자의 관심사 분리, 요청자에게는 처리 상태만(NE 178 공개 요약). 감시·최적화 데이터는 두 번째 채널로(NE 175), 보안 게이트웨이(NE 177)</td><td>외부 요청의 검증 통로(게이트웨이)</td><td>공개 요약만(본문 유료)</td><td><a href="../docs/research/deep-2026-09-29/16-external-integration.md">16</a></td></tr>
-    <tr><td>ISA-95 / IEC 62264</td><td>국제 표준</td><td>기능 층 L0~L4, 설비 계층 Enterprise→Site→Area→Work center→Work unit(5.3절). Part 3: 정비 요청→작업지시→실행→추적</td><td>설비 이름·토픽·등록부, 승인 흐름</td><td>미리보기 범위만 · Part 3는 검색 발췌</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
-    <tr><td>ISA-18.2 / IEC 62682</td><td>국제 표준(알람 관리)</td><td>알람은 "대응을 요구하는" 것만. 철학→합리화→운영→감사 수명주기. 권장 부하 운전원 1명당 10분에 약 1건</td><td>공정 알람과 분석 경고 분리, 경고 상태표</td><td>ISA 페이지·해설</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
-    <tr><td>EEMUA 191</td><td>업계 지침(EEMUA)</td><td>알람 폭주 = 10분에 새 알람 10건 초과(운전원에게 울린 알람을 셈)</td><td>FUXA 공정 알람의 10분당 건수. 분석 경고 건수는 이를 빌린 자체 지표</td><td>검색 발췌(원문 접근 거부)</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
-    <tr><td>ANSI/ISA-112.00.01-2025</td><td>ANSI/ISA 표준(SCADA), 2026-02 발행</td><td>SCADA 수명주기·기능 아키텍처. 공개 초안 그림(2022): HMI·알람·히스토리언은 OT 응용층, 원격 앱 직결은 강하게 말림</td><td>층 설명, 외부 직결 금지 설명</td><td>본문 유료 — 초안 그림만</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
-    <tr><td>IEC 62443(-3-2, -3-3)</td><td>국제 표준(산업 보안)</td><td>zone(같은 보안 요구 자산 묶음)과 conduit(zone 사이 통신). 감사 요구 SR 2.8~2.11</td><td>망 구역, 감사 기록 추가만</td><td>목차·해설(검색 발췌)</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
-    <tr><td>Sparkplug 3.0 (ISO/IEC 20237:2023)</td><td>Eclipse 재단 명세 · ISO/IEC 표준</td><td>명령 NCMD·DCMD는 "QoS 0, retain=false로 발행해야 한다(MUST)". 엣지는 끊기면 저장 후 전달. 모든 값에 시각 필수, 품질 GOOD/BAD/STALE</td><td>명령 retain 금지, 시각·품질·STALE</td><td>명세 본문 확인</td><td><a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12·13</a></td></tr>
-    <tr><td>OPC UA Part 4·8</td><td>OPC Foundation 명세</td><td>값의 출처 시각(sourceTimestamp)과 품질 3값. "쓰기 성공 ≠ 설비 반영" 구분</td><td>시각·품질, 명령 확인 두 겹</td><td>명세 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
-    <tr><td>IEC 61850 · IEC 104 운영 지침</td><td>전력 원격제어 표준 · Svenska kraftnät 운영 지침</td><td>명령 선택 시간 초과(만료)·순번 대조·실행 결과 보고. 인터록 검사는 명령을 받는 현장 제어기가 한다</td><td>요청 단위 만료 검사를 빌려 옴(다른 분야). 늦은 명령은 OPC UA Part 2도 위협으로 꼽음. 중복 검사는 MQTT QoS 1이 중복을 만들기 때문</td><td>지침 조항 인용</td><td><a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13</a></td></tr>
-    <tr><td>ISO 13849-1 · IEC 62061 · 산업안전보건법 제80조</td><td>국제 표준(기계 안전 제어) · 국내 법률(방호조치)</td><td>기계·유압 설비의 안전 관련 제어. IEC 61511(안전계장)은 공정 산업용. 동력 기계는 방호조치 없이 쓰지 못함</td><td>"기계 안전 기능"은 제어와 따로(설명), 가상설비 안에 압력 상한·비상정지</td><td>적용 범위·법령 원문 확인</td><td><a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17</a></td></tr>
-    <tr><td>EN 13306:2010 · IEC 60812</td><td>유럽·국제 표준(정비 용어, FMEA)</td><td>고장 모드·원인·메커니즘의 분야 공통 정의. ISO 14224는 석유·가스 분야 전용이라 용어만 빌림</td><td>온톨로지 고장 칸(+ CMMS식 조치 코드)</td><td>발췌본 원문 확인</td><td><a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17</a></td></tr>
-    <tr><td>IEC 61131-3</td><td>국제 표준(PLC 프로그래밍 언어)</td><td>PLC 프로그램 언어(ST 등)</td><td>OpenPLC 프로그램을 ST로</td><td>14번 언급</td><td><a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14</a></td></tr>
-  </table></div>
-
-  </details>
-  <h3>현업 · 참조 설계서 v3 · 우리 원본(V1) 대조</h3>
-
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a></p>
-  <div class="tbl"><table>
-    <tr><th>항목</th><th>현업</th><th>참조 v3</th><th>우리 원본 V1</th></tr>
-    <tr><td>망 구분</td><td>OT·DMZ·IT</td><td>있음</td><td>없음(망 하나)</td></tr>
-    <tr><td>PLC 층</td><td>있음(물리적 가능 여부 검사)</td><td>soft-PLC</td><td>없음(가상설비가 쓰기를 직접 받음)</td></tr>
-    <tr><td>명령(쓰기) 길</td><td>수동 하나 + 검증 통로 하나</td><td>같음</td><td>4개(FUXA 직접, EdgeX, AI 조치, AI 대시보드 직접 조작)</td></tr>
-    <tr><td>화면이 값을 읽는 길</td><td>한 곳에서</td><td>MQTT 구독</td><td>Modbus 직접 + EdgeX 따로(이중)</td></tr>
-    <tr><td>AI 권한</td><td>읽기·추천만</td><td>명령 권한 없음</td><td>조치 코드가 설비에 직접 씀</td></tr>
-    <tr><td>설비 등록부</td><td>설비 모델 정본</td><td>없음</td><td>없음</td></tr>
-    <tr><td>알람</td><td>공정 알람과 분석 경고 분리, 수명주기</td><td>경보 분리</td><td>Flink 알람을 화면에 바로 표시</td></tr>
-    <tr><td>MQTT → Kafka 분리</td><td>있음</td><td>있음</td><td class="same">있음</td></tr>
-    <tr><td>엣지 연결 층</td><td>있음</td><td>있음</td><td class="same">있음(EdgeX)</td></tr>
-    <tr><td>실시간 이상 탐지 위치</td><td>ML은 주로 OT 가까이(L1~L3), LLM·에이전트는 OT 밖</td><td>IT(Flink)</td><td>Flink(망 구분 없음)</td></tr>
-  </table></div>
-  <p class="muted" style="margin-top:10px">v3와 우리 구조도는 비교 대상이고, 판단은 현업 조사로 했다. 원본 V1의 뼈대(엣지 → MQTT → Kafka → Flink)는 현업과 맞다. 고칠 곳은 망·PLC·명령 길·등록부다.</p>
-
-</section>
-
-<section>
-  <h2>4. 결과 ② 부품별로 — 무엇이고, 무엇을 왜 골랐나</h2>
-
-
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a></p>
-    <p>부품마다 <b>이게 무엇인지</b>를 먼저 한 줄로 풀고, 현업은 무엇을 쓰는지(또는 조사가 무엇을 권했는지), 우리는 무엇을 골랐는지, 왜인지를 붙였다. 색 띠: <span class="tag same">현업과 같은 무료 본체</span> <span class="tag free">현업은 상용 → 무료 대체</span> <span class="tag own">맞는 제품이 없어 직접</span> <span class="tag base">구조</span></p>
-  <div class="parts">
-    <div class="part base"><div class="ph"><b>DMZ(완충지대)</b><span class="tag">구조</span></div>
-      <p class="what">공장망과 사무실망 사이의 중간 구역. 둘은 여기서만 만나고 서로의 안으로 직접 들어가지 못한다.</p>
-      <dl><dt>현업·조사</dt><dd>공공 지침이 모두 공장·DMZ·사무실 세 구역을 권한다(2026 공동 지침, NIST 800-82r3, CISA 2016).</dd><dt>우리</dt><dd>도커 망 셋(ot-net · dmz-net · it-net)</dd><dt>왜</dt><dd>사무실 쪽이 해킹당하거나 멈춰도 공장은 계속 돌게 하는 현업 기본 구조다.</dd></dl></div>
-    <div class="part own"><div class="ph"><b>라우터(구역 경비)</b><span class="tag">맞는 제품이 없어 직접</span></div>
-      <p class="what">세 망 사이에 선 문지기. 누가 먼저 연결을 열었는지 보고 허용된 방향·포트만 통과시킨다.</p>
-      <dl><dt>현업·조사</dt><dd>"방화벽은 제어망 장치가 먼저 연 연결만 허용한다"(CISA 2016 p.20). 현업은 방화벽 장비로 한다.</dd><dt>우리</dt><dd>alpine + iptables 컨테이너 하나</dd><dt>왜</dt><dd>무료 방화벽을 도커로 두는 교육 랩 선례(GRFICSv3)가 있다. 실측: 거꾸로 여는 연결 85건을 시도해 모두 막혔다.</dd></dl></div>
-    <div class="part free"><div class="ph"><b>PLC · OpenPLC v4.2.4</b><span class="tag">현업은 상용 → 무료 대체</span></div>
-      <p class="what">설비를 직접 움직이는 제어기. 인터록(위험하면 멈춤)·운전 모드를 지키고, 설비에 값을 쓰는 것은 PLC 하나뿐이다.</p>
-      <dl><dt>현업·조사</dt><dd>제조사 하드웨어 PLC, 소프트웨어 PLC는 CODESYS(상용).</dd><dt>우리</dt><dd>OpenPLC(소프트웨어 PLC)</dd><dt>왜</dt><dd>CODESYS는 라이선스 없이 2시간 데모. OpenPLC는 무료 중 공식 배포 이미지가 있는 유일한 후보이고 PLC 표준 언어(IEC 61131-3)를 쓴다.</dd></dl></div>
-    <div class="part free"><div class="ph"><b>엣지 · Node-RED 5.0.7</b><span class="tag">현업은 상용 → 무료 대체</span></div>
-      <p class="what">기계 말(Modbus)을 공통 말(MQTT)로 바꾸는 통역사. 값마다 시각·품질을 붙이고, 연결이 끊기면 모아 뒀다 보낸다.</p>
-      <dl><dt>현업·조사</dt><dd>Kepware·Ignition Edge 등 상용. 조사는 Node-RED와 EdgeX를 둘 다 해 보고 고르라고 했다.</dd><dt>우리</dt><dd>Node-RED</dd><dt>왜</dt><dd>나란히 재 보니 끊김 복구 때 중복 0(EdgeX 12~24), 설비 등록부 변경 자동 반영, 메모리 약 80 MiB(EdgeX 144~180)로 앞섰다(아래 표).</dd></dl></div>
-    <div class="part same"><div class="ph"><b>MQTT 브로커 · Mosquitto 2.1.2 ×2</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">설비 값이 모이는 게시판. 값을 올리면 필요한 곳이 구독해 가져간다(UNS: 공장 전체의 "지금 상태"). 공장 허브 하나, DMZ 창구 하나.</p>
-      <dl><dt>현업·조사</dt><dd>MQTT가 산업 IoT의 표준 통신이고, 브로커는 EMQX·HiveMQ·Mosquitto를 쓴다.</dd><dt>우리</dt><dd>Mosquitto 두 개. 공장 허브가 DMZ 창구로 먼저 연결한다(브리지).</dd><dt>왜</dt><dd>무료이고 널리 배포된 브로커다. EMQX는 5.9부터 유료 제한형(BSL) 라이선스.</dd></dl></div>
-    <div class="part free"><div class="ph"><b>화면 · FUXA 1.3.4</b><span class="tag">현업은 상용 → 무료 대체</span></div>
-      <p class="what">운전원이 보는 공장 화면(SCADA/HMI). 현재값·알람을 보고, 조작하고, 들어온 요청을 수락·거절한다.</p>
-      <dl><dt>현업·조사</dt><dd>WinCC·FactoryTalk·Ignition(상용).</dd><dt>우리</dt><dd>FUXA(운전원 로그인 켬)</dd><dt>왜</dt><dd>무료로 MQTT·OPC UA·Modbus를 모두 갖춘 유일한 공정 화면이다.</dd></dl></div>
-    <div class="part own"><div class="ph"><b>DMZ 게이트웨이(요청 검문소)</b><span class="tag">맞는 제품이 없어 직접</span></div>
-      <p class="what">AI 쪽에서 온 작업 요청서를 검사하는 곳. 형식·허용된 작업·요청자와 승인자·너무 오래된 요청·중복을 보고, 통과하면 만료 시각(30초)을 붙여 공장 쪽으로 넘긴다.</p>
-      <dl><dt>현업·조사</dt><dd>현업은 방화벽과 DMZ 중계의 조합이고, 이 일만 하는 기성품은 없다(조사 17번). 조사는 이미 쓰는 Bento의 설정만으로 만들어 보라고 권했다.</dd><dt>우리</dt><dd>직접 만든 검사 프로그램(Python 166줄)</dd><dt>왜</dt><dd>실측해 보니 Bento는 메시지에 만료 표시(MQTT 5)를 붙이지 못하고, 공장 창구가 멈췄을 때 바로 거절하지 못했다(5초 뒤 시간 초과, 뒤에서 계속 재시도). 그래서 계획해 둔 대안대로 직접 만들었다.</dd></dl></div>
-    <div class="part free"><div class="ph"><b>데이터 운반 · Bento 1.21.2</b><span class="tag">현업은 상용 → 무료 대체</span></div>
-      <p class="what">데이터를 받아 모양을 바꿔 다른 곳으로 옮기는 운반 도구. DMZ 창구 → Kafka, Kafka → 기록 저장소 같은 길을 맡는다.</p>
-      <dl><dt>현업·조사</dt><dd>브로커 내장 Kafka 확장(상용), Kafka Connect(독점 커넥터가 많음).</dd><dt>우리</dt><dd>Bento 두 개(사무실 쪽 수집기, DMZ 적재기)</dd><dt>왜</dt><dd>MIT 무료 라이선스이고, 원본이 쓰던 Telegraf와 같은 결과를 냈다.</dd></dl></div>
-    <div class="part same"><div class="ph"><b>장부 · Kafka 4.3.1</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">모든 데이터가 순서대로 쌓이는 공통 장부. 탐지·저장·AI가 각자 책갈피를 두고 다시 읽을 수 있다.</p>
-      <dl><dt>현업·조사</dt><dd>현업도 Kafka를 쓴다.</dd><dt>우리</dt><dd>Kafka</dd><dt>왜</dt><dd>현업과 같은 무료 본체다.</dd></dl></div>
-    <div class="part same"><div class="ph"><b>실시간 탐지 · Flink 2.2.1 + HA</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">흘러가는 데이터를 쉬지 않고 검사해 이상을 찾는 엔진(규칙·패턴·오토인코더).</p>
-      <dl><dt>현업·조사</dt><dd>Flink 등 스트림 처리 엔진.</dd><dt>우리</dt><dd>Flink(재시작해도 스스로 복귀하는 HA 구성)</dd><dt>왜</dt><dd>현업이 쓰는 대표 엔진 중 하나다. 원본과 판정 70/70이 같았다.</dd></dl></div>
-    <div class="part free"><div class="ph"><b>기록 저장 · InfluxDB 2.9.1 ×2</b><span class="tag">현업은 상용 → 무료 대체</span></div>
-      <p class="what">시간 순 측정값 기록장(히스토리언). DMZ에는 공장 값의 사본, 사무실 쪽에는 분석 결과를 둔다.</p>
-      <dl><dt>현업·조사</dt><dd>AVEVA PI 등 상용 히스토리언.</dd><dt>우리</dt><dd>InfluxDB 두 개</dd><dt>왜</dt><dd>오픈소스 시계열 DB 중 산업 논문 수 1위이고 산업 엣지 제품과 통합 사례가 많다.</dd></dl></div>
-    <div class="part same"><div class="ph"><b>대시보드 · Grafana 13.2.3</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">기록을 그래프로 펼쳐 보는 화면.</p>
-      <dl><dt>현업·조사</dt><dd>현업도 Grafana를 쓴다.</dd><dt>우리</dt><dd>Grafana</dd><dt>왜</dt><dd>현업과 같은 무료 본체다.</dd></dl></div>
-    <div class="part same"><div class="ph"><b>감시 · Prometheus 3.13 ×3</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">서버·프로그램이 건강한지 보는 감시. 공장 쪽이 DMZ로 보내고 사무실이 가져가 방향 규칙을 지킨다.</p>
-      <dl><dt>현업·조사</dt><dd>현업도 Prometheus를 쓴다(클라우드 네이티브 감시의 표준급).</dd><dt>우리</dt><dd>Prometheus 셋(공장 · DMZ · 사무실)</dd><dt>왜</dt><dd>현업과 같은 무료 본체다.</dd></dl></div>
-    <div class="part same"><div class="ph"><b>지식 그래프 · Neo4j 5.26</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">설비·센서·고장·매뉴얼 사이의 관계 지도. AI가 원인을 따라갈 때 쓴다.</p>
-      <dl><dt>현업·조사</dt><dd>그래프 DB는 Neo4j가 가장 널리 쓰인다.</dd><dt>우리</dt><dd>Neo4j 무료판</dd><dt>왜</dt><dd>그래프 DB 인기 1위(무료판은 패치 보장 없음).</dd></dl></div>
-    <div class="part same"><div class="ph"><b>업무 기록 · PostgreSQL 18.6</b><span class="tag">현업과 같은 무료 본체</span></div>
-      <p class="what">요청·승인·결과를 적는 장부. 원본 기록은 추가만 되고 고치거나 지울 수 없다.</p>
-      <dl><dt>현업·조사</dt><dd>현업도 PostgreSQL을 널리 쓴다.</dd><dt>우리</dt><dd>PostgreSQL 하나(AI 업무 DB도 여기로 합침)</dd><dt>왜</dt><dd>개발자 설문 사용 1위이고, 감사 기록 보호는 권한으로 막는다.</dd></dl></div>
-    <div class="part base"><div class="ph"><b>AI 모델 관문 · LiteLLM(GCP)</b><span class="tag">구조</span></div>
-      <p class="what">AI 층이 모델을 부를 때 거치는 단일 관문. GCP Cloud Run에 올라가 있다.</p>
-      <dl><dt>현업·조사</dt><dd>원본부터 이 관문으로 대화 모델을 불렀다.</dd><dt>우리</dt><dd>대화 모델과 임베딩(문서를 숫자로 바꿔 검색하는 모델) 모두 이 관문으로</dd><dt>왜</dt><dd>사용자 결정: PC에 모델을 설치하지 않고 한 관문으로 모은다. 임베딩을 옮기는 작업은 진행 중.</dd></dl></div>
-    <div class="part own"><div class="ph"><b>설비 등록부</b><span class="tag">맞는 제품이 없어 직접</span></div>
-      <p class="what">설비 목록의 원본 파일 하나. 여기서 엣지 흐름·토픽·PLC 주소·화면·검사 규칙을 만들어 낸다.</p>
-      <dl><dt>현업·조사</dt><dd>현업은 설비 자산 관리 시스템(CMMS·EAM)이나 AAS 기반 상용 플랫폼.</dd><dt>우리</dt><dd>직접 만든 파일 + 생성 스크립트</dd><dt>왜</dt><dd>무료 정식판(BaSyx Go)도 있지만 메모리·구성을 줄이려고 직접 했다. 이름 규칙은 AAS·ISA-95를 따른다.</dd></dl></div>
-  </div>
-
-
-    <h3>엣지는 둘 다 해 보고 Node-RED를 골랐다</h3>
-  <div class="vs">
-    <div class="card"><b>EdgeX 4.0.2 · 공장용 엣지 플랫폼</b>장치 등록부·명령 창구·끊김 시 저장을 기본 제공. 도입 기업 사례(Eaton·Wipro 등). 산업 논문 33편. 컨테이너 약 10개.</div>
-    <div class="card"><b>Node-RED 5.0.x · 범용 연결 도구</b>산업 제어기 제조사 여러 곳이 탑재·지원(Siemens IOT2050·WAGO PFC200·Opto 22·Bosch Rexroth ctrlX). OpenJS 재단, 산업 논문 486편. 컨테이너 1개. 위 세 기능은 흐름(서브플로 템플릿)으로 만든다.</div>
-  </div>
-  <p>같은 가상설비·PLC에 붙여 나란히 쟀다(<code>experiments/EDGE-CMP/summary.json</code>). 엣지를 고르는 공공 표준은 없어 현업 점검 안내가 공통으로 보는 값을 쓰고, 정하는 순서(① 누락·유실·복구 ② 수신기 ③ 등록부 생성 ④ p95 ⑤ 메모리)를 결과 전에 정했다.</p>
-<div class="tbl"><table><tr><th>재는 것</th><th>Node-RED</th><th>EdgeX</th></tr>
-<tr><td>12태그 누락·중복(정상 운전)</td><td>0 · 0</td><td>0 · 0</td></tr>
-<tr><td>명령 → PLC → 응답</td><td>10/10, 0.235 s</td><td>10/10, 0.235 s</td></tr>
-<tr><td>외부 요청 수신기</td><td>28/28</td><td>28/28</td></tr>
-<tr><td>브로커 끊김 뒤 복구 · 중복</td><td><b>2.42 s · 0</b></td><td>4.53 s · 12~24</td></tr>
-<tr><td>등록부에서 설비 추가</td><td><b>자동 반영</b></td><td>바뀐 프로파일을 무시(API로 다시 올려야 함)</td></tr>
-<tr><td>원시값 p95 지연</td><td>299 ms</td><td><b>107 ms</b></td></tr>
-<tr><td>엣지 재시작 뒤 복구 · 유실</td><td>1.55 s · 24</td><td><b>0.67~1.12 s · 12~24</b></td></tr>
-<tr><td>메모리 · 컨테이너</td><td><b>약 80 MiB · 1</b></td><td>144~180 MiB · 9</td></tr>
-</table></div>
-<p>정한 순서의 앞 항목(끊김 복구의 중복, 등록부 생성)에서 Node-RED가 앞서 <b>Node-RED 5.0.7</b>로 정했다. 수업이 쓰는 <code>edgex/telemetry</code>는 엣지가 같은 EdgeX 이벤트 모양으로 계속 낸다.</p>
-</section>
-
-<section>
-  <h2>5. 결과 ③ 외부 시스템과 어떻게 주고받나 — 규칙에서 우리 설계로</h2>
-  <p>우리 시스템의 외부 시스템은 <b>우리 AI</b>(AI 업무 도우미와 담당자 승인 화면)다. 조사 16번은 현업의 외부 시스템 전반(MES·ERP·정비·기업 히스토리언·클라우드·AI)을 넓게 보고, 그 모범을 우리 AI에 적용했다. 승인 책임은 담당자에게 있다.</p>
-  <div class="rplist">
-    <div class="rp"><div class="r"><small>근거 · 2026 공동 지침 p.11 · CISA 2016</small>OT 환경과의 모든 연결은 OT 안에서 밖으로 나가는 연결로 시작한다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>DMZ에 Mosquitto를 두고, 공장 안 허브가 <b>브리지로 먼저 연결</b>한다. DMZ 안의 것은 공장으로 연결을 열지 않는다</div></div>
-    <div class="rp"><div class="r"><small>근거 · CISA 2016 p.20 · 2026 공동 지침 p.26</small>방화벽은 제어망 장치가 먼저 연 연결만 허용한다. 구역 사이 접근 통제는 최소한의 통제다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>여러 망에 붙는 것은 <b>라우터 컨테이너 하나</b>. 공장·IT가 먼저 연 연결만 통과시키고 나머지는 기록 후 차단한다</div></div>
-    <div class="rp"><div class="r"><small>근거 · 2026 공동 지침 p.19 · CISA 2016</small>운영 데이터를 나눌 때는 OT 히스토리언을 DMZ로 복제하고, IT는 공장이 아니라 DMZ를 조회한다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>공장 안 기록은 FUXA 내장 기록, <b>외부용 사본은 DMZ의 InfluxDB</b>(공장 원시값 전용). Grafana·AI는 사본을 조회하고, 분석 결과는 사본에 되쓰지 않고 IT에 둔다</div></div>
-    <div class="rp"><div class="r"><small>근거 · 2026 공동 지침 p.25 · CISA AI-OT 2025</small>분석·업무 시스템은 관찰·분석만 하고 명령하거나 운전을 바꾸지 않는다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small><b>우리 AI는 제안만</b> 한다. 담당자가 승인하면 "작업 요청"이 되어 DMZ로 간다</div></div>
-    <div class="rp"><div class="r"><small>근거 · OPC UA ISA-95 Job Control 명세</small>작업 지시를 받는 쪽이 받을지·언제 할지를 정하고, 거부할 수 있다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>요청은 Job Control 이름의 필드로 보낸다. 공장 안 <b>수신기가 받을지 정하고</b>(자동 수용 모드면 자동, 아니면 운전원), PLC는 인터록·모드·범위로 <b>물리적으로 되는지 마지막 검사</b>를 한다. 답은 "받음·거절" → "결과·새 상태" 두 번</div></div>
-    <div class="rp"><div class="r"><small>근거 · 2026 공동 지침 p.17 · Top 20 Secure PLC</small>IT/OT 경계와 SCADA·PLC 앞에서 "알려진 정상"만 통과시킨다. PLC는 앞에서 검사했어도 다시 검사한다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small><b>게이트웨이 · 공장 안 수신기 · PLC</b>에서 겹마다 검사한다. 게이트웨이는 공장 상태를 보지 않는다. 늦은 요청은 MQTT 만료와 본문 만료 시각 두 겹으로 버린다</div></div>
-    <div class="rp"><div class="r"><small>근거 · 2026 공동 지침 p.7·p.31</small>외부가 끊겨도 공장은 혼자 돈다. 격리 계획을 둔다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>공장과 DMZ 사이 연결을 끊어도 감시·수동 조작·인터록이 계속되는지 <b>격리 시험</b>으로 확인한다</div></div>
-    <div class="rp"><div class="r"><small>근거 · IEC 62443 SR 3.9 취지 · NIST 800-82r3 AU-4(1)·AU-11</small>감사 기록은 무단 수정·삭제를 막고 다른 저장소로 옮겨 둔다. 보존 기간은 조직이 정한다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>요청·승인·감사의 정본은 <b>PostgreSQL 추가 전용 표</b>(수정·삭제 권한 없음), Kafka에는 사본. 보존 기간은 정책으로 정한다</div></div>
-    <div class="rp"><div class="r"><small>근거 · ISA-18.2 · ISA-TR18.2.8 · EEMUA 191</small>분석 경고(alert)는 운전원 알람과 구분하고, 주로 정비·엔지니어 쪽으로 보낸다</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>분석 경고의 기본 표시는 <b>IT 화면</b>. FUXA에는 공장이 가져온 "분석 경고(참고)" 칸으로 소리·조작 없이 보인다(원본 기능 보존)</div></div>
-    <div class="rp"><div class="r"><small>근거 · 산업안전보건기준에 관한 규칙 제92조(법)</small>정비 때 기계를 멈추고 잠근다(기동 장치 잠금·표지)</div><div class="arrowcell">→</div><div class="o"><small>그래서 우리는</small>PLC에 <b>정비 모드(원격 금지)</b>를 둔다. 법이 요구하는 물리 잠금을 대신하지 않는 추가 층이라고 설명한다</div></div>
-  </div>
-</section>
-
-<section id="arch">
-  <h2>6. 그래서 최종 아키텍처는 이렇다</h2>
-
-
-  <p class="src">근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a>(층 B0~B13·길 목록) · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a>(세부) · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a>(제품·버전)</p>
-  <p>3~5장의 결과를 한 장에 합친 그림이다. 아래 L1 설비에서 위 L10 업무·승인까지 10개 층이고, 색 띠가 구역(공장 OT · 완충지대 DMZ · 사무실 쪽 IT)이다. 번호 순서대로 따라가면 흐름이 된다.</p>
-  <p><b>구역 뜻:</b> OT(운영 기술)는 공장에서 기계를 실제로 움직이는 쪽(설비·PLC·SCADA 화면)이다. 멈추면 기계가 서므로 안전과 계속 도는 것이 먼저다. IT(정보 기술)는 사무실 쪽(저장·분석·AI·업무)이다. DMZ는 둘 사이 완충지대다. 데이터는 OT가 밀어서 내보내고, IT에서 기계로 바로 가는 명령 길은 없으며, IT가 멈춰도 공장은 돈다.</p>
-  <div class="legend">
-    <span><i class="sw d"></i>데이터가 올라가는 길(D)</span>
-    <span><i class="sw a"></i>알람·사건(A)</span>
-    <span><i class="sw c"></i>명령이 내려가는 길(C, M)</span>
-    <span><i class="sw r"></i>읽기·생성(R, G)</span>
-    <span><b style="color:var(--warn)">새로</b> = 원본 V1에 없던 것</span>
-  </div>
-  <div class="archwrap"><svg class="arch" viewBox="0 0 1200 1024" width="1200" height="1024" role="img" aria-label="새 베이스 시스템 아키텍처: 10개 층, 데이터 상향·알람·AI 조치 요청 흐름"><defs><marker id="m-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-data" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-cmd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-cmd" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-alm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-alm" d="M0,0 L10,5 L0,10 z"/></marker><marker id="m-read" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-read" d="M0,0 L10,5 L0,10 z"/></marker></defs>
-<rect class="band-it" x="0" y="16" width="1200" height="100"/>
-<text class="ln" x="12" y="58">L10</text>
-<text class="lname" x="12" y="76">업무 · 승인</text>
-<text class="zt zt-it" x="12" y="93">IT</text>
-<rect class="band-it" x="0" y="116" width="1200" height="100"/>
-<text class="ln" x="12" y="158">L9</text>
-<text class="lname" x="12" y="176">AI · 지식</text>
-<text class="zt zt-it" x="12" y="193">IT</text>
-<rect class="band-it" x="0" y="216" width="1200" height="100"/>
-<text class="ln" x="12" y="258">L8</text>
-<text class="lname" x="12" y="276">관제 화면</text>
-<text class="zt zt-it" x="12" y="293">IT</text>
-<rect class="band-it" x="0" y="316" width="1200" height="100"/>
-<text class="ln" x="12" y="358">L7</text>
-<text class="lname" x="12" y="376">이상 탐지</text>
-<text class="zt zt-it" x="12" y="393">IT</text>
-<rect class="band-it" x="0" y="416" width="1200" height="100"/>
-<text class="ln" x="12" y="458">L6</text>
-<text class="lname" x="12" y="476">수집 · 장부</text>
-<text class="zt zt-it" x="12" y="493">IT</text>
-<rect class="band-dmz" x="0" y="516" width="1200" height="100"/>
-<text class="ln" x="12" y="558">L5</text>
-<text class="lname" x="12" y="576">DMZ 완충지대</text>
-<text class="zt zt-dmz" x="12" y="593">DMZ</text>
-<rect class="band-ot" x="0" y="616" width="1200" height="100"/>
-<text class="ln" x="12" y="658">L4</text>
-<text class="lname" x="12" y="676">허브 · SCADA 화면</text>
-<text class="zt zt-ot" x="12" y="693">OT</text>
-<rect class="band-ot" x="0" y="716" width="1200" height="100"/>
-<text class="ln" x="12" y="758">L3</text>
-<text class="lname" x="12" y="776">엣지</text>
-<text class="zt zt-ot" x="12" y="793">OT</text>
-<rect class="band-ot" x="0" y="816" width="1200" height="100"/>
-<text class="ln" x="12" y="858">L2</text>
-<text class="lname" x="12" y="876">제어기</text>
-<text class="zt zt-ot" x="12" y="893">OT</text>
-<rect class="band-ot" x="0" y="916" width="1200" height="100"/>
-<text class="ln" x="12" y="958">L1</text>
-<text class="lname" x="12" y="976">현장 설비</text>
-<text class="zt zt-ot" x="12" y="993">OT</text>
-<line class="zline" x1="0" y1="616" x2="1200" y2="616"/>
-<line class="zline" x1="0" y1="516" x2="1200" y2="516"/>
-<text class="zr" x="12" y="628">라우터: 공장이 연 연결만</text>
-<text class="zr" x="12" y="528">라우터: IT가 연 연결만</text>
-<rect class="bx ot" x="360" y="934" width="820" height="64" rx="7"/>
-<text class="bt" x="370" y="953">가상 설비 7대 · 센서 12태그</text>
-<text class="bs" x="370" y="970">Python 시뮬레이터(배속 600) · 교반기·펌프·히터·냉각기·밸브</text>
-<text class="bs" x="370" y="984">설비에 쓰기를 받는 것은 PLC 하나뿐 · 압력 상한·비상정지는 설비 안(제어와 독립)</text>
-<rect class="bx ot" x="360" y="834" width="820" height="64" rx="7"/>
-<text class="bt" x="370" y="853">OpenPLC v4.2.4 — soft-PLC</text>
-<text class="bdg" x="1172" y="852" text-anchor="end">새로</text>
-<text class="bs" x="370" y="870">인터록 · 운전 모드 · 범위·중복 검사 · 정비 모드(켜지면 원격 요청 거부)</text>
-<text class="bs" x="370" y="884">물리적으로 되는지 마지막 검사 → 설비에 씀 → 수용·거부 응답(ACK)</text>
-<rect class="bx ot" x="360" y="734" width="820" height="64" rx="7"/>
-<text class="bt" x="370" y="753">엣지: Node-RED 5.0.7(EdgeX와 비교해 선택)</text>
-<text class="bs" x="370" y="770">통신 변환 · 값마다 시각·품질(끊기면 STALE) · 장치 통신 상태 발행</text>
-<text class="bs" x="370" y="784">작업 요청 수신기(전용 흐름): 받을지 결정 — 허용 범위·만료·모드, 필요하면 운전원</text>
-<rect class="bx ot" x="170" y="634" width="148" height="64" rx="7"/>
-<text class="bt" x="180" y="653">FUXA 1.3.4 · 화면</text>
-<text class="bs" x="180" y="670">현재값·알람·받은 요청</text>
-<text class="bs" x="180" y="684">분석 경고(참고) · 내장 기록</text>
-<rect class="bx ot" x="360" y="634" width="820" height="64" rx="7"/>
-<text class="bt" x="370" y="653">Mosquitto — OT 허브(UNS)</text>
-<text class="bs" x="370" y="670">토픽 공장/구역/라인/설비/종류/태그 · cmd 발행은 FUXA·수신기만</text>
-<text class="bs" x="370" y="684">브리지로 DMZ에 먼저 연결: out = 데이터·응답(끊기면 쌓음), in = 요청·분석 경고</text>
-<rect class="bx dmz" x="170" y="534" width="160" height="64" rx="7"/>
-<text class="bt" x="180" y="553">InfluxDB · DMZ 사본</text>
-<text class="bs" x="180" y="570">공장 원시값 사본만</text>
-<text class="bs" x="180" y="584">외부는 이것을 조회</text>
-<rect class="bx dmz" x="360" y="534" width="230" height="64" rx="7"/>
-<text class="bt" x="370" y="553">Mosquitto · DMZ 브로커</text>
-<text class="bdg" x="582" y="552" text-anchor="end">새로</text>
-<text class="bs" x="370" y="570">공장·IT가 여기서 만남</text>
-<text class="bs" x="370" y="584">어느 쪽으로도 먼저 안 엶</text>
-<rect class="bx dmz" x="990" y="534" width="190" height="64" rx="7"/>
-<text class="bt" x="1000" y="553">게이트웨이</text>
-<text class="bdg" x="1172" y="552" text-anchor="end">새로</text>
-<text class="bs" x="1000" y="570">1차 검사: 형식·허용·</text>
-<text class="bs" x="1000" y="584">요청 나이·중복(모드 안 봄)</text>
-<rect class="bx it" x="190" y="434" width="140" height="64" rx="7"/>
-<text class="bt" x="200" y="453">InfluxDB · IT 결과</text>
-<text class="bs" x="200" y="470">Flink 결과·집계</text>
-<text class="bs" x="200" y="484">30일 · 집계 1년</text>
-<rect class="bx it" x="360" y="434" width="180" height="64" rx="7"/>
-<text class="bt" x="370" y="453">IT 수집기 · Bento</text>
-<text class="bs" x="370" y="470">DMZ에서 가져옴 · 결과 적재</text>
-<text class="bs" x="370" y="484">분석 경고(선택)를 DMZ로</text>
-<rect class="bx it" x="570" y="434" width="370" height="64" rx="7"/>
-<text class="bt" x="580" y="453">Kafka 4.3.1</text>
-<text class="bs" x="580" y="470">raw · clean · score · alerts(·display) · 상태·ACK · 요청 사본</text>
-<text class="bs" x="580" y="484">키 = 설비 ID · 보관·다시 읽기</text>
-<rect class="bx it" x="990" y="434" width="190" height="64" rx="7"/>
-<text class="bt" x="1000" y="453">IT 발송기</text>
-<text class="bdg" x="1172" y="452" text-anchor="end">새로</text>
-<text class="bs" x="1000" y="470">승인된 요청을</text>
-<text class="bs" x="1000" y="484">HTTP로 게이트웨이에</text>
-<rect class="bx it sub" x="360" y="334" width="180" height="64" rx="7"/>
-<text class="bt" x="370" y="353">ZooKeeper 3.9.5</text>
-<text class="bs" x="370" y="370">Flink 재시작 복구</text>
-<text class="bs" x="370" y="384">(HA)</text>
-<rect class="bx it" x="570" y="334" width="180" height="64" rx="7"/>
-<text class="bt" x="580" y="353">Flink 2.2.1 · HA</text>
-<text class="bs" x="580" y="370">규칙·CEP + 오토인코더</text>
-<text class="bs" x="580" y="384">→ clean·score·alerts</text>
-<rect class="bx it" x="170" y="234" width="160" height="64" rx="7"/>
-<text class="bt" x="180" y="253">Grafana 13.2.3</text>
-<text class="bs" x="180" y="270">DMZ 사본 + IT 결과</text>
-<text class="bs" x="180" y="284">추세·탐지 조회</text>
-<rect class="bx it sub" x="360" y="234" width="180" height="64" rx="7"/>
-<text class="bt" x="370" y="253">Prometheus 3.13 ×3</text>
-<text class="bs" x="370" y="270">공장 agent → DMZ</text>
-<text class="bs" x="370" y="284">→ 여기서 가져감</text>
-<rect class="bx it" x="170" y="134" width="160" height="64" rx="7"/>
-<text class="bt" x="180" y="153">설비 등록부</text>
-<text class="bdg" x="322" y="152" text-anchor="end">새로</text>
-<text class="bs" x="180" y="170">설비 목록 정본</text>
-<text class="bs" x="180" y="184">설정·토픽·노드 생성</text>
-<rect class="bx it" x="360" y="134" width="180" height="64" rx="7"/>
-<text class="bt" x="370" y="153">Neo4j 5.26</text>
-<text class="bs" x="370" y="170">설비·센서·고장</text>
-<text class="bs" x="370" y="184">매뉴얼 검색</text>
-<rect class="bx it" x="570" y="134" width="180" height="64" rx="7"/>
-<text class="bt" x="580" y="153">AI 에이전트</text>
-<text class="bs" x="580" y="170">원인 조사·조치 제안</text>
-<text class="bs" x="580" y="184">읽기만(사본·결과)</text>
-<rect class="bx it" x="780" y="134" width="170" height="64" rx="7"/>
-<text class="bt" x="790" y="153">업무 서비스</text>
-<text class="bs" x="790" y="170">알람 → 사건 접수</text>
-<text class="bs" x="790" y="184">요청 ID로 결과 대조</text>
-<rect class="bx it" x="170" y="34" width="370" height="64" rx="7"/>
-<text class="bt" x="180" y="53">PostgreSQL 18.6 — 업무 기록 정본</text>
-<text class="bs" x="180" y="70">요청·승인·응답·감사 정본은 추가만(수정·삭제 불가) · 사건 상태</text>
-<text class="bs" x="180" y="84">사람 / 시스템 / AI 구분 · AI 업무 DB도 같은 서버</text>
-<rect class="bx it" x="570" y="34" width="180" height="64" rx="7"/>
-<text class="bt" x="580" y="53">담당자 승인</text>
-<text class="bs" x="580" y="70">AI 업무 화면</text>
-<text class="bs" x="580" y="84">승인 / 반려</text>
-<rect class="bx it" x="990" y="34" width="190" height="64" rx="7"/>
-<text class="bt" x="1000" y="53">작업 요청 발행</text>
-<text class="bs" x="1000" y="70">요청ID·작업·설비·파라미터</text>
-<text class="bs" x="1000" y="84">→ Kafka에 사본</text>
-<line class="l-data" x1="440" y1="934" x2="440" y2="898" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="456" cy="916.0" r="10.5"/>
-<text class="nt" x="456" y="919.4" text-anchor="middle">D1</text>
-<text class="al" x="469" y="919.8" text-anchor="start">PLC가 읽음</text>
-<line class="l-data" x1="440" y1="834" x2="440" y2="798" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="456" cy="816.0" r="10.5"/>
-<text class="nt" x="456" y="819.4" text-anchor="middle">D2</text>
-<text class="al" x="469" y="819.8" text-anchor="start">값·상태·ACK</text>
-<line class="l-data" x1="440" y1="734" x2="440" y2="698" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="456" cy="716.0" r="10.5"/>
-<text class="nt" x="456" y="719.4" text-anchor="middle">D3</text>
-<text class="al" x="469" y="719.8" text-anchor="start">시각·품질 붙여 발행</text>
-<line class="l-data" x1="360" y1="648" x2="318" y2="648" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="339.0" cy="648" r="10.5"/>
-<text class="nt" x="339.0" y="651.4" text-anchor="middle">D4</text>
-<line class="l-data" x1="440" y1="634" x2="440" y2="598" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="456" cy="616.0" r="10.5"/>
-<text class="nt" x="456" y="619.4" text-anchor="middle">D5</text>
-<text class="al" x="469" y="619.8" text-anchor="start">out</text>
-<line class="l-data" x1="360" y1="566.0" x2="330" y2="566.0" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="345.0" cy="566.0" r="10.5"/>
-<text class="nt" x="345.0" y="569.4" text-anchor="middle">D6</text>
-<line class="l-data" x1="440" y1="534" x2="440" y2="498" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="456" cy="516.0" r="10.5"/>
-<text class="nt" x="456" y="519.4" text-anchor="middle">D7</text>
-<text class="al" x="469" y="519.8" text-anchor="start">IT가 가져감</text>
-<line class="l-data" x1="540" y1="466.0" x2="570" y2="466.0" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="555.0" cy="466.0" r="10.5"/>
-<text class="nt" x="555.0" y="469.4" text-anchor="middle">D8</text>
-<line class="l-data" x1="620" y1="434" x2="620" y2="398" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="604" cy="416.0" r="10.5"/>
-<text class="nt" x="604" y="419.4" text-anchor="middle">D9</text>
-<text class="al" x="591" y="419.8" text-anchor="end">raw</text>
-<line class="l-data" x1="700" y1="398" x2="700" y2="434" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="716" cy="416.0" r="10.5"/>
-<text class="nt" x="716" y="419.4" text-anchor="middle">D10</text>
-<text class="al" x="729" y="419.8" text-anchor="start">결과</text>
-<line class="l-data" x1="183" y1="534" x2="183" y2="298" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="167" cy="416.0" r="10.5"/>
-<text class="nt" x="167" y="419.4" text-anchor="middle">D11</text>
-<text class="al" x="154" y="419.8" text-anchor="end">HTTP 조회(IT가 엶)</text>
-<line class="l-data" x1="360" y1="452.0" x2="330" y2="452.0" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="345.0" cy="452.0" r="10.5"/>
-<text class="nt" x="345.0" y="455.4" text-anchor="middle">D12</text>
-<line class="l-data" x1="300" y1="434" x2="300" y2="298" marker-end="url(#m-data)"/>
-<circle class="n-data" cx="316" cy="366.0" r="10.5"/>
-<text class="nt" x="316" y="369.4" text-anchor="middle">D13</text>
-<line class="l-alm" x1="865" y1="434" x2="865" y2="198" marker-end="url(#m-alm)"/>
-<circle class="n-alm" cx="881" cy="316.0" r="10.5"/>
-<text class="nt" x="881" y="319.4" text-anchor="middle">A1</text>
-<text class="al" x="894" y="319.8" text-anchor="start">alerts·상태·ACK</text>
-<line class="l-alm" x1="780" y1="166.0" x2="750" y2="166.0" marker-end="url(#m-alm)"/>
-<circle class="n-alm" cx="765.0" cy="166.0" r="10.5"/>
-<text class="nt" x="765.0" y="169.4" text-anchor="middle">A2</text>
-<line class="l-read" x1="540" y1="166.0" x2="570" y2="166.0" marker-end="url(#m-read)"/>
-<circle class="n-read" cx="555.0" cy="166.0" r="10.5"/>
-<text class="nt" x="555.0" y="169.4" text-anchor="middle">R</text>
-<line class="l-read" x1="330" y1="166.0" x2="360" y2="166.0" marker-end="url(#m-read)"/>
-<circle class="n-read" cx="345.0" cy="166.0" r="10.5"/>
-<text class="nt" x="345.0" y="169.4" text-anchor="middle">G</text>
-<line class="l-alm" x1="660" y1="134" x2="660" y2="98" marker-end="url(#m-alm)"/>
-<circle class="n-alm" cx="676" cy="116.0" r="10.5"/>
-<text class="nt" x="676" y="119.4" text-anchor="middle">A3</text>
-<text class="al" x="689" y="119.8" text-anchor="start">제안 + 근거</text>
-<line class="l-alm" x1="385" y1="498" x2="385" y2="534" marker-end="url(#m-alm)"/>
-<circle class="n-alm" cx="369" cy="516.0" r="10.5"/>
-<text class="nt" x="369" y="519.4" text-anchor="middle">A4</text>
-<text class="al" x="356" y="519.8" text-anchor="end">분석 경고(선택)</text>
-<line class="l-alm" x1="385" y1="598" x2="385" y2="634" marker-end="url(#m-alm)"/>
-<line class="l-alm" x1="360" y1="684" x2="318" y2="684" marker-end="url(#m-alm)"/>
-<circle class="n-alm" cx="339.0" cy="684" r="10.5"/>
-<text class="nt" x="339.0" y="687.4" text-anchor="middle">A5</text>
-<line class="l-cmd" x1="750" y1="66.0" x2="990" y2="66.0" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="870.0" cy="66.0" r="10.5"/>
-<text class="nt" x="870.0" y="69.4" text-anchor="middle">C1</text>
-<text class="al" x="870.0" y="52.0" text-anchor="middle">승인</text>
-<line class="l-cmd" x1="1085" y1="98" x2="1085" y2="434" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="1069" cy="266.0" r="10.5"/>
-<text class="nt" x="1069" y="269.4" text-anchor="middle">C2</text>
-<text class="al" x="1056" y="269.8" text-anchor="end">요청</text>
-<line class="l-cmd" x1="990" y1="466.0" x2="940" y2="466.0" marker-end="url(#m-cmd)"/>
-<text class="al" x="965.0" y="452.0" text-anchor="middle">사본</text>
-<line class="l-cmd" x1="1085" y1="498" x2="1085" y2="534" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="1069" cy="516.0" r="10.5"/>
-<text class="nt" x="1069" y="519.4" text-anchor="middle">C3</text>
-<text class="al" x="1056" y="519.8" text-anchor="end">HTTP(IT가 엶)</text>
-<line class="l-cmd" x1="990" y1="566.0" x2="590" y2="566.0" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="790.0" cy="566.0" r="10.5"/>
-<text class="nt" x="790.0" y="569.4" text-anchor="middle">C4</text>
-<text class="al" x="790.0" y="552.0" text-anchor="middle">요청 토픽</text>
-<line class="l-cmd" x1="565" y1="598" x2="565" y2="634" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="581" cy="616.0" r="10.5"/>
-<text class="nt" x="581" y="619.4" text-anchor="middle">C5</text>
-<text class="al" x="594" y="619.8" text-anchor="start">in · 공장이 가져감</text>
-<line class="l-cmd" x1="1085" y1="698" x2="1085" y2="734" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="1069" cy="716.0" r="10.5"/>
-<text class="nt" x="1069" y="719.4" text-anchor="middle">C6</text>
-<text class="al" x="1056" y="719.8" text-anchor="end">수신기로</text>
-<line class="l-cmd" x1="1085" y1="798" x2="1085" y2="834" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="1069" cy="816.0" r="10.5"/>
-<text class="nt" x="1069" y="819.4" text-anchor="middle">C7</text>
-<text class="al" x="1056" y="819.8" text-anchor="end">받기로 결정</text>
-<line class="l-cmd" x1="1085" y1="898" x2="1085" y2="934" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="1069" cy="916.0" r="10.5"/>
-<text class="nt" x="1069" y="919.4" text-anchor="middle">C8</text>
-<text class="al" x="1056" y="919.8" text-anchor="end">물리 검사 후 씀</text>
-<line class="l-cmd" x1="318" y1="666" x2="360" y2="666" marker-end="url(#m-cmd)"/>
-<circle class="n-cmd" cx="339.0" cy="666" r="10.5"/>
-<text class="nt" x="339.0" y="669.4" text-anchor="middle">M</text>
-</svg></div>
-
-  <h3>흐름 순서</h3>
-  <div class="grid3">
-    <div><b>데이터 ↑</b>
-      <ol class="steps d">
-        <li><b>D1</b>PLC가 설비 값을 읽는다</li>
-        <li><b>D2</b>엣지가 PLC의 값·상태·ACK를 읽는다</li>
-        <li><b>D3</b>엣지가 시각·품질을 붙여 공장 허브에 발행</li>
-        <li><b>D4</b>FUXA가 허브를 구독해 현재값 표시(공장 안 기록도 남김)</li>
-        <li><b>D5</b>공장 허브가 브리지로 DMZ 브로커에 먼저 연결해 밀어낸다</li>
-        <li><b>D6</b>DMZ 안에서 공장 원시값 사본(InfluxDB)에 적재</li>
-        <li><b>D7</b>IT 수집기가 DMZ 브로커에서 가져간다</li>
-        <li><b>D8</b>Kafka에 기록</li>
-        <li><b>D9·D10</b>Flink가 읽고 결과(clean·score·alerts)를 쓴다</li>
-        <li><b>D11</b>Grafana는 DMZ 사본(원시값)을 조회</li>
-        <li><b>D12·D13</b>IT 수집기가 Flink 결과를 IT InfluxDB에 적재하고 Grafana가 조회</li>
-      </ol></div>
-    <div><b>알람 · AI</b>
-      <ol class="steps a">
-        <li><b>A1</b>업무 서비스가 alerts로 사건을 접수하고, 상태·ACK로 요청 결과를 대조</li>
-        <li><b>A2</b>사건을 AI 에이전트에 넘긴다</li>
-        <li><b style="background:var(--f-read)">R</b>AI가 관계·매뉴얼(Neo4j)과 DMZ 사본·IT 결과를 읽기만</li>
-        <li><b>A3</b>제안과 근거를 담당자에게</li>
-        <li><b>A4·A5</b>(선택, 원본 기능 보존으로 켬) 분석 경고는 IT가 DMZ 브로커에 올리고, 공장 허브가 브리지로 가져와 FUXA "분석 경고(참고)" 칸에 소리·조작 없이 표시</li>
-        <li><b style="background:var(--f-read)">G</b>설비 등록부가 설정·토픽·노드·허용 목록을 만든다</li>
-      </ol></div>
-    <div><b>요청 ↓</b>
-      <ol class="steps c">
-        <li><b>C1</b>담당자가 승인하면 작업 요청 발행(요청 ID·작업 정의·설비·파라미터. 만료 시각은 게이트웨이가 붙임)</li>
-        <li><b>C2</b>IT 발송기로. 정본은 PostgreSQL, Kafka에는 사본</li>
-        <li><b>C3·C4</b>IT가 DMZ 게이트웨이에 HTTP로 넣고, 1차 검사(형식·허용·요청자·승인자·요청 나이·중복, 공장 상태는 안 봄) 뒤 만료 시각(30초)을 붙여 뒤 DMZ 브로커 요청 토픽으로</li>
-        <li><b>C5</b>공장 허브가 브리지로 가져온다</li>
-        <li><b>C6·C7</b>공장 안 수신기가 받을지 정한다: 형식·허용 범위·만료 재검사, 자동 수용 모드면 자동, 수동 모드면 운전원 확인, 현장·정비 모드면 거절</li>
-        <li><b>C8</b>PLC가 물리적으로 되는지 마지막 검사(인터록·범위·모드·정비 모드) 후 설비에 쓴다</li>
-        <li><b>M</b>운전원 조작은 FUXA → 허브 → 엣지 → PLC(IT·DMZ 무관)</li>
-        <li><b>확인</b>"받음·거절"과 결과·새 상태가 데이터 길로 올라와 A1에서 요청 ID로 대조 → 담당자 화면. 첫 답은 게이트웨이 즉시 응답 → 공장 수신기의 "받음·운전원 대기·거절"(5초 안, 없으면 "결과 모름"이고 다시 보내지 않으며 늦은 답을 같은 ID로 받아 고친다. 만료 시각 + 5초까지 답이 없으면 "만료(결과 미확인)", 늦은 답이 오면 고친다) → 운전원 대기였다면 60초 안의 수락·거절 순이다, 운전원이 60초 안에 정하지 않으면 거절. PLC가 받은 뒤 10초 안에 새 상태가 안 보이면 명령 불일치 경고</li>
-      </ol></div>
-  </div>
-  <p class="muted">그림의 경계선: 구역 사이는 <b>라우터 컨테이너</b> 하나가 공장·IT가 먼저 연 연결만 통과시킨다. 감시 지표는 공장 쪽 Prometheus agent → DMZ 수신 Prometheus → IT 본 Prometheus가 가져간다(그림에서는 Prometheus 상자 안에 적음). 장치 통신 상태는 엣지가 대신 알린다.</p>
-
-
-  
-</section>
-
-<section>
-  <h2>7. 조립하면서 실제로 해 보고 정한 것</h2>
-  <p>조사와 인계는 "조립 때 재서 정한다"거나 "안 되면 이 대안"을 적어 두었다. 실제로 해 보고 정한 것과 그 이유다. 검증 중 찾아 고친 제품 결함 8건은 <code>reports/BASE_VERIFY.md</code>에 있다.</p>
-  <div class="tbl"><table>
-    <tr><th class="nw">무엇</th><th>계획</th><th>실제로 해 보니</th><th>그래서</th></tr>
-    <tr><td class="nw"><b>엣지</b></td><td>조사: Node-RED와 EdgeX를 둘 다 해 보고 고른다</td><td>같은 설비에 붙여 나란히 쟀다. 누락·명령·요청 수신은 동률, 끊김 복구 때 중복 0 대 12~24, 등록부 변경 자동 반영, 메모리 약 80 대 144~180 MiB</td><td class="got">Node-RED 5.0.7</td></tr>
-    <tr><td class="nw"><b>DMZ 게이트웨이</b></td><td>조사: 이미 쓰는 Bento의 설정만으로 만든다</td><td>Bento는 MQTT 5 만료 표시를 못 붙이고, 공장 창구가 멈추면 바로 거절하지 못했다(5초 뒤 시간 초과)</td><td class="got">계획해 둔 대안대로 직접 만든 검사 프로그램</td></tr>
-    <tr><td class="nw"><b>라우터 방식</b></td><td>조사: 컨테이너의 경로를 라우터로 돌린다</td><td>인터넷이 끊긴 내부 전용 망에서는 경로를 바꿀 수 없었다</td><td class="got">라우터가 허용 포트만 넘겨 주는 방식으로 바꿨다. 거꾸로 여는 연결 85건 모두 막힘</td></tr>
-    <tr><td class="nw"><b>임베딩 모델</b></td><td>인계: 도커 안에서 돌린다</td><td>모델 하나가 4.7 GB라 메모리 상한에서 멈췄다</td><td class="got">사용자 결정: PC에 설치하지 않고 GCP LiteLLM 관문으로 옮긴다(진행 중)</td></tr>
-    <tr><td class="nw"><b>ML 학습 간격</b></td><td>인계: ML 입력만 설비 시각 기준으로</td><td>원본 학습 검증의 "탐지 0 %"는 검증용 고장이 한 스텝보다 짧아 곧바로 끝난 착시였다</td><td class="got">운영 속도 그대로 학습 → 드리프트·베어링·스파이크 100 %, 정상 오탐 0 %</td></tr>
-    <tr><td class="nw"><b>FUXA 로그인</b></td><td>인계: 사람용 포트는 계정 로그인으로 막는다</td><td>로그인이 꺼져 있어 사무실 쪽이 화면 포트로 운전원 명령을 흉내 낼 수 있었다</td><td class="got">로그인을 켜고 운전원 계정을 따로 뒀다</td></tr>
-    <tr><td class="nw"><b>인터록 트립 표시</b></td><td>(검증 중 새로 발견)</td><td>1초도 안 되게 걸렸다 풀리면 화면에 남지 않는다</td><td class="got">사용자 결정: 현업처럼 PLC가 트립을 붙잡아 두고 운전원이 리셋(반영 중)</td></tr>
-  </table></div>
-</section>
-
-<section>
-  <h2>8. 판단마다 근거를 확인했다 — 근거로 정한 것과 추천으로 정한 것</h2>
-  <p>설계에 들어간 결정 161개를 하나씩 검사해, 근거가 없거나(46) 약하거나(17) 과장된(7) 판단 70개를 현업 사례·표준·규칙과 다시 대조했다. <b>근거</b>는 규칙 원문·여러 독립 근거·공개 사례로 정해진 것이다. <b>추천</b>은 근거가 정말 없는 곳에서 원리·다른 분야·벤더 기본값에 이유를 붙여 정한 것이다.</p>
-  <div class="stat3">
-    <div class="c-ok"><b>56</b>근거로 해소</div>
-    <div class="c-mid"><b>14</b>추천으로 해소</div>
-    <div class="c-own"><b>0</b>미해소</div>
-  </div>
-  <h3>근거로 정한 것 56 — 주제별</h3>
-  <div class="tbl"><table>
-    <tr><th>주제</th><th style="white-space:nowrap">개수</th><th>확인된 것과 바뀐 것(괄호는 항목 번호)</th></tr>
-    <tr><td>외부 요청 처리</td><td class="num">15</td><td>PLC는 "받을지"가 아니라 "물리적으로 되는지"의 마지막 검사(C2) · 주소 비노출 인용 정정(E8) · 요청 필드를 Job Control 이름으로, "출처 종류" 삭제(E5) · 허용 목록 두 개 생성(E10) · 명령 토픽 발행은 FUXA·수신기만(E34) · 수신 본체는 공장 안 L3(C8) · 만료는 MQTT 만료 + 본문 시각 두 겹(E16·E17) · 중복은 MQTT QoS 1 때문, 만료 시간 안의 ID 전부(E19) · 모드 규칙과 대응표(E21·E22·E28) · 감사는 추가 전용 표, "무기한"·21 CFR 11 삭제(E42·E43) · 게이트웨이 구성(E11)</td></tr>
-    <tr><td>데이터 경로와 저장</td><td class="num">13</td><td>DMZ→IT 금지는 규칙이 아니라 설계 선택(B4) · 서버는 한 구역에만, 여러 망은 라우터만(B7·B8) · DMZ 안 기능 분리는 선택지(B11) · Kafka 위치 규칙은 없다(D20) · Flink 결과는 IT에, DMZ 사본은 원시값 전용(D15) · 사본 채우는 방법은 현업 수집기 방식(D14) · 원시값은 압축 없이(D23) · Sparkplug 규칙을 JSON으로(D6) · JSON Schema 파일(J16) · 저장소 분리 요구(H1) · InfluxDB 근거 교체(D18·J8) · 진동 특징은 현업은 엣지에서(D24)</td></tr>
-    <tr><td>알람과 감시</td><td class="num">8</td><td>분석 경고를 FUXA로 내리는 것은 "현업 패턴"이 아니다(F9) · 반복 경고는 원천 억제 후 묶기(F4) · 정지·정비 때 억제 구분(F5) · alert 정의(F1) · 공정 한계 알람은 PLC·FUXA(F3) · 10분당 건수는 운전원 알람에(F6) · 장치 상태는 엣지가 대신 알림(G2) · 감시 방향(G5)</td></tr>
-    <tr><td>설비 모델과 지식</td><td class="num">6</td><td>고장 칸은 EN 13306(ISO 14224는 석유·가스 전용)(I5) · BaSyx Go 정식판 있음(I2) · 등록부 생성은 현업 템플릿 방식(I3) · Node-RED는 서브플로 템플릿(I4) · EdgeX 내부 버스는 엣지 안에만(A18) · OpenPLC는 ST를 REST로 못 넣음, CLI·zip(J3)</td></tr>
-    <tr><td>정비와 안전</td><td class="num">3</td><td>"SIS" → "기계 안전 기능"(ISO 13849-1·산안법 방호조치)(B9) · "정비 잠금" → "정비 모드", 물리 잠금을 대신하지 않음(E29) · 정비 작업지시 완료 조건 삭제(E30)</td></tr>
-    <tr><td>평가 기준과 스택 표현</td><td class="num">11</td><td>AI 비교는 3회 모두 정답·1회 이상·정답 비율로(A14) · 3회 중앙값 + 5 %는 통계 검정이 아님(K6) · "현업 1위" 표현을 제품별 사실로(J15·A17·J2·J4·J7·J10~J13)</td></tr>
-  </table></div>
-  <h3>추천으로 정한 것 14 — 근거가 없는 이유와 기댄 자료</h3>
-  <div class="tbl"><table>
-    <tr><th>#</th><th>정한 것</th><th>근거가 없는 이유 · 기댄 자료</th></tr>
-    <tr><td>E12</td><td>IT 발송기 → DMZ 게이트웨이는 HTTP(S) POST. 게이트웨이의 즉시 응답이 첫 번째 "받음·거절 + 이유"</td><td>표준은 전송 방식을 정하지 않는다(IEC 62264-6). 2026 지침 p.19의 HTTP API 모양, CPwE 역프록시와 같은 모양</td></tr>
-    <tr><td>E24</td><td>겹마다 검사 배분: 게이트웨이는 공장과 무관한 검사만, 수신기는 허용 범위·모드·만료 재검사, PLC는 물리 타당성</td><td>원칙(경계마다 검사, PLC 재검사)은 지침·Top 20 Secure PLC에 있고, 배분 표는 어디에도 없다</td></tr>
-    <tr><td>E20</td><td>공장 안 수신기를 엣지 Node-RED의 전용 흐름·전용 계정으로. 결정과 명령 토픽 발행까지만</td><td>현업은 MES 서버·SCADA MES 모듈이 한다. 엣지에 합친 공개 사례는 없다</td></tr>
-    <tr><td>E18</td><td>요청 만료: 게이트웨이 발행부터 30초(요청서의 만료 시각), 운전원 수락 대기는 공장 수신기가 저장한 때부터 60초(벽시계)</td><td>제조 쪽 수치는 없다. 다른 분야(전력) SvK 30초·DNP3 10초</td></tr>
-    <tr><td>E38</td><td>받음·거절 대기 5초(넘으면 "결과 모름", 다시 보내지 않음), 새 상태 확인 10초(넘으면 명령 불일치 경고)</td><td>벤더 기본값 Siemens PCS 7 3초·Geo SCADA 10초, ISA-TR18.2.3 목차의 명령 불일치 알람</td></tr>
-    <tr><td>E37</td><td>승인 두 종류: 운전 범위 안 조정은 요청 길, 설정·허용 범위 변경은 변경 관리 기록</td><td>일반 제조에 승인 시스템을 정한 법규는 없다(변경 관리 의무는 PSM 대상만). AI-OT 지침 "사람 없이 AI가 제어하지 말 것"</td></tr>
-    <tr><td>E13</td><td>요청·승인·감사의 정본은 PostgreSQL, Kafka는 통로·사본</td><td>Kafka를 요청 장부로 쓴 공개 사례가 없다. Job Control은 받는 쪽이 목록을 저장, Kafka 기본 보존 7일</td></tr>
-    <tr><td>D13</td><td>IT 수집기가 DMZ 브로커를 구독(IT가 연결을 엶)</td><td>현업은 두 방향 모두 흔하다(Kafka Connect MQTT Source는 IT가 엶). 신뢰가 높은 쪽이 여는 원칙</td></tr>
-    <tr><td>D2</td><td>신호별 수집 주기·변화 필터·최대 간격 표(온도 10초·0.5 °C 등, 공정 시간 기준)</td><td>표준 수치는 없다. AVEVA 규칙(압축 편차 ≤ 계기 정밀도) + 석유가스 고객 표(다른 분야)</td></tr>
-    <tr><td>D10</td><td>끊김 버퍼는 공장 허브 브리지 out, 한도 = 초당 건수 × 보관 시간, 넘치면 새 값을 버리고 건수를 남김</td><td>규격은 크기를 정하지 않는다. Mosquitto·Kepware·Ignition 기본값</td></tr>
-    <tr><td>H2</td><td>AI 업무 DB를 공용 PostgreSQL 18.6 안의 별도 DB로 합침</td><td>PostgreSQL 공식 문서 원리(메이저 판 이전 비용, 인스턴스마다 메모리). 데이터가 쌓이기 전이 가장 쌈</td></tr>
-    <tr><td>H3</td><td>보존: 화면·DMZ 사본 7일, IT 결과 30일·1분 집계 1년, Kafka 7·30일, 감사는 과정 중 지우지 않음(현업 최소 18개월로 설명)</td><td>표준 수치·국내 적용 법령이 없다. 벤더 기본값 + ASD·CISA 2024(사고 발견까지 최대 18개월)</td></tr>
-    <tr><td>A16</td><td>엣지 비교값에 재시작 뒤 복귀·p95 지연을 더함</td><td>엣지 선정 공공 표준은 없다. Sparkplug TCK·IEC 62381·벤더 점검 안내</td></tr>
-    <tr><td>K4</td><td>배속 600에서 ML 입력 창만 설비 시각(순번) 기준으로 자름. 규칙 탐지는 원본과 같은 시각 기준을 유지</td><td>제조 사례는 없다. 원리: 분산 시뮬레이션 시간 관리(HLA), Flink 이벤트 시간</td></tr>
-  </table></div>
-  <h3>구성은 근거, 구현은 추천인 것 4</h3>
-  <div class="tbl"><table>
-    <tr><th>#</th><th>근거로 정해진 부분</th><th>추천으로 정한 구현</th></tr>
-    <tr><td>E11</td><td>현업은 L7 방화벽·CDS + DMZ 중개의 조합(근거)</td><td>Bento 설정 안을 실측 → MQTT 5 만료·즉시 거절이 안 돼 불합격 → 직접 만든 검사 프로그램(7장)</td></tr>
-    <tr><td>B8</td><td>방향은 상태 기반 방화벽 규칙으로 강제(근거: CISA 2016·2026 지침·교육 랩 GRFICSv3)</td><td>alpine + iptables 라우터 컨테이너(1안), 안 되면 호스트 포트 공개(2안)</td></tr>
-    <tr><td>H1</td><td>감사 기록은 다른 저장소로 옮겨 보호(근거: NIST AU-4(1))</td><td>한 인스턴스 안에서 스키마 4개·서비스별 계정, 감사 표는 수정·삭제 권한 회수</td></tr>
-    <tr><td>G5</td><td>감시도 연결은 공장에서 밖으로(근거: 2026 지침 p.11·p.29)</td><td>공장 agent → DMZ 수신 → IT가 가져감(Prometheus 셋)</td></tr>
-  </table></div>
-  <p class="muted">추천의 설정값(시간·수집 주기·보존)은 설정 파일 한 곳에서 바꿀 수 있게 둔다. 문서로만 확인한 10가지(라우터 컨테이너, 브리지의 만료 전달, 브리지 큐 한도, 브리지로 들어온 메시지의 접근 제어, OpenPLC 명령줄 도구, Bento 게이트웨이, AI 층의 PostgreSQL 18, Prometheus 셋의 메모리, FUXA 내장 기록의 보존 설정, 임베딩 모델의 메모리)는 조립에서 먼저 실제로 돌려 확인하고, 안 되면 항목마다 정해 둔 조치로 간다. 항목별 출처는 <a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17-judgment-check.md</a>.</p>
-</section>
-
-<section>
-  <h2>9. 원본에서 바뀌는 것 · 그대로인 것</h2>
-  <div class="grid2">
-    <div class="card"><b>바뀌는 것</b><ul>
-      <li>구역 셋(공장·DMZ·IT)과 공장이 먼저 여는 연결(DMZ Mosquitto + 브리지), 구역 경계는 라우터 컨테이너 규칙으로 강제</li>
-      <li>PLC 층 추가: 설비에 쓰는 것은 PLC 하나, 정비 모드(원격 금지)</li>
-      <li>설비 쓰기 길 4개(FUXA 직접·EdgeX·AI 조치 코드·AI 대시보드 직접 조작) → 운전원 한 길 + 외부 요청 한 길</li>
-      <li>AI 조치: Modbus 직접 쓰기 → 담당자 승인 뒤 작업 요청, 결과는 PLC 응답으로 확인</li>
-      <li>이력: 공장 안 기록 + DMZ 사본(공장 원시값), Flink 결과는 IT의 InfluxDB·PostgreSQL</li>
-      <li>요청·승인·감사의 정본은 PostgreSQL 추가 전용 표, AI 업무 DB도 PostgreSQL 18.6으로 합침</li>
-      <li>감시: Prometheus 셋(공장 agent → DMZ → IT), 장치 상태는 엣지가 알림</li>
-      <li>EMQX → Mosquitto, Telegraf 3개 → Bento, 설비 등록부 추가</li>
-      <li>Kafka·Flink·InfluxDB·Grafana·Prometheus를 지원되는 판으로</li>
-    </ul></div>
-    <div class="card"><b>그대로인 것</b><ul>
-      <li>원본 폴더 <code>lecture-iiot-scada</code>(수정하지 않음)</li>
-      <li>가상설비 7대·센서 12개·고장 시나리오(배속 600)</li>
-      <li>탐지 규칙(임계치·Z-Score·CEP)과 오토인코더</li>
-      <li>AI의 판단 로직(에이전트·온톨로지·매뉴얼 검색)과 담당자 승인</li>
-      <li>수업 자료의 계측 토픽 <code>edgex/telemetry</code></li>
-      <li>확인 스크립트 <code>scripts/verify.py</code>가 검사하는 내용</li>
-    </ul></div>
-  </div>
-</section>
-
-<section>
-  <h2>10. 검증 결과 — 원본(V1) 기준값과 비교</h2>
-<p>같은 가상설비(배속 600)에서 V1과 같은 방법으로 쟀다(2026-09-30). 수치는 증거 파일에서 다시 계산했다(<code>harness/tools/summarize_base.py</code> → <code>experiments/BASE-VERIFY/summary_base.json</code>). 항목별 파일은 <code>reports/BASE_VERIFY.md</code>.</p>
-<div class="tbl"><table>
-<tr><th>항목</th><th>원본 V1</th><th>새 베이스 실측</th><th>판정</th></tr>
-<tr><td>탐지 판정(리플레이 70건)</td><td>70/70</td><td>70/70</td><td>같음</td></tr>
-<tr><td>ML 점수 Flink = Python</td><td>1e-6 안</td><td>창 100개 최대 차 0.0, 이상 판정 불일치 0</td><td>같음</td></tr>
-<tr><td>ML 탐지율(학습기 검증)</td><td>드리프트·베어링 100 %</td><td>드리프트·베어링·스파이크 100 %, 정상 0 %</td><td>같음</td></tr>
-<tr><td>정상 운전 3분 알람(3회 중앙)</td><td>안정화 V1 105건(ML 52)</td><td>75건(ML 0)</td><td>나아짐</td></tr>
-<tr><td>화면값 = 이력값</td><td>99.17 %</td><td>DMZ 사본 100 % · FUXA DAQ 100 %</td><td>나아짐</td></tr>
-<tr><td>고장 → 알람(Kafka, 최대)</td><td>스파이크 1.9 · 히터 5.9 · 베어링 8.1 · 결측 5.8 · 드리프트 2.8 s</td><td>1.18 · 4.27 · 7.12 · 4.83 · 2.08 s(모두 10 s 안)</td><td>나아짐</td></tr>
-<tr><td>잡음 고장(Z-Score)</td><td>12 s 안 10회 중 1회(10.8 s)</td><td>3회 중 1회(9.81 s), 다시 3회 중 1회(9.13 s)</td><td>나쁘지 않음</td></tr>
-<tr><td>알람 → Kafka p95</td><td>1.67 s</td><td>0.78 s</td><td>나아짐</td></tr>
-<tr><td>알람 → FUXA 표시 p95</td><td>FUXA 1.84 · 최근알람 1.98 s</td><td>분석 경고 표시 1.21 s(공정 알람은 FUXA가 OT 안에서 판정: 고장 → 화면 2.8~3.0 s)</td><td>나아짐</td></tr>
-<tr><td>알람 → AI 사건 p95</td><td>2.06 s</td><td>0.94 s</td><td>나아짐</td></tr>
-<tr><td>제어·안전(S14~S22, 새 명령 길로 정의)</td><td>V1 쓰기 길 기준</td><td>OT 14항목 · AI 4항목 모두 통과(인터록, 사람 승인, 실행 직전 재검사, 중복 1회, 감사, 명령 ≠ 상태)</td><td>통과</td></tr>
-<tr><td>외부 요청 전체 길</td><td>(없음 — AI가 Modbus 직접)</td><td>승인 → 게이트웨이 → 수신기 → PLC → 재관측 1.36~1.61 s</td><td>—</td></tr>
-<tr><td>연결 방향</td><td>망 하나</td><td>거꾸로 여는 연결 모두 막힘(DMZ 19·IT 52·OT 14건 시도), 연결 목록 위반 0</td><td>통과</td></tr>
-<tr><td>격리(브리지 55 s 끊음)</td><td>—</td><td>공장 감시·조작·인터록·기록 계속, 만료 두 겹 각각 동작, 끊긴 구간 유실 0</td><td>통과</td></tr>
-<tr><td>브리지 큐 한도 뒤 재연결</td><td>—</td><td>한도 넘은 값 버림(설계), 다시 이은 뒤 6.4 s 에 복구</td><td>통과</td></tr>
-<!--RESTART-->
-<tr><td>메모리(3분 중앙)</td><td>5,918 MiB · 29개</td><td>5,588 MiB · 30개(SCADA + AI 전부)</td><td>나아짐</td></tr>
-<tr><td>CPU 합계(3분 중앙)</td><td>51.2 %</td><td>54.8 %</td><td>3.6 %p 높음</td></tr>
-<tr><td>한 사이클(이상 → 감지 → AI 조치 제안 1분)</td><td>—</td><td>미검증 — 임베딩을 GCP LiteLLM 관문으로 옮긴 뒤 잰다(사용자 결정: PC에 Ollama를 설치하지 않음)</td><td>미검증</td></tr>
-</table></div>
-<p class="muted" style="margin-top:10px">판정: 정확도·유실·중복은 V1보다 조금도 나쁘면 안 됨, 지연 p95·복구 시간은 +5 % 이내면 같음(3회 중앙). 과부하·장시간 시험은 하지 않았다.</p>
-</section>
-
-<section>
-  <h2>11. 근거가 약한 곳 · 다음 단계</h2>
-  <ul>
-    <li>"현업 주류"의 근거는 표준·공공 지침·독립 분석·설문이다. 이름 있는 공장의 내부 구성과 방법별 사용 비율은 공개 자료에 없다.</li>
-    <li>유료 본문(NAMUR NE 178, IEC 62443, ISA-112)은 공개 요약·목차만 봤다.</li>
-    <li>추천 14개는 근거가 정말 없는 곳이다(8장). 값은 설정으로 바꿀 수 있게 두고 조립·검증에서 실제로 확인한다.</li>
-    <li>조립·검증은 끝났다(10장). <b>아직 못 잰 것:</b> 한 사이클(이상 → 감지 → AI 조치 제안 1분). 임베딩을 GCP LiteLLM 관문으로 옮긴 뒤 잰다(사용자 결정: PC에 모델을 설치하지 않음).</li>
-<li><b>인터록 트립 표시:</b> 1초도 안 되게 걸렸다 풀리면 FUXA(알람 검사 1초 주기)가 보지 못한다. 현업 방식대로 PLC가 트립을 붙잡아 두고 운전원이 리셋하게 바꾼다(사용자 결정, 반영 중). 원본의 자동 해제와 달라지는 점은 기능 대응표에 적는다.</li>
-<li>Z-Score 정상 알람은 3회 중앙 75건으로 V1 비-ML 53건보다 많다(범위 겹침, 입력 표본 수는 같음, 원인 미확인). CPU 합계는 V1보다 3.6 %p 높다.</li>
-<li>수업 자료 <code>docs/DEMO.md</code>는 V1 명령(EdgeX·EMQX)이라 새 베이스용으로 다시 써야 한다. FUXA는 이제 운전원 로그인이 필요하다.</li>
-  </ul>
-  <div class="flow">
-<div><b>1</b> 임베딩을 LiteLLM 관문으로 옮김 → 한 사이클(1분) 한 번 측정(LLM 호출은 필요한 만큼만)</div>
-<div><b>2</b> 인터록 트립 붙잡기·리셋 반영 → 수업 자료(DEMO)를 새 베이스로 고쳐 쓴다</div>
-<div><b>3</b> 설비 확장(종류·대수, OPC UA 섞기) — 등록부 한 줄 추가로 흐름·토픽·PLC·화면이 따라오는지</div>
-<div><b>4</b> 시나리오·온톨로지 보강</div>
+<section><h2><span class="n">6</span>남은 것</h2>
+<ul class="left"><li>임베딩을 GCP LiteLLM 관문으로 옮기고 "이상 → AI 제안 1분"을 잰다</li><li>인터록 트립을 붙잡아 두고 운전원이 리셋하게 바꾼다</li><li>수업 자료(DEMO)를 새 베이스로 고쳐 쓴다</li></ul></section>
 </div>
-
-</section>
-
-<footer>근거 원문: <a href="../docs/research/deep-2026-09-29/12-industry-structure.md">12-industry-structure.md</a> · <a href="../docs/research/deep-2026-09-29/13-industry-detail.md">13-industry-detail.md</a> · <a href="../docs/research/deep-2026-09-29/14-industry-stack.md">14-industry-stack.md</a> · <a href="../docs/research/deep-2026-09-29/15-free-options-compare.md">15-free-options-compare.md</a> · <a href="../docs/research/deep-2026-09-29/16-external-integration.md">16-external-integration.md</a> · <a href="../docs/research/deep-2026-09-29/17-judgment-check.md">17-judgment-check.md</a> · 기준·상태 정본: <code>HANDOFF.md</code> · 질문과 답: <code>reports/QA.md</code> · 결정 경위: <code>reports/decision-log.md</code></footer>
-</div>
+</body></html>
