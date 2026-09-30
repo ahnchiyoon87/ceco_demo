@@ -1,0 +1,98 @@
+{
+ "start": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": false,
+   "pump_speed_sp": 55.0,
+   "valve_open_sp": 58.0,
+   "temp_sp_c": 70.0
+  }
+ },
+ "MODE": {
+  "LOCAL": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:REJECTED(LOCAL_MODE)"
+   ],
+   "operator": "LOCAL_MODE",
+   "pass": true
+  },
+  "MAINTENANCE": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:REJECTED(MAINTENANCE)"
+   ],
+   "operator_change": "MAINTENANCE",
+   "pass": true
+  },
+  "REMOTE_AUTO": {
+   "operator": "MODE",
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:AUTO_ACCEPTED(REMOTE_AUTO)",
+    "plc:ACCEPTED(ACCEPTED)",
+    "observed:OK(재관측: R-101/temp_sp = 72)"
+   ],
+   "temp_before": 70.0,
+   "temp_after": 72.0,
+   "pass": true,
+   "job": "ctl-52665cbfb99e4224b3a547a6e6074638",
+   "timeline_s": {
+    "approved:APPROVED": 0.0,
+    "dispatched:None": 0.01,
+    "gateway_accepted:ACCEPTED": 0.01,
+    "receipt:AUTO_ACCEPTED": 0.06,
+    "plc:ACCEPTED": 0.26,
+    "observed:OK": 0.47
+   }
+  },
+  "REMOTE_MANUAL": {
+   "external": [
+    "approved:APPROVED",
+    "dispatched:None",
+    "gateway_accepted:ACCEPTED",
+    "receipt:OPERATOR_WAIT(STORED)",
+    "operator:OPERATOR_ACCEPTED(OPERATOR)",
+    "plc:ACCEPTED(ACCEPTED)",
+    "observed:OK(재관측: HX-102/enable = True)"
+   ],
+   "cooler_before": false,
+   "cooler_after": true,
+   "job": "ctl-a82a8e657deb4e42916887290d73ce23",
+   "timeline_s": {
+    "approved:APPROVED": 0.0,
+    "dispatched:None": 0.01,
+    "gateway_accepted:ACCEPTED": 0.01,
+    "receipt:OPERATOR_WAIT": 0.12,
+    "operator:OPERATOR_ACCEPTED": 0.52,
+    "plc:ACCEPTED": 0.52,
+    "observed:OK": 0.93
+   },
+   "pass": true
+  },
+  "pass": true,
+  "took_s": 4.5
+ },
+ "restored": {
+  "mode": "REMOTE_MANUAL",
+  "commands": {
+   "pump_run": true,
+   "agitator_run": true,
+   "heater_enable": true,
+   "cooler_enable": true,
+   "pump_speed_sp": 55.0,
+   "valve_open_sp": 58.0,
+   "temp_sp_c": 72.0
+  }
+ },
+ "pass_all": true
+}

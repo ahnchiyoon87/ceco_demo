@@ -380,7 +380,7 @@ services:
     networks: [it-net]
     depends_on: { kafka: { condition: service_healthy } }
 
-  it-collector:   # Bento: DMZ 브로커 → Kafka / Kafka 결과 → IT InfluxDB / 분석 alert → Alertmanager → 기록·표시 → DMZ (모두 IT 가 여는 연결)
+  it-collector:   # Bento: DMZ 브로커 → Kafka / Kafka 결과 → IT InfluxDB / 분석 alert → Alertmanager → 기록·표시 → DMZ / 승인 요청 → DMZ 게이트웨이 (모두 IT 가 여는 연결)
     image: ${BENTO_IMAGE}
     restart: unless-stopped
     command: ["-c", "/cfg/bento-global.yaml", "streams", "/cfg/streams"]
@@ -390,6 +390,8 @@ services:
       IT_INFLUX_BUCKET: ${IT_INFLUX_BUCKET}
       IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
       PG_OPS_PASSWORD: ${PG_OPS_PASSWORD}
+      PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
+      GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
     volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./4_it/collector-bento/streams:/cfg/streams:ro",
                "./shared/registry/generated:/cfg/registry:ro" ]
     networks: [it-net]
@@ -490,28 +492,6 @@ services:
     volumes: [ "pg-data:/var/lib/postgresql", "./4_it/db-postgres/init:/docker-entrypoint-initdb.d:ro" ]
     networks: [it-net]
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d plant"], interval: 5s, timeout: 5s, retries: 24 }
-
-  dispatcher:   # IT 발송기: 승인된 작업 요청 → DMZ 게이트웨이(HTTP POST), 응답 ⓐ 기록
-    build: { context: ., dockerfile: 4_it/dispatcher/Dockerfile }
-    image: ceco-dispatcher:base
-    restart: unless-stopped
-    environment:
-      GATEWAY_URL: http://dmz-gateway:8088/requests
-      GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
-      PG_HOST: postgres
-      PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
-      KAFKA_BOOTSTRAP: kafka:9092
-    networks: [it-net]
-    depends_on:
-      postgres: { condition: service_healthy }
-      kafka-init: { condition: service_completed_successfully }
-      router: { condition: service_healthy }
-    healthcheck:
-      test: ["CMD", "python3", "-c", "import os,sys,time; sys.exit(0 if time.time() - os.path.getmtime('/tmp/alive') < 30 else 1)"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
-      start_period: 30s
 
   grafana:
     image: ${GRAFANA_IMAGE}

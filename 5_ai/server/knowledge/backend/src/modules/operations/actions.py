@@ -229,6 +229,24 @@ def enable_cooling(before, *, proposal=None, note=""):
     return _request_action(before, "enable_cooling", proposal, note)
 
 
+_approved_producer = None
+
+
+def _announce_approved(jid: str) -> bool:
+    """Kafka request.approved 에 요청 ID 만 낸다(내용의 정본은 PostgreSQL). 5초 안에 전달 확인이 없으면 실패.
+    연결은 한 번 만들어 다시 쓴다(새로 만들면 첫 전달에 약 1초가 든다, experiments/DISP-CMP)."""
+    global _approved_producer
+    from confluent_kafka import Producer
+    if _approved_producer is None:
+        _approved_producer = Producer({"bootstrap.servers": os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092"),
+                                       "acks": "all", "message.timeout.ms": 5000, "linger.ms": 0})
+    p, done = _approved_producer, []
+    p.produce("request.approved", key=jid, value=json.dumps({"job_order_id": jid}),
+              on_delivery=lambda err, msg: done.append(err is None))
+    p.flush(6)
+    return done == [True]
+
+
 def _request_action(before, action, proposal, note):
     """승인된 조치를 작업 요청 한 건으로 남기고 결과 사건을 기다린다. 요청은 다시 보내지 않는다."""
     from .plant_db import audit, plant_connection, request_event
@@ -249,6 +267,12 @@ def _request_action(before, action, proposal, note):
     except Exception as exc:
         return {"status": "not_executed", "reason": "작업 요청을 공용 업무 DB 에 기록하지 못해 보내지 않았습니다(기록 실패).",
                 "error_type": type(exc).__name__}
+    # 기록이 끝난 뒤 승인 토픽에 알린다. IT 수집기(Bento)의 발송 스트림이 받아 DMZ 게이트웨이로 보낸다.
+    if not _announce_approved(jid):
+        with plant_connection() as pc:
+            request_event(pc, jid, "not_dispatched", "KAFKA_UNAVAILABLE", "승인 토픽에 알리지 못함", {}, "ai-app")
+        return {"status": "not_executed", "job_order_id": jid,
+                "reason": "승인은 기록했지만 발송 통로(Kafka)에 알리지 못해 보내지 않았습니다."}
     action_progress("request_recorded", {"job_order_id": jid, "work_master_id": wm,
                                          "reason": "작업 요청을 기록했습니다. IT 발송기가 DMZ 게이트웨이로 보냅니다."})
     seen, deadline = set(), time.monotonic() + WAIT_S

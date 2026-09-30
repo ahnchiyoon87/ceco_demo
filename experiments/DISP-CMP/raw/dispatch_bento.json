@@ -1,0 +1,64 @@
+{
+ "results": [
+  {
+   "case": "수용: approved → dispatched → gateway_accepted",
+   "pass": true,
+   "detail": {
+    "kinds": [
+     "approved",
+     "dispatched",
+     "gateway_accepted"
+    ],
+    "detail": {
+     "expires_at": 1790758935,
+     "latency_ms": 83.9,
+     "http_status": 202
+    },
+    "approved_to_gateway_s": 1.117
+   }
+  },
+  {
+   "case": "같은 승인 재알림 → 다시 보내지 않음",
+   "pass": true,
+   "detail": {
+    "events_before": 4,
+    "events_after": 4
+   }
+  },
+  {
+   "case": "게이트웨이 거부 기록(PARAMETER_RANGE, 422)",
+   "pass": true,
+   "detail": {
+    "kinds": [
+     "approved:APPROVED:None",
+     "dispatched:None:None",
+     "gateway_rejected:REJECTED:PARAMETER_RANGE"
+    ]
+   }
+  },
+  {
+   "case": "기록 없는 ID 알림 → 무시",
+   "pass": true,
+   "detail": {
+    "events": 0
+   }
+  },
+  {
+   "case": "감사 기록(dispatched, gateway_accepted)",
+   "pass": true,
+   "detail": {
+    "audit": [
+     {
+      "action": "dispatched",
+      "subject": null
+     },
+     {
+      "action": "gateway_accepted",
+      "subject": "ACCEPTED"
+     }
+    ]
+   }
+  }
+ ],
+ "pass": true
+}

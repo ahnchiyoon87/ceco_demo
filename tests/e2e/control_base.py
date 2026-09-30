@@ -156,7 +156,17 @@ def request(wm, equipment, params=None, note="control_base"):
                      VALUES (%s,'approved','APPROVED',%s,'{}','control-test')""", (jid, note))
         c.execute("""INSERT INTO audit.log(actor_type, actor_id, action, job_order_id, subject, detail)
                      VALUES ('human','operator-01','approve',%s,%s,%s)""", (jid, wm, Jsonb({"note": note})))
+    announce(jid)
     return jid
+
+
+def announce(jid):
+    """AI 와 같이 기록 뒤 승인 토픽(request.approved)에 요청 ID 를 낸다 → IT 수집기의 발송 스트림."""
+    from confluent_kafka import Producer
+    p = Producer({"bootstrap.servers": "kafka:9092", "acks": "all", "message.timeout.ms": 5000})
+    p.produce("request.approved", key=jid, value=json.dumps({"job_order_id": jid}))
+    if p.flush(6):
+        raise RuntimeError("승인 토픽 전달 실패")
 
 
 def events(jid):

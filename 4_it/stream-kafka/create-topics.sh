@@ -23,7 +23,8 @@ create sensor.anomaly.score   3 $D7    # 오토인코더 재구성 오차
 create sensor.alerts          3 $D7    # Flink 분석 alert(규칙·Z-Score·CEP·ML)
 create plant.status           3 $D7    # PLC 상태·통신 상태·ACK
 create alerts.display         1 $D7    # 표시할 alert(억제·정비 중 제외) → FUXA 분석 경고(참고)
-create request.events         3 $D30   # 작업 요청·승인·게이트웨이 응답(ⓐ) 사본
+create request.approved       3 $D30   # 승인된 작업 요청 ID(AI 업무 도우미 → IT 수집기 발송 스트림, 내용 정본은 PostgreSQL)
+create request.events         3 $D30   # 게이트웨이 응답(ⓐ) 사본
 create request.responses      3 $D30   # OT 수신기 응답(ⓑⓒ)
 create audit.copy             1 $D30   # 감사 기록 사본(정본은 PostgreSQL audit.log)
 echo "완료"

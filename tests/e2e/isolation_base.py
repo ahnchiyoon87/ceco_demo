@@ -77,6 +77,9 @@ if a.phase == "during":
         c.execute("""INSERT INTO workflow.request(job_order_id, work_master_id, equipment_id, job_order_parameters, requester, approver, context)
                      VALUES (%s,'WM-M101-STOP','M-101','[]','ai-ops','operator-01',%s)""", (jid_a, Jsonb({"summary": "격리 실습 ⓐ"})))
         c.execute("INSERT INTO workflow.request_event(job_order_id, kind, status, reason, detail, source) VALUES (%s,'approved','APPROVED','격리 실습','{}','isolation-test')", (jid_a,))
+    from confluent_kafka import Producer   # AI 와 같이 기록 뒤 승인 토픽에 알린다(IT 수집기의 발송 스트림이 받는다)
+    kp = Producer({"bootstrap.servers": "kafka:9092", "acks": "all", "message.timeout.ms": 5000})
+    kp.produce("request.approved", key=jid_a, value=json.dumps({"job_order_id": jid_a})); kp.flush(6)
     # ⓑ MQTT 만료 없이 DMZ 브로커에 직접(본문 만료 20 s)
     jid_b = f"iso-b-{uuid.uuid4().hex}"
     dmz = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"iso-dmz-{uuid.uuid4().hex[:6]}", protocol=mqtt.MQTTv5)
