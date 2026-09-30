@@ -49,14 +49,12 @@ execution:
     timeout: 60s
     min-pause: 5s
     externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
+    dir: file:///opt/flink/checkpoints
+    savepoint-dir: file:///opt/flink/savepoints
 
 state:
   backend:
     type: hashmap                 # 태그 12개 창 상태라 작다. 체크포인트·HA 복구 지원
-  checkpoints:
-    dir: file:///opt/flink/checkpoints
-  savepoints:
-    dir: file:///opt/flink/savepoints
 
 # ── Prometheus 노출: 체크포인트 소요·실패, 백프레셔 등 인프라 지표(공정 데이터는 InfluxDB) ──
 metrics:
