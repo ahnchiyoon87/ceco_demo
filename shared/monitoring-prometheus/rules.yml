@@ -23,6 +23,11 @@ groups:
         for: 30s
         labels: { severity: critical, tier: "2" }
         annotations: { summary: "OT 허브 → DMZ 브리지 끊김 ({{ $labels.zone }}) — OT 는 계속 돌고 데이터는 허브 버퍼에 쌓임" }
+      - alert: CollectorInputStalled
+        expr: rate(input_received{stream=~"dmz_to_kafka|loader"}[2m]) == 0
+        for: 1m
+        labels: { severity: critical, tier: "2" }
+        annotations: { summary: "수집기 입력 멈춤 ({{ $labels.job }}/{{ $labels.stream }}) — 연결이 살아 있어도 들어오는 값이 없음" }
       - alert: MosquittoClientDisconnectSpike
         expr: delta(mosquitto_sys{topic="$SYS/broker/clients/connected"}[5m]) < -2
         for: 1m
