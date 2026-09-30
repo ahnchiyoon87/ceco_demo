@@ -185,6 +185,23 @@ services:
       retries: 12
       start_period: 20s
 
+  hmi-gate:   # FUXA 앞 인증 관문(Caddy): 사람용 공개 포트 → 계정 확인 → FUXA. FUXA 의 게스트 읽기를 밖에서 막는다
+    image: ${CADDY_IMAGE}
+    restart: unless-stopped
+    entrypoint: ["sh", "-c", "export HMI_GATE_HASH=$$(caddy hash-password --plaintext \"$$HMI_GATE_PASSWORD\"); exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
+    environment:
+      HMI_GATE_USER: ${HMI_GATE_USER}
+      HMI_GATE_PASSWORD: ${HMI_GATE_PASSWORD}
+    volumes: [ "./2_ot/hmi-gate-caddy/Caddyfile:/etc/caddy/Caddyfile:ro" ]
+    networks: { ot-net: { ipv4_address: "${NET_PREFIX}.10.16" } }
+    depends_on: { fuxa: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:2019/config/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   fuxa-provisioner:   # 기동 때 1회: 관리자 비밀번호·운전원 계정, 등록부에서 만든 화면·태그·공정 알람 넣기(보안·DAQ 보존은 확인만)
     image: python:3.12-slim
     restart: "no"

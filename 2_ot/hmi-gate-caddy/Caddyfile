@@ -1,0 +1,12 @@
+# FUXA 앞 인증 관문: FUXA 1.3.4 는 토큰 없는 요청에 게스트 토큰을 주고 값을 읽게 한다(끌 설정 없음).
+# 사람용 공개 포트는 이 관문을 거쳐야 FUXA 에 닿는다. 운전원 명령·설정 변경은 여기에 더해 FUXA 로그인이 필요하다.
+{
+	admin localhost:2019
+}
+
+:1882 {
+	basic_auth {
+		{$HMI_GATE_USER} {$HMI_GATE_HASH}
+	}
+	reverse_proxy fuxa:1881
+}

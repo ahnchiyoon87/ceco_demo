@@ -44,8 +44,16 @@ def c(svc: str) -> str:
     return f"{P}-{svc}-1"
 
 
+GATE = {"Authorization": "Basic " + base64.b64encode(f'{ENV["HMI_GATE_USER"]}:{ENV["HMI_GATE_PASSWORD"]}'.encode()).decode()}
+
+
+def gated(url: str, headers: dict | None) -> dict:
+    """FUXA 공개 포트는 인증 관문(Caddy)을 거친다 — 관문 계정을 붙인다."""
+    return {**GATE, **(headers or {})} if url.startswith(FUXA) else (headers or {})
+
+
 def get(url: str, timeout: int = 10, headers: dict | None = None):
-    req = urllib.request.Request(url, headers=headers or {})
+    req = urllib.request.Request(url, headers=gated(url, headers))
     with urllib.request.urlopen(req, timeout=timeout) as r:
         body = r.read().decode()
     return json.loads(body) if body.strip() else {}
@@ -53,7 +61,7 @@ def get(url: str, timeout: int = 10, headers: dict | None = None):
 
 def post(url: str, payload=None, timeout: int = 10, headers: dict | None = None):
     data = json.dumps(payload).encode() if payload is not None else b"{}"
-    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", **(headers or {})}, method="POST")
+    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", **gated(url, headers)}, method="POST")
     with urllib.request.urlopen(req, timeout=timeout) as r:
         body = r.read().decode()
     return json.loads(body) if body.strip().startswith(("{", "[")) else {}
@@ -308,12 +316,18 @@ def t4_scada() -> None:
     restarted = sim_state()["readings"]
     check("FUXA 양방향 제어 (화면 → 운전원 명령 → PLC → 물리)", stopped["FT-101"] < 0.2 and restarted["FT-101"] > 7.0,
           f"정지 FT-101={stopped['FT-101']:.2f} → 85% 재기동 FT-101={restarted['FT-101']:.2f} m3/h")
-    try:
-        post(f"{FUXA}/api/setTagValue", {"tags": [{"id": "CmdPumpRun", "value": 0}]})
-        guest = "쓰기됨"
-    except urllib.error.HTTPError as e:
-        guest = f"HTTP {e.code}"
-    check("로그인 없는 쓰기 거부 (FUXA 보안)", guest.startswith("HTTP 401"), f"guest setTagValue → {guest}")
+    def status_of(req) -> str:
+        try:
+            urllib.request.urlopen(req, timeout=10)
+            return "통과됨"
+        except urllib.error.HTTPError as e:
+            return f"HTTP {e.code}"
+    body = json.dumps({"tags": [{"id": "CmdPumpRun", "value": 0}]}).encode()
+    no_gate = status_of(urllib.request.Request(f"{FUXA}/api/project"))
+    guest = status_of(urllib.request.Request(f"{FUXA}/api/setTagValue", data=body, method="POST",
+                                             headers={"Content-Type": "application/json", **GATE}))
+    check("관문 계정 없이 FUXA 접근 거부 (게스트 읽기 차단)", no_gate == "HTTP 401", f"project 읽기 → {no_gate}")
+    check("로그인 없는 쓰기 거부 (FUXA 보안)", guest.startswith("HTTP 401"), f"관문 통과·FUXA 로그인 없이 setTagValue → {guest}")
 
 
 STAGES = {"edge": t1_edge, "backbone": t2_backbone, "stream": t3_stream, "detection": t3_detection,

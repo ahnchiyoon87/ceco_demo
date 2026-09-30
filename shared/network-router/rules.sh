@@ -10,7 +10,7 @@ P=${NET_PREFIX:?}
 OT=$P.10.0/24; DMZ=$P.20.0/24; IT=$P.30.0/24
 R_OT=$P.10.2; R_IT=$P.30.2; IT_GW=$P.30.1        # IT_GW = 호스트(사람·도구)가 공개 포트로 들어오는 주소
 DMZ_BROKER=$P.20.11; DMZ_INFLUX=$P.20.12; DMZ_PROM=$P.20.13; DMZ_GATEWAY=$P.20.14
-OT_SIM=$P.10.11; OT_HUB=$P.10.12; OT_EDGE=$P.10.13; OT_PLC=$P.10.14; OT_FUXA=$P.10.15
+OT_SIM=$P.10.11; OT_HUB=$P.10.12; OT_EDGE=$P.10.13; OT_PLC=$P.10.14; OT_HMI_GATE=$P.10.16
 
 ipt(){ iptables "$@"; }
 ipt -F; ipt -t nat -F; ipt -X 2>/dev/null || true
@@ -32,7 +32,7 @@ allow $IT $R_IT 8086 $DMZ_INFLUX 8086 "it->dmz influxdb query"
 allow $IT $R_IT 9090 $DMZ_PROM 9090 "it->dmz prometheus federate"
 allow $IT $R_IT 8088 $DMZ_GATEWAY 8088 "it->dmz request gateway"
 # 호스트(사람·도구) → OT 사람용 화면: 호스트 게이트웨이 주소에서 온 것만. IT 컨테이너는 못 연다
-allow $IT_GW/32 $R_IT 21881 $OT_FUXA 1881 "host->ot fuxa"
+allow $IT_GW/32 $R_IT 21881 $OT_HMI_GATE 1882 "host->ot hmi gate(fuxa)"
 allow $IT_GW/32 $R_IT 28080 $OT_SIM 8080 "host->ot instructor api"
 allow $IT_GW/32 $R_IT 28081 $OT_SIM 8081 "host->ot field panel"
 allow $IT_GW/32 $R_IT 21883 $OT_HUB 1883 "host->ot hub mqtt"
