@@ -5,7 +5,7 @@ set -u
 export MSYS_NO_PATHCONV=1
 NAME=$1; NET=${NET:-rot-iiot}; SIM=${SIM:-http://127.0.0.1:37080}
 D=experiments/BASE-S01/raw; REPO="D:/work/study/scada-rotation"
-CLIENT="docker run --rm --network $NET -v $REPO:/repo -w /repo ${CLIENT_IMG:-e2e-client:1.0}"
+CLIENT="docker run --rm --network $NET -v $REPO:/repo -w /repo ${CLIENT_IMG:-e2e-client:1.2}"
 curl -s -X POST -H 'Content-Type: application/json' -d '{}' $SIM/fault/clear >/dev/null; sleep 5
 for i in 1 2 3; do
   T0=$(( $(date +%s) * 1000 )); sleep 180; T1=$(( $(date +%s) * 1000 ))

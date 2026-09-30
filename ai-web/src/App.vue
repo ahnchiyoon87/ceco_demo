@@ -68,7 +68,7 @@ onUnmounted(()=>{mounted=false;clearInterval(timer);selectionGeneration++;graphG
       <button :class="{chosen:page==='scada'}" :aria-current="page==='scada'?'page':undefined" @click="go('scada')"><span>◉</span>공정 대시보드</button>
       <button :class="{chosen:page==='operations'}" :aria-current="page==='operations'?'page':undefined" @click="go('operations')"><span>▦</span>이상 대응 · AI 검토</button>
       <button :class="{chosen:page==='knowledge'}" :aria-current="page==='knowledge'?'page':undefined" @click="go('knowledge')"><span>⌘</span>설비 지식 스튜디오</button>
-      <a class="guide-link" href="/system-guide.html" target="_blank" rel="noopener">시스템 흐름 쉽게 보기 ↗</a><div class="nav-bottom"><span class="simulation-dot"></span> AR-100 시뮬레이션<small>실제 센서 파이프라인 연결<br>가상 반응기 공정 · 교육용</small></div>
+      <div class="nav-bottom"><span class="simulation-dot"></span> AR-100 시뮬레이션<small>실제 센서 파이프라인 연결<br>가상 반응기 공정 · 교육용</small></div>
     </aside>
     <div class="mfg-main">
       <header class="mfg-top"><span>제조 운영 <b>/</b> {{page==='knowledge'?'지식 스튜디오':page==='scada'?'실시간 공정':'이상 대응'}}</span><span class="connection" :class="{offline:error||plant?.status!=='available'}"><i></i>{{error?'연결 확인 필요':plant?.status==='available'?'공정 연결됨':'연결 확인 중'}}</span><button @click="refresh">↻ 새로고침</button></header>
