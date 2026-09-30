@@ -15,7 +15,7 @@
 ## 1. 이 저장소는 무엇인가
 - **무엇:** 반응 공정 한 줄을 가상으로 돌리고 OT·DMZ·IT 세 구역으로 나눠 계측 → 이상 탐지 → 경보 → AI 대응 → 승인된 작업 요청 → 설비 반영까지 보여 주는 **학생 수준 산출물 예시**. CECO 학회에 올린다.
 - **실제 강의:** 새 래퍼로 따로 만든다. 이 저장소는 그 기반이 아니라 데모다.
-- **원본과의 관계:** 원본 `D:\work\study\lecture-iiot-scada`(V1)를 폐기하고 이 저장소를 원본 베이스로 삼는다(사용자 결정 2026-09-30). 원본 폴더 삭제는 사용자 확인 대기(§6).
+- **원본과의 관계:** 이 저장소가 메인이다(사용자 "우리는 ceco-demo가 메인이 될거야", 2026-09-30). 원본 V1 코드는 GitHub `uengine-oss/lecture-iiot-scada`와 이 저장소의 태그 `v1-original`에 있다. 원본 폴더에만 있던 것(KNU 인계 zip, `_references`, `_deliverables`, `ai-layer`, `ai-web`, `docs/ai-work`, 구성도 PDF, 커밋 안 한 수정 11개 파일의 패치·수정본)은 `D:\work\study\_보관_lecture-iiot-scada`로 옮겼다.
 - **IoT-SCADA 층과 AI 층:** 설계검증 2차 결과(`docs/research/현업조사_2026-09/19_설계검증_결과.md`)를 반영한 뒤로 더 고치지 않는다.
 - **배포 전제:** PC 한 대의 Docker Compose(Windows, Docker VM 약 7.6 GB). 비용 0원(LLM은 GCP LiteLLM만).
 
@@ -56,15 +56,15 @@
 새 베이스 검증 전체는 `docs/BASE_VERIFY.md`, 결함과 교훈은 `docs/STABILITY.md`, 기능 대응(V1 → 새 베이스)은 `docs/FUNCTION_MAP.md`.
 
 ## 6. 지금 상태
-- **저장소:** `D:\work\study\ceco_demo`, 독립 git 저장소(브랜치 main), push 안 함. 옛 작업 트리 `D:\work\study\scada-rotation`과 원본 `lecture-iiot-scada`(커밋 안 된 변경 있음)는 남아 있다 — **삭제는 사용자 확인 대기**.
+- **저장소:** `D:\work\study\ceco_demo`, 독립 git 저장소(브랜치 main, 원격 없음), push 안 함. 옛 작업 트리 `scada-rotation`과 원본 `lecture-iiot-scada` 폴더 삭제는 사용자가 직접 실행한다(Claude Code 안전 검사가 큰 폴더 삭제를 막음): `cd /d/work/study/lecture-iiot-scada && git worktree remove --force /d/work/study/scada-rotation` → `cd /d/work/study && rm -rf lecture-iiot-scada scada-rotation`.
 - **컨테이너:** 프로젝트 `ceco-demo` 30개 healthy + 한 번 도는 도우미 5개 정상 종료(2026-09-30 도커 재시작 뒤 스스로 복귀 확인). 다른 프로젝트 `capstone-*`는 정지 상태, 손대지 않음.
 - **도커 정리(2026-09-30, 사용자 "도커리소스 안쓰는거 정리좀해라"):** 옛 `rot-*` 컨테이너·이미지·볼륨, 교체된 `ceco-dispatcher`·`ceco-dmz-gateway`(Python) 이미지, V1·EdgeX 시절 이미지, 연결 없는 익명 볼륨 40개, 빌드 캐시 삭제 → 이미지 25.2 → 18.0 GB, 볼륨 25.4 → 19.9 GB, 빌드 캐시 12.6 → 0 GB. 남은 회수 가능 볼륨 17 GB 는 `capstone-*`. 측정 도구 이미지 `e2e-client:1.2`·`l4bench-tools:1.0`은 둔다.
 - **검증:** 조립 검증은 `docs/BASE_VERIFY.md` §1~§8, 설계검증 반영 뒤 바꾼 부분 확인은 §9(게이트웨이 16/16, 발송·MES 7/7, AI 회귀 4/4, 제어 회귀 통과, verify 28/28, 알람 → Kafka·AI 사건 p95 1.16·1.36 s). 재시작 복구는 §6 값 유지(이번 변경과 무관, 부하 중 재측정은 무효).
 - **사용자 결정: 긴 회귀는 돌리지 않는다**("1시간씩 테스트할필요 전혀없다"). 바꾼 곳만 몇 분 안에 확인한다.
-- **남은 일:** ① 원본·옛 작업 트리 삭제(사용자 확인) ② 작업 기록 파일(HANDOFF·QA·decision-log·BASE_VERIFY·STABILITY·FUNCTION_MAP·사용자발화) 유지 여부(사용자 확인) ③ CPU 합계가 V1보다 높은 원인 미확인(BASE_VERIFY §5) ④ 관찰: 제어 회귀 MODE 흔들림(S38), E1 FUXA 공정 알람 4/27 없음.
+- **남은 일:** ① 원본·옛 작업 트리 폴더 삭제(사용자가 위 명령 실행) ② 작업 기록 파일(HANDOFF·QA·decision-log·BASE_VERIFY·STABILITY·FUNCTION_MAP·사용자발화) 유지 여부(사용자 확인) ③ CPU 합계가 V1보다 높은 원인 미확인(BASE_VERIFY §5) ④ 관찰: 제어 회귀 MODE 흔들림(S38), E1 FUXA 공정 알람 4/27 없음.
 
 ## 7. 넘으면 안 되는 선
-- 원본 `D:\work\study\lecture-iiot-scada`는 수정하지 않는다(삭제는 사용자 확인 뒤). 원본 이름(`iiot*`·`ar100*`)의 컨테이너·볼륨·이미지를 만들거나 덮어쓰지 않는다(이 저장소 이름 `ceco-*`).
+- 보관 폴더 `D:\work\study\_보관_lecture-iiot-scada`는 수정하지 않는다. 원본 이름(`iiot*`·`ar100*`)의 컨테이너·볼륨·이미지를 만들거나 덮어쓰지 않는다(이 저장소 이름 `ceco-*`).
 - git push 금지. `latest` 태그 금지. §3 금지 라이선스.
 - `5_ai/server/.env.local`의 키는 출력하거나 커밋하지 않는다. LiteLLM 마스터 키도 출력하지 않는다. LLM 호출은 필요한 만큼만(크레딧).
 - `iiot*`·`capstone-*` 자원은 건드리지 않는다.
