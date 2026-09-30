@@ -1,7 +1,7 @@
 """[측정 도구 — 솔루션 부품 아님] 구간 완전성(ROBUSTNESS 정답: 12태그 × 초).
 
-Kafka raw(중복·공백)와 InfluxDB process_raw(저장 공백)를 같은 구간에서 센다. 컨테이너 안(rot-iiot 망)에서 실행.
-  docker run --rm --network rot-iiot --env-file .env -v "$PWD:/repo" -w /repo e2e-client:1.2 \
+Kafka raw(중복·공백)와 InfluxDB process_raw(저장 공백)를 같은 구간에서 센다. 컨테이너 안(ceco-demo_it-net 망)에서 실행.
+  docker run --rm --network ceco-demo_it-net --env-file .env -v "$PWD:/repo" -w /repo e2e-client:1.2 \
      python tests/e2e/completeness.py --start-ms A --end-ms B --out experiments/EXP-000/raw/x.json
 유실 = 태그별로 한 건도 없는 초(bucket) 수. 중복 = 같은 (tag, ts) 가 두 번 이상. 최대 공백 = 연속 도착 간 최대 간격(초, 구간 시작·끝 포함).
 설비 장치(--device, 기본 reactor-line-01)만 센다 — R08 과부하 발생기의 다른 장치 레코드를 같은 태그 중복으로 세지 않게(09-29 #103).

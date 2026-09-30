@@ -1,7 +1,7 @@
 #!/bin/sh
 # [측정 도구] 내부 오류 수집(안정성 대장 근거): 실행 구간 동안 컨테이너 로그의 오류·예외·경고, 재시작·OOM, Flink 예외 기록.
-#   sh tests/tools/internal_errors.sh <since(예: 15m 또는 RFC3339)> <out.json> [이름정규식=^rot-]
-since=$1; out=$2; pat=${3:-^rot-}
+#   sh tests/tools/internal_errors.sh <since(예: 15m 또는 RFC3339)> <out.json> [이름정규식=^ceco-]
+since=$1; out=$2; pat=${3:-^ceco-}
 export MSYS_NO_PATHCONV=1
 tmp=$(mktemp -d)
 for c in $(docker ps -a --format '{{.Names}}' | grep -E "$pat"); do

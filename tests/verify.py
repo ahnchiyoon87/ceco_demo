@@ -25,7 +25,7 @@ ENV = dict(
     for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines()
     if "=" in line and not line.strip().startswith("#")
 )
-P = os.environ.get("COMPOSE_PROJECT_NAME", ENV.get("COMPOSE_PROJECT_NAME", "rot-base"))
+P = os.environ.get("COMPOSE_PROJECT_NAME", ENV.get("COMPOSE_PROJECT_NAME", "ceco-demo"))
 SIM = f"http://localhost:{ENV['PORT_SIM_API']}"
 SIM_AUTH = {"Authorization": "Basic " + base64.b64encode(f"{ENV['INSTRUCTOR_USER']}:{ENV['INSTRUCTOR_PASSWORD']}".encode()).decode()}
 FLINK = f"http://localhost:{ENV['PORT_FLINK_UI']}"

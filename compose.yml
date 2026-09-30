@@ -8,7 +8,7 @@
 #
 # 기동: docker compose up -d --build     (설정·이미지 판은 .env, 설비는 shared/registry/equipment.yaml)
 # ═══════════════════════════════════════════════════════════════════════════
-name: ${COMPOSE_PROJECT_NAME:-rot-base}
+name: ${COMPOSE_PROJECT_NAME:-ceco-demo}
 
 networks:   # 고정 주소(라우터·브로커 등)는 .2~.127, 자동 배정은 ip_range(.128~)로 나눠 기동 순서와 무관하게 겹치지 않게 한다
   ot-net:
@@ -67,7 +67,7 @@ services:
   # ─────────────────────────── 구역 사이 방화벽 ───────────────────────────
   router:
     build: ./shared/network-router
-    image: rot-router:base
+    image: ceco-router:base
     restart: unless-stopped
     cap_add: [NET_ADMIN]
     sysctls: { net.ipv4.ip_forward: "1" }
@@ -89,7 +89,7 @@ services:
   # ─────────────────────────────── OT ───────────────────────────────
   plant-sim:
     build: ./0_plant/simulator
-    image: rot-plant-simulator:base
+    image: ceco-plant-simulator:base
     restart: unless-stopped
     environment:
       INSTRUCTOR_USER: ${INSTRUCTOR_USER}
@@ -106,7 +106,7 @@ services:
 
   plc:
     build: ./1_control/plc-openplc
-    image: rot-openplc:base
+    image: ceco-openplc:base
     restart: unless-stopped
     cap_add: [SYS_NICE, SYS_RESOURCE]
     environment:
@@ -146,7 +146,7 @@ services:
 
   edge:
     build: { context: ., dockerfile: 2_ot/edge-nodered/Dockerfile }
-    image: rot-edge-nodered:base
+    image: ceco-edge-nodered:base
     restart: unless-stopped
     environment:
       EDGE_ADMIN_USER: ${EDGE_ADMIN_USER}
@@ -263,7 +263,7 @@ services:
 
   dmz-gateway:   # DMZ 요청 게이트웨이(1차 검사, 자체 코드)
     build: { context: ., dockerfile: 3_dmz/gateway/Dockerfile }
-    image: rot-dmz-gateway:base
+    image: ceco-dmz-gateway:base
     restart: unless-stopped
     environment:
       GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
@@ -394,7 +394,7 @@ services:
 
   flink-jobmanager:
     build: { context: ./4_it/detection-flink, dockerfile: Dockerfile }
-    image: rot-flink-onnx:base
+    image: ceco-flink-onnx:base
     restart: unless-stopped
     command: jobmanager
     ports: [ "127.0.0.1:${PORT_FLINK_UI}:8081" ]
@@ -404,7 +404,7 @@ services:
     healthcheck: { test: ["CMD-SHELL", "curl -sf http://localhost:8081/overview || exit 1"], interval: 10s, timeout: 5s, retries: 20, start_period: 30s }
 
   flink-taskmanager:
-    image: rot-flink-onnx:base
+    image: ceco-flink-onnx:base
     restart: unless-stopped
     command: taskmanager
     volumes: [ "./4_it/detection-flink/conf/config.yaml:/opt/flink/conf/config.yaml:ro", "./4_it/detection-flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties:ro", "./4_it/detection-flink/sql:/opt/flink/sql:ro", "flink-checkpoints:/opt/flink/checkpoints", "model-store:/opt/models:ro" ]
@@ -419,13 +419,13 @@ services:
 
   model-trainer:   # 오토인코더 학습(기동 때 1회). 가상설비 물리로 정상 데이터를 만들어 ONNX 로 낸다
     build: { context: ., dockerfile: 4_it/ml-trainer/Dockerfile }
-    image: rot-model-trainer:base
+    image: ceco-model-trainer:base
     restart: "no"
     volumes: [ "model-store:/opt/models" ]
     networks: [it-net]
 
   flink-job-submitter:
-    image: rot-flink-onnx:base
+    image: ceco-flink-onnx:base
     restart: "no"
     entrypoint: ["/bin/bash", "/submit-jobs.sh"]
     volumes: [ "./4_it/detection-flink/sql:/opt/flink/sql:ro", "./4_it/detection-flink/submit-jobs.sh:/submit-jobs.sh:ro", "./4_it/detection-flink/conf/client-config.yaml:/opt/flink/conf/config.yaml:ro", "model-store:/opt/models:ro" ]
@@ -470,7 +470,7 @@ services:
 
   dispatcher:   # IT 발송기: 승인된 작업 요청 → DMZ 게이트웨이(HTTP POST), 응답 ⓐ 기록
     build: { context: ., dockerfile: 4_it/dispatcher/Dockerfile }
-    image: rot-dispatcher:base
+    image: ceco-dispatcher:base
     restart: unless-stopped
     environment:
       GATEWAY_URL: http://dmz-gateway:8088/requests
@@ -595,7 +595,7 @@ services:
 
   graph-seed:   # 기동 때 1회: 등록부·교육 문서·고장 온톨로지 묶음 게시 + 매뉴얼 절·개체 임베딩(멱등)
     <<: *ai-llm
-    image: rot-ai-knowledge:base
+    image: ceco-ai-knowledge:base
     restart: "no"
     working_dir: /app
     command: ["python", "/repo/5_ai/server/seed_graph.py"]
@@ -611,7 +611,7 @@ services:
   knowledge:   # AI 업무 도우미 백엔드(에이전트·온톨로지·매뉴얼 검색·승인). 설비에는 작업 요청으로만 닿는다
     build: { context: ./5_ai/server/knowledge, dockerfile: backend/Dockerfile }
     <<: *ai-llm
-    image: rot-ai-knowledge:base
+    image: ceco-ai-knowledge:base
     restart: unless-stopped
     command: ["ontology-studio-backend"]
     environment:
@@ -654,7 +654,7 @@ services:
 
   web:   # AI 업무 화면(담당자 승인). 설비 조작 화면은 없다(FUXA 가 대신)
     build: { context: ./5_ai/web, args: { VITE_FUXA_URL: "http://127.0.0.1:${PORT_FUXA}/" } }
-    image: rot-ai-web:base
+    image: ceco-ai-web:base
     restart: unless-stopped
     ports: [ "127.0.0.1:${PORT_AI_WEB}:8080" ]
     networks: [it-net]
@@ -662,7 +662,7 @@ services:
     healthcheck: { test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/healthz"], interval: 10s, timeout: 3s, retries: 3 }
 
   business:   # 업무 서비스: Kafka alert·응답·PLC 상태 → 사건·alert 상태·workflow·audit, 5 s·10 s 타이머
-    image: rot-ai-knowledge:base
+    image: ceco-ai-knowledge:base
     restart: unless-stopped
     command: ["python", "-m", "backend.src.modules.operations.business"]
     environment:

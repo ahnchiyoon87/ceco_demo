@@ -1,5 +1,5 @@
 """[측정 도구 — 솔루션 부품 아님] 새 베이스 제어·안전 회귀(AI 쪽, LLM 호출 없음). knowledge 컨테이너 안에서 실행:
-  docker exec -i rot-base-knowledge-1 python - <step> < tests/e2e/control_ai.py
+  docker exec -i ceco-demo-knowledge-1 python - <step> < tests/e2e/control_ai.py
 단계(step): propose | reject | approve2 | stale | count <proposal_id> | pg_down_decide <proposal_id>
 전제: 교반기 이상(bearing_wear)이 걸려 있고 그 사건이 AI 사건 표에 있다(control_ai.sh 가 주입·대기).
 V1 regression_control.py 와 같은 실제 함수(create_proposal·decide)를 부른다. 새 구조에서 AI 는 설비에 연결이 없고

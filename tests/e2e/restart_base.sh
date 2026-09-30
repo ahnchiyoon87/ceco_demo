@@ -1,6 +1,6 @@
 #!/bin/bash
 # [측정 도구] 새 베이스 재시작 복구(HANDOFF §3-5 '재시작 복구', V1 baseline.sh P3 와 같은 판정).
-#   [RREPS=3] [COMPOSE_PROJECT_NAME=rot-base] bash tests/e2e/restart_base.sh <EXP> [시험 이름들]
+#   [RREPS=3] [COMPOSE_PROJECT_NAME=ceco-demo] bash tests/e2e/restart_base.sh <EXP> [시험 이름들]
 #   기본 시험: othub dmzb kafka coll flink itinflux dmzinflux pg. 반복은 RREPS(기본 3), 대상 스택은 COMPOSE_PROJECT_NAME
 # 한 회: 주입(정지·끊기·재시작) → 대기 → 되돌림 → 끝단 두 곳(DMZ 원시 사본 process_raw, IT 결과 process)에
 #        2분 연속 흐름이 돌아온 시각 = 복구(wait_flow.py, V1 과 같은 정의) → 주입 10 s 전부터 지금까지 완전성(유실 태그·초, 중복).

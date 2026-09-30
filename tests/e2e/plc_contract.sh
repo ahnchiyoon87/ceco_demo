@@ -7,9 +7,9 @@ EXP=$1; R=experiments/$EXP/raw; mkdir -p $R
 F=tests/e2e/plc_contract.compose.yml
 DC="docker compose -f $F"
 $DC up -d --wait plant-sim plc probe >/dev/null 2>&1 || $DC up -d plant-sim plc probe
-docker cp tests/e2e/plc_contract.py rot-plc-contract-probe-1:/repo/plc_contract.py >/dev/null
-run(){ docker exec -w /repo rot-plc-contract-probe-1 python plc_contract.py --phase $1 --out /tmp/r$1.json; rc=$?
-       docker cp rot-plc-contract-probe-1:/tmp/r$1.json $R/plc_contract_r$1.json >/dev/null; return $rc; }
+docker cp tests/e2e/plc_contract.py ceco-plc-contract-probe-1:/repo/plc_contract.py >/dev/null
+run(){ docker exec -w /repo ceco-plc-contract-probe-1 python plc_contract.py --phase $1 --out /tmp/r$1.json; rc=$?
+       docker cp ceco-plc-contract-probe-1:/tmp/r$1.json $R/plc_contract_r$1.json >/dev/null; return $rc; }
 run 1; rc1=$?
 $DC restart plc >/dev/null
 run 2; rc2=$?

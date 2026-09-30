@@ -3,7 +3,7 @@
 #   bash tests/e2e/coll_stall.sh <EXP> [최대 회수]   멈추면 SIGQUIT 로 고루틴 덤프를 남기고 끝낸다(컨테이너는 unless-stopped 로 다시 뜬다).
 set -u
 export MSYS_NO_PATHCONV=1
-EXP=$1; N=${2:-8}; P=${COMPOSE_PROJECT_NAME:-rot-base}; C=$P-it-collector-1; K=$P-kafka-1
+EXP=$1; N=${2:-8}; P=${COMPOSE_PROJECT_NAME:-ceco-demo}; C=$P-it-collector-1; K=$P-kafka-1
 D=experiments/$EXP/coll_stall; mkdir -p $D; LOG=$D/run.log
 say(){ echo "[$(date +%T)] $*" | tee -a $LOG; }
 off(){ docker exec $K /opt/kafka/bin/kafka-get-offsets.sh --bootstrap-server localhost:9092 --topic sensor.telemetry.raw 2>/dev/null | awk -F: '{s+=$3} END{print s+0}'; }

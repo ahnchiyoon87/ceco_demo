@@ -4,7 +4,7 @@
 #   base_client python tests/e2e/e1.py ...        (저장소는 /repo, 증거는 /experiments)
 set -u
 export MSYS_NO_PATHCONV=1
-P=${COMPOSE_PROJECT_NAME:-rot-base}
+P=${COMPOSE_PROJECT_NAME:-ceco-demo}
 REPO=${REPO:-D:/work/study/scada-rotation}
 CLIENT_IMG=${CLIENT_IMG:-e2e-client:1.2}
 env_get(){ grep -E "^$1=" "$REPO/.env" | head -1 | cut -d= -f2-; }
@@ -22,7 +22,7 @@ C_KNOW=$P-knowledge-1; C_BUS=$P-business-1; C_DISP=$P-dispatcher-1; C_ROUTER=$P-
 
 # 측정 클라이언트: 이름 붙은 일회용 컨테이너를 만들고 세 망에 붙인 뒤 실행·삭제한다.
 base_client(){
-  local n=rot-measure-$$-$RANDOM
+  local n=ceco-measure-$$-$RANDOM
   docker create --name $n --network ${P}_it-net \
     -e SIM_USER="$(env_get INSTRUCTOR_USER)" -e SIM_PASSWORD="$(env_get INSTRUCTOR_PASSWORD)" \
     -e MQTT_USER=viewer -e MQTT_PASS="$(env_get MQTT_VIEWER_PASSWORD)" \
