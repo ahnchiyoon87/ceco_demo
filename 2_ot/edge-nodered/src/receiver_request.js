@@ -45,7 +45,8 @@ if (plc.maintenance === true) return reject('MAINTENANCE');
 const hash = parseInt(crypto.createHash('sha256').update(req.job_order_id).digest('hex').slice(0, 8), 16) || 1;
 const job = { job_order_id: req.job_order_id, work_master_id: w.work_master_id, equipment_id: w.equipment_id, desc: w.desc,
     code: w.code, value, command_topic: w.command_topic, job_hash: hash, received_at: now, expires_at: Math.floor(Number(req.expires_at)),
-    context_summary: req.context ? String(req.context.summary || '').slice(0, 120) : '' };
+    // 운전원 화면에 누가 보낸 요청인지 앞에 붙인다(요청자 종류·ID)
+    context_summary: `[${String(req.requester_type).toUpperCase()} ${req.requester}] ` + (req.context ? String(req.context.summary || '').slice(0, 120) : '') };
 if (plc.mode === 'REMOTE_AUTO') {
     const cmd = { topic: w.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,
         code: job.code, value: job.value, expires_at: job.expires_at, operator_accepted: 0, job_hash: hash }) };

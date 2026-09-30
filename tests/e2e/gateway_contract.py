@@ -21,7 +21,7 @@ TOKEN = os.environ["GATEWAY_CLIENT_TOKEN"]
 
 def body(**kw):
     b = {"job_order_id": f"gwc-{uuid.uuid4().hex}", "work_master_id": "WM-R101-TEMPSP", "equipment_id": "R-101",
-         "job_order_parameters": [{"id": "temp_sp_c", "value": 70.0}], "requester": "ai-ops", "approver": "operator-01",
+         "job_order_parameters": [{"id": "temp_sp_c", "value": 70.0}], "requester": "ai-ops", "requester_type": "ai", "approver": "operator-01",
          "created_at": time.time()}
     b.update(kw)
     return b
@@ -80,6 +80,7 @@ if a.phase == "normal":
     case("파라미터 없음", 422, "PARAMETER_MISSING", send(body(job_order_parameters=[])))
     case("파라미터 범위 밖", 422, "PARAMETER_RANGE", send(body(job_order_parameters=[{"id": "temp_sp_c", "value": 95.0}])))
     case("요청자 허용 밖", 422, "REQUESTER_NOT_ALLOWED", send(body(requester="unknown")))
+    case("요청자 종류 불일치(ai-ops 를 mes 로)", 422, "REQUESTER_NOT_ALLOWED", send(body(requester_type="mes")))
     case("승인자 허용 밖", 422, "APPROVER_NOT_ALLOWED", send(body(approver="nobody")))
     case("오래된 요청", 422, "TOO_OLD", send(body(created_at=time.time() - 60)))
     ok = body()

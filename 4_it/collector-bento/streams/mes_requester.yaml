@@ -1,0 +1,55 @@
+# ═══ IT 수집기 ⑧ MES 흉내 요청자: 생산 지시(HTTP) → 작업 요청·승인 기록(PostgreSQL, 계정 mes) → Kafka request.approved ═══
+#   AI 업무 도우미와 같은 요청 길을 쓰는 두 번째 외부 시스템(requester mes-01, requester_type mes). 승인자는 생산 계획 담당(planner).
+#   이후는 같다: 발송 스트림 → DMZ 게이트웨이 → OT 수신기 → PLC. 경계 검사(허용 작업·범위·요청자·승인자)는 게이트웨이가 한다.
+#   주소: POST http://it-collector:4195/mes_requester/orders
+#     {"work_master_id": "WM-R101-TEMPSP", "equipment_id": "R-101", "job_order_parameters": [{"id": "temp_sp_c", "value": 72}],
+#      "planner": "planner-01", "summary": "배치 B-17 온도 조정"}
+#   응답: 202 {"job_order_id": "mes-…"} (기록·승인 토픽 전달까지) / 422 {"reason": "RECORD_FAILED"}
+input:
+  http_server:
+    path: /orders
+    allowed_verbs: [ POST ]
+    sync_response:
+      status: ${! @mes_status | "202" }
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "job_order_id": "mes-" + uuid_v4().replace_all("-", ""),
+          "work_master_id": this.work_master_id, "equipment_id": this.equipment_id,
+          "job_order_parameters": this.job_order_parameters | [],
+          "approver": this.planner, "summary": this.summary | "MES 생산 지시",
+        }
+    - sql_raw:
+        driver: postgres
+        dsn: postgres://mes:${PG_MES_PASSWORD}@postgres:5432/plant?sslmode=disable
+        exec_only: true
+        query: |
+          WITH r AS (INSERT INTO workflow.request(job_order_id, work_master_id, equipment_id, job_order_parameters,
+                                                  requester, requester_type, approver, context)
+                     VALUES ($1, $2, $3, $4::jsonb, 'mes-01', 'mes', $5, jsonb_build_object('summary', $6::text)) RETURNING job_order_id),
+          e AS (INSERT INTO workflow.request_event(job_order_id, kind, status, detail, source)
+                SELECT job_order_id, 'approved', 'APPROVED', '{}'::jsonb, 'mes-01' FROM r),
+          p AS (INSERT INTO audit.log(actor_type, actor_id, action, job_order_id, subject, detail)
+                SELECT 'system', 'mes-01', 'propose', job_order_id, $2, '{}'::jsonb FROM r)
+          INSERT INTO audit.log(actor_type, actor_id, action, job_order_id, subject, detail)
+          SELECT 'human', $5, 'approve', job_order_id, $2, jsonb_build_object('note', $6::text) FROM r
+        args_mapping: |
+          root = [ this.job_order_id, this.work_master_id, this.equipment_id, this.job_order_parameters.format_json(),
+                   this.approver, this.summary ]
+    - mapping: 'root = {"job_order_id": this.job_order_id}'
+    - catch:
+        - log:
+            level: WARN
+            message: 'MES 지시 기록 실패: ${! error() }'
+        - mapping: |
+            meta mes_status = "422"
+            root = {"status": "REJECTED", "reason": "RECORD_FAILED"}
+    - sync_response: {}
+    - mapping: root = if @mes_status == "422" { deleted() }
+output:
+  kafka_franz:
+    seed_brokers: [ kafka:9092 ]
+    topic: request.approved
+    key: ${! json("job_order_id") }
+    client_id: it-mes-requester

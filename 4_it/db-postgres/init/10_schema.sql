@@ -33,6 +33,7 @@ CREATE TABLE workflow.request (
   equipment_id text NOT NULL REFERENCES registry.equipment(id),
   job_order_parameters jsonb NOT NULL DEFAULT '[]',
   requester text NOT NULL,
+  requester_type text NOT NULL DEFAULT 'ai' CHECK (requester_type IN ('ai', 'mes')),   -- 요청한 외부 시스템 종류
   approver text NOT NULL,
   context jsonb,
   incident_id uuid,
@@ -98,17 +99,18 @@ CREATE INDEX ON audit.log (job_order_id, at);
 CREATE TRIGGER audit_append_only BEFORE UPDATE OR DELETE ON audit.log FOR EACH ROW EXECUTE FUNCTION audit.append_only();
 
 -- ── 권한(최소 권한): UPDATE·DELETE 는 누구에게도 주지 않는다(alert_group 상태만 업무 서비스가 고친다) ──
-GRANT USAGE ON SCHEMA registry, workflow, alert, audit TO ops, dispatcher, ai_app, reader;
-GRANT SELECT ON ALL TABLES IN SCHEMA registry TO ops, dispatcher, ai_app, reader;
+GRANT USAGE ON SCHEMA registry, workflow, alert, audit TO ops, dispatcher, ai_app, mes, reader;
+GRANT SELECT ON ALL TABLES IN SCHEMA registry TO ops, dispatcher, ai_app, mes, reader;
 GRANT SELECT, INSERT ON workflow.request, workflow.request_event, workflow.moc_record TO ops, ai_app;
 GRANT SELECT ON workflow.request, workflow.request_status TO dispatcher, ai_app, ops, reader;
 GRANT SELECT, INSERT ON workflow.request_event TO dispatcher;
+GRANT SELECT, INSERT ON workflow.request, workflow.request_event TO mes;
 GRANT SELECT ON workflow.request_event, workflow.moc_record TO reader;
 GRANT SELECT, INSERT ON alert.alert_event TO ops;
 GRANT SELECT, INSERT, UPDATE ON alert.alert_group TO ops;
 GRANT SELECT ON alert.alert_event, alert.alert_group TO ai_app, reader;
-GRANT INSERT, SELECT ON audit.log TO ops, dispatcher, ai_app;
+GRANT INSERT, SELECT ON audit.log TO ops, dispatcher, ai_app, mes;
 GRANT SELECT ON audit.log TO reader;
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA workflow, alert, audit TO ops, dispatcher, ai_app;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA workflow, alert, audit TO ops, dispatcher, ai_app, mes;
 REVOKE UPDATE, DELETE, TRUNCATE ON audit.log, workflow.request, workflow.request_event, workflow.moc_record, alert.alert_event
-  FROM PUBLIC, ops, dispatcher, ai_app, reader;
+  FROM PUBLIC, ops, dispatcher, ai_app, mes, reader;

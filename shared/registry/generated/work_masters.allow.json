@@ -27,10 +27,18 @@
   }
  ],
  "requesters": [
-  "ai-ops"
+  {
+   "id": "ai-ops",
+   "type": "ai"
+  },
+  {
+   "id": "mes-01",
+   "type": "mes"
+  }
  ],
  "approvers": [
   "operator-01",
-  "operator-02"
+  "operator-02",
+  "planner-01"
  ]
 }

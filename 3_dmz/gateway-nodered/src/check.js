@@ -1,5 +1,5 @@
 // 작업 요청 1차 검사. 출력 1 = 거부 응답, 출력 2 = DMZ 요청 토픽으로 발행.
-// 검사: 토큰 · 스키마 · 허용 작업 ID·설비·파라미터 범위 · 요청자·승인자 허용 목록 · 요청 나이(10 s) · 중복(만료 시간 안의 ID) · 브로커 연결
+// 검사: 토큰 · 스키마 · 허용 작업 ID·설비·파라미터 범위 · 요청자(ID·종류)·승인자 허용 목록 · 요청 나이(10 s) · 중복(만료 시간 안의 ID) · 브로커 연결
 const EXPIRY_S = 30, MAX_AGE_S = 10, PUBACK_TIMEOUT_MS = 2000;
 const crypto = global.get('crypto');
 const allow = global.get('allow');
@@ -43,7 +43,7 @@ for (const p of wm.parameters) {
     if (!v) return reject('PARAMETER_MISSING', jid);
     if (!(p.min <= v.value && v.value <= p.max)) return reject('PARAMETER_RANGE', jid);
 }
-if (!allow.requesters.includes(req.requester)) return reject('REQUESTER_NOT_ALLOWED', jid);
+if (!allow.requesters.some(r => r.id === req.requester && r.type === req.requester_type)) return reject('REQUESTER_NOT_ALLOWED', jid);
 if (!allow.approvers.includes(req.approver)) return reject('APPROVER_NOT_ALLOWED', jid);
 const age = now - Number(req.created_at);
 if (age > MAX_AGE_S || age < -2) return reject('TOO_OLD', jid);

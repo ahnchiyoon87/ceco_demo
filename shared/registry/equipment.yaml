@@ -138,5 +138,7 @@ work_masters:
     desc: "반응기 온도 설정값 변경(운전 범위 안 조정)"
 
 # ── 요청자·승인자 허용 목록(DMZ 게이트웨이 경계 검사) ──
-requesters: [ai-ops]           # 요청을 만드는 시스템 ID(AI 업무 도우미)
-approvers: [operator-01, operator-02]
+requesters:                    # 요청을 만드는 외부 시스템 ID 와 종류(요청 필드 requester·requester_type 이 둘 다 맞아야 한다)
+  - { id: ai-ops, type: ai }     # AI 업무 도우미
+  - { id: mes-01, type: mes }    # MES 흉내(생산 지시를 같은 요청 길로 보낸다)
+approvers: [operator-01, operator-02, planner-01]   # planner-01: MES 생산 계획 담당

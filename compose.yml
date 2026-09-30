@@ -391,6 +391,7 @@ services:
       IT_INFLUX_TOKEN: ${IT_INFLUX_TOKEN}
       PG_OPS_PASSWORD: ${PG_OPS_PASSWORD}
       PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
+      PG_MES_PASSWORD: ${PG_MES_PASSWORD}
       GATEWAY_CLIENT_TOKEN: ${GATEWAY_CLIENT_TOKEN}
     volumes: [ "./shared/bento/bento-global.yaml:/cfg/bento-global.yaml:ro", "./4_it/collector-bento/streams:/cfg/streams:ro",
                "./shared/registry/generated:/cfg/registry:ro" ]
@@ -487,6 +488,7 @@ services:
       PG_OPS_PASSWORD: ${PG_OPS_PASSWORD}
       PG_DISPATCHER_PASSWORD: ${PG_DISPATCHER_PASSWORD}
       PG_AI_PASSWORD: ${PG_AI_PASSWORD}
+      PG_MES_PASSWORD: ${PG_MES_PASSWORD}
       PG_READER_PASSWORD: ${PG_READER_PASSWORD}
     ports: [ "127.0.0.1:${PORT_PG}:5432" ]
     volumes: [ "pg-data:/var/lib/postgresql", "./4_it/db-postgres/init:/docker-entrypoint-initdb.d:ro" ]

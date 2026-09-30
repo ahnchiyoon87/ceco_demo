@@ -140,7 +140,7 @@ def build() -> dict[pathlib.Path, str]:
         "title": "작업 요청(OPC UA ISA-95 Job Control 필드 흉내)",
         "type": "object", "additionalProperties": False,
         "required": ["job_order_id", "work_master_id", "equipment_id", "job_order_parameters",
-                     "requester", "approver", "created_at"],
+                     "requester", "requester_type", "approver", "created_at"],
         "properties": {
             "job_order_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{8,80}$"},
             "work_master_id": {"type": "string", "enum": wm_ids},
@@ -148,7 +148,10 @@ def build() -> dict[pathlib.Path, str]:
             "job_order_parameters": {"type": "array", "maxItems": 8, "items": {
                 "type": "object", "additionalProperties": False, "required": ["id", "value"],
                 "properties": {"id": {"type": "string"}, "value": {"type": "number"}}}},
-            "requester": {"type": "string"}, "approver": {"type": "string"},
+            "requester": {"type": "string"},
+            "requester_type": {"type": "string", "enum": sorted({r["type"] for r in REG["requesters"]}),
+                               "description": "요청한 외부 시스템 종류(ai: AI 업무 도우미, mes: MES)"},
+            "approver": {"type": "string"},
             "created_at": {"type": "number", "description": "요청 생성 시각(epoch 초)"},
             "expires_at": {"type": "number", "description": "게이트웨이가 붙이는 만료 시각(epoch 초, 표준에 없는 확장)"},
             "context": {"type": "object", "description": "원인 alert 요약(선택)"},

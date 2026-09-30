@@ -10,6 +10,7 @@
   "equipment_id",
   "job_order_parameters",
   "requester",
+  "requester_type",
   "approver",
   "created_at"
  ],
@@ -56,6 +57,14 @@
   },
   "requester": {
    "type": "string"
+  },
+  "requester_type": {
+   "type": "string",
+   "enum": [
+    "ai",
+    "mes"
+   ],
+   "description": "요청한 외부 시스템 종류(ai: AI 업무 도우미, mes: MES)"
   },
   "approver": {
    "type": "string"

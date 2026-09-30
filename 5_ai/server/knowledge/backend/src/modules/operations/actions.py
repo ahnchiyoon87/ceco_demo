@@ -258,7 +258,7 @@ def _request_action(before, action, proposal, note):
     try:
         with plant_connection() as pc:
             pc.execute("""INSERT INTO workflow.request(job_order_id, work_master_id, equipment_id, job_order_parameters,
-                          requester, approver, context, incident_id, proposal_id) VALUES (%s,%s,%s,'[]',%s,%s,%s,%s,%s)""",
+                          requester, requester_type, approver, context, incident_id, proposal_id) VALUES (%s,%s,%s,'[]',%s,'ai',%s,%s,%s,%s)""",
                        (jid, wm, equipment, "ai-ops", approver, Jsonb(context),
                         proposal["incident_id"] if proposal else None, proposal["id"] if proposal else None))
             request_event(pc, jid, "approved", "APPROVED", note or None, {"action": action, "before_seq": before.get("seq")}, "ai-app")

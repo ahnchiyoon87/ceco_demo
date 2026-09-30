@@ -1,8 +1,8 @@
 """[측정 도구] 발송 경로 확인 — 승인(기록 + request.approved) 뒤 dispatched → gateway_* 사건이 붙는지, 같은 승인을 다시 알려도 다시 보내지 않는지.
     base_client python tests/e2e/dispatch_check.py --out /repo/experiments/<EXP>/raw/dispatch_<이름>.json
-사례: 수용(WM-R101-TEMPSP 70 ℃) · 게이트웨이 거부(범위 밖 95 ℃ → PARAMETER_RANGE) · 승인 재알림(사건 수 그대로) · 기록 없는 ID 알림(무시).
+사례: 수용(WM-R101-TEMPSP 70 ℃) · 게이트웨이 거부(범위 밖 95 ℃ → PARAMETER_RANGE) · 승인 재알림(사건 수 그대로) · MES 지시(수용·잘못된 작업 422) · 기록 없는 ID 알림(무시).
 """
-import argparse, json, os, sys, time, uuid
+import argparse, json, os, sys, time, urllib.error, uuid
 
 import psycopg
 from confluent_kafka import Producer
@@ -60,6 +60,24 @@ jid2, _ = approve(95.0)
 ev2 = wait(jid2, "gateway_")
 case("게이트웨이 거부 기록(PARAMETER_RANGE, 422)", any(e["kind"] == "gateway_rejected" and e["reason"] == "PARAMETER_RANGE" and e["detail"].get("http_status") == 422 for e in ev2),
      {"kinds": [f'{e["kind"]}:{e["status"]}:{e["reason"]}' for e in ev2]})
+# MES 흉내 요청자: 생산 지시 → 기록·승인(mes-01, 종류 mes, 승인자 planner-01) → 같은 발송 길
+import urllib.request
+t0 = time.time()
+r = urllib.request.urlopen(urllib.request.Request("http://it-collector:4195/mes_requester/orders", method="POST",
+        data=json.dumps({"work_master_id": "WM-R101-TEMPSP", "equipment_id": "R-101", "job_order_parameters": [{"id": "temp_sp_c", "value": 70.0}],
+                         "planner": "planner-01", "summary": "배치 시험 온도 지시"}).encode(), headers={"Content-Type": "application/json"}), timeout=10)
+mjid = json.load(r)["job_order_id"]; mcode = r.status
+ev3 = wait(mjid, "gateway_")
+with pg() as c:
+    mrow = c.execute("SELECT requester, requester_type, approver FROM workflow.request WHERE job_order_id=%s", (mjid,)).fetchone()
+case("MES 지시: 202 → 요청(mes-01·mes·planner-01) → gateway_accepted", mcode == 202 and mrow == {"requester": "mes-01", "requester_type": "mes", "approver": "planner-01"}
+     and any(e["kind"] == "gateway_accepted" for e in ev3), {"http": mcode, "row": mrow, "kinds": [e["kind"] for e in ev3]})
+try:
+    urllib.request.urlopen(urllib.request.Request("http://it-collector:4195/mes_requester/orders", method="POST",
+        data=json.dumps({"work_master_id": "WM-NOPE", "equipment_id": "R-101", "planner": "planner-01"}).encode()), timeout=10); bad = 200
+except urllib.error.HTTPError as e:
+    bad = e.code
+case("MES 지시: 등록부에 없는 작업 → 422(기록 안 함)", bad == 422, {"http": bad})
 ghost = f"disp-ghost-{uuid.uuid4().hex}"; announce(ghost); time.sleep(3)
 case("기록 없는 ID 알림 → 무시", events(ghost) == [], {"events": len(events(ghost))})
 with pg() as c:
