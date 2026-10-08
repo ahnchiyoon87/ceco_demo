@@ -23,7 +23,7 @@ HANDOFF §2(기준)·§3(확정 설계)은 근거 없이 바꾸지 않는다. �
 
 ## 3. 시스템 규칙
 
-- 정본 설정: 서비스 `compose.yml`, 포트·계정 `.env`(데모 기본값이라 추적함), 설비 `shared/registry/equipment.yaml`.
+- 정본 설정: 서비스 `compose.yml`, 포트·계정 `.env`(git 제외, 견본 `.env.example`), 설비 `shared/registry/equipment.yaml`.
   등록부를 바꾸면 `shared/registry/generate.py`로 태그·흐름·PLC·FUXA·스키마를 다시 만들고 `plc`·`edge`·`dmz-gateway`를 다시 빌드한다(`Makefile` `regen`).
 - 기본 기동은 감시 부품을 뺀 구성이다(`docker compose up -d --build`). Grafana·Prometheus 등 감시 부품은 `--profile monitoring`일 때만 뜬다.
   다른 큰 Docker 스택(hyd 등)과 함께 띄우지 않는다. 함께 띄워 hyd가 재시작된 적이 있다.

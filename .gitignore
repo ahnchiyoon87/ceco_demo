@@ -2,7 +2,8 @@
 *.log
 .DS_Store
 
-# 로컬 오버라이드 (.env 는 데모 기본값이므로 추적함)
+# 설정·비밀값은 올리지 않는다. 견본은 .env.example
+.env
 .env.local
 docker-compose.override.yml
 

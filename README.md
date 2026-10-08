@@ -23,10 +23,13 @@
 ## 빠른 시작
 
 ```bash
-# 1) AI 키: .gitignore 로 제외된 파일에만 둔다(커밋하지 않는다)
+# 1) 설정: 견본을 복사하고 CHANGE_ME 자리(비밀번호·토큰)를 각자 정한 값으로 바꾼다. .env 는 git 에 올리지 않는다
+cp .env.example .env
+
+# 2) AI 키: .gitignore 로 제외된 파일에만 둔다(커밋하지 않는다)
 echo "OPENAI_API_KEY=..." > 5_ai/server/.env.local
 
-# 2) 기동 — 데모 경로 전체(감시 부품 제외, 약 3 GB). 첫 기동은 빌드·모델 학습으로 약 5분
+# 3) 기동 — 데모 경로 전체(감시 부품 제외, 약 3 GB). 첫 기동은 빌드·모델 학습으로 약 5분
 make up
 make ps          # 전부 healthy 인지
 make urls        # 접속 주소
@@ -43,7 +46,7 @@ make up-full
 | Flink | http://localhost:37081 | 탐지 잡 4개 상태 |
 | Grafana · Prometheus | http://localhost:37030 · 37090 | `make up-full` 일 때만 |
 
-포트·계정은 `.env` 한 곳에서 바꿉니다. 같은 PC에서 다른 큰 도커 스택과 함께 띄우면 메모리가 모자랄 수 있습니다. 데모는 단독 실행을 권합니다.
+포트·계정은 `.env` 한 곳에서 바꿉니다(견본 `.env.example`, `.env` 자체는 git 에 올리지 않음). 같은 PC에서 다른 큰 도커 스택과 함께 띄우면 메모리가 모자랄 수 있습니다. 데모는 단독 실행을 권합니다.
 
 ## 정비 시나리오
 
