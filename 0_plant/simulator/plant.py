@@ -37,7 +37,8 @@ class Fault:
     elapsed: float = 0.0
     ramp_s: float = 45.0
     clock: str = "plant"
-    spec: dict = field(default_factory=dict)
+    spec: dict = field(default_factory=dict)   # plant.yaml 의 고장 정의(읽기 전용 — 주입마다 공유된다)
+    deposited: float = 0.0                     # 이 주입에서 쌓인 이물 총량(스트레이너 막힘). 주입별 상태는 spec 이 아니라 여기에 둔다
 
 
 class ReactorPlant:
@@ -180,10 +181,9 @@ class ReactorPlant:
             rate = dt_s / max(f.ramp_s, 1e-9)
             if name == "strainer_fouling":
                 # 냉각수 속 이물 덩어리: 총량 1.0 이 그때 사용 중인 바스켓에 쌓인다(도중 전환하면 나머지는 B 로).
-                left = max(0.0, 1.0 - f.spec.setdefault("_deposited", 0.0))
-                add = min(rate, left)
+                add = min(rate, max(0.0, 1.0 - f.deposited))
                 self.basket_foul[self.cw_basket] = min(1.0, self.basket_foul[self.cw_basket] + add)
-                f.spec["_deposited"] += add
+                f.deposited += add
             elif name == "jacket_fouling":
                 self.jacket_clean = max(float(f.spec.get("floor", 0.12)), self.jacket_clean - rate)
             elif name == "shaft_misalignment":

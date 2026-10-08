@@ -62,6 +62,20 @@ class CoolingWater(unittest.TestCase):
         p.cmd_pump = True
         self.assertLess(run(p, 15)["TT-101"], 74)
 
+    def test_same_fault_again_after_reset_fouls_again(self):
+        # 리허설 뒤 같은 설비 프로세스에서 다시 시연하는 경우: 전체 초기화 뒤 같은 고장을 넣으면 다시 막혀야 한다.
+        p = plant()
+        spec_before = copy.deepcopy(p.cfg["faults"]["strainer_fouling"])
+        p.inject("strainer_fouling")
+        run(p, 10)
+        p.clear_faults()
+        self.assertLess(run(p, 20)["TT-101"], 74)
+        p.inject("strainer_fouling")
+        r = run(p, 10)
+        self.assertGreater(r["TT-101"], 95)
+        self.assertGreater(r["PDT-103"], 1.0)
+        self.assertEqual(p.cfg["faults"]["strainer_fouling"], spec_before)   # 주입별 상태가 설정에 남지 않는다
+
     def test_degradation_does_not_heal_by_itself(self):
         p = plant()
         p.inject("strainer_fouling")

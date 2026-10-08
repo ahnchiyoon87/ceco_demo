@@ -175,9 +175,21 @@ def follow(p, timeout=420):
 
 
 def approve(run, note):
+    """승인은 분석 실행을 이어 가므로 승인 재검사 거부(상태·사건 변경)는 HTTP 오류가 아니라 실행 실패로 남는다.
+    대응안이 실행에 들어갔는지까지 보고, 거부면 그 사유를 돌려준다(None 이면 실행 시작)."""
     r = api(f"/api/operations/analysis/{run['id']}/decision", {"decision": "approve", "note": note})
     if "_error" in r:
         raise SystemExit(f"승인 거부: {r}")
+    end = time.time() + 60
+    while time.time() < end:
+        cur = next(x for x in api(f"/api/operations/incidents/{run['incident_id']}/analysis").get("items", []) if x["id"] == run["id"])
+        if cur["status"] in ("failed", "interrupted"):
+            return cur.get("error") or cur["status"]
+        if any(run["id"] in p.get("origin", "") and p["status"] not in ("pending", "rejected", "superseded")
+               for p in proposals(run["incident_id"])):
+            return None
+        time.sleep(2)
+    raise SystemExit("승인 뒤 실행 시작을 확인하지 못했습니다.")
 
 
 def reject(run, note):
@@ -238,7 +250,22 @@ def run(key, reject_first=None):
         log("정비 계획이 아닌 결과 — 승인하지 않고 종료")
         record["result"] = p
         return save(record)
-    approve(run1, "근거·손익 확인, 계획대로 진행")
+    refused = approve(run1, "근거·손익 확인, 계획대로 진행")
+    if refused:
+        # 설계된 갈림길(승인 직전에 상황이 바뀜): 담당자처럼 한 번 다시 분석해 새 카드를 승인한다. 숨기지 않고 기록한다.
+        log(f"승인 재검사 거부: {refused} — 다시 분석")
+        record["approval_recheck_refused"] = refused
+        api(f"/api/operations/incidents/{inc['id']}/analyze", {})
+        run1 = wait_run(inc["id"], not_ids={r["id"] for r in record["runs"]})
+        record["runs"].append(run1)
+        if run1["status"] != "awaiting_review":
+            record["result"] = run1
+            return save(record)
+        p = next(x for x in proposals(inc["id"]) if x["status"] == "pending")
+        card(p)
+        refused = approve(run1, "상황 변경을 반영한 새 카드 확인, 진행")
+        if refused:
+            raise SystemExit(f"두 번째 승인도 재검사 거부: {refused}")
     log(f"승인 · +{time.time() - t0:.1f}s")
     done = follow(p)
     record["final"] = done
@@ -287,7 +314,9 @@ print(json.dumps({{'id': str(p['id']), 'status': r['proposal']['status']}}))
     if run2["status"] == "awaiting_review":
         p2 = next(x for x in proposals(inc["id"]) if x["status"] == "pending")
         card(p2)
-        approve(run2, "현장 소견 반영 계획 승인")
+        refused = approve(run2, "현장 소견 반영 계획 승인")
+        if refused:
+            raise SystemExit(f"승인 재검사 거부: {refused}")
         done2 = follow(p2)
         record["final"] = done2
         record["report"] = report(done2)
