@@ -1,6 +1,6 @@
 # HANDOFF — ceco_demo 정비 시나리오 (정본)
 
-갱신 2026-10-08(클라우드 세션: 기동·§5의 남은 검증 1~6을 끝냈다 — §4). 실제 파일·컨테이너 상태가 이 문서와 다르면 실제가 우선이고, 이 문서를 고친다. 경위는 `docs/기록/decision-log.md` #190~#202.
+갱신 2026-10-08(클라우드 세션: 기동·§5의 남은 검증 1~6을 끝냈다 — §4). 실제 파일·컨테이너 상태가 이 문서와 다르면 실제가 우선이고, 이 문서를 고친다. 경위는 `docs/기록/decision-log.md` #190~#203.
 
 ## 0. 새 세션 시작 순서
 
@@ -49,7 +49,7 @@
 | 메모리 | 검증됨: 감시 프로필 끈 ceco 상시 약 3.0~3.3 GB(10-06 실측) | decision-log #192 |
 | Docker 메모리 상한 8 GB(`C:\Users\roede\.wslconfig`) | 적용됨(10-08 `docker info` MemTotal 8.3 GB) | — |
 | git | 원격 `https://github.com/ahnchiyoon87/ceco_demo`(공개, `main`). 10-08에 10-06 이후 작업까지 커밋·push했다. `.env`(데모 비밀번호·토큰)는 git 에서 빼고 견본 `.env.example`(비밀 자리 `CHANGE_ME`)만 올린다. 지난 이력에서도 `.env`를 지우고 강제 push해 커밋 해시가 모두 바뀌었다(옛 해시로 된 기록은 지금 저장소에 없다) | `git log`, `git ls-remote origin` |
-| 컨테이너 | 10-08 클라우드 세션에서 띄운 채로 둠(세션 종료 때 사라짐). 상시 22개 healthy, 1회 도우미 5개 exit 0, Flink 4/4 RUNNING, `dmz-influx` healthy, 메모리 약 2.6 GB. 사건 DB 에 시험·리허설 사건이 쌓여 있다(정리는 사용자에게 묻는다). 로컬 PC 는 내려 둔 상태(10-08 확인) | `docker compose ps -a` |
+| 컨테이너 | 10-08 클라우드 세션 끝에 `docker compose down`(볼륨 삭제 없음)으로 내림 — 세션 종료 때 볼륨·이미지도 함께 사라진다. 그 직전 상시 22개 healthy, 1회 도우미 5개 exit 0, Flink 4/4 RUNNING, `dmz-influx` healthy, 메모리 약 2.6 GB. 로컬 PC 는 내려 둔 상태(10-08 확인) | `docker compose ps -a` |
 | 마스터 가이드 | `docs/마스터_가이드.html`·`.pdf`(24쪽, 10-08 클라우드 빌드): 시스템 아키텍처 그림 한 장 + 이야기 「베어링이 닳던 날」(서막·1~11장) + 갈림길·데이터 리니지 요약·알려진 한계·출처. 이야기 밖 표현(데모·시연·가상·강사·훈련·흉내·배속)은 그림 밖 본문에서 0개(10-08 정리, 그림 속 부품 이름은 그대로). **검증됨**: 빌드 검사 ①~④ 통과 | 빌드 `python docs/기록/src/master_build.py`(Playwright). 빌드가 ① 그림 ⊇ compose 서비스·볼륨·망·토픽 ② 이야기 ⊇ 화살표 134개 ③ 치환 잔여·앵커·id ④ 그림 밖 본문에 이야기 밖 표현 0개를 대조(④는 고치기 전 본문으로 실패하는 것을 확인). 클라우드 PDF는 Linux 글꼴이라 로컬 빌드와 쪽 모양이 조금 다를 수 있다 |
 | 클라우드 세션 환경(10-08) | 기동됨. 이 세션에서만(저장소 밖) 세 가지를 맞췄다: ① 세션 이그레스가 바깥 HTTPS 를 자체 CA 로 다시 감싸므로, 기반 이미지 8종에 Anthropic 이그레스 CA 를 덧입힘(사용자 허락) ② Docker Hub 익명 한도(429) 이미지 5종은 `mirror.gcr.io` 에서 받아 같은 이름으로 태그 ③ VM 커널이 `CAP_SYS_RESOURCE` 를 허용하지 않아 PLC 권한에서 그것만 뺀 덧씌움 파일 사용 — PLC 는 실시간 스케줄(`SCHED_FIFO`)·메모리 잠금 없이 기본 스케줄로 돈다(기능 영향 없음, 로컬과 다른 점) | `CLAUDE.md` §5 클라우드 열 |
 
@@ -63,8 +63,8 @@
 2. **로컬 사건 DB 정리 여부는 사용자 결정**이다(데이터 삭제). 클라우드 DB 는 세션이 끝나면 사라진다.
 
 사용자 확인이 필요한 것:
-- 시험으로 쌓인 사건 DB 정리. 데이터 삭제라서 시연 전에 지울지 묻는다.
-- `experiments/`의 수정 전 사본(`*.bak-1006`, `master-1007/`) 정리.
+- 로컬 PC의 시험 사건 DB 정리. 데이터 삭제라서 시연 전에 지울지 묻는다(클라우드 DB는 세션과 함께 사라진다).
+- 로컬 PC에만 있는 `experiments/`의 수정 전 사본(`*.bak-1006`, `master-1007/`, git 밖) 정리.
 - git 커밋·push. 사용자가 요청할 때만 한다. 커밋은 경로를 지정하고 `.env`·`.env.local`은 올리지 않는다.
 
 하지 않는 것: 메모리 2 GB 목표를 위한 구조 변경(Kafka·Flink를 더 가벼운 부품으로 교체). 필요하다는 설명만 했고 사용자가 진행을 지시하지 않았다.
@@ -72,7 +72,7 @@
 ## 6. 보호 대상·넘으면 안 되는 선
 
 - hyd 스택·파일, supabase는 건드리지 않는다. Docker Desktop 재시작은 다른 세션 작업을 끊을 수 있으므로 다른 세션이 쓰는 중이면 하지 않는다.
-- `docs/기록/src/`에서 현재 빌드가 쓰는 파일: `master_build.py`, `guide_story.py`, `guide_tpl.html`, `arch_layers.py`, `arch_layers_ceco.py`, `arch_appendix_ceco.py`, `arch_inventory.py`. 나머지 `arch_build.py`·`arch_data.py`·`arch_extra.py`·`arch_fig.py`·`arch_internal.py`·`arch_layers_ceco_text.py`·`arch_lineage.py`·`arch_tpl.html`·`master_tpl.html`·`master_arch_svg.py`는 현재 빌드가 불러오지 않는 이전 판이다. 지우려면 사용자에게 묻는다.
+- `docs/기록/src/`에는 현재 빌드가 쓰는 파일만 있다: `master_build.py`, `guide_story.py`, `guide_tpl.html`, `arch_layers.py`, `arch_layers_ceco.py`, `arch_appendix_ceco.py`, `arch_inventory.py`. 이전 판 10개는 10-08에 지웠다(사용자 "찌거기 다 정리", git 이력에 남음).
 - `D:\다운로드\설비데이터_전체흐름_스택_리니지_가이드.md`는 사용자의 설명용 문서다(10-07 수정, 10-08 시나리오 2 뒤집힘 값을 로그 기준 157.5로 정정. 원본·중간판 사본 `experiments/guide-edit-1007/`). 마스터 가이드와 따로 관리한다.
 - 시험 도구는 한 번에 하나만 돈다(`experiments/MAINT-SCN/.lock`). 중지한 뒤 `tasklist | grep -i python`으로 남은 프로세스가 없는지 확인하고 다음 시험을 시작한다.
 
