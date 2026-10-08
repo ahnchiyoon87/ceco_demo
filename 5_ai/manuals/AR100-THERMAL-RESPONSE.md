@@ -1,6 +1,6 @@
 ---
 document_id: AR100-THERMAL-RESPONSE
-version: 1
+version: 2
 status: educational-draft
 applies_to: [AR-100, reactor-line-01, R-101, HX-102]
 alarm_types: [THRESHOLD_USL, ZSCORE]
@@ -10,6 +10,8 @@ source_kind: authored-simulation-procedure
 # 반응기 온도 이상과 냉각 대응
 
 AR-100 가상 공정의 교육용 절차다. 실물 설비의 운전·안전 승인 기준이 아니다. HX-102는 이 프로젝트에 추가한 가상 냉각 장치다.
+
+R-101은 발열 반응이라 냉각기는 정상 운전에서 상시 켜져 있다. 냉각기가 켜져 있는데 온도가 오르면 냉각 능력 저하(냉각수 유량·전열)를 먼저 의심하고 AR100-COOLING-WATER로 원인을 구분해 정비한다. 이 문서의 냉각기 기동은 냉각 명령이 꺼져 있을 때만 해당하는 긴급 완화 조치다.
 
 ## 적용 근거와 범위
 

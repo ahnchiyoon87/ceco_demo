@@ -104,13 +104,16 @@ def incident_evidence(incident_id: str):
             RETURN DISTINCT a.name AS name, a._source_id AS source_id""",
             {"site": alarm["site"], "device": alarm["device"], "tags": observed_tags})
         aids = [asset["source_id"] for asset in assets]
-        documents = _run_readonly_query("""MATCH (a:Asset)-[:HAS_PROCEDURE|GOVERNED_BY|DESCRIBED_BY]->(d:Document)
-            WHERE a._source_id IN $ids RETURN DISTINCT d.name AS document_id,
+        # 알람 설비와 물리적으로 묶인 설비(설치된 하위 설비·공급 설비 2단계, 상위 설비)까지: 냉각수 계통처럼
+        # 알람이 없는 쪽의 센서가 원인 구분의 근거가 된다(관계는 검토한 그래프의 INSTALLED_IN·FEEDS).
+        related = """MATCH (a:Asset) WHERE a._source_id IN $ids
+            MATCH (r:Asset) WHERE r = a OR (r)-[:INSTALLED_IN|FEEDS*1..2]->(a) OR (a)-[:INSTALLED_IN]->(r)"""
+        documents = _run_readonly_query(related + """
+            MATCH (r)-[:HAS_PROCEDURE|GOVERNED_BY|DESCRIBED_BY]->(d:Document)
+            RETURN DISTINCT d.name AS document_id,
             d.content AS content, d.source_path AS source_path, d.source_sha256 AS sha256, d.version AS version""", {"ids": aids})
-        sensors = _run_readonly_query("""MATCH (a:Asset) WHERE a._source_id IN $ids
-            OPTIONAL MATCH (a)-[:INSTALLED_IN]->(parent:Asset)
-            WITH a,parent MATCH (owner:Asset)-[:HAS_SENSOR]->(s:Sensor)
-            WHERE owner=a OR owner=parent RETURN DISTINCT s.name AS tag,s.unit AS unit,
+        sensors = _run_readonly_query(related + """
+            MATCH (r)-[:HAS_SENSOR]->(s:Sensor) RETURN DISTINCT s.name AS tag,s.unit AS unit,
             s.lsl AS lsl,s.usl AS usl,s.source_sha256 AS source_sha256""", {"ids": aids})
         graph = {"status": "available", "assets": assets, "documents": documents, "sensors": sensors}
     except Exception:
@@ -118,7 +121,8 @@ def incident_evidence(incident_id: str):
     graph['lookup_scope'] = {
         'site': alarm['site'], 'device': alarm['device'], 'alarm_tags': observed_tags,
         'asset_selection': 'Assets in this site/device linked by HAS_SENSOR to an alarm tag.',
-        'document_selection': 'Documents linked to those matched assets only.',
+        'related_assets': 'Plus assets installed in them or feeding them (INSTALLED_IN/FEEDS up to 2 hops) and their parent.',
+        'document_selection': 'Documents linked to the matched and related assets only.',
         'limitation': ('Empty results do not establish that the device or factory has no assets, '
                        'documents or sensors. Unknown tags require checking tag identity and mapping; '
                        'do not assign them to M-101 without evidence.'),

@@ -1,0 +1,31 @@
+{
+ "scenario": "s2",
+ "fault": "bearing_wear",
+ "truth": "FM-MIXER-BEARING-WEAR",
+ "started": 1791266825.8172405,
+ "steps": [],
+ "runs": [
+  {
+   "id": "e5495cf2-4800-434c-ba09-0d2f5ad460ab",
+   "incident_id": "852b151e-f683-44f7-953a-75224cd5b24b",
+   "status": "failed",
+   "model": "openai:gpt-6-luna",
+   "result": null,
+   "error": "분석 중 사건이 변경됐습니다. 새 근거로 재분석하세요.",
+   "created_at": "2026-10-06T06:09:13.246737+00:00",
+   "updated_at": "2026-10-06T06:10:04.200269+00:00",
+   "review_revision": 3
+  }
+ ],
+ "result": {
+  "id": "e5495cf2-4800-434c-ba09-0d2f5ad460ab",
+  "incident_id": "852b151e-f683-44f7-953a-75224cd5b24b",
+  "status": "failed",
+  "model": "openai:gpt-6-luna",
+  "result": null,
+  "error": "분석 중 사건이 변경됐습니다. 새 근거로 재분석하세요.",
+  "created_at": "2026-10-06T06:09:13.246737+00:00",
+  "updated_at": "2026-10-06T06:10:04.200269+00:00",
+  "review_revision": 3
+ }
+}

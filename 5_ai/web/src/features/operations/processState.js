@@ -18,6 +18,21 @@ export function processState(run, proposal) {
   }else if(proposal?.status==='executing'){
     nodes.review='done';nodes.execute='active';outcome='승인 후 조건·조치 결과를 확인하고 있습니다.'
   }
+  if(proposal?.plan && proposal?.result){
+    // 정비 계획: 실행 중 → 회복 판정 → 작업 보고서
+    nodes.review='done';branch='approved'
+    const st=proposal.result.status
+    if(st==='executing_plan'){
+      const ps=proposal.result.plan_state||{}
+      nodes.execute='active'
+      outcome=ps.phase==='verify'?'정비 완료 · 회복 기준 유지 관측 중':`정비 계획 실행 중 · ${Math.min((ps.current||0)+1,(ps.steps||[]).length)}/${(ps.steps||[]).length} 단계`
+    }else{
+      nodes.execute=st==='step_failed'?'warning':'done'
+      nodes.result=st==='recovered'?'done':'warning'
+      outcome=({recovered:'정비 완료 · 회복 확인 · 보고서 기록',not_recovered:'정비 뒤 회복 미확인 · 재분석 필요',cause_mismatch:'현장 소견이 원인 판단과 다름 · 재분석 필요',step_failed:'정비 단계 실패 · 상태 확인 필요'})[st]||proposal.result.reason
+    }
+    return {nodes,outcome,branch}
+  }
   if(proposal?.result){
     nodes.review='done';nodes.execute='done';branch='approved'
     const status=proposal.result.status

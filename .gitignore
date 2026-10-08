@@ -20,3 +20,9 @@ tests/l4bench/models/
 
 # 조립 전 확인(⑨-5)에 받은 OpenPLC Editor(약 150 MB) — 1_control/plc-openplc/Dockerfile 이 같은 판을 sha256 고정으로 직접 받는다
 experiments/ENV-9/openplc/*.AppImage
+
+# 수정 전 사본(로컬 보존용, 이력은 git 이 가진다)
+experiments/*.bak-*
+experiments/master-1007/
+experiments/guide-edit-1007/
+experiments/MAINT-SCN/.lock

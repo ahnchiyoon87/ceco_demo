@@ -1,28 +1,36 @@
-# 새 고장 유형(SC3 확장 시험): 반응기 과압. 데이터와 문서만 추가한다(코드 0줄).
+# 반응기 과압(계기·배출). 데이터와 문서만 추가한다(코드 0줄).
 symptoms:
   - id: SYM-REACTOR-OVERPRESSURE
     name: 반응기 압력 상한 초과
     observed_on: R-101
-    signatures: [{alert_type: THRESHOLD_USL, tag: PT-101}]
+    signatures: [{alert_type: THRESHOLD_USL, tag: PT-101}, {alert_type: THRESHOLD_USL, tag: PT-102}, {alert_type: THRESHOLD_USL, tag: LT-102}]
     section: AR100-PRESSURE-RESPONSE#2
     investigation: [AR100-PRESSURE-RESPONSE#1, AR100-PRESSURE-RESPONSE#2]
 
 failure_modes:
+  - id: FM-PT101-DRIFT
+    name: PT-101 압력계 지시 드리프트
+    manifests_as: [SYM-REACTOR-OVERPRESSURE]
+    affects: PT-101-TX
+    causes: [다이어프램 열화, 영점 이동, 임펄스 배관 문제]
+    checks:
+      - {text: "PT-101 과 PT-102 차이가 0.5 bar 를 넘고 PT-102·LT-102·TT-101 이 평소 범위면 지지한다. 두 계기가 일치하면 설명할 수 없다. 교정 중이면 PT-101 이 결측(BAD)이라 비교하지 않는다.", observable: true, tags: [PT-101, PT-102, LT-102, TT-101], field_check: 기준 압력계 비교}
+    section: AR100-PRESSURE-RESPONSE#2
+  - id: FM-OUTLET-RESTRICTION
+    name: 배출 제한·배출 밸브 고착
+    manifests_as: [SYM-REACTOR-OVERPRESSURE]
+    affects: CV-101-STEM
+    causes: [스템 결정 고착, 패킹 과체결, 배관 막힘]
+    checks:
+      - {text: "PT-101 과 PT-102 가 함께 높고, 밸브 개도 설정이 평소인데 트립 전 사건 구간에서 FT-102 가 FT-101 보다 크게 작았고 LT-102 가 상한 쪽으로 올랐으면 지지한다. 고압 인터록이 펌프를 멈춘 뒤에는 FT-101 이 0 이 되므로 트립 뒤 값으로 FT-102 와 FT-101 을 비교하지 않는다. 트립 전 FT-102 가 공급과 비슷했고 액위가 평소면 설명할 수 없다.", observable: true, tags: [PT-101, PT-102, FT-101, FT-102, LT-102], commands: [valve_open_sp, pump_run], field_check: 밸브 스트로크 시험}
+    section: AR100-PRESSURE-RESPONSE#2
   - id: FM-PRESSURE-OVERHEAT
     name: 온도 상승에 따른 압력 상승
     manifests_as: [SYM-REACTOR-OVERPRESSURE]
     affects: R-101
     causes: [열 공급 과다, 냉각 부족]
     checks:
-      - {text: TT-101 이 상한을 넘거나 크게 오른 상태면 근거. 상한 미만이고 평소 범위면 이 고장모드로 과압을 설명할 수 없다., observable: true, tags: [TT-101, PT-101]}
-    section: AR100-PRESSURE-RESPONSE#2
-  - id: FM-PRESSURE-OUTLET-BLOCKED
-    name: 배출 막힘
-    manifests_as: [SYM-REACTOR-OVERPRESSURE]
-    affects: R-101
-    causes: [배출밸브 고착, 배관 막힘]
-    checks:
-      - {text: 배출밸브 개도 설정이 0보다 큰데 FT-102 가 0 근처이고 LT-102 가 계속 오르면 근거. FT-102 가 0 근처가 아니면 막힘으로 설명할 수 없다., observable: true, tags: [FT-102, LT-102], commands: [valve_open_sp]}
+      - {text: TT-101 이 상한을 넘거나 크게 오른 상태면 근거. 상한 미만이고 평소 범위면 이 고장모드로 과압을 설명할 수 없다., observable: true, tags: [TT-101, PT-102]}
     section: AR100-PRESSURE-RESPONSE#2
   - id: FM-PRESSURE-TRANSIENT
     name: 순간 과압
@@ -30,8 +38,8 @@ failure_modes:
     affects: R-101
     causes: [순간 압력 변동, 계측 순간값]
     checks:
-      - {text: PT-101 상한 초과가 짧게(약 15초 이하) 나타난 뒤 상한 아래로 돌아왔으면 근거. 상한 초과가 계속되면 순간 과압이 아니다., observable: true, tags: [PT-101]}
+      - {text: "PT-101 상한 초과가 짧게(약 15초 이하) 나타난 뒤 펌프가 계속 운전하는 상태에서 상한 아래로 돌아왔으면 근거. 고압 인터록이 트립해 펌프가 멈춘 뒤 내려간 것이면 원인이 사라진 것이 아니라 공급이 끊긴 것이므로 순간 과압으로 보지 않는다. 상한 초과가 계속되면 순간 과압이 아니다.", observable: true, tags: [PT-101, FT-101], commands: [pump_run]}
     section: AR100-PRESSURE-RESPONSE#2
 
 actions:
-  - {id: inspect_only, mitigates: [SYM-REACTOR-OVERPRESSURE], procedure: [AR100-PRESSURE-RESPONSE#3]}
+  - {id: inspect_only, mitigates: [SYM-REACTOR-OVERPRESSURE], procedure: [AR100-PRESSURE-RESPONSE#1]}

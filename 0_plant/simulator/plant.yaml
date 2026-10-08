@@ -27,6 +27,12 @@ tags:
   - { name: VT-101, hr: 18, clamp_lo: 0.0 }
   - { name: pH-101, hr: 20, clamp_lo: 0.0 }
   - { name: CT-101, hr: 22, clamp_lo: 0.0 }
+  # 냉각수 계통·독립 압력계(28 부터: 24·26 은 순번·설비 시각)
+  - { name: FT-103,  hr: 28, clamp_lo: 0.0 }   # 냉각수 유량
+  - { name: TT-103,  hr: 30 }                  # 냉각수 공급 온도
+  - { name: TT-104,  hr: 32 }                  # 냉각수 회수 온도
+  - { name: PDT-103, hr: 34, clamp_lo: 0.0 }   # 냉각수 스트레이너 차압
+  - { name: PT-102,  hr: 36, clamp_lo: 0.0 }   # 반응기 압력(독립 계기, 안전계장용)
 
 # ── 제어 포인트 (Southbound) — 이 레지스터에 쓰는 것은 soft-PLC 하나뿐이다 ──────
 commands:
@@ -88,8 +94,17 @@ physics:
     kp: 45.0                 # 재킷 온도 P 제어 게인 (P-only 이므로 소폭 droop 존재)
   cooler:
     # 교육용 열 제거 모델. 실제 공장 설계 용량이나 안전 기준이 아니다.
-    max_power_kw: 900.0
-    kp: 45.0
+    max_power_kw: 600.0
+    kp: 100.0
+  # 냉각수: 공용 유틸리티(공급 온도 고정) → 이중 스트레이너(A/B, 하나만 사용) → 재킷 냉각 코일
+  cooling_water:
+    nominal_flow_m3h: 30.0
+    supply_c: 20.0
+    ua_kw_per_k: 10.0          # 정격 유량·깨끗한 전열면의 전열 계수
+    jacket_ua_kw_per_k: 25.0   # 재킷 온도(TT-102) 표시용
+    clog_flow_drop: 0.92       # 바스켓이 완전히 막히면 유량이 92 % 줄어든다
+    clean_dp_bar: 0.12
+    clog_dp_bar: 1.6
   agitator:
     rated_current_a: 8.0
     base_vibration_mms: 2.1
@@ -99,6 +114,7 @@ physics:
     set_barg: 7.5
   reaction:
     ph_setpoint: 7.4
+    heat_kw_per_m3h: 120.0   # 발열 반응: 공급 원료 1 m3/h 당 반응열
     ph_drift_per_degc: -0.012
     conductivity_base: 3.4
     conductivity_per_ph: -0.85
@@ -132,6 +148,11 @@ noise:
   VT-101: 0.06
   pH-101: 0.006
   CT-101: 0.012
+  FT-103: 0.15
+  TT-103: 0.05
+  TT-104: 0.06
+  PDT-103: 0.006
+  PT-102: 0.012
 
 # ── 고장 주입 시나리오 ────────────────────────────────────────
 # POST /fault {"scenario":"<key>", "duration_s":30}
@@ -167,12 +188,12 @@ faults:
     target: [TT-101]
     magnitude: 14.0
   bearing_wear:
-    desc: "IT-102 상승 후 VT-101 상승 → Flink CEP MATCH_RECOGNIZE 검증"
+    desc: "IT-102 상승 후 VT-101 상승 → Flink CEP MATCH_RECOGNIZE 검증 (베어링 교체 전까지 남는다)"
     kind: process
-    default_duration_s: 86400
+    default_duration_s: 31536000     # 열화: 저절로 낫지 않는다(현장 정비 bearing_replace 가 해제)
     target: [IT-102, VT-101]
     wear_ramp_s: 600                 # 전류 쪽 마모 진행 설비 시간(10분) — 배속 600 에서 1스캔 안에 전류 상한 초과
-    lag_s: 300                       # 진동이 따라오기 시작하는 설비 시간(5분) — 진동은 다음 스캔(전류 먼저·진동 나중 유지)
+    lag_s: 1800                      # 진동이 따라오기 시작하는 설비 시간(30분 = 실제 3초) — 전류 먼저·진동 나중이 스캔 여러 개로 분명(CEP 창 10초 안)
     vib_ramp_s: 600                  # 진동 쪽 진행(10분). 알람 시간은 대부분 CEP 워터마크 5초
   drift:
     desc: "pH-101/CT-101 동시 미세 드리프트 → 단일 임계치 무반응, Autoencoder만 탐지"
@@ -181,4 +202,50 @@ faults:
     target: [pH-101, CT-101]
     magnitude: 0.55
     ramp_s: 3600                     # 드리프트가 최대까지 오르는 설비 시간(1시간)
+  # ── 정비 시나리오용 열화 고장: 진행된 상태는 현장 정비만 되돌린다(default_duration = 설비 1년) ──
+  strainer_fouling:
+    desc: "냉각수 스트레이너 막힘: 유량↓·차압↑ → 냉각 능력↓ → 반응기 온도↑"
+    kind: process
+    default_duration_s: 31536000
+    ramp_s: 1800                     # 이물이 다 쌓이는 설비 시간(30분 = 실제 3초)
+    target: [FT-103, PDT-103, TT-101]
+  jacket_fouling:
+    desc: "재킷 냉각 코일 스케일: 유량·차압 정상인데 전열이 떨어짐 → 반응기 온도↑"
+    kind: process
+    default_duration_s: 31536000
+    ramp_s: 1800
+    floor: 0.12
+    target: [TT-101, TT-104]
+  shaft_misalignment:
+    desc: "교반기 축 정렬 불량: 진동이 먼저 크게 오르고 전류는 조금만 오름"
+    kind: process
+    default_duration_s: 31536000
+    ramp_s: 1200
+    target: [VT-101, IT-102]
+  pt_drift:
+    desc: "PT-101 압력계 드리프트: 지시값만 오름(PT-102·실제 압력 정상) → 고압 인터록 오작동"
+    kind: process
+    default_duration_s: 31536000
+    ramp_s: 1800
+    magnitude: 3.6
+    target: [PT-101]
+  outlet_valve_stick:
+    desc: "배출 밸브 스템 고착: 실제 개도↓ → 액위↑ → 실제 압력↑(두 압력계 모두)"
+    kind: process
+    default_duration_s: 31536000
+    ramp_s: 1200
+    max: 0.85
+    target: [FT-102, LT-102, PT-101, PT-102]
   # 브로커·브리지 단절은 가상설비가 아니라 라우터 규칙·컨테이너 정지로 만든다(tests/e2e).
+
+# ── 현장 정비 작업(가상 정비팀). 작업 요청(WM-FLD-*)으로만 시작된다. duration_s 는 설비 시간 ──
+#   requires_stopped: 작업 전 정지·격리돼 있어야 하는 설비. isolate: 작업 중 격리(LOTO)하는 설비·계기
+field_tasks:
+  strainer_switch: { desc: "냉각수 스트레이너 예비 바스켓 전환(운전 중 가능)", duration_s: 300 }
+  strainer_clean:  { desc: "대기 바스켓 분해 세척(운전 중 가능)", duration_s: 1200 }
+  jacket_descale:  { desc: "재킷 냉각 코일 화학 세정", duration_s: 7200, requires_stopped: P-101, isolate: [P-101] }
+  bearing_replace: { desc: "교반기 베어링 점검·교체", duration_s: 2700, requires_stopped: M-101, isolate: [M-101] }
+  shaft_align:     { desc: "교반기 축 정렬 점검·조정", duration_s: 1800, requires_stopped: M-101, isolate: [M-101] }
+  pt_calibrate:    { desc: "PT-101 기준 압력계 비교 교정(계기 격리)", duration_s: 1200, isolate: [PT-101] }
+  cv_repair:       { desc: "배출 밸브 분해 정비", duration_s: 3600, requires_stopped: P-101, isolate: [P-101, CV-101] }
+  release_lockout: { desc: "작업 구역 확인·격리(LOTO) 해제·정비 해제 키", duration_s: 300 }

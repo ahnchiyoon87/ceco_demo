@@ -6,6 +6,7 @@ const ProcessFlow = defineAsyncComponent(() => import('./ProcessFlow.vue'))
 const ProposalFacts = defineAsyncComponent(() => import('./ProposalFacts.vue'))
 const ExecutionTrace = defineAsyncComponent(() => import('./ExecutionTrace.vue'))
 const ThermalObservation = defineAsyncComponent(() => import('./ThermalObservation.vue'))
+const MaintenancePlanCard = defineAsyncComponent(() => import('./MaintenancePlanCard.vue'))
 const props = defineProps({ incidentId: { type: String, required: true }, incidentStatus: { type: String, default: 'received' } })
 const canAnalyze = computed(() => ['received', 'awaiting_review', 'unresolved'].includes(props.incidentStatus))
 const emit = defineEmits(['updated'])
@@ -45,13 +46,13 @@ function failureAdvice(run) {
   if (/APITimeoutError|APIConnectionError/.test(run.error || '')) return '모델 연결 또는 응답 시간을 확인하세요. 자동으로 다시 요청하지 않습니다. 처리 기록을 확인한 뒤 재분석하세요.'
   return '오류 내용과 현재 근거를 확인하세요. 이미 처리된 조치가 있는지 기록을 확인한 뒤 다시 진행합니다.'
 }
-const runActive = computed(() => runs.value.some(r=>['running','resuming'].includes(r.status)) || items.value.some(p=>p.status==='observing'))
+const runActive = computed(() => runs.value.some(r=>['running','resuming'].includes(r.status)) || items.value.some(p=>['observing','executing'].includes(p.status)))
 let poll
 const now=ref(Date.now())
 const expiryClock=setInterval(()=>{now.value=Date.now()},1000)
 const expired=proposal=>new Date(proposal.expires_at).getTime()<=now.value
 let generation = 0
-const labels = { pending:'검토 대기', executing:'실행 중 · 재전송 금지', observing:'명령 반영 후 온도 관측', rejected:'반려', superseded:'새 대응안으로 교체', awaiting_maintenance:'점검 대기', unresolved:'미해결' }
+const labels = { pending:'검토 대기', executing:'실행 중 · 재전송 금지', observing:'명령 반영 후 온도 관측', rejected:'반려', superseded:'새 대응안으로 교체', awaiting_maintenance:'점검 대기', resolved:'정비 완료 · 회복 확인', unresolved:'미해결 · 재분석 필요' }
 async function request(path, options={}) {
   const response = await fetch(path, { ...options, signal: AbortSignal.timeout(25000) })
   const data = await response.json()
@@ -80,7 +81,7 @@ async function load() {
   finally { if (generation === current) {
     loading.value = false
     // Retry transient read failures; never retry a POST or an equipment action.
-    if (runActive.value || error.value) poll = setTimeout(load, error.value ? 6000 : 3000)
+    if (runActive.value || error.value) poll = setTimeout(load, error.value ? 6000 : items.value.some(p=>p.status==='executing') ? 1500 : 3000)
   } }
 }
 let selectionVersion = 0
@@ -147,7 +148,7 @@ async function recover(proposal) {
     <ProcessFlow ref="flowView" :run="latestRun" :proposal="flowProposal" :selected="selectedStage" @select="selectStage" />
     <div ref="stagePanel" class="stage-toolbar" tabindex="-1" :aria-label="stageNames[selectedStage]"><h3>{{stageNames[selectedStage]}}</h3><button @click="showProcess">프로세스 보기</button><button @click="resumeFollow">현재 처리 단계 보기 · {{stageNames[currentStage]}}</button></div>
     <p class="panel-hint">선택한 카드의 내용입니다. 처리 상태는 계속 갱신되며, 보고 있는 카드는 자동으로 바뀌지 않습니다.</p>
-    <div v-if="selectedStage==='received'" class="stage-receipt"><b>선택한 이상 사건</b><p>{{incidentId}}</p><p>접수 상태: {{incidentStatus}} · AI 분석은 아래 버튼으로 시작합니다.</p></div>
+    <div v-if="selectedStage==='received'" class="stage-receipt"><b>선택한 이상 사건</b><p>{{incidentId}}</p><p>접수 상태: {{incidentStatus}} · 정비 판단이 연결된 사건은 알람이 이어지면 AI 분석이 자동으로 시작됩니다. 아래 버튼으로 직접 시작하거나 다시 분석할 수 있습니다.</p></div>
     <div class="panel-heading"><span class="panel-hint">실제 저장 기록 기준</span><button class="review-refresh" :disabled="loading" @click="load">기록 새로고침</button></div>
     <div v-if="['received','investigate'].includes(selectedStage)" class="analysis-control"><div><b>AI가 센서 기록과 매뉴얼을 확인합니다</b><p>{{model?.configured?model.model+' · 분석 버튼을 누르면 시작합니다':'모델 연결 대기 · 근거 조회는 이용 가능'}}</p></div><button :disabled="!model?.configured||submitting||runActive||!canAnalyze" @click="resumeFollow();analyze()">{{runActive?'처리 중…':submitting?'요청 중…':'AI 분석 · 대응안 작성'}}</button></div>
     <ExecutionTrace v-show="['investigate','execute'].includes(selectedStage)" :mode="selectedStage==='execute'?'execute':'investigate'" :run="latestRun" @state="value=>{if(value.status!==latestRun?.status)load()}" />
@@ -181,9 +182,12 @@ async function recover(proposal) {
       <header><b>{{actionPresentation(proposal.body.action).title}}</b><span>{{labels[proposal.status]||proposal.status}}</span></header>
       <p v-if="proposal.origin.includes('test')" class="test-label">강사 통합 검증 기록 · AI 생성 대응안 아님</p>
       <div v-if="proposal.result" class="action-result" :class="{uncertain:proposal.status==='unresolved'}"><b>{{proposal.result.status==='stop_verified'?'정지 확인 · 정비 완료 아님':labels[proposal.status]}}</b><p>{{proposal.result.reason}}</p></div>
+      <MaintenancePlanCard v-if="proposal.plan" :proposal="proposal" :mode="selectedStage==='review'?'review':'result'" />
+      <template v-else>
       <ThermalObservation v-if="proposal.result?.thermal_observation" :track="proposal.result.thermal_observation" />
       <ProposalFacts :proposal="proposal" :mode="selectedStage==='review'?'review':'result'" />
       <details v-if="selectedStage==='review'" class="analysis-explanation"><summary>AI 판단 이유 · 상세 설명 펼치기</summary><p class="proposal-summary">{{proposal.body.summary}}</p></details>
+      </template>
       <div class="sensor-chips"><span v-for="citation in proposal.body.citations" :key="citation">▤ {{citation}}</span></div>
       <template v-if="selectedStage==='review'"><p class="panel-hint">AI 제안 당시의 미확인 사항{{proposal.result?' · 실행 여부는 위 조치 결과를 확인하세요.':''}}</p>
       <ul><li v-for="item in proposal.body.uncertainties" :key="item">{{item}}</li></ul></template>
@@ -196,7 +200,7 @@ async function recover(proposal) {
         <div class="review-buttons"><button :disabled="submitting||runActive||!note.trim()" @click="decide(proposal,'reject')">반려</button><button class="approve-button" :disabled="submitting||runActive||!note.trim()||expired(proposal)" @click="decide(proposal,'approve')">{{submitting||runActive?'처리 중…':expired(proposal)?'기한 만료 · 재분석 필요':'승인하고 진행'}}</button></div>
       </template>
       <p v-if="proposal.decision" class="review-note">검토 결과: {{proposal.decision.decision==='approve'?'승인':'반려'}} · {{proposal.decision.note}}</p>
-      <div v-if="proposal.status==='executing'" class="mfg-error">처리 중이거나 결과 저장이 중단된 상태입니다. 기록을 먼저 새로고침하세요. 30초 이상 지속되면 명령을 다시 보내지 않고 미해결로 전환할 수 있습니다.<button :disabled="submitting" @click="recover(proposal)">중단된 실행 확인</button></div>
+      <div v-if="proposal.status==='executing' && !proposal.plan" class="mfg-error">처리 중이거나 결과 저장이 중단된 상태입니다. 기록을 먼저 새로고침하세요. 30초 이상 지속되면 명령을 다시 보내지 않고 미해결로 전환할 수 있습니다.<button :disabled="submitting" @click="recover(proposal)">중단된 실행 확인</button></div>
     </component>
   </section>
 </template>

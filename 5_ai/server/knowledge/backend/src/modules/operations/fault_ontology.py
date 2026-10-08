@@ -110,7 +110,7 @@ def index_sections():
 
 RETRIEVAL_QUERY = """
 WITH node, score
-OPTIONAL MATCH p = (node)<-[:DOCUMENTED_IN|PROCEDURE|INVESTIGATED_BY]-(x)-[:MANIFESTS_AS|MITIGATES*0..1]->(sym:Symptom)
+OPTIONAL MATCH p = (node)<-[:DOCUMENTED_IN|PROCEDURE|INVESTIGATED_BY|VERIFIED_BY|ENCODES]-(x)-[:MANIFESTS_AS|MITIGATES|TREATS|HAS_RULE|TRIGGERS_DECISION*0..2]-(sym:Symptom)
 WHERE sym.symptom_id IN $symptoms
 RETURN node.document_id + '#' + node.section_key AS section, node.name AS heading,
        node.content AS content, score, count(p) > 0 AS graph_linked

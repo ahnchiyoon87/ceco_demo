@@ -33,6 +33,14 @@
    "line": "reactor-line-01"
   },
   {
+   "id": "ST-103",
+   "type": "Strainer",
+   "name": "냉각수 스트레이너",
+   "site": "AR-100",
+   "area": "reaction",
+   "line": "reactor-line-01"
+  },
+  {
    "id": "P-101",
    "type": "Pump",
    "name": "공급 펌프",
@@ -115,12 +123,52 @@
    "desc": "전도도"
   },
   {
+   "tag": "PT-102",
+   "asset": "R-101",
+   "unit": "barg",
+   "lsl": null,
+   "usl": 6.0,
+   "desc": "반응기 압력(독립 계기)"
+  },
+  {
    "tag": "TT-102",
    "asset": "HX-101",
    "unit": "degC",
    "lsl": null,
    "usl": 125.0,
    "desc": "재킷 온도"
+  },
+  {
+   "tag": "FT-103",
+   "asset": "HX-102",
+   "unit": "m3/h",
+   "lsl": 20.0,
+   "usl": null,
+   "desc": "냉각수 유량"
+  },
+  {
+   "tag": "TT-103",
+   "asset": "HX-102",
+   "unit": "degC",
+   "lsl": null,
+   "usl": 28.0,
+   "desc": "냉각수 공급 온도"
+  },
+  {
+   "tag": "TT-104",
+   "asset": "HX-102",
+   "unit": "degC",
+   "lsl": null,
+   "usl": 45.0,
+   "desc": "냉각수 회수 온도"
+  },
+  {
+   "tag": "PDT-103",
+   "asset": "ST-103",
+   "unit": "bar",
+   "lsl": null,
+   "usl": 0.8,
+   "desc": "스트레이너 차압"
   },
   {
    "tag": "FT-101",
@@ -195,9 +243,34 @@
    "to": "CT-101"
   },
   {
+   "from": "R-101",
+   "type": "HAS_SENSOR",
+   "to": "PT-102"
+  },
+  {
    "from": "HX-101",
    "type": "HAS_SENSOR",
    "to": "TT-102"
+  },
+  {
+   "from": "HX-102",
+   "type": "HAS_SENSOR",
+   "to": "FT-103"
+  },
+  {
+   "from": "HX-102",
+   "type": "HAS_SENSOR",
+   "to": "TT-103"
+  },
+  {
+   "from": "HX-102",
+   "type": "HAS_SENSOR",
+   "to": "TT-104"
+  },
+  {
+   "from": "ST-103",
+   "type": "HAS_SENSOR",
+   "to": "PDT-103"
   },
   {
    "from": "P-101",

@@ -1,6 +1,6 @@
 ---
 document_id: AR100-MIXER-RESPONSE
-version: 2
+version: 3
 status: educational-draft
 applies_to: [AR-100, reactor-line-01, M-101]
 alarm_types: [CEP_BEARING, THRESHOLD_USL, ZSCORE]
@@ -8,6 +8,8 @@ source_kind: authored-simulation-procedure
 ---
 
 # 교반기 전류·진동 이상 대응
+
+원인별 정비(베어링 교체·축 정렬)와 정지 시점 판단은 AR100-AGITATOR-MAINT와 AR100-MAINT-POLICY를 따른다. 이 문서의 교반기 정지는 정비 전에 위험을 줄이는 긴급 완화 조치이며 정비가 아니다.
 
 이 문서는 AR-100 가상 공정의 교육·전시용 대응 절차다. 실물 장비의 운전 승인 문서가 아니다. M-101이 특정 제조사 제품이라는 가정은 하지 않는다.
 

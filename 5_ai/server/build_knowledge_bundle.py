@@ -39,23 +39,33 @@ def build() -> dict:
             }})
             batch["relationships"].append({"from_id": doc_id, "to_id": section_id, "type": "HAS_SECTION"})
 
-    for asset, description, tags in [
-        ("M-101", "교반기", ["IT-102", "VT-101"]),
-        ("R-101", "반응기", ["LT-102", "TT-101", "PT-101"]),
-    ]:
-        aid = f"{prefix}/asset/{asset}"
+    # 설비 의미 연결: 등록부의 모든 설비(제어기 제외)와 그 신호. 물리 배치(INSTALLED_IN)와 물질 흐름(FEEDS)은 검토한 관계다.
+    reg = yaml.safe_load((root / "shared/registry/equipment.yaml").read_text(encoding="utf-8"))
+    for asset in reg["assets"]:
+        if asset["type"] == "Controller":
+            continue
+        aid = f"{prefix}/asset/{asset['id']}"
         batch["nodes"].append({"id": aid, "class": "Asset", "properties": {
-            "name": asset, "description": description, "site": "AR-100", "device": "reactor-line-01",
-            "environment": "simulation", "source_path": "5_ai/manuals/AR100-ASSET-CONTEXT.md",
+            "name": asset["id"], "description": asset["name"], "equipment_type": asset["type"], "site": "AR-100",
+            "device": "reactor-line-01", "environment": "simulation", "source_path": "shared/registry/equipment.yaml",
         }})
         batch["relationships"].append({"from_id": prefix, "to_id": aid, "type": "EXPOSES_ASSET"})
-        for tag in tags:
-            batch["relationships"].append({"from_id": aid, "to_id": f"{prefix}/sensor/{tag}", "type": "HAS_SENSOR"})
+        for sig in asset.get("signals", []):
+            batch["relationships"].append({"from_id": aid, "to_id": f"{prefix}/sensor/{sig['tag']}", "type": "HAS_SENSOR"})
         batch["relationships"].append({"from_id": aid, "to_id": "AR100-ASSET-CONTEXT", "type": "DESCRIBED_BY"})
+        batch["relationships"].append({"from_id": aid, "to_id": "AR100-MAINT-POLICY", "type": "GOVERNED_BY"})
+    a = lambda name: f"{prefix}/asset/{name}"
     batch["relationships"].extend([
-        {"from_id": f"{prefix}/asset/M-101", "to_id": f"{prefix}/asset/R-101", "type": "INSTALLED_IN"},
-        {"from_id": f"{prefix}/asset/M-101", "to_id": "AR100-MIXER-RESPONSE", "type": "HAS_PROCEDURE"},
-        {"from_id": f"{prefix}/asset/M-101", "to_id": "AR100-EVIDENCE-POLICY", "type": "GOVERNED_BY"},
+        {"from_id": a("M-101"), "to_id": a("R-101"), "type": "INSTALLED_IN"},
+        {"from_id": a("HX-101"), "to_id": a("R-101"), "type": "INSTALLED_IN"},
+        {"from_id": a("HX-102"), "to_id": a("R-101"), "type": "INSTALLED_IN"},
+        {"from_id": a("ST-103"), "to_id": a("HX-102"), "type": "INSTALLED_IN"},
+        {"from_id": a("CV-101"), "to_id": a("R-101"), "type": "INSTALLED_IN"},
+        {"from_id": a("TK-101"), "to_id": a("P-101"), "type": "FEEDS"},
+        {"from_id": a("P-101"), "to_id": a("R-101"), "type": "FEEDS"},
+        {"from_id": a("M-101"), "to_id": "AR100-MIXER-RESPONSE", "type": "HAS_PROCEDURE"},
+        {"from_id": a("M-101"), "to_id": "AR100-EVIDENCE-POLICY", "type": "GOVERNED_BY"},
+        {"from_id": a("R-101"), "to_id": "AR100-EVIDENCE-POLICY", "type": "GOVERNED_BY"},
     ])
-    batch["unresolved"] = ["교육용 절차이며 실물 설비 승인 문서가 아님", "P-101 등 나머지 설비 의미 연결은 미포함"]
+    batch["unresolved"] = ["교육용 절차이며 실물 설비 승인 문서가 아님"]
     return batch

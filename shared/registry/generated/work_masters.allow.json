@@ -4,12 +4,14 @@
    "work_master_id": "WM-M101-STOP",
    "equipment_id": "M-101",
    "parameters": [],
+   "kind": "control",
    "desc": "교반기 정지(AI stop_mixer)"
   },
   {
    "work_master_id": "WM-HX102-ENABLE",
    "equipment_id": "HX-102",
    "parameters": [],
+   "kind": "control",
    "desc": "냉각기 기동(AI enable_cooling)"
   },
   {
@@ -23,7 +25,106 @@
      "unit": "degC"
     }
    ],
+   "kind": "control",
    "desc": "반응기 온도 설정값 변경(운전 범위 안 조정)"
+  },
+  {
+   "work_master_id": "WM-M101-START",
+   "equipment_id": "M-101",
+   "parameters": [],
+   "kind": "control",
+   "desc": "교반기 재기동(정비 뒤)"
+  },
+  {
+   "work_master_id": "WM-P101-SPEED",
+   "equipment_id": "P-101",
+   "parameters": [
+    {
+     "id": "pump_speed_pct",
+     "min": 20.0,
+     "max": 80.0,
+     "unit": "%"
+    }
+   ],
+   "kind": "control",
+   "desc": "공급 펌프 속도 변경(부하 조정)"
+  },
+  {
+   "work_master_id": "WM-P101-STOP",
+   "equipment_id": "P-101",
+   "parameters": [],
+   "kind": "control",
+   "desc": "공급 펌프 정지"
+  },
+  {
+   "work_master_id": "WM-P101-START",
+   "equipment_id": "P-101",
+   "parameters": [],
+   "kind": "control",
+   "desc": "공급 펌프 재기동"
+  },
+  {
+   "work_master_id": "WM-PLC-MAINT-ON",
+   "equipment_id": "PLC-01",
+   "parameters": [],
+   "kind": "control",
+   "desc": "정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)"
+  },
+  {
+   "work_master_id": "WM-FLD-STRAINER-SWITCH",
+   "equipment_id": "ST-103",
+   "parameters": [],
+   "kind": "field",
+   "desc": "냉각수 스트레이너 예비 바스켓 전환"
+  },
+  {
+   "work_master_id": "WM-FLD-STRAINER-CLEAN",
+   "equipment_id": "ST-103",
+   "parameters": [],
+   "kind": "field",
+   "desc": "대기 바스켓 분해 세척"
+  },
+  {
+   "work_master_id": "WM-FLD-JACKET-DESCALE",
+   "equipment_id": "HX-102",
+   "parameters": [],
+   "kind": "field",
+   "desc": "재킷 냉각 코일 화학 세정"
+  },
+  {
+   "work_master_id": "WM-FLD-BEARING-REPLACE",
+   "equipment_id": "M-101",
+   "parameters": [],
+   "kind": "field",
+   "desc": "교반기 베어링 점검·교체"
+  },
+  {
+   "work_master_id": "WM-FLD-SHAFT-ALIGN",
+   "equipment_id": "M-101",
+   "parameters": [],
+   "kind": "field",
+   "desc": "교반기 축 정렬 점검·조정"
+  },
+  {
+   "work_master_id": "WM-FLD-PT101-CALIBRATE",
+   "equipment_id": "R-101",
+   "parameters": [],
+   "kind": "field",
+   "desc": "PT-101 비교 교정(계기 격리)"
+  },
+  {
+   "work_master_id": "WM-FLD-CV101-REPAIR",
+   "equipment_id": "CV-101",
+   "parameters": [],
+   "kind": "field",
+   "desc": "배출 밸브 분해 정비"
+  },
+  {
+   "work_master_id": "WM-FLD-LOTO-RELEASE",
+   "equipment_id": "PLC-01",
+   "parameters": [],
+   "kind": "field",
+   "desc": "작업 완료 확인·격리 해제·정비 해제 키"
   }
  ],
  "requesters": [

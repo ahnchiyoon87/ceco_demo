@@ -108,7 +108,7 @@
   "unitid": "1",
   "dataType": "InputRegister",
   "adr": "0",
-  "quantity": "28",
+  "quantity": "38",
   "rate": "250",
   "rateUnit": "ms",
   "delayOnStart": false,
@@ -712,7 +712,7 @@
   "x": 900,
   "y": 80,
   "name": "수용 결정(자동 수용 / 운전원 대기 / 거부)",
-  "func": "// OT 작업 요청 수신기(현업 L3 MES 서버·SCADA MES 모듈 흉내, 17번 E20): 받을지 OT 안에서 정한다.\n// 입력 = 스키마 검사를 통과한 작업 요청. 검사: 중복(QoS 1)·허용 작업·설비·파라미터 범위·만료·모드·정비 모드.\n// REMOTE_AUTO → 자동 수용(StoreAndStart), REMOTE_MANUAL → 운전원 대기로 저장(Store), 그 밖 → 거부.\n// 결정과 제어기 명령 토픽 발행까지만 한다(설비 쓰기는 엣지 → PLC 길).\nconst reg = global.get('registry');\nconst wm = global.get('workMastersOt');\nconst crypto = global.get('crypto');\nconst req = msg.payload;\nconst now = Date.now() / 1000;\nconst iso = new Date().toISOString();\nconst resp = (stage, status, reason) => ({ topic: `${reg.request.response_prefix}/${req.job_order_id}`, qos: 1, retain: false,\n    payload: JSON.stringify({ job_order_id: req.job_order_id, stage, status, reason, ts: iso }) });\nconst pendingMsg = (pending) => {\n    const items = Object.values(pending).sort((a, b) => a.received_at - b.received_at);\n    const h = items[0];\n    return { topic: reg.request.pending_topic, qos: 1, retain: true, payload: JSON.stringify({\n        count: items.length, head_job: h ? h.job_order_id : '', head_wm: h ? h.work_master_id : '',\n        head_desc: h ? h.desc : '대기 중인 요청 없음', head_context: h ? (h.context_summary || '') : '',\n        head_wait_s: h ? Math.round(now - h.received_at) : 0,\n        items: items.map(i => ({ job_order_id: i.job_order_id, work_master_id: i.work_master_id, desc: i.desc })) }) };\n};\nflow.set('requests', (flow.get('requests') || 0) + 1);\n// 중복: MQTT QoS 1 은 같은 메시지를 다시 보낼 수 있다(규격). 만료 시간 안에 본 ID 는 다시 처리하지 않는다(17번 E19)\nconst seen = flow.get('seen') || {};\nfor (const k of Object.keys(seen)) if (seen[k] < now) delete seen[k];\nif (seen[req.job_order_id]) { flow.set('seen', seen); return null; }\nseen[req.job_order_id] = (Number(req.expires_at) || now) + 60;\nflow.set('seen', seen);\nconst reject = (reason) => { flow.set('rejected', (flow.get('rejected') || 0) + 1); return { batch: [resp('receipt', 'REJECTED', reason)] }; };\nconst w = wm.find(x => x.work_master_id === req.work_master_id);\nif (!w) return reject('NOT_ALLOWED');\nif (w.equipment_id !== req.equipment_id) return reject('EQUIPMENT_MISMATCH');\nlet value = w.fixed_value;\nfor (const p of w.parameters) {\n    const got = (req.job_order_parameters || []).find(x => x.id === p.id);\n    if (!got) return reject('PARAMETER_MISSING');\n    if (!(got.value >= p.min && got.value <= p.max)) return reject('PARAMETER_RANGE');\n    value = Math.round(got.value * (w.scale || 1));\n}\nif (!(Number(req.expires_at) > now)) return reject('EXPIRED');\nconst plc = flow.get('plc') || {};\nif (plc.run_state !== 'RUN' || plc.field_comm === false) return reject('PLC_UNAVAILABLE');\nif (plc.mode === 'LOCAL') return reject('LOCAL_MODE');\nif (plc.maintenance === true) return reject('MAINTENANCE');\nconst hash = parseInt(crypto.createHash('sha256').update(req.job_order_id).digest('hex').slice(0, 8), 16) || 1;\nconst job = { job_order_id: req.job_order_id, work_master_id: w.work_master_id, equipment_id: w.equipment_id, desc: w.desc,\n    code: w.code, value, command_topic: w.command_topic, job_hash: hash, received_at: now, expires_at: Math.floor(Number(req.expires_at)),\n    // 운전원 화면에 누가 보낸 요청인지 앞에 붙인다(요청자 종류·ID)\n    context_summary: `[${String(req.requester_type).toUpperCase()} ${req.requester}] ` + (req.context ? String(req.context.summary || '').slice(0, 120) : '') };\nif (plc.mode === 'REMOTE_AUTO') {\n    const cmd = { topic: w.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,\n        code: job.code, value: job.value, expires_at: job.expires_at, operator_accepted: 0, job_hash: hash }) };\n    return { batch: [resp('receipt', 'AUTO_ACCEPTED', 'REMOTE_AUTO'), cmd] };\n}\nif (plc.mode === 'REMOTE_MANUAL') {\n    const pending = flow.get('pending') || {};\n    pending[job.job_order_id] = job;\n    flow.set('pending', pending);\n    return { batch: [resp('receipt', 'OPERATOR_WAIT', 'STORED'), pendingMsg(pending)] };\n}\nreturn reject('MODE_UNKNOWN');\n",
+  "func": "// OT 작업 요청 수신기(현업 L3 MES 서버·SCADA MES 모듈 흉내, 17번 E20): 받을지 OT 안에서 정한다.\n// 입력 = 스키마 검사를 통과한 작업 요청. 검사: 중복(QoS 1)·허용 작업·설비·파라미터 범위·만료·모드·정비 모드.\n// REMOTE_AUTO → 자동 수용(StoreAndStart), REMOTE_MANUAL → 운전원 대기로 저장(Store), 그 밖 → 거부.\n// 결정과 제어기 명령 토픽 발행까지만 한다(설비 쓰기는 엣지 → PLC 길).\n// 현장 정비 작업(kind field)은 PLC 명령이 아니다: 수용되면 가상 정비팀 작업 지시(_crew)로 넘긴다.\n// 정비 모드가 필요한 작업은 정비 모드일 때만 받고, 그 밖의 원격 요청은 정비 모드에서 거부한다.\nconst reg = global.get('registry');\nconst wm = global.get('workMastersOt');\nconst crypto = global.get('crypto');\nconst req = msg.payload;\nconst now = Date.now() / 1000;\nconst iso = new Date().toISOString();\nconst resp = (stage, status, reason) => ({ topic: `${reg.request.response_prefix}/${req.job_order_id}`, qos: 1, retain: false,\n    payload: JSON.stringify({ job_order_id: req.job_order_id, stage, status, reason, ts: iso }) });\nconst pendingMsg = (pending) => {\n    const items = Object.values(pending).sort((a, b) => a.received_at - b.received_at);\n    const h = items[0];\n    return { topic: reg.request.pending_topic, qos: 1, retain: true, payload: JSON.stringify({\n        count: items.length, head_job: h ? h.job_order_id : '', head_wm: h ? h.work_master_id : '',\n        head_desc: h ? h.desc : '대기 중인 요청 없음', head_context: h ? (h.context_summary || '') : '',\n        head_wait_s: h ? Math.round(now - h.received_at) : 0,\n        items: items.map(i => ({ job_order_id: i.job_order_id, work_master_id: i.work_master_id, desc: i.desc })) }) };\n};\nflow.set('requests', (flow.get('requests') || 0) + 1);\n// 중복: MQTT QoS 1 은 같은 메시지를 다시 보낼 수 있다(규격). 만료 시간 안에 본 ID 는 다시 처리하지 않는다(17번 E19)\nconst seen = flow.get('seen') || {};\nfor (const k of Object.keys(seen)) if (seen[k] < now) delete seen[k];\nif (seen[req.job_order_id]) { flow.set('seen', seen); return null; }\nseen[req.job_order_id] = (Number(req.expires_at) || now) + 60;\nflow.set('seen', seen);\nconst reject = (reason) => { flow.set('rejected', (flow.get('rejected') || 0) + 1); return { batch: [resp('receipt', 'REJECTED', reason)] }; };\nconst w = wm.find(x => x.work_master_id === req.work_master_id);\nif (!w) return reject('NOT_ALLOWED');\nif (w.equipment_id !== req.equipment_id) return reject('EQUIPMENT_MISMATCH');\nlet value = w.fixed_value;\nfor (const p of w.parameters) {\n    const got = (req.job_order_parameters || []).find(x => x.id === p.id);\n    if (!got) return reject('PARAMETER_MISSING');\n    if (!(got.value >= p.min && got.value <= p.max)) return reject('PARAMETER_RANGE');\n    value = Math.round(got.value * (w.scale || 1));\n}\nif (!(Number(req.expires_at) > now)) return reject('EXPIRED');\nconst plc = flow.get('plc') || {};\nif (plc.run_state !== 'RUN' || plc.field_comm === false) return reject('PLC_UNAVAILABLE');\nif (plc.mode === 'LOCAL') return reject('LOCAL_MODE');\nconst field = w.kind === 'field';\nif (field && w.requires_maintenance && plc.maintenance !== true) return reject('MAINTENANCE_REQUIRED');\nif (!field && plc.maintenance === true) return reject('MAINTENANCE');\nconst hash = parseInt(crypto.createHash('sha256').update(req.job_order_id).digest('hex').slice(0, 8), 16) || 1;\nconst job = { job_order_id: req.job_order_id, work_master_id: w.work_master_id, equipment_id: w.equipment_id, desc: w.desc,\n    code: w.code, value, command_topic: w.command_topic, job_hash: hash, received_at: now, expires_at: Math.floor(Number(req.expires_at)),\n    kind: w.kind || 'control', field_task: w.field_task, release_maintenance: !!w.release_maintenance,\n    requires_maintenance: !!w.requires_maintenance,\n    // 운전원 화면에 누가 보낸 요청인지 앞에 붙인다(요청자 종류·ID)\n    context_summary: `[${String(req.requester_type).toUpperCase()} ${req.requester}] ` + (req.context ? String(req.context.summary || '').slice(0, 120) : '') };\nconst crew = (j) => ({ _crew: { job_order_id: j.job_order_id, task: j.field_task, release_maintenance: j.release_maintenance } });\nif (plc.mode === 'REMOTE_AUTO' && field) return { batch: [resp('receipt', 'AUTO_ACCEPTED', 'REMOTE_AUTO'), crew(job)] };\nif (plc.mode === 'REMOTE_AUTO') {\n    const cmd = { topic: w.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,\n        code: job.code, value: job.value, expires_at: job.expires_at, operator_accepted: 0, job_hash: hash }) };\n    return { batch: [resp('receipt', 'AUTO_ACCEPTED', 'REMOTE_AUTO'), cmd] };\n}\nif (plc.mode === 'REMOTE_MANUAL') {\n    const pending = flow.get('pending') || {};\n    pending[job.job_order_id] = job;\n    flow.set('pending', pending);\n    return { batch: [resp('receipt', 'OPERATOR_WAIT', 'STORED'), pendingMsg(pending)] };\n}\nreturn reject('MODE_UNKNOWN');\n",
   "outputs": 1,
   "timeout": 0,
   "noerr": 0,
@@ -812,7 +812,7 @@
   "x": 460,
   "y": 300,
   "name": "수락 → 명령 / 거부",
-  "func": "// 운전원 결정(FUXA \"받은 요청\" 화면 → …/request/decision): 수락이면 새 만료(발행 + 30 s)와 운전원 수락 표시를 붙여\n// 제어기 명령 토픽으로 낸다(Store 후 운전원 Start). 거부면 거부 응답. 10초 넘은 결정·없는 요청은 무시한다.\nconst reg = global.get('registry');\nlet d;\ntry { d = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : msg.payload; } catch (e) { return null; }\nif (msg.retain) return null;\nconst age = (Date.now() - Date.parse(d.ts)) / 1000;\nif (!Number.isFinite(age) || age > 10 || age < -10) { node.warn('오래된 운전원 결정 무시'); return null; }\nconst pending = flow.get('pending') || {};\nconst job = pending[d.job_order_id];\nif (!job) { node.warn(`대기 목록에 없는 요청: ${d.job_order_id}`); return null; }\ndelete pending[d.job_order_id];\nflow.set('pending', pending);\nconst now = Date.now() / 1000;\nconst iso = new Date().toISOString();\nconst resp = (status, reason) => ({ topic: `${reg.request.response_prefix}/${job.job_order_id}`, qos: 1, retain: false,\n    payload: JSON.stringify({ job_order_id: job.job_order_id, stage: 'operator', status, reason, ts: iso }) });\nconst items = Object.values(pending).sort((a, b) => a.received_at - b.received_at);\nconst h = items[0];\nconst pendingMsg = { topic: reg.request.pending_topic, qos: 1, retain: true, payload: JSON.stringify({\n    count: items.length, head_job: h ? h.job_order_id : '', head_wm: h ? h.work_master_id : '',\n    head_desc: h ? h.desc : '대기 중인 요청 없음', head_context: h ? (h.context_summary || '') : '',\n    head_wait_s: h ? Math.round(now - h.received_at) : 0,\n    items: items.map(i => ({ job_order_id: i.job_order_id, work_master_id: i.work_master_id, desc: i.desc })) }) };\nif (String(d.decision).toLowerCase() !== 'accept') return { batch: [resp('OPERATOR_REJECTED', 'OPERATOR'), pendingMsg] };\nconst plc = flow.get('plc') || {};\nif (plc.mode !== 'REMOTE_MANUAL' || plc.maintenance === true) {\n    return { batch: [resp('REJECTED', plc.maintenance === true ? 'MAINTENANCE' : `MODE_${plc.mode}`), pendingMsg] };\n}\nconst cmd = { topic: job.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,\n    code: job.code, value: job.value, expires_at: Math.floor(now) + 30, operator_accepted: 1, job_hash: job.job_hash }) };\nreturn { batch: [resp('OPERATOR_ACCEPTED', 'OPERATOR'), cmd, pendingMsg] };\n",
+  "func": "// 운전원 결정(FUXA \"받은 요청\" 화면 → …/request/decision): 수락이면 새 만료(발행 + 30 s)와 운전원 수락 표시를 붙여\n// 제어기 명령 토픽으로 낸다(Store 후 운전원 Start). 거부면 거부 응답. 10초 넘은 결정·없는 요청은 무시한다.\nconst reg = global.get('registry');\nlet d;\ntry { d = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : msg.payload; } catch (e) { return null; }\nif (msg.retain) return null;\nconst age = (Date.now() - Date.parse(d.ts)) / 1000;\nif (!Number.isFinite(age) || age > 10 || age < -10) { node.warn('오래된 운전원 결정 무시'); return null; }\nconst pending = flow.get('pending') || {};\nconst job = pending[d.job_order_id];\nif (!job) { node.warn(`대기 목록에 없는 요청: ${d.job_order_id}`); return null; }\ndelete pending[d.job_order_id];\nflow.set('pending', pending);\nconst now = Date.now() / 1000;\nconst iso = new Date().toISOString();\nconst resp = (status, reason) => ({ topic: `${reg.request.response_prefix}/${job.job_order_id}`, qos: 1, retain: false,\n    payload: JSON.stringify({ job_order_id: job.job_order_id, stage: 'operator', status, reason, ts: iso }) });\nconst items = Object.values(pending).sort((a, b) => a.received_at - b.received_at);\nconst h = items[0];\nconst pendingMsg = { topic: reg.request.pending_topic, qos: 1, retain: true, payload: JSON.stringify({\n    count: items.length, head_job: h ? h.job_order_id : '', head_wm: h ? h.work_master_id : '',\n    head_desc: h ? h.desc : '대기 중인 요청 없음', head_context: h ? (h.context_summary || '') : '',\n    head_wait_s: h ? Math.round(now - h.received_at) : 0,\n    items: items.map(i => ({ job_order_id: i.job_order_id, work_master_id: i.work_master_id, desc: i.desc })) }) };\nif (String(d.decision).toLowerCase() !== 'accept') return { batch: [resp('OPERATOR_REJECTED', 'OPERATOR'), pendingMsg] };\nconst plc = flow.get('plc') || {};\nconst field = job.kind === 'field';\nif (field) {\n    if (plc.mode !== 'REMOTE_MANUAL' || (job.requires_maintenance && plc.maintenance !== true)) {\n        return { batch: [resp('REJECTED', plc.mode !== 'REMOTE_MANUAL' ? `MODE_${plc.mode}` : 'MAINTENANCE_REQUIRED'), pendingMsg] };\n    }\n    return { batch: [resp('OPERATOR_ACCEPTED', 'OPERATOR'),\n        { _crew: { job_order_id: job.job_order_id, task: job.field_task, release_maintenance: job.release_maintenance } }, pendingMsg] };\n}\nif (plc.mode !== 'REMOTE_MANUAL' || plc.maintenance === true) {\n    return { batch: [resp('REJECTED', plc.maintenance === true ? 'MAINTENANCE' : `MODE_${plc.mode}`), pendingMsg] };\n}\nconst cmd = { topic: job.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,\n    code: job.code, value: job.value, expires_at: Math.floor(now) + 30, operator_accepted: 1, job_hash: job.job_hash }) };\nreturn { batch: [resp('OPERATOR_ACCEPTED', 'OPERATOR'), cmd, pendingMsg] };\n",
   "outputs": 1,
   "timeout": 0,
   "noerr": 0,
@@ -911,8 +911,75 @@
   "z": "receiver",
   "x": 1100,
   "y": 220,
-  "name": "묶음 풀기",
-  "func": "// 수신기 출력 묶음을 MQTT 출력 노드로 한 건씩 보낸다(수신기는 OT 허브 안에서만 발행하므로 끊김 버퍼를 두지 않는다).\nreturn [msg.batch || []];\n",
+  "name": "묶음 풀기(MQTT / 정비팀)",
+  "func": "// 수신기 출력 묶음을 한 건씩 보낸다. 출력 1 = MQTT(OT 허브 안에서만 발행하므로 끊김 버퍼를 두지 않는다),\n// 출력 2 = 가상 정비팀 작업 지시(_crew). 같은 묶음 함수를 엣지·수신기가 함께 쓴다(엣지는 _crew 를 만들지 않는다).\nconst items = msg.batch || [];\nreturn [items.filter(m => !m._crew), items.filter(m => m._crew)];\n",
+  "outputs": 2,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "mq_rout"
+   ],
+   [
+    "f_crew_req"
+   ]
+  ]
+ },
+ {
+  "id": "f_crew_req",
+  "type": "function",
+  "z": "receiver",
+  "x": 1100,
+  "y": 320,
+  "name": "정비팀 작업 지시",
+  "func": "// 수용된 현장 정비 작업 → 가상 정비팀(가상설비 정비팀 접점, OT 안). 정비팀 계정은 이 수신기만 갖는다.\n// 정비팀은 현장 안전 확인 → 격리(LOTO) → 작업 → 소견을 돌려준다(작업 시간 = 설비 시간 ÷ 배속).\nconst c = msg._crew;\nconst auth = Buffer.from(`${env.get('FIELD_CREW_USER')}:${env.get('FIELD_CREW_PASSWORD')}`).toString('base64');\nreturn { url: `http://${env.get('PLANT_HOST') || 'plant-sim'}:8082/tasks`, method: 'POST', requestTimeout: 60000,\n    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${auth}` },\n    payload: JSON.stringify({ job_order_id: c.job_order_id, task: c.task, release_maintenance: !!c.release_maintenance }),\n    _crew: c };\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "wires": [
+   [
+    "http_crew"
+   ]
+  ]
+ },
+ {
+  "id": "http_crew",
+  "type": "http request",
+  "z": "receiver",
+  "x": 1300,
+  "y": 320,
+  "name": "가상 정비팀",
+  "method": "use",
+  "ret": "txt",
+  "paytoqs": "ignore",
+  "url": "",
+  "tls": "",
+  "persist": false,
+  "proxy": "",
+  "insecureHTTPParser": false,
+  "authType": "",
+  "senderr": false,
+  "headers": [],
+  "wires": [
+   [
+    "f_crew_resp"
+   ]
+  ]
+ },
+ {
+  "id": "f_crew_resp",
+  "type": "function",
+  "z": "receiver",
+  "x": 1500,
+  "y": 320,
+  "name": "정비 결과 → 응답(field 단계)",
+  "func": "// 정비팀 결과 → 요청 응답(field 단계). 통신 실패는 결과 미확인으로 올린다(다시 보내지 않는다).\nconst reg = global.get('registry');\nconst c = msg._crew || {};\nlet r = {};\ntry { r = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : (msg.payload || {}); } catch (e) { r = {}; }\nconst ok = msg.statusCode === 200 && r.status;\nconst payload = ok\n    ? { job_order_id: c.job_order_id, stage: 'field', status: r.status, reason: r.reason || r.finding || '', finding: r.finding,\n        effective: r.effective, task: r.task || c.task, plant_duration_s: r.plant_duration_s, wall_s: r.wall_s,\n        maintenance_released: !!r.maintenance_released, ts: new Date().toISOString() }\n    : { job_order_id: c.job_order_id, stage: 'field', status: 'UNKNOWN', reason: `정비팀 응답 없음(${msg.statusCode || msg.error || '연결 실패'})`,\n        task: c.task, ts: new Date().toISOString() };\nreturn { topic: `${reg.request.response_prefix}/${c.job_order_id}`, qos: 1, retain: false, payload: JSON.stringify(payload) };\n",
   "outputs": 1,
   "timeout": 0,
   "noerr": 0,

@@ -55,7 +55,7 @@
               "functionCode": "3",
               "cycleTime": 100,
               "offset": "0",
-              "length": 28,
+              "length": 38,
               "errorHandling": "keep-last-value",
               "ioPoints": [
                 {

@@ -24,15 +24,32 @@
    "enum": [
     "WM-M101-STOP",
     "WM-HX102-ENABLE",
-    "WM-R101-TEMPSP"
+    "WM-R101-TEMPSP",
+    "WM-M101-START",
+    "WM-P101-SPEED",
+    "WM-P101-STOP",
+    "WM-P101-START",
+    "WM-PLC-MAINT-ON",
+    "WM-FLD-STRAINER-SWITCH",
+    "WM-FLD-STRAINER-CLEAN",
+    "WM-FLD-JACKET-DESCALE",
+    "WM-FLD-BEARING-REPLACE",
+    "WM-FLD-SHAFT-ALIGN",
+    "WM-FLD-PT101-CALIBRATE",
+    "WM-FLD-CV101-REPAIR",
+    "WM-FLD-LOTO-RELEASE"
    ]
   },
   "equipment_id": {
    "type": "string",
    "enum": [
+    "CV-101",
     "HX-102",
     "M-101",
-    "R-101"
+    "P-101",
+    "PLC-01",
+    "R-101",
+    "ST-103"
    ]
   },
   "job_order_parameters": {

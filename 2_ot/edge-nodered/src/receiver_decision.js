@@ -24,6 +24,14 @@ const pendingMsg = { topic: reg.request.pending_topic, qos: 1, retain: true, pay
     items: items.map(i => ({ job_order_id: i.job_order_id, work_master_id: i.work_master_id, desc: i.desc })) }) };
 if (String(d.decision).toLowerCase() !== 'accept') return { batch: [resp('OPERATOR_REJECTED', 'OPERATOR'), pendingMsg] };
 const plc = flow.get('plc') || {};
+const field = job.kind === 'field';
+if (field) {
+    if (plc.mode !== 'REMOTE_MANUAL' || (job.requires_maintenance && plc.maintenance !== true)) {
+        return { batch: [resp('REJECTED', plc.mode !== 'REMOTE_MANUAL' ? `MODE_${plc.mode}` : 'MAINTENANCE_REQUIRED'), pendingMsg] };
+    }
+    return { batch: [resp('OPERATOR_ACCEPTED', 'OPERATOR'),
+        { _crew: { job_order_id: job.job_order_id, task: job.field_task, release_maintenance: job.release_maintenance } }, pendingMsg] };
+}
 if (plc.mode !== 'REMOTE_MANUAL' || plc.maintenance === true) {
     return { batch: [resp('REJECTED', plc.maintenance === true ? 'MAINTENANCE' : `MODE_${plc.mode}`), pendingMsg] };
 }

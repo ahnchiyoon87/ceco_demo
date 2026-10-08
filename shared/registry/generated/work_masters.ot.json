@@ -44,5 +44,165 @@
   "command_topic": "AR-100/reaction/reactor-line-01/R-101/cmd/request",
   "status_topic": "AR-100/reaction/reactor-line-01/R-101/status/temp_sp",
   "desc": "반응기 온도 설정값 변경(운전 범위 안 조정)"
+ },
+ {
+  "work_master_id": "WM-M101-START",
+  "equipment_id": "M-101",
+  "command": "run",
+  "code": 2,
+  "kind": "switch",
+  "scale": 1,
+  "fixed_value": 1,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/M-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/M-101/status/run",
+  "desc": "교반기 재기동(정비 뒤)"
+ },
+ {
+  "work_master_id": "WM-P101-SPEED",
+  "equipment_id": "P-101",
+  "command": "speed_sp",
+  "code": 5,
+  "kind": "setpoint",
+  "scale": 1,
+  "fixed_value": null,
+  "parameters": [
+   {
+    "id": "pump_speed_pct",
+    "min": 20.0,
+    "max": 80.0,
+    "unit": "%"
+   }
+  ],
+  "command_topic": "AR-100/reaction/reactor-line-01/P-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/P-101/status/speed_sp",
+  "desc": "공급 펌프 속도 변경(부하 조정)"
+ },
+ {
+  "work_master_id": "WM-P101-STOP",
+  "equipment_id": "P-101",
+  "command": "run",
+  "code": 1,
+  "kind": "switch",
+  "scale": 1,
+  "fixed_value": 0,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/P-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/P-101/status/run",
+  "desc": "공급 펌프 정지"
+ },
+ {
+  "work_master_id": "WM-P101-START",
+  "equipment_id": "P-101",
+  "command": "run",
+  "code": 1,
+  "kind": "switch",
+  "scale": 1,
+  "fixed_value": 1,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/P-101/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/P-101/status/run",
+  "desc": "공급 펌프 재기동"
+ },
+ {
+  "work_master_id": "WM-PLC-MAINT-ON",
+  "equipment_id": "PLC-01",
+  "command": "maintenance",
+  "code": 11,
+  "kind": "maintenance_on",
+  "scale": 1,
+  "fixed_value": 901,
+  "parameters": [],
+  "command_topic": "AR-100/reaction/reactor-line-01/PLC-01/cmd/request",
+  "status_topic": "AR-100/reaction/reactor-line-01/PLC-01/status/maintenance",
+  "desc": "정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)"
+ },
+ {
+  "work_master_id": "WM-FLD-STRAINER-SWITCH",
+  "equipment_id": "ST-103",
+  "kind": "field",
+  "field_task": "strainer_switch",
+  "requires_maintenance": false,
+  "release_maintenance": false,
+  "plant_duration_s": 300,
+  "parameters": [],
+  "desc": "냉각수 스트레이너 예비 바스켓 전환"
+ },
+ {
+  "work_master_id": "WM-FLD-STRAINER-CLEAN",
+  "equipment_id": "ST-103",
+  "kind": "field",
+  "field_task": "strainer_clean",
+  "requires_maintenance": false,
+  "release_maintenance": false,
+  "plant_duration_s": 1200,
+  "parameters": [],
+  "desc": "대기 바스켓 분해 세척"
+ },
+ {
+  "work_master_id": "WM-FLD-JACKET-DESCALE",
+  "equipment_id": "HX-102",
+  "kind": "field",
+  "field_task": "jacket_descale",
+  "requires_maintenance": true,
+  "release_maintenance": false,
+  "plant_duration_s": 7200,
+  "parameters": [],
+  "desc": "재킷 냉각 코일 화학 세정"
+ },
+ {
+  "work_master_id": "WM-FLD-BEARING-REPLACE",
+  "equipment_id": "M-101",
+  "kind": "field",
+  "field_task": "bearing_replace",
+  "requires_maintenance": true,
+  "release_maintenance": false,
+  "plant_duration_s": 2700,
+  "parameters": [],
+  "desc": "교반기 베어링 점검·교체"
+ },
+ {
+  "work_master_id": "WM-FLD-SHAFT-ALIGN",
+  "equipment_id": "M-101",
+  "kind": "field",
+  "field_task": "shaft_align",
+  "requires_maintenance": true,
+  "release_maintenance": false,
+  "plant_duration_s": 1800,
+  "parameters": [],
+  "desc": "교반기 축 정렬 점검·조정"
+ },
+ {
+  "work_master_id": "WM-FLD-PT101-CALIBRATE",
+  "equipment_id": "R-101",
+  "kind": "field",
+  "field_task": "pt_calibrate",
+  "requires_maintenance": false,
+  "release_maintenance": false,
+  "plant_duration_s": 1200,
+  "parameters": [],
+  "desc": "PT-101 비교 교정(계기 격리)"
+ },
+ {
+  "work_master_id": "WM-FLD-CV101-REPAIR",
+  "equipment_id": "CV-101",
+  "kind": "field",
+  "field_task": "cv_repair",
+  "requires_maintenance": true,
+  "release_maintenance": false,
+  "plant_duration_s": 3600,
+  "parameters": [],
+  "desc": "배출 밸브 분해 정비"
+ },
+ {
+  "work_master_id": "WM-FLD-LOTO-RELEASE",
+  "equipment_id": "PLC-01",
+  "kind": "field",
+  "field_task": "release_lockout",
+  "requires_maintenance": true,
+  "release_maintenance": true,
+  "plant_duration_s": 300,
+  "parameters": [],
+  "desc": "작업 완료 확인·격리 해제·정비 해제 키"
  }
 ]

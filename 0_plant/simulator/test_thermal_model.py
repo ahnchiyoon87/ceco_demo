@@ -18,6 +18,7 @@ def plant():
     model.temp_c = model.jacket_c = 100.0
     model.sp_temp_c = 70.0
     model.cmd_heater = model.cmd_pump = False
+    model.cmd_cooler = False          # 기본은 냉각 켜짐(발열 반응). 이 시험들은 꺼진 상태에서 시작한다
     model.sp_valve_open = 0
     return model
 
@@ -29,7 +30,7 @@ class ThermalModelTest(unittest.TestCase):
         for _ in range(120):
             baseline.step(1)
             cooling.step(1)
-        self.assertLess(cooling.temp_c, baseline.temp_c - 5)
+        self.assertLess(cooling.temp_c, baseline.temp_c - 3)   # 600 kW · 설비 120 s ≈ 4 K
         self.assertEqual(cooling.readings["TT-101"], cooling.temp_c)
         self.assertGreater(cooling.thermal["cooler_kw"], 0)
         self.assertEqual(baseline.thermal["cooler_kw"], 0)
@@ -54,7 +55,8 @@ class ThermalModelTest(unittest.TestCase):
             heating.step(1)
             mitigated.step(1)
         self.assertGreater(heating.temp_c, 100)
-        self.assertLess(mitigated.temp_c, 100)
+        # 냉각기(600 kW)는 고착 히터(700 kW)를 다 이기지 못한다: 늦출 뿐 회복이 아니다
+        self.assertLess(mitigated.temp_c, heating.temp_c - 3)
         self.assertIn("heater_stuck", mitigated.faults)
         self.assertFalse(mitigated.cmd_heater)
         self.assertEqual(mitigated.thermal["heater_kw"], CONFIG["physics"]["heater"]["max_power_kw"])

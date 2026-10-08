@@ -35,7 +35,8 @@ equipment_types:
   ControlValve: { description: "제어 밸브" }
   Agitator:    { description: "교반기(전동기)" }
   Heater:      { description: "재킷 히터" }
-  Cooler:      { description: "냉각기" }
+  Cooler:      { description: "냉각기(재킷 냉각 코일)" }
+  Strainer:    { description: "이중 스트레이너(A/B 바스켓)" }
   Controller:  { description: "제어기(soft-PLC)" }
 
 # ── 설비 개체 ───────────────────────────────────────────────────────────────
@@ -57,6 +58,7 @@ assets:
       - { tag: PT-101, class: pressure,    unit: "barg",  desc: "반응기 압력", lsl: null, usl: 6.0,  plc_ir: 8 }
       - { tag: pH-101, class: analytic,    unit: "pH",    desc: "반응기 pH",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }
       - { tag: CT-101, class: analytic,    unit: "mS/cm", desc: "전도도",      lsl: null, usl: null, plc_ir: 22 }
+      - { tag: PT-102, class: pressure,    unit: "barg",  desc: "반응기 압력(독립 계기)", lsl: null, usl: 6.0, plc_ir: 36 }
     commands:
       - { name: temp_sp, control_point: temp_sp_x10, code: 7, kind: setpoint, unit: "degC", scale: 10, min: 20.0, max: 100.0, desc: "반응기 온도 설정값" }
   - id: HX-101
@@ -69,9 +71,17 @@ assets:
   - id: HX-102
     type: Cooler
     name: "냉각기"
-    signals: []
+    signals:
+      - { tag: FT-103, class: flow,        unit: "m3/h", desc: "냉각수 유량",      lsl: 20.0, usl: null, plc_ir: 28 }
+      - { tag: TT-103, class: temperature, unit: "degC", desc: "냉각수 공급 온도", lsl: null, usl: 28.0, plc_ir: 30 }
+      - { tag: TT-104, class: temperature, unit: "degC", desc: "냉각수 회수 온도", lsl: null, usl: 45.0, plc_ir: 32 }
     commands:
       - { name: enable, control_point: cooler_enable, code: 4, kind: switch, desc: "가상 냉각기 Enable" }
+  - id: ST-103
+    type: Strainer
+    name: "냉각수 스트레이너"
+    signals:
+      - { tag: PDT-103, class: pressure, unit: "bar", desc: "스트레이너 차압", lsl: null, usl: 0.8, plc_ir: 34 }
   - id: P-101
     type: Pump
     name: "공급 펌프"
@@ -119,6 +129,8 @@ controller:
 
 # ── 작업 정의(OPC UA ISA-95 Job Control 의 WorkMaster). 외부 시스템(우리 AI)이 요청할 수 있는 것만 ──
 #   parameters 가 없으면 고정 값 명령. 있으면 요청의 job_order_parameters 로 값과 범위를 받는다.
+#   field_task 가 있으면 PLC 명령이 아니라 현장 정비 작업이다: OT 수신기가 가상 정비팀에게 넘긴다.
+#   requires_maintenance: PLC 정비 모드(원격 명령 차단)가 켜져 있어야 받는다. 정비 해제는 따로 WM-FLD-LOTO-RELEASE(작업 완료 확인 뒤 정비팀이 해제 키).
 work_masters:
   - id: WM-M101-STOP
     equipment_id: M-101
@@ -136,6 +148,41 @@ work_masters:
     parameters:
       - { id: temp_sp_c, min: 60.0, max: 80.0, unit: "degC" }
     desc: "반응기 온도 설정값 변경(운전 범위 안 조정)"
+  - id: WM-M101-START
+    equipment_id: M-101
+    command: run
+    value: 1
+    desc: "교반기 재기동(정비 뒤)"
+  - id: WM-P101-SPEED
+    equipment_id: P-101
+    command: speed_sp
+    parameters:
+      - { id: pump_speed_pct, min: 20.0, max: 80.0, unit: "%" }
+    desc: "공급 펌프 속도 변경(부하 조정)"
+  - id: WM-P101-STOP
+    equipment_id: P-101
+    command: run
+    value: 0
+    desc: "공급 펌프 정지"
+  - id: WM-P101-START
+    equipment_id: P-101
+    command: run
+    value: 1
+    desc: "공급 펌프 재기동"
+  - id: WM-PLC-MAINT-ON
+    equipment_id: PLC-01
+    command: maintenance
+    value: 901
+    desc: "정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)"
+  # ── 현장 정비(가상 정비팀) ──
+  - { id: WM-FLD-STRAINER-SWITCH, equipment_id: ST-103, field_task: strainer_switch, desc: "냉각수 스트레이너 예비 바스켓 전환" }
+  - { id: WM-FLD-STRAINER-CLEAN,  equipment_id: ST-103, field_task: strainer_clean,  desc: "대기 바스켓 분해 세척" }
+  - { id: WM-FLD-JACKET-DESCALE,  equipment_id: HX-102, field_task: jacket_descale,  requires_maintenance: true, desc: "재킷 냉각 코일 화학 세정" }
+  - { id: WM-FLD-BEARING-REPLACE, equipment_id: M-101,  field_task: bearing_replace, requires_maintenance: true, desc: "교반기 베어링 점검·교체" }
+  - { id: WM-FLD-SHAFT-ALIGN,     equipment_id: M-101,  field_task: shaft_align,     requires_maintenance: true, desc: "교반기 축 정렬 점검·조정" }
+  - { id: WM-FLD-PT101-CALIBRATE, equipment_id: R-101,  field_task: pt_calibrate,    desc: "PT-101 비교 교정(계기 격리)" }
+  - { id: WM-FLD-CV101-REPAIR,    equipment_id: CV-101, field_task: cv_repair,       requires_maintenance: true, desc: "배출 밸브 분해 정비" }
+  - { id: WM-FLD-LOTO-RELEASE,    equipment_id: PLC-01, field_task: release_lockout, requires_maintenance: true, release_maintenance: true, desc: "작업 완료 확인·격리 해제·정비 해제 키" }
 
 # ── 요청자·승인자 허용 목록(DMZ 게이트웨이 경계 검사) ──
 requesters:                    # 요청을 만드는 외부 시스템 ID 와 종류(요청 필드 requester·requester_type 이 둘 다 맞아야 한다)

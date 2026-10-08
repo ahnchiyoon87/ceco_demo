@@ -84,10 +84,16 @@ def correlation_key(alarm: Alarm) -> str:
     # Explicit educational AR-100 mapping, not a general diagnosis rule.
     # Unknown multivariate alarms are intentionally NOT assigned to the mixer.
     group = f"{alarm.tag}:{alarm.alert_type}"
-    if (alarm.site == "AR-100" and alarm.device == "reactor-line-01"
-            and alarm.tag in {"IT-102", "VT-101"}
+    # 한 고장이 여러 태그 알람으로 나타나는 묶음(온톨로지 증상의 알람 시그니처와 같은 범위)
+    line = alarm.site == "AR-100" and alarm.device == "reactor-line-01"
+    if (line and alarm.tag in {"IT-102", "VT-101"}
             and alarm.alert_type in {"CEP_BEARING", "THRESHOLD_USL", "ZSCORE"}):
         group = "mixer-current-vibration-v1"
+    elif (line and alarm.tag in {"TT-101", "TT-102", "TT-104", "FT-103", "PDT-103"}
+            and alarm.alert_type in {"THRESHOLD_USL", "THRESHOLD_LSL", "ZSCORE"}):
+        group = "reactor-thermal-cooling-v1"
+    elif line and alarm.tag in {"PT-101", "PT-102", "LT-102"} and alarm.alert_type == "THRESHOLD_USL":
+        group = "reactor-pressure-v1"
     return json.dumps([alarm.site, alarm.device, group], separators=(",", ":"))
 
 
@@ -105,7 +111,7 @@ def ingest(alarm: Alarm):
         if row:
             return {"incident": row, "duplicate": True, "correlated": False}
         row = conn.execute("""SELECT * FROM manufacturing_incidents
-            WHERE correlation_key=%s AND status NOT IN ('closed','rejected')
+            WHERE correlation_key=%s AND status NOT IN ('closed','rejected','resolved')
             AND first_ts <= %s AND last_ts >= %s
             ORDER BY last_ts DESC LIMIT 1 FOR UPDATE""", (group, alarm.ts+gap_ns, alarm.ts-gap_ns)).fetchone()
         correlated = row is not None
@@ -139,7 +145,11 @@ def ingest(alarm: Alarm):
 @router.get("/incidents")
 def list_incidents():
     with connection() as conn:
-        rows = conn.execute("SELECT * FROM manufacturing_incidents ORDER BY created_at DESC LIMIT 100").fetchall()
+        # has_limit_alarm: 상·하한 초과·CEP 같은 실제 한계 이탈 경보가 있는가(없으면 통계 급변만 있는 참고 신호 — 자동 분석 대상 아님)
+        rows = conn.execute("""SELECT i.*, EXISTS (SELECT 1 FROM manufacturing_events e WHERE e.incident_id=i.id
+                    AND e.kind IN ('alarm_received','alarm_correlated')
+                    AND e.payload->>'alert_type' IN ('THRESHOLD_USL','THRESHOLD_LSL','CEP_BEARING')) AS has_limit_alarm
+            FROM manufacturing_incidents i ORDER BY i.created_at DESC LIMIT 100""").fetchall()
     return {"items": rows, "limit": 100}
 
 

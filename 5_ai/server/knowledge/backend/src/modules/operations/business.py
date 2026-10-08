@@ -25,6 +25,7 @@ log = logging.getLogger("business")
 REG = json.load(open(os.environ.get("REGISTRY_TAGS", "/opt/ar100/registry/tags.json"), encoding="utf-8"))
 WM = {w["work_master_id"]: w for w in json.load(open(os.environ.get("REGISTRY_WM", "/opt/ar100/registry/work_masters.ot.json"), encoding="utf-8"))}
 ACK_S, REOBS_S, OP_WAIT_S, EXPIRY_S = 5.0, 10.0, 60.0, 30.0
+SCALE = float(os.environ.get("PHYSICS_TIME_SCALE", "600"))   # 현장 정비 시간(설비 초) → 벽시계
 ALIVE = __import__("pathlib").Path("/tmp/alive")   # compose healthcheck 가 수정 시각을 본다
 BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
 producer = Producer({"bootstrap.servers": BOOTSTRAP, "linger.ms": 5})
@@ -76,11 +77,31 @@ def on_response(conn, r: dict) -> None:
     audited(conn, "system", "ot-receiver", f'response_{r["stage"]}', jid, r.get("status"), {"reason": r.get("reason")})
 
 
-EXPECT = {  # 재관측: 작업 정의 → (설비, 상태 이름, 기대값을 만드는 함수)
-    "WM-M101-STOP": ("M-101", "run", lambda req: False),
-    "WM-HX102-ENABLE": ("HX-102", "enable", lambda req: True),
-    "WM-R101-TEMPSP": ("R-101", "temp_sp", lambda req: next(p["value"] for p in req["job_order_parameters"] if p["id"] == "temp_sp_c")),
-}
+def _expectation(w: dict):
+    """재관측 기대값을 작업 정의(등록부 생성본)에서 만든다: 스위치 = 고정값, 설정값 = 요청 파라미터, 정비 모드 켜기 = 참."""
+    kind = w.get("kind")
+    if kind == "switch":
+        return (w["equipment_id"], w["command"], lambda req, v=bool(w["fixed_value"]): v)
+    if kind == "setpoint":
+        pid = w["parameters"][0]["id"]
+        return (w["equipment_id"], w["command"],
+                lambda req, pid=pid: next(p["value"] for p in req["job_order_parameters"] if p["id"] == pid))
+    if kind == "maintenance_on":
+        return ("PLC-01", "maintenance", lambda req: True)
+    return None
+
+
+EXPECT = {wid: e for wid, w in WM.items() if (e := _expectation(w))}   # 재관측: 작업 정의 → (설비, 상태 이름, 기대값)
+FIELD_GRACE_S = 30.0   # 현장 정비: 설비 작업 시간(÷ 배속) + 이 여유 안에 정비팀 결과(field)가 없으면 결과 미확인
+
+
+def same(current, expected) -> bool:
+    if isinstance(expected, bool) or current is None:
+        return current == expected
+    try:
+        return abs(float(current) - float(expected)) <= 0.6   # 설정값은 PLC 정수 레지스터로 반올림된다
+    except (TypeError, ValueError):
+        return False
 
 
 def timers(conn) -> None:
@@ -109,20 +130,39 @@ def timers(conn) -> None:
             elif t - a > ACK_S and not has("ack_timeout"):
                 note(conn, jid, "ack_timeout", "UNKNOWN", "ACK 5 s 안에 수신 응답(ⓑ) 없음 — 응답 없음(결과 모름). 다시 보내지 않는다")
             continue
-        if has("receipt:REJECTED") or has("operator:REJECTED") or has("operator:OPERATOR_REJECTED") or has("plc:REJECTED"):
+        if (has("receipt:REJECTED") or has("operator:REJECTED") or has("operator:OPERATOR_REJECTED") or has("plc:REJECTED")
+                or has("field:REJECTED")):
             continue
         wait = at("receipt:OPERATOR_WAIT")
         if wait is not None and not has("operator:") and t - wait > OP_WAIT_S + EXPIRY_S + 5:
             note(conn, jid, "unconfirmed", "UNKNOWN", "운전원 대기 뒤 60 + 30 + 5 s 안에 운전원·PLC 응답(ⓒ) 없음 — 결과 미확인")
             continue
+        w = WM.get(row["work_master_id"], {})
+        if w.get("kind") == "field":
+            # 현장 정비: 정비팀 결과(field 단계)가 곧 재관측이다. 효과(설비 회복)는 AI 쪽 회복 판정이 따로 본다.
+            accepted = at("receipt:AUTO_ACCEPTED") or at("operator:OPERATOR_ACCEPTED")
+            done = next(((k, v) for k, v in ev.items() if k.startswith("field:")), None)
+            if done:
+                status = done[0].split(":", 1)[1]
+                if status in ("DONE", "DONE_NO_FAULT"):
+                    note(conn, jid, "observed", "OK" if status == "DONE" else "NO_FAULT_FOUND",
+                         f"현장 정비 완료({w.get('field_task')}, {status})", {"task": w.get("field_task"), "field_status": status})
+                elif not has("unconfirmed"):
+                    note(conn, jid, "unconfirmed", "UNKNOWN" if status == "UNKNOWN" else "REJECTED",
+                         f"현장 정비 결과: {status}", {"task": w.get("field_task"), "field_status": status})
+            elif accepted and t - accepted > float(w.get("plant_duration_s", 0)) / SCALE + FIELD_GRACE_S:
+                note(conn, jid, "unconfirmed", "UNKNOWN", "현장 정비 결과(field)가 시간 안에 오지 않음 — 결과 미확인. 다시 보내지 않는다")
+            continue
         plc_ok = at("plc:ACCEPTED")
         if plc_ok is None:
+            continue
+        if row["work_master_id"] not in EXPECT:
             continue
         asset, name, want = EXPECT[row["work_master_id"]]
         expected = want(row)
         with lock:
             current = state.get((asset, name))
-        if current == expected:
+        if same(current, expected):
             note(conn, jid, "observed", "OK", f"재관측: {asset}/{name} = {current}", {"asset": asset, "name": name, "value": current})
         elif t - plc_ok > REOBS_S:
             note(conn, jid, "command_disagree", "DISAGREE",

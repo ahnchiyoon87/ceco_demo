@@ -68,6 +68,9 @@ def resolve_model_profile(
 
 
 def should_use_openai_responses_api(profile: ModelProfile) -> bool:
-    """Use the OpenAI Responses API for official GPT-5 chat models."""
+    """Use the OpenAI Responses API for official GPT-5/GPT-6 reasoning models.
 
-    return profile.is_openai and not profile.base_url and profile.model_name.startswith("gpt-5")
+    gpt-6-luna rejects function tools together with reasoning_effort on /v1/chat/completions
+    (OpenAI 2026-10-06 실측), so tool-using agents must go through /v1/responses."""
+
+    return profile.is_openai and not profile.base_url and profile.model_name.startswith(("gpt-5", "gpt-6"))

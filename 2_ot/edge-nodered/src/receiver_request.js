@@ -2,6 +2,8 @@
 // 입력 = 스키마 검사를 통과한 작업 요청. 검사: 중복(QoS 1)·허용 작업·설비·파라미터 범위·만료·모드·정비 모드.
 // REMOTE_AUTO → 자동 수용(StoreAndStart), REMOTE_MANUAL → 운전원 대기로 저장(Store), 그 밖 → 거부.
 // 결정과 제어기 명령 토픽 발행까지만 한다(설비 쓰기는 엣지 → PLC 길).
+// 현장 정비 작업(kind field)은 PLC 명령이 아니다: 수용되면 가상 정비팀 작업 지시(_crew)로 넘긴다.
+// 정비 모드가 필요한 작업은 정비 모드일 때만 받고, 그 밖의 원격 요청은 정비 모드에서 거부한다.
 const reg = global.get('registry');
 const wm = global.get('workMastersOt');
 const crypto = global.get('crypto');
@@ -41,12 +43,18 @@ if (!(Number(req.expires_at) > now)) return reject('EXPIRED');
 const plc = flow.get('plc') || {};
 if (plc.run_state !== 'RUN' || plc.field_comm === false) return reject('PLC_UNAVAILABLE');
 if (plc.mode === 'LOCAL') return reject('LOCAL_MODE');
-if (plc.maintenance === true) return reject('MAINTENANCE');
+const field = w.kind === 'field';
+if (field && w.requires_maintenance && plc.maintenance !== true) return reject('MAINTENANCE_REQUIRED');
+if (!field && plc.maintenance === true) return reject('MAINTENANCE');
 const hash = parseInt(crypto.createHash('sha256').update(req.job_order_id).digest('hex').slice(0, 8), 16) || 1;
 const job = { job_order_id: req.job_order_id, work_master_id: w.work_master_id, equipment_id: w.equipment_id, desc: w.desc,
     code: w.code, value, command_topic: w.command_topic, job_hash: hash, received_at: now, expires_at: Math.floor(Number(req.expires_at)),
+    kind: w.kind || 'control', field_task: w.field_task, release_maintenance: !!w.release_maintenance,
+    requires_maintenance: !!w.requires_maintenance,
     // 운전원 화면에 누가 보낸 요청인지 앞에 붙인다(요청자 종류·ID)
     context_summary: `[${String(req.requester_type).toUpperCase()} ${req.requester}] ` + (req.context ? String(req.context.summary || '').slice(0, 120) : '') };
+const crew = (j) => ({ _crew: { job_order_id: j.job_order_id, task: j.field_task, release_maintenance: j.release_maintenance } });
+if (plc.mode === 'REMOTE_AUTO' && field) return { batch: [resp('receipt', 'AUTO_ACCEPTED', 'REMOTE_AUTO'), crew(job)] };
 if (plc.mode === 'REMOTE_AUTO') {
     const cmd = { topic: w.command_topic, qos: 1, retain: false, payload: JSON.stringify({ job_order_id: job.job_order_id,
         code: job.code, value: job.value, expires_at: job.expires_at, operator_accepted: 0, job_hash: hash }) };

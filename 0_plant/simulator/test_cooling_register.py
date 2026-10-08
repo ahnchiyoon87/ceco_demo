@@ -18,6 +18,9 @@ class CoolingRegisterTest(unittest.TestCase):
 
     def test_coil_three_controls_cooling_and_snapshot_reports_actual_heat_removed(self):
         sim = self.model()
+        self.assertTrue(sim.snapshot()["commands"]["cooler_enable"])   # 발열 반응: 기본은 냉각 켜짐
+        sim.store.setValues(FC_COIL, 3, [0])
+        sim.scan()
         self.assertFalse(sim.snapshot()["commands"]["cooler_enable"])
         sim.store.setValues(FC_COIL, 3, [1])
         sim.scan()

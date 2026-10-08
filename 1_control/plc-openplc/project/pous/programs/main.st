@@ -79,7 +79,7 @@ PROGRAM main
     cmd_pump : BOOL := TRUE;
     cmd_agitator : BOOL := TRUE;
     cmd_heater : BOOL := TRUE;
-    cmd_cooler : BOOL := FALSE;
+    cmd_cooler : BOOL := TRUE;     (* 발열 반응: 정상 운전에서 냉각 상시 켜짐 *)
     sp_pump : REAL := 60.0;
     sp_valve : REAL := 45.0;
     sp_temp : REAL := 72.0;

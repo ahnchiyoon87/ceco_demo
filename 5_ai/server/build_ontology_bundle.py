@@ -98,7 +98,8 @@ class Batch:
 
 
 def knowledge():
-    data = {"components": [], "symptoms": [], "failure_modes": [], "actions": []}
+    data = {"components": [], "symptoms": [], "failure_modes": [], "actions": [],
+            "kpis": [], "influences": [], "inputs": [], "decisions": []}
     for path in sorted((root / "5_ai/ontology/v2/kg").glob("*.yaml")):
         part = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for key in data:
@@ -111,12 +112,18 @@ def new_documents():
     return [p for p in sorted((root / "5_ai" / "manuals").glob("*.md")) if p.stem not in V1_DOCS]
 
 
+def registry_assets():
+    reg = yaml.safe_load((root / "shared/registry/equipment.yaml").read_text(encoding="utf-8"))
+    return {a["id"] for a in reg["assets"] if a["type"] != "Controller"}
+
+
 def arm_b():
     batch = Batch()
+    assets = registry_assets()
     for path in new_documents():
         doc_id, meta = batch.document(path)
         for target in meta.get("applies_to", []):
-            if target in ("M-101", "R-101"):
+            if target in assets:
                 batch.rel(batch.asset(target), doc_id, "HAS_PROCEDURE")
     return batch.dump(["교육용 가상설비 고장 지식이며 실물 FMEA 승인 문서가 아님"])
 
@@ -124,6 +131,7 @@ def arm_b():
 def arm_c():
     batch, kg = Batch(), knowledge()
     assets = {"M-101", "R-101", "P-101", "TK-101"}
+    plant_cfg = yaml.safe_load((root / "0_plant/simulator/plant.yaml").read_text(encoding="utf-8"))
     inventory = export_inventory(root / "shared/registry/equipment.yaml")
     points = {n["properties"]["name"]: n for n in inventory["nodes"] if n["class"] == "ControlPoint"}
     aliases = {"temp_sp_c": "temp_sp_x10"}   # 온톨로지 문장은 °C 설정값, 제어점 이름은 temp_sp_x10(등록부 control_point)
@@ -177,7 +185,93 @@ def arm_c():
             batch.rel(aid, f"v2/symptom/{sym}", "MITIGATES")
         for ref in action["procedure"]:
             batch.rel(aid, batch.section(ref), "PROCEDURE")
-    return batch.dump(["고장모드 확인 방법은 판정 규칙이 아니라 근거 설명이다(PROTOCOL §2)"])
+    decision_layer(batch, kg, inventory, plant_cfg)
+    return batch.dump(["고장모드 확인 방법은 판정 규칙이 아니라 근거 설명이다(PROTOCOL §2)",
+                       "손익 식의 수치는 기업 시스템 사실값(enterprise.fact)을 이름으로 읽는다. 교육용 가상 기업 데이터"])
+
+
+NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+FUNCS = {"max", "min", "abs", "round", "and", "or", "not"}
+
+
+def expr_names(text):
+    return {n for n in NAME.findall(str(text)) if n not in FUNCS}
+
+
+def decision_layer(batch, kg, inventory, plant_cfg):
+    """KPI·결정·대안·규칙·단계·회복 기준(BSC·DMN·BPMN 준용). 식은 문자열로 두고 엔진이 사실값으로 계산한다."""
+    as_json = lambda v: json.dumps(v, ensure_ascii=False, sort_keys=True)
+    facts = {k: i["system"] for i in kg["inputs"] for k in i["keys"]}
+    tasks = set(plant_cfg.get("field_tasks", {}))
+    wms = {n["properties"]["name"]: n for n in inventory["nodes"] if n["class"] == "WorkMaster"}
+    for k in kg["kpis"]:
+        kid = batch.node(f"v2/kpi/{k['id']}", "KPI", {"kpi_id": k["id"], "name": k["name"], "unit": k["unit"],
+                         "perspective": k["perspective"], "owner": k["owner"], "description": k["description"]})
+        dept = batch.node(f"v2/department/{k['owner']}", "Department", {"name": k["owner"]})
+        batch.rel(kid, dept, "OWNED_BY")
+    for i in kg["influences"]:
+        batch.rels.append({"from_id": f"v2/kpi/{i['from']}", "to_id": f"v2/kpi/{i['to']}", "type": "INFLUENCES",
+                           "properties": {"sign": i["sign"], "note": i["note"]}})
+    for key, system in facts.items():
+        batch.node(f"v2/input/{key}", "InputData", {"key": key, "system": system, "source": "enterprise.fact"})
+
+    def check_names(text, where, extra=()):
+        for n in expr_names(text):
+            ok = (n in facts or n in extra or n.split("_", 1)[0] in {"o", "usl", "lsl", "c", "b", "opt", "d", "a"}
+                  or (n.startswith("t_") and n[2:] in tasks) or n in {"i_interlock", "i_maintenance"})
+            if not ok:
+                raise SystemExit(f"{where}: 알 수 없는 이름 '{n}' (inputs·field_tasks·접두사 규칙 밖)")
+        return {n for n in expr_names(text) if n in facts}
+
+    for d in kg["decisions"]:
+        did = batch.node(f"v2/decision/{d['id']}", "Decision", {
+            "decision_id": d["id"], "name": d["name"], "question": d["question"], "hit_policy": "RANK_TOTAL",
+            "recovery_all": as_json(d["recovery"]["all"]), "recovery_hold_s": d["recovery"]["hold_s"],
+            "recovery_timeout_s": d["recovery"]["timeout_s"], "shared_derived": as_json(d.get("shared_derived", {}))})
+        batch.rel(f"v2/symptom/{d['triggered_by']}", did, "TRIGGERS_DECISION")
+        batch.rel(did, batch.section(d["recovery"]["section"]), "VERIFIED_BY")
+        used = set()
+        for name, text in d.get("shared_derived", {}).items():
+            used |= check_names(text, f"{d['id']}.shared_derived.{name}")
+        for text in d["recovery"]["all"]:
+            used |= check_names(text, f"{d['id']}.recovery")
+        for r in d.get("rules", []):
+            rid = batch.node(f"v2/rule/{r['id']}", "Rule", {"rule_id": r["id"], "when": r["when"], "then": r["then"],
+                                                           "reason": r["reason"]})
+            batch.rel(did, rid, "HAS_RULE")
+            batch.rel(rid, batch.section(r["policy"]), "ENCODES")
+            used |= check_names(r["when"], r["id"])
+        for o in d["options"]:
+            oid = batch.node(f"v2/option/{o['id']}", "Option", {
+                "option_id": o["id"], "name": o["name"], "kind": o["kind"], "params": as_json(o.get("params", {})),
+                "derived": as_json(o.get("derived", {}))})
+            batch.rel(did, oid, "HAS_OPTION")
+            for fm in o["treats"]:
+                batch.rel(oid, f"v2/fm/{fm}", "TREATS")
+            for ref in o.get("procedure", []):
+                batch.rel(oid, batch.section(ref), "PROCEDURE")
+            for name, text in o.get("derived", {}).items():
+                used |= check_names(text, f"{o['id']}.derived.{name}")
+            for kpi, text in o["impacts"].items():
+                if f"v2/kpi/{kpi}" not in batch.ids:
+                    raise SystemExit(f"{o['id']}: 없는 KPI {kpi}")
+                used |= check_names(text, f"{o['id']}.{kpi}")
+                batch.rels.append({"from_id": oid, "to_id": f"v2/kpi/{kpi}", "type": "IMPACTS", "properties": {"expr": text}})
+            for n, st in enumerate(o.get("steps", []), 1):
+                props = {"order": n, "kind": st["kind"], "say": st["say"],
+                         "params": as_json(st.get("params", {})), "until": st.get("until"), "hours": st.get("hours"),
+                         "timeout_s": st.get("timeout_s"), "abort_on_no_fault": st.get("abort_on_no_fault", True)}
+                sid = batch.node(f"v2/step/{o['id']}/{n}", "Step", {k: v for k, v in props.items() if v is not None})
+                batch.rel(oid, sid, "HAS_STEP")
+                for text in [*st.get("params", {}).values(), st.get("until") or "", st.get("hours") or ""]:
+                    used |= check_names(text, f"{o['id']}.step{n}")
+                if st["kind"] in ("control", "field"):
+                    if st["wm"] not in wms:
+                        raise SystemExit(f"{o['id']}.step{n}: 등록부에 없는 작업 정의 {st['wm']}")
+                    node = wms[st["wm"]]
+                    batch.rel(sid, batch.node(node["id"], "WorkMaster", node["properties"]), "USES_WORK_MASTER")
+        for key in sorted(used):
+            batch.rel(did, f"v2/input/{key}", "REQUIRES_INPUT")
 
 
 if __name__ == "__main__":

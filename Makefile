@@ -8,14 +8,18 @@ SIM := http://localhost:$(call env,PORT_SIM_API)
 AUTH := -u $(call env,INSTRUCTOR_USER):$(call env,INSTRUCTOR_PASSWORD)
 FAULT = curl -s $(AUTH) -XPOST $(SIM)/fault -H 'Content-Type: application/json'
 
-.PHONY: help up down clean ps logs urls regen train jobs verify state \
-        fault-dropout fault-spike fault-noise fault-bearing fault-drift fault-heater fault-cooling fault-clear
+.PHONY: help up up-full down clean ps logs urls regen train jobs verify state \
+        fault-dropout fault-spike fault-noise fault-bearing fault-drift fault-heater fault-cooling fault-clear \
+        scenario-1 scenario-1v scenario-2 scenario-2v scenario-3 scenario-3v
 
 help:  ## 사용 가능한 명령
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-up:  ## 전체 기동(직접 만드는 이미지는 빌드, 모델은 학습기가 기동 때 만든다)
+up:  ## 기동(감시 부품 제외 — 데모·실습 기본)(직접 만드는 이미지는 빌드, 모델은 학습기가 기동 때 만든다)
 	docker compose up -d --build
+
+up-full:  ## 인프라 감시까지 전체 기동(Grafana·Prometheus·감시 도구 포함)
+	docker compose --profile monitoring up -d --build
 
 down:  ## 정지(볼륨 보존)
 	docker compose down
@@ -70,6 +74,18 @@ fault-heater:  ## 히터 출력 고착 → TT 상승
 	@$(FAULT) -d '{"scenario":"heater_stuck"}'; echo
 fault-cooling:  ## 냉각 능력 상실
 	@$(FAULT) -d '{"scenario":"cooling_loss"}'; echo
+scenario-1:  ## 정비 시나리오 1: 냉각수 스트레이너 막힘(유량↓·차압↑ → 반응기 온도↑)
+	@$(FAULT) -d '{"scenario":"strainer_fouling"}'; echo
+scenario-1v:  ## 시나리오 1 변형: 재킷 전열면 스케일(유량 정상 · 열이 안 넘어감)
+	@$(FAULT) -d '{"scenario":"jacket_fouling"}'; echo
+scenario-2:  ## 정비 시나리오 2: 교반기 베어링 마모(전류 먼저 → 진동)
+	@$(FAULT) -d '{"scenario":"bearing_wear"}'; echo
+scenario-2v:  ## 시나리오 2 변형: 축 정렬 불량(진동만 크게)
+	@$(FAULT) -d '{"scenario":"shaft_misalignment"}'; echo
+scenario-3:  ## 정비 시나리오 3: PT-101 압력계 드리프트(오지시 → 인터록 오트립)
+	@$(FAULT) -d '{"scenario":"pt_drift"}'; echo
+scenario-3v:  ## 시나리오 3 변형: 배출 밸브 고착(실제 고압, 두 계기 일치)
+	@$(FAULT) -d '{"scenario":"outlet_valve_stick"}'; echo
 fault-clear:  ## 전체 고장 해제
 	@curl -s $(AUTH) -XPOST $(SIM)/fault/clear; echo
 

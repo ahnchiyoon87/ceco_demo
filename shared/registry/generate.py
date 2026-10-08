@@ -82,8 +82,19 @@ def build() -> dict[pathlib.Path, str]:
 
     ot_table, allow_table = [], []
     for wm in REG["work_masters"]:
-        c = cmd_index[(wm["equipment_id"], wm["command"])]
         params = wm.get("parameters", [])
+        if wm.get("field_task"):
+            # 현장 정비 작업: PLC 명령이 아니다. OT 수신기가 가상 정비팀에게 넘긴다(작업 정의는 plant.yaml field_tasks).
+            task = PLANT["field_tasks"][wm["field_task"]]
+            ot_table.append({
+                "work_master_id": wm["id"], "equipment_id": wm["equipment_id"], "kind": "field",
+                "field_task": wm["field_task"], "requires_maintenance": bool(wm.get("requires_maintenance")),
+                "release_maintenance": bool(wm.get("release_maintenance")), "plant_duration_s": task["duration_s"],
+                "parameters": [], "desc": wm["desc"]})
+            allow_table.append({"work_master_id": wm["id"], "equipment_id": wm["equipment_id"], "parameters": [],
+                                "kind": "field", "desc": wm["desc"]})
+            continue
+        c = cmd_index[(wm["equipment_id"], wm["command"])]
         ot_table.append({
             "work_master_id": wm["id"], "equipment_id": wm["equipment_id"], "command": wm["command"],
             "code": c["code"], "kind": c["kind"], "scale": c.get("scale", 1),
@@ -92,12 +103,13 @@ def build() -> dict[pathlib.Path, str]:
         allow_table.append({
             "work_master_id": wm["id"], "equipment_id": wm["equipment_id"],
             "parameters": [{"id": p["id"], "min": p["min"], "max": p["max"], "unit": p.get("unit")} for p in params],
-            "desc": wm["desc"]})
+            "kind": "control", "desc": wm["desc"]})
 
     reg_doc = {"hierarchy": H, "line_prefix": LINE_PREFIX, "tags": tags, "commands": commands,
                "plc": {"asset": "PLC-01", "host": "plc", "port": 502, "unit_id": 1,
                        # 엣지가 읽는 두 블록(각각 한 번의 Modbus 요청): 계측값·순번·설비 시각 / 설정값·상태·ACK
-                       "read_values": {"fc": 4, "start": 0, "count": 28, "seq_word": 24, "pts_word": 26},
+                       "read_values": {"fc": 4, "start": 0, "count": max(max(t["plc_ir"] for t in tags) + 2, 28),
+                                       "seq_word": 24, "pts_word": 26},
                        "read_status": {"fc": 3, "start": 100, "count": 19,
                                        "fields": ["sp_pump", "sp_valve", "sp_temp_x10", "run", "mode", "maintenance",
                                                   "maint_operator", "interlock", "field_comm", "estop", "outputs",
@@ -181,18 +193,19 @@ def build() -> dict[pathlib.Path, str]:
     out[ROOT / "4_it" / "detection-flink" / "sql" / "tag_limits.csv"] = "\n".join(csv_lines) + "\n"
 
     sql = ["-- shared/registry/generate.py 가 shared/registry/equipment.yaml 에서 생성. 손으로 고치지 않는다.",
+           "-- 이미 있는 DB 에 다시 실행해도 된다(있는 행은 건너뛴다): 등록부에 추가한 설비·신호·작업 정의만 들어간다.",
            "SET search_path TO registry;"]
     q = lambda v: "NULL" if v is None else ("'" + str(v).replace("'", "''") + "'" if isinstance(v, str) else str(v))
     for a in REG["assets"]:
         sql.append(f"INSERT INTO equipment(id, type, name, site, area, line) VALUES "
-                   f"({q(a['id'])},{q(a['type'])},{q(a['name'])},{q(H['site'])},{q(H['area'])},{q(H['line'])});")
+                   f"({q(a['id'])},{q(a['type'])},{q(a['name'])},{q(H['site'])},{q(H['area'])},{q(H['line'])}) ON CONFLICT DO NOTHING;")
     for t in tags:
         sql.append(f"INSERT INTO signal(tag, equipment_id, class, unit, lsl, usl, deadband, scan_s, max_interval_s, topic) VALUES "
                    f"({q(t['tag'])},{q(t['asset'])},{q(t['class'])},{q(t['unit'])},{q(t['lsl'])},{q(t['usl'])},"
-                   f"{t['deadband']},{t['scan_s']},{t['max_interval_s']},{q(t['topic'])});")
+                   f"{t['deadband']},{t['scan_s']},{t['max_interval_s']},{q(t['topic'])}) ON CONFLICT DO NOTHING;")
     for w in allow_table:
         sql.append(f"INSERT INTO work_master(id, equipment_id, parameters, description) VALUES "
-                   f"({q(w['work_master_id'])},{q(w['equipment_id'])},{q(json.dumps(w['parameters'], ensure_ascii=False))}::jsonb,{q(w['desc'])});")
+                   f"({q(w['work_master_id'])},{q(w['equipment_id'])},{q(json.dumps(w['parameters'], ensure_ascii=False))}::jsonb,{q(w['desc'])}) ON CONFLICT DO NOTHING;")
     out[ROOT / "4_it" / "db-postgres" / "init" / "20_registry.sql"] = "\n".join(sql) + "\n"
     # 분석 alert 를 Alertmanager 로 넘길 때 쓰는 Bloblang 맵(IT 수집기): 태그 → 설비, 운전 여부 신호(switch 명령의 상태)
     asset_cases = "\n".join(f'    "{t["tag"]}" => "{t["asset"]}",' for t in tags)
@@ -314,7 +327,12 @@ def build_nodered(reg: dict) -> dict[pathlib.Path, str]:
     fn("receiver", "f_timer", "운전원 대기 60초·대기 목록", "receiver_timer", 460, 380, [["f_batch"]])
     mqtt_in("receiver", "in_ack", "PLC 요청 ACK", reg["plc"]["ack_request_topic"], "mqr", 180, 460, [["f_ack"]])
     fn("receiver", "f_ack", "PLC ACK → 응답(plc 단계)", "receiver_plc_ack", 460, 460, [["f_batch"]])
-    fn("receiver", "f_batch", "묶음 풀기", "batch", 1100, 220, [["mq_rout"]])
+    fn("receiver", "f_batch", "묶음 풀기(MQTT / 정비팀)", "batch", 1100, 220, [["mq_rout"], ["f_crew_req"]], outputs=2)
+    # 현장 정비 작업 → 가상 정비팀(가상설비 정비팀 접점, OT 안) → 결과를 field 단계 응답으로
+    fn("receiver", "f_crew_req", "정비팀 작업 지시", "crew_request", 1100, 320, [["http_crew"]])
+    add("receiver", "http_crew", "http request", 1300, 320, [["f_crew_resp"]], name="가상 정비팀", method="use", ret="txt",
+        paytoqs="ignore", url="", tls="", persist=False, proxy="", insecureHTTPParser=False, authType="", senderr=False, headers=[])
+    fn("receiver", "f_crew_resp", "정비 결과 → 응답(field 단계)", "crew_response", 1500, 320, [["mq_rout"]])
     add("receiver", "mq_rout", "mqtt out", 1300, 220, [], name="OT 허브로(수신기)", topic="", qos="", retain="",
         respTopic="", contentType="", userProps="", correl="", expiry="", broker="mqr")
     for n in nodes:  # 파이썬 예약어를 피한 속성 이름 되돌리기

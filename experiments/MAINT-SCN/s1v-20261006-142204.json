@@ -1,0 +1,29 @@
+{
+ "scenario": "s1v",
+ "fault": "jacket_fouling",
+ "truth": "FM-JACKET-FOULING",
+ "started": 1791264090.3966837,
+ "steps": [],
+ "runs": [
+  {
+   "id": "a542c3b0-547c-4be8-a05e-bba66c29c7c9",
+   "incident_id": "a89487e3-dec4-4ded-b78f-042484fc09e3",
+   "status": "failed",
+   "model": "openai:gpt-6-luna",
+   "result": null,
+   "error": "분석/검토 실행 실패 (TypeError). 도구 기록을 확인하세요.",
+   "created_at": "2026-10-06T05:19:54.350050+00:00",
+   "updated_at": "2026-10-06T05:19:59.559600+00:00"
+  }
+ ],
+ "result": {
+  "id": "a542c3b0-547c-4be8-a05e-bba66c29c7c9",
+  "incident_id": "a89487e3-dec4-4ded-b78f-042484fc09e3",
+  "status": "failed",
+  "model": "openai:gpt-6-luna",
+  "result": null,
+  "error": "분석/검토 실행 실패 (TypeError). 도구 기록을 확인하세요.",
+  "created_at": "2026-10-06T05:19:54.350050+00:00",
+  "updated_at": "2026-10-06T05:19:59.559600+00:00"
+ }
+}

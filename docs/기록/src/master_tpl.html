@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CECO 데모 완전 정복</title>
+<meta name="description" content="반응 공장의 설비, 전체 아키텍처, 값 하나가 AI까지 가는 길과 AI의 정비 계획이 실제 수리가 되기까지의 이야기 2부에는 부품 · 연결 · 기술 레이어 · 데이터 리니지 · 서비스 속 구조 · 코드에서 뽑은 전체 목록을 숨김없이 담았다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#f6f7f5; --card:#ffffff; --ink:#1b2328; --muted:#56646d; --rule:#d9dfe2; --chip:#eef1f2;
+  --ot:#9a5a1c; --ot-bg:#fcefe2; --dmz:#5b4691; --dmz-bg:#f0ecf8; --it:#1f6378; --it-bg:#e7f3f6; --ai:#394b98; --ai-bg:#ebeffa;
+  --data:#1f6f8b; --req:#c62f3b; --disp:#7b4fc9; --mon:#6f7a82; --ok:#2f7a4a; --warn:#a15c00;
+  --body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --mono:"JetBrains Mono",Consolas,ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 90px}
+.wide{max-width:1240px;margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{line-height:1.35;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:2.35rem;font-weight:800;margin:.4rem 0 .6rem}
+h2{font-size:1.6rem;font-weight:800;margin:4.2rem 0 1rem;padding-top:1.2rem;border-top:3px solid var(--ink)}
+h3{font-size:1.22rem;font-weight:700;margin:2.6rem 0 .6rem}
+h4{font-size:1.02rem;font-weight:700;margin:1.6rem 0 .3rem}
+p{margin:.6rem 0}
+a{color:var(--data)}
+code,.mono{font-family:var(--mono);font-size:.86em;background:var(--chip);padding:1px 6px;border-radius:5px;white-space:nowrap}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.14rem;color:#2c373d}
+.n{display:inline-block;min-width:1.35em;text-align:center;font-weight:700;color:var(--ink)}
+.partno{display:inline-block;font-family:var(--mono);font-size:.8rem;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:2px 9px;margin-right:8px;vertical-align:.2em}
+.meta{font-size:.9rem;color:var(--muted)}
+hr.soft{border:0;border-top:1px dashed var(--rule);margin:2rem 0}
+
+/* 목차 */
+.toc{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px 22px;margin:1.6rem 0}
+.toc ol{margin:.3rem 0 0;padding-left:1.3rem}
+.toc li{margin:.15rem 0}
+.toc a{text-decoration:none;color:var(--ink)}
+.toc a:hover{text-decoration:underline}
+.toc .sub{font-size:.92rem;color:var(--muted)}
+
+/* 네 가지 상자: 비유 · 원리 · 이 프로젝트 · 한 줄 */
+.box{border-radius:12px;padding:14px 18px 12px;margin:1rem 0;border:1px solid var(--rule);background:var(--card)}
+.box > .tag{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.04em;border-radius:999px;padding:1px 10px;margin-bottom:.35rem}
+.box p:first-of-type{margin-top:.1rem}
+.analogy{background:#fffaf0;border-color:#f0dcb2}
+.analogy > .tag{background:#f6e3b8;color:#7a5200}
+.principle{background:#f4f8fb;border-color:#cfe0ea}
+.principle > .tag{background:#d6e8f2;color:#1b4f66}
+.inproj{background:#f5f7f4;border-color:#d6e0d2}
+.inproj > .tag{background:#dbe8d6;color:#2d5a2c}
+.oneline{background:var(--ink);color:#f2f5f6;border:0}
+.oneline > .tag{background:#f2f5f6;color:var(--ink)}
+.oneline b{color:#ffe08a}
+.caution{background:#fff5f5;border-color:#f1c9cc}
+.caution > .tag{background:#f7d6d9;color:#8f1f29}
+
+/* 표 */
+.tbl{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.93rem;background:var(--card);border-radius:10px;overflow:hidden}
+.tbl th,.tbl td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:#eef1f2;font-weight:700;white-space:nowrap}
+.tbl td.c,.tbl th.c{text-align:center}
+.tbl tr:last-child td{border-bottom:0}
+.tscroll{overflow-x:auto;margin:1rem 0}
+.tscroll .tbl{margin:0;min-width:620px}
+.good{color:var(--ok);font-weight:700}
+.equip td:first-child{min-width:96px;white-space:nowrap}
+.equip td:nth-child(3){min-width:108px}
+.bad{color:var(--req);font-weight:700}
+
+/* 그림 */
+figure{margin:1.6rem 0}
+.figcard{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px;overflow-x:auto}
+.figcard svg{display:block;width:100%;height:auto;font-family:var(--body)}
+figcaption{font-size:.9rem;color:var(--muted);margin-top:.55rem}
+figcaption b{color:var(--ink)}
+.arch-wrap svg{min-width:980px}
+.min720 svg{min-width:720px}
+
+/* 범례 */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 18px;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px 16px;margin:0 0 12px;font-size:.92rem}
+.legend div{display:flex;gap:10px;align-items:center}
+.legend svg{flex:none}
+
+/* 등장인물 표 */
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:1rem 0}
+.cast div{background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:10px;padding:10px 12px;font-size:.94rem;line-height:1.6}
+.cast b{display:block;font-size:1rem}
+.cast span{color:var(--muted);font-size:.86rem}
+.cast .o{border-left-color:#cf8a45}.cast .d{border-left-color:#8a76bf}.cast .i{border-left-color:#3f8ea3}.cast .a{border-left-color:#5a6fbf}.cast .p{border-left-color:#b9ae98}.cast .c{border-left-color:#d6a64f}
+
+/* 두 가지 걱정 */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:1rem 0}
+.two > div{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px 16px}
+.two h4{margin:.1rem 0 .4rem;font-size:1.08rem}
+.two ul{margin:.2rem 0;padding-left:1.1rem}
+
+/* 단계(여행) */
+.steps{list-style:none;margin:1rem 0;padding:0;counter-reset:s}
+.steps > li{position:relative;padding:0 0 1.05rem 3rem;counter-increment:s}
+.steps > li::before{content:counter(s);position:absolute;left:0;top:.15rem;width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;background:var(--data);color:#fff;font-weight:700;font-size:.95rem}
+.steps > li.r::before{background:var(--req)} .steps > li.p::before{background:var(--disp)} .steps > li.k::before{background:var(--ink)} .steps > li.o::before{background:#cf8a45} .steps > li.d::before{background:#8a76bf}
+.steps > li:not(:last-child)::after{content:"";position:absolute;left:.95rem;top:2.35rem;bottom:.2rem;width:2px;background:var(--rule)}
+.steps .t{font-family:var(--mono);font-size:.8rem;font-weight:600;background:#fde8ea;color:var(--req);border-radius:6px;padding:1px 7px;margin-left:6px;white-space:nowrap}
+
+/* 사슬(버퍼 지도) */
+.chain{margin:1.2rem 0;display:grid;gap:0}
+.hop{display:grid;grid-template-columns:170px 1fr;gap:14px;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px 14px}
+.hop .who{font-weight:700;line-height:1.45}
+.hop .who small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+.hop .keep{font-size:.93rem;line-height:1.65}
+.hop .keep b{color:var(--ink)}
+.hop.mem{border-left:6px solid #e0a13a}.hop.disk{border-left:6px solid var(--ok)}.hop.none{border-left:6px solid var(--req)}.hop.exp{border-left:6px solid var(--disp)}
+.link{height:26px;margin-left:84px;border-left:3px solid var(--data);position:relative}
+.link span{position:absolute;left:14px;top:2px;font-size:.8rem;color:var(--muted);white-space:nowrap}
+@media (max-width:560px){.hop{grid-template-columns:1fr}.link{margin-left:24px}}
+
+/* 막대 비교 */
+.bars{display:grid;gap:10px;margin:1rem 0}
+.bar{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;font-size:.92rem}
+.bar .track{background:#eceff0;border-radius:6px;height:18px;position:relative;overflow:hidden}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.bar .v{font-family:var(--mono);font-size:.85rem;text-align:right}
+@media (max-width:560px){.bar{grid-template-columns:110px 1fr 70px}}
+
+/* 토픽 주소 해부 */
+.topic{display:flex;flex-wrap:wrap;gap:4px;margin:1rem 0;font-family:var(--mono);font-size:.92rem}
+.topic span{display:flex;flex-direction:column;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:6px 10px}
+.topic span i{font-style:normal;font-family:var(--body);font-size:.76rem;color:var(--muted)}
+.topic em{font-style:normal;align-self:center;color:var(--muted)}
+
+/* 탐지 카드 */
+.det{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:1rem 0}
+.det div{background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--data);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.65}
+.det b{display:block;font-size:1.02rem;margin-bottom:.2rem}
+.det .ex{display:block;margin-top:.4rem;color:var(--muted);font-size:.86rem}
+
+/* 점검 문제 */
+details{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px 16px;margin:.7rem 0}
+summary{cursor:pointer;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"Q ";color:var(--data);font-family:var(--mono)}
+details[open] summary{margin-bottom:.4rem}
+details .ans{border-top:1px dashed var(--rule);padding-top:.5rem}
+
+/* 용어집 */
+dl.gloss{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:6px 16px;margin:1rem 0;font-size:.94rem}
+dl.gloss dt{font-weight:700}
+dl.gloss dd{margin:0;color:#2c373d}
+@media (max-width:560px){dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:.5rem}}
+
+.cover{background:var(--ink);color:#f2f5f6;border-radius:18px;padding:28px 26px;margin:0 0 1.6rem}
+.cover h1{color:#fff;margin-top:.3rem}
+.cover .eyebrow{color:#aebbc2}
+.cover .lead{color:#dfe6e9}
+.cover code{background:#3a4750;color:#fff}
+.cover .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem}
+.cover .row span{background:#2f3a41;border-radius:999px;padding:3px 12px;font-size:.84rem;color:#e6ecee}
+
+@media (max-width:560px){ body{font-size:16px} h1{font-size:1.8rem} h2{font-size:1.35rem} .wrap{padding:24px 16px 70px} .wide{padding:0 16px} }
+
+/* ── 인쇄(PDF) ── */
+@page { size: A4; margin: 15mm 14mm 16mm; }
+@page poster { size: 330mm 625mm; margin: 9mm; }
+@media print{
+  body{background:#fff;font-size:10.6pt;line-height:1.75}
+  .wrap{max-width:none;padding:0}
+  .wide{max-width:none;padding:0}
+  .poster{page:poster;break-before:page;break-after:page}
+  .poster .arch-wrap svg{min-width:0}
+  .figcard{overflow:visible;border-color:#cfd6da}
+  .arch-wrap svg,.min720 svg{min-width:0}
+  h2{break-before:page;margin-top:0}
+  h2.keep{break-before:auto}
+  h3,h4{break-after:avoid}
+  .box,.hop,figure,.tbl tr,details,.cast div,.det div,.two > div,.legend{break-inside:avoid}
+  .tscroll{overflow:visible}
+  .tscroll .tbl{min-width:0}
+  a{color:inherit;text-decoration:none}
+  details{border-color:#cfd6da}
+  .noprint{display:none}
+}
+</style>
+<style>
+<!--PART2_CSS-->
+</style>
+<style>
+#part2{margin-top:3rem;border-top:3px solid #24313a;padding-top:2rem}
+@media print{#part2{break-before:page;margin-top:0;border-top:0;padding-top:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="eyebrow">ceco_demo · 2026-10-07 기준</div>
+  <h1>공장의 숫자 하나가<br>AI를 거쳐 수리가 되기까지</h1>
+  <p class="lead">작은 반응 공장에서 잰 온도 하나가 운전실 화면과 사무실 기록, AI까지 가는 길. 그리고 어느 날 닳기 시작한 베어링이 AI의 원인 분석과 정비 계획, 사람의 승인, 정비팀의 손을 거쳐 고쳐지기까지의 이야기입니다. 설비가 무슨 일을 하는지부터 시작해, 아키텍처를 위에서 아래로 따라 내려갑니다.</p>
+</header>
+
+<nav class="toc" aria-label="차례">
+  <ol>
+    <li><a href="#s1">이 공장은 무엇을 하나: 설비 이야기</a></li>
+    <li><a href="#s2">전체 아키텍처 한 장</a></li>
+    <li><a href="#s3">이야기 ① 온도 값 하나의 여행: 기계에서 AI까지</a></li>
+    <li><a href="#s4">이야기 ② 베어링이 닳던 날: 원인 분석에서 수리·보고까지</a></li>
+    <li><a href="#s5">자주 묻는 질문, 한 줄씩</a></li>
+  </ol>
+  <p class="part2-link"><b>2부 · 시스템 아키텍처 상세</b> — <a href="#part2">부품 · 연결 전부, 기술 레이어 구조도, 층별 설명, 시퀀스, 데이터 리니지, 서비스 속 구조, 코드에서 뽑은 전체 목록</a>(6절부터). 1부는 이야기로 큰 흐름을, 2부는 숨김없는 세부를 다룹니다.</p>
+</nav>
+
+<!-- ───────────── 1. 설비 ───────────── -->
+<h2 id="s1" class="keep">1. 이 공장은 무엇을 하나: 설비 이야기</h2>
+<p class="lead">원료를 통에서 꺼내 솥에 붓고, 알맞은 온도로 데우면서 저어 반응시킨 다음, 다 된 액체를 내보내는 공장입니다. 부엌에서 국을 끓이는 과정과 거의 같습니다.</p>
+<p>특정 제품을 정해 둔 공장은 아니고, 설비 8대와 센서 17개로 된 반응 라인 하나입니다. 반응이 열을 내기 때문에, 냉각수가 반응기 재킷을 돌며 쉬지 않고 열을 빼냅니다.</p>
+
+<figure class="figcard min720">
+<!--FIG_PROCESS-->
+<figcaption><b>그림 1.</b> 원료는 왼쪽 탱크에서 펌프를 거쳐 반응기로 들어가고, 오른쪽 아래 밸브로 나갑니다. 냉각수는 오른쪽 위 스트레이너를 거쳐 냉각 재킷으로 들어갑니다. 말풍선은 설비에 달린 센서입니다.</figcaption>
+</figure>
+
+<h3>설비 8대가 하는 일</h3>
+<div class="tscroll"><table class="tbl equip">
+<tr><th>설비</th><th>하는 일 (부엌으로 치면)</th><th>달린 센서</th><th>잘못되면</th></tr>
+<tr><td><b>원료탱크</b><br><small>TK-101</small></td><td>반응시킬 원료를 담아 두는 통 (재료 통)</td><td>LT-101 레벨</td><td>비었는데 펌프를 돌리면 펌프가 헛돌다 망가집니다. 그래서 PLC는 레벨이 5% 아래면 펌프 기동을 거부합니다.</td></tr>
+<tr><td><b>공급 펌프</b><br><small>P-101</small></td><td>원료를 반응기로 밀어 넣는 심장. 속도를 바꿔 넣는 양을 조절 (국자)</td><td>FT-101 유량<br>IT-101 전류</td><td>기동 명령을 줬는데 전류가 안 오르면 실제로는 안 돌고 있다는 뜻입니다. PLC가 5초 뒤 멈춥니다.</td></tr>
+<tr><td><b>반응기</b><br><small>R-101</small></td><td>원료가 섞이고 반응하는 솥. 이 공장의 주인공 (냄비)</td><td>TT-101 온도<br>PT-101 압력<br>PT-102 압력(독립)<br>LT-102 레벨<br>pH-101 산도<br>CT-101 전도도</td><td>온도가 너무 오르면 압력도 오릅니다. 압력이 6.5 barg를 넘으면 PLC가 펌프를 끊고, 7.5 barg에서는 기계식 안전밸브가 열립니다. 압력계 PT-101이 고장 나 실제보다 높게 가리켜도 PLC는 펌프를 끊습니다. 그래서 따로 단 압력계 PT-102와 대조해 계기 고장인지 실제 고압인지 가립니다.</td></tr>
+<tr><td><b>재킷 히터</b><br><small>HX-101</small></td><td>반응기를 바깥에서 감싼 가열 옷(재킷). 목표 온도(기본 72 ℃)까지 데움 (가스불)</td><td>TT-102 재킷 온도</td><td>꺼도 계속 열이 들어가는 “히터 고착”이 나면 온도가 끝없이 오릅니다.</td></tr>
+<tr><td><b>냉각 재킷</b><br><small>HX-102</small></td><td>냉각수가 반응기 둘레를 돌며 반응열을 가져감. 평소 늘 켜져 있음 (찬물 중탕)</td><td>FT-103 냉각수 유량<br>TT-103 공급 온도<br>TT-104 회수 온도</td><td>재킷 안쪽에 물때(스케일)가 끼면 냉각수는 잘 흐르는데 열이 넘어가지 않습니다. 유량은 정상인데 공급·회수 온도 차가 작아지고 반응기 온도가 오릅니다.</td></tr>
+<tr><td><b>냉각수 스트레이너</b><br><small>ST-103</small></td><td>냉각수 속 이물을 거르는 거름망. 바스켓 두 개를 번갈아 씀 (체)</td><td>PDT-103 차압</td><td>거름망이 막히면 앞뒤 압력 차가 커지고 냉각수 유량이 줄어 반응기 온도가 오릅니다. 예비 바스켓으로 돌린 뒤 막힌 쪽을 청소합니다.</td></tr>
+<tr><td><b>교반기</b><br><small>M-101</small></td><td>반응기 안을 계속 젓는 모터 달린 주걱. 골고루 섞여야 반응이 고르게 일어남 (주걱)</td><td>IT-102 전류<br>VT-101 진동</td><td>축을 받치는 베어링이 닳으면 먼저 모터가 힘들어져 <b>전류</b>가 오르고, 뒤따라 <b>진동</b>이 커집니다. 축이 틀어지면(정렬 불량) 전류는 선 아래인데 진동만 커집니다.</td></tr>
+<tr><td><b>배출 밸브</b><br><small>CV-101</small></td><td>반응이 끝난 액체를 다음 공정으로 내보내는 꼭지. 몇 % 열지 조절 (수도꼭지)</td><td>FT-102 배출 유량</td><td>넣는 양과 빼는 양이 안 맞으면 반응기가 넘치거나 비게 됩니다. 밸브가 고착돼 덜 열리면 배출이 줄고 반응기가 차오르며 압력이 실제로 오릅니다.</td></tr>
+</table></div>
+
+<div class="box principle"><span class="tag">센서끼리의 관계</span>
+<p>센서는 따로따로가 아니라 서로 얽혀 있습니다. 히터가 세지면 온도가 오르고, 온도가 오르면 압력이 오릅니다. <b>pH(산도)와 전도도는 평소 반대로 움직입니다.</b> 하나가 오르면 다른 하나는 내려갑니다. 그런데 어느 날 둘이 <b>같이</b> 오르기 시작하면, 각각의 값은 아직 정상 범위 안이어도 무언가 잘못된 것입니다. 이 “관계가 깨지는 이상”은 뒤에서 AI 모델만 잡아냅니다.</p></div>
+
+<p>이 공장의 이상은 두 갈래입니다. 하나는 순간에 터지는 이상입니다. 압력 급등, 온도 센서 잡음, pH·전도도 드리프트, 히터 고착·냉각 상실, 온도 센서 끊김이 그렇습니다. 다른 하나는 설비가 서서히 상하는 고장입니다. 냉각수 스트레이너 막힘과 재킷 물때, 교반기 베어링 마모와 축 정렬 불량, 압력계 고장과 배출 밸브 고착. 이 고장들은 <b>저절로 낫지 않고, 원인에 맞는 정비를 해야만 돌아옵니다.</b> 게다가 둘씩 짝을 이루어 겉으로는 증상이 비슷합니다(둘 다 반응기 온도가 오르거나, 둘 다 진동이 커지거나, 둘 다 압력이 높게 나옵니다). 원인을 정확히 가려야 제대로 고칠 수 있는 이유입니다. 아키텍처 전체는 이런 일을 <b>빨리 알아채고, 원인을 가려, 안전하게 고치기 위해</b> 있습니다.</p>
+
+</div>
+<!-- ───────────── 2. 전체 그림 ───────────── -->
+<section class="poster">
+<div class="wide">
+<h2 id="s2" class="keep">2. 전체 아키텍처 한 장</h2>
+<div class="legend" role="list" aria-label="그림 읽는 법">
+  <div role="listitem"><svg width="56" height="14"><line x1="4" y1="7" x2="44" y2="7" stroke="#1f6f8b" stroke-width="2.4"/><path d="M44,2 L54,7 L44,12z" fill="#1f6f8b"/></svg><span><b>계측 데이터</b> — 화살표 쪽으로 흐름</span></div>
+  <div role="listitem"><svg width="56" height="14"><line x1="4" y1="7" x2="44" y2="7" stroke="#d1343f" stroke-width="3.2"/><path d="M44,2 L54,7 L44,12z" fill="#d1343f"/></svg><span><b>작업 요청</b> — 승인된 요청이 기계로</span></div>
+  <div role="listitem"><svg width="56" height="14"><line x1="4" y1="7" x2="44" y2="7" stroke="#7b4fc9" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M44,2 L54,7 L44,12z" fill="#7b4fc9"/></svg><span><b>분석 경고</b> — 운전실 화면으로</span></div>
+  <div role="listitem"><svg width="56" height="14"><line x1="4" y1="7" x2="44" y2="7" stroke="#7d8890" stroke-width="1.8" stroke-dasharray="2 4"/><path d="M44,2 L54,7 L44,12z" fill="#7d8890"/></svg><span><b>시스템 감시</b></span></div>
+  <div role="listitem"><svg width="56" height="14"><circle cx="10" cy="7" r="5.5" fill="#1f6f8b" stroke="#fff" stroke-width="1.5"/><line x1="16" y1="7" x2="50" y2="7" stroke="#1f6f8b" stroke-width="2.2"/></svg><span><b>●</b> = 이 쪽이 연결을 먼저 연다</span></div>
+  <div role="listitem"><svg width="56" height="14"><rect x="2" y="1" width="52" height="12" rx="3" fill="#23292e"/><rect x="22" y="0" width="12" height="14" rx="2" fill="#fff" stroke="#23292e"/></svg><span><b>검은 막대</b> = 방화벽, 흰 구멍만 통과</span></div>
+</div>
+<figure class="figcard arch-wrap">
+<!--ARCH_SVG-->
+</figure>
+<p class="meta" style="margin-top:.4rem">위(기계)에서 아래(AI)로 읽습니다. 가운데 세로줄이 척추입니다. 파란 값은 아래로 내려가고, 빨간 요청과 보라 경고는 위로 올라갑니다. 점선 상자는 기동할 때 한 번 돌고 끝나는 도우미, ⌁번호는 그 번호의 감시가 이 상자를 살핀다는 표시입니다. 옅은 점선 상자는 인프라 감시용 구성으로, 평소에는 꺼 두고 필요할 때 켭니다. 빨간 선 맨 위 갈래는 공장 접수 담당이 정비팀에게 내리는 작업 지시입니다.</p>
+</div>
+</section>
+<div class="wrap">
+
+<!-- ───────────── 3. 이야기 ① ───────────── -->
+<h2 id="s3">3. 이야기 ① 온도 값 하나의 여행: 기계에서 AI까지</h2>
+<p class="lead">반응기 온도가 72.3 ℃입니다. 이 숫자 하나를 따라 그림의 위에서 아래로 내려가 보겠습니다. 가는 길에 공장, 접수처(DMZ), 사무실이라는 세 건물을 지납니다. 세 건물은 담으로 나뉘어 있고, 공장과 사무실은 절대 직접 만나지 않습니다.</p>
+
+<h3><span class="partno">②</span>첫 번째 정거장: 기계 옆 조종사, PLC</h3>
+<p>온도 센서 옆에는 PLC라는 작은 컴퓨터가 붙어 있습니다. PLC는 공장의 손발입니다. 0.1초마다 센서를 모두 읽고, 운전 일정대로 펌프 속도와 밸브 개도, 목표 온도를 바꿔 가며 기계를 돌립니다. 운전원 화면과 바깥에서 온 요청은 운전 모드·정비 모드·허용 범위·만료를 따져 받거나 거부합니다. 기동 신호를 냈는데 5초가 지나도 모터 전류가 오르지 않으면 실제로는 안 돌고 있다고 보고 멈춥니다. 원료탱크가 5% 아래면 펌프를 켜 주지 않습니다. 히터를 얼마나 세게 틀지 같은 세밀한 조절은 히터에 붙은 조절기가 맡고, PLC는 목표 온도와 켜고 끄기를 내립니다.</p>
+<p>그리고 PLC는 안전 브레이크이기도 합니다. 반응기 압력이 오르기 시작하면 펌프는 누가 멈춰야 할까요? 사무실의 AI는 사건을 받아 근거를 모으고 정비 계획을 내기까지 1분 남짓 걸립니다. 그동안 원료는 계속 들어가고 압력은 계속 오릅니다. 하필 그때 서버가 바쁘거나 선이 끊길 수도 있습니다. "AI가 대답해 주면 멈추겠다"는 설계라면, 가장 위험한 순간에 브레이크가 남의 손에 있는 셈입니다. 그래서 PLC는 압력이 6.5 barg를 넘는 순간 다음 주기 안에 펌프를 끊습니다. 누구에게도 묻지 않습니다. 그리고 압력이 내려가도 다시 켜지 않고, 5.2 barg 아래로 내려온 것을 확인한 <b>사람이 직접 풀 때까지</b> 잠가 둡니다. 원인을 모른 채 다시 돌면 같은 일이 되풀이되기 때문입니다. 기차의 자동 정지 장치처럼, 기관사가 졸아도 빨간불을 넘으면 기차를 세우는 것과 같습니다. 네트워크가 모두 끊겨도 PLC는 혼자 돕니다. 이 시스템에서 안전의 마지막 책임은 AI도 서버도 아닌 PLC가 집니다.</p>
+<p class="meta">공장이 크면 PLC도 여러 대입니다. 보통 기계·라인·설비 묶음마다 한 대씩 두어 큰 공장은 수십~수백 대가 되고, 화학처럼 연속 공정이 큰 곳은 DCS 제어기 여러 대로, 안전 차단은 제어와 따로 둔 안전 계장 시스템(SIS)으로 나누기도 합니다. 이 공장은 라인 하나라 PLC 한 대(PLC-01)가 설비 8대와 센서 17개를 맡고, 인터록도 그 안에 있습니다.</p>
+<p>PLC와 기계는 Modbus라는 오래된 말로 대화합니다. 번호 붙은 사물함에 값을 넣고 꺼내는 방식인데, <b>비밀번호가 없습니다.</b> 닿기만 하면 누구든 “펌프 켜”를 쓸 수 있습니다. 공장을 담으로 둘러싸야 하는 가장 근본적인 이유입니다.</p>
+
+<h3><span class="partno">③</span>두 번째 정거장: 통역사, 엣지 게이트웨이</h3>
+<p>PLC는 “4번 사물함에 723”이라고만 말합니다. 통역사가 0.25초마다 이것을 읽어 <b>“반응기 온도 72.3 ℃, 믿을 만한 값, 몇 시 몇 분 몇 초에 잰 것, 몇 번째 측정”</b>이라는 쪽지로 바꿉니다. 이 쪽지를 공장 게시판에 붙이는 것이 통역사의 일입니다. 게시판과 연결이 끊기면 쪽지를 디스크에 최대 72,000장 모아 두었다가, 다시 이어지면 순서대로 붙입니다. 센서 열두 개일 때 꼬박 한 시간 분량이고, 센서가 늘면 그만큼 빨리 찹니다.</p>
+
+<h3><span class="partno">④</span>세 번째 정거장: 공장 게시판, OT 허브(MQTT)</h3>
+<p>공장 안의 모두는 이 게시판 하나에만 연결합니다. 통역사는 <code>AR-100/reaction/reactor-line-01/R-101/tag/TT-101</code>(공장/구역/라인/설비/종류/센서)이라는 칸에 쪽지를 붙입니다. 이 칸을 “구독”해 둔 쪽은 새 쪽지가 붙는 즉시 받습니다. 붙이는 쪽은 누가 읽는지 몰라도 되고, 읽는 쪽도 누가 붙였는지 몰라도 됩니다. 이 방식이 <b>MQTT</b>이고, 게시판 관리인을 <b>브로커</b>라고 부릅니다. 가볍고 빠르며, 수천 대의 장치가 자주 끊겼다 붙어도 잘 버팁니다. 그래서 공장에서 널리 씁니다.</p>
+
+<div class="box principle"><span class="tag">MQTT가 “휘발성”이라는 말의 정확한 뜻</span>
+<p>MQTT 브로커는 <b>생중계 방송국</b>입니다. 지금 채널을 켜 둔 사람에게는 바로 보여 주고, 받았다는 확인이 오면 그 편을 지웁니다. 못 본 사람에게 다시 보여 주지는 않습니다.</p>
+<ul>
+<li>아무도 구독하지 않은 칸에 온 쪽지는 그 자리에서 사라집니다. “마지막 한 장만 붙여 두기(retain)” 기능은 있지만 이력은 없습니다.</li>
+<li>구독자가 끊겨 있으면, “녹화 예약(이어지는 세션)”을 걸어 둔 사람 몫만 테이프 길이(대기열 한도)만큼 모아 줍니다. 한도를 넘거나 만료되면 버립니다.</li>
+<li>브로커가 재시작할 때 모아 둔 대기열이 메모리에만 있었다면 모두 사라집니다.</li>
+</ul>
+<p>그러니까 “휘발성”은 MQTT가 데이터를 대충 다룬다는 뜻이 아닙니다. <b>전달하는 물건이지 보관하는 물건이 아니다</b>라는 뜻입니다.</p></div>
+
+<figure class="figcard min720">
+<!--FIG_LIVE_REC-->
+<figcaption><b>그림 2.</b> 같은 값을 MQTT는 받는 사람별로 나눠 배달하고 전해 주면 지웁니다. Kafka는 장부 한 곳에 적어 두고, 읽는 쪽이 각자 책갈피를 옮깁니다.</figcaption>
+</figure>
+
+<div class="box caution"><span class="tag">“EMQX는 풀링하면 휘발된다”?</span>
+<p><b>“가져가면 사라진다”는 맞지만 EMQX만의 일이 아닙니다.</b> 전달하고 지우는 것은 모든 MQTT 브로커가 똑같습니다. 그리고 “풀링”은 용어가 반대입니다. MQTT는 브로커가 <b>밀어 주는(push)</b> 방식이고, 스스로 <b>가져가는(pull)</b> 쪽은 Kafka입니다.</p>
+<p>EMQX에 실제로 있었던 문제는 <b>재시작</b>이었습니다. 이 프로젝트의 옛 판은 EMQX 5.8.6을 썼습니다. 같은 조건에서 시험해 보니 재시작 중에 4건과 69건을 잃었고, 끊긴 구독자 몫으로 모아 둔 600건은 재시작 뒤 한 건도 남지 않았습니다. Mosquitto는 0건을 잃었고 600건이 그대로 남았습니다(2026-09-28 실측). 게다가 EMQX는 새 판부터 무료 공개 라이선스가 아니었고, 메모리를 약 50배 썼습니다. 그래서 지금은 EMQX가 없고, 게시판 두 개 모두 Mosquitto입니다. 이 결과는 시험한 판과 설정 기준입니다.</p></div>
+
+<h3><span class="partno">⑤</span>잠깐 옆길: 운전실 화면</h3>
+<p>같은 게시판을 운전실 화면(FUXA)도 구독하고 있어서, 72.3 ℃는 곧바로 운전원 모니터에 뜹니다. 운전원이 버튼을 누르면 명령이 게시판을 거쳐 통역사 → PLC로 갑니다. <b>여기까지는 모두 공장 안입니다.</b> 사무실과 연결이 통째로 끊겨도 값 보기, 버튼, 알람, 안전장치는 그대로 돕니다. 실제로 바깥 연결을 55초 끊어 봐도 공장 안은 멈추지 않았습니다(실측).</p>
+
+<h3><span class="partno">⑨</span>네 번째 정거장: 담장과 접수처, DMZ</h3>
+<p>이제 온도 값이 공장 담장을 넘어야 합니다. 사무실은 인터넷, 메일, 외부 업체와 이어져 있어 언제든 뚫릴 수 있습니다. 사무실이 뚫렸을 때 공격자가 공장 문까지 바로 가면 안 됩니다. 그래서 공장과 사무실 사이에 <b>접수처(DMZ)</b>라는 작은 건물을 하나 더 두었습니다.</p>
+
+<div class="box analogy"><span class="tag">DMZ는 연결다리인가?</span>
+<p><b>아닙니다. DMZ는 다리 한가운데 있는 면회실입니다.</b> 공장과 사무실은 각자 면회실까지만 오고, 유리벽 너머로 서류만 건넵니다. 누구도 상대 건물에 들어가지 못합니다. 규칙은 하나입니다. <b>전화는 안쪽에서만 건다.</b> 공장은 접수처로 전화할 수 있지만 접수처는 공장에 먼저 전화할 수 없습니다. 사무실도 접수처로만 걸 수 있고, 공장에는 절대 걸 수 없습니다.</p>
+<p>“다리”에 해당하는 것은 따로 있습니다. 공장 게시판이 접수처 우편함에 먼저 걸어 둔 <b>전화 한 통(MQTT 브리지)</b>입니다. 공장은 이 전화로 값을 올려 보내고, 같은 전화로 사무실이 남긴 요청서를 받아 옵니다. 그래서 요청서는 사무실에서 공장 쪽으로 흐르지만, 그 전화를 건 쪽은 공장입니다. <b>“누가 전화를 걸었나”와 “서류가 어느 쪽으로 가나”는 다른 이야기</b>입니다. 그림의 ●와 화살표가 따로 있는 이유입니다.</p></div>
+
+<figure class="figcard min720">
+<!--FIG_DMZ-->
+<figcaption><b>그림 3.</b> 허용된 새 연결은 공장 → DMZ 2개, 사무실 → DMZ 4개뿐입니다. 빨간 ✕ 방향으로는 연결이 아예 만들어지지 않습니다. 실제로 DMZ·사무실에서 공장으로 시도한 연결은 모두 막혔습니다(실측).</figcaption>
+</figure>
+
+<p>접수처 안에는 세 가지가 있습니다. 공장과 사무실이 쪽지를 놓고 가져가는 <b>우편함 <span class="n">⑩</span></b>(DMZ 브로커), 공장 원본 값을 7일 동안 적어 두는 <b>기록 사본 <span class="n">⑫</span></b>(사무실 사람은 원본이 아니라 이 사본만 읽습니다), 그리고 사무실이 낸 요청서를 처음 검사하는 <b>접수 창구 <span class="n">⑬</span></b>입니다. 창구는 이야기 ②에서 다시 나옵니다.</p>
+
+<h3><span class="partno">⑯</span><span class="partno">⑮</span>다섯 번째 정거장: 사무실 심부름꾼과 번호 매긴 장부, Kafka</h3>
+<p>사무실의 심부름꾼(IT 수집기)이 접수처 우편함에 전화를 걸어 온도 값을 가져옵니다. 그리고 곧바로 <b>Kafka</b>라는 장부에 한 줄 적습니다.</p>
+
+<div class="box inproj"><span class="tag">그래서 Kafka는 왜 필요한가</span>
+<p>Kafka는 <b>녹화 서버이자 은행 원장</b>입니다. 들어온 순서대로 번호를 붙여 디스크에 적고, 누가 읽어도 지우지 않습니다(이 프로젝트는 계측 7일, 요청·감사 30일 보관). 읽는 쪽은 저마다 “어디까지 읽었나” 책갈피를 들고 다닙니다. 사무실에 이것이 필요한 이유는 세 가지입니다.</p>
+<ol>
+<li><b>여럿이 각자 읽는다.</b> 이상 경보 하나를 경보 비서, 이력 저장, AI 사건 접수라는 세 곳이 서로 모른 채 각자 속도로 읽습니다.</li>
+<li><b>멈췄다 돌아와도 이어 읽는다.</b> 검사관이 재시작하는 동안에도 값은 장부에 쌓이고, 돌아오면 책갈피부터 이어 읽습니다. 실제로 잃은 값은 0건이었습니다(실측).</li>
+<li><b>나중에 다시 읽는다.</b> 새 탐지 규칙을 만들면 지난 7일치를 처음부터 다시 흘려 볼 수 있습니다.</li>
+</ol>
+<p>그러니까 <b>“MQTT 대신 Kafka”가 아니라 “MQTT 다음에 Kafka”</b>입니다. 공장 안은 가볍고 빠른 생중계(MQTT)로 “지금 값”을 나누고, 사무실은 녹화(Kafka)로 오래 남겨 여러 번 씁니다. 다만 Kafka는 장부에 들어오기 전 구간까지 지켜 주지는 못합니다. 그래서 통역사의 디스크, 게시판의 대기열, 접수처의 기록 사본처럼 <b>담마다 따로 값을 붙잡아 두는 장치</b>가 있습니다.</p></div>
+
+<h3><span class="partno">⑰</span>여섯 번째 정거장: 실시간 검사관, Flink</h3>
+<p>장부에 새 줄이 적히는 순간 검사관(Flink)이 읽습니다. 통에 다 받은 뒤 검사하는 것이 아니라, 흐르는 물줄기에 체를 대는 방식입니다. 체는 네 겹이고, 1장의 고장들이 각각 다른 체에 걸립니다.</p>
+<div class="det">
+  <div><b>규칙</b>정해진 한계를 넘었나.<span class="ex">압력 급등 → 고장부터 경보까지 1.2초(실측)</span></div>
+  <div><b>흔들림(Z-Score)</b>평소보다 들쭉날쭉한가.<span class="ex">온도 센서 잡음</span></div>
+  <div style="border-top-color:var(--disp)"><b>순서 패턴</b>“A가 일어난 뒤 10초 안에 B”인가.<span class="ex">교반기 전류가 9.6 A를 넘고 10초 안에 진동이 7.1 mm/s를 넘으면 → 베어링 마모</span></div>
+  <div style="border-top-color:var(--ai)"><b>AI 모델(오토인코더)</b>센서들 사이의 평소 관계가 깨졌나.<span class="ex">pH와 전도도가 같이 오르는 드리프트. 값은 정상 범위라 다른 체에는 안 걸림</span></div>
+</div>
+<p>AI 모델은 정상 운전 데이터만 보고 “17개 센서를 요약했다가 다시 펼치는 법”을 배웠습니다. 처음 보는 이상한 조합은 제대로 펼치지 못하고, 그 차이가 크면 이상으로 봅니다. 센서가 끊겨 빈 구간이 생기면 검사관은 분석용 사본에만 빈칸을 메우고 “메운 값”이라고 표시합니다. 원본 기록의 빈칸은 그대로 둡니다. 사고를 조사할 때 “실제로 잰 값”과 “추정한 값”을 구별해야 하기 때문입니다.</p>
+
+<h3>마지막 정거장: 기록과 알림</h3>
+<p>요청·승인·감사 같은 공식 서류는 고치거나 지울 수 없는 서류철(<span class="n">㉒</span> PostgreSQL)에 남습니다. 생산·자재·정비 부서의 숫자와 정비 이력도 이곳에 있습니다. 이상이 나오면 알림 비서(<span class="n">㉕</span> Alertmanager)가 같은 설비의 같은 문제를 한 건으로 묶고, 정비 중인 설비의 알림은 접어 둡니다. 알림 백 건에 파묻히면 진짜 중요한 한 건을 놓치기 때문입니다. 그리고 건강검진 의사(Prometheus)가 기계 값이 아니라 <b>시스템 자체</b>, 예를 들어 심부름꾼이 멈췄는지나 전화선이 끊겼는지를 따로 봅니다. 검사 결과의 긴 추세는 결과 기록(<span class="n">⑳</span> InfluxDB, 30일)에 쌓아 그래프(<span class="n">㉓</span> Grafana)로 봅니다. 이 감시·추세 부품들은 공장을 돌리는 데 꼭 필요하지는 않아서 평소에는 꺼 두고, 인프라를 살필 때 켭니다.</p>
+<p>72.3 ℃의 여행은 여기서 끝납니다. 기계 옆에서 잰 뒤 1초 남짓이면 사무실 장부에 도착합니다.</p>
+
+<!-- ───────────── 4. 이야기 ② ───────────── -->
+<h2 id="s4">4. 이야기 ② 베어링이 닳던 날: 원인 분석에서 수리·보고까지</h2>
+<p class="lead">이번에는 반대 방향입니다. 사무실의 AI가 "이렇게 고치자"고 할 때, 그 말이 어떻게 공장에 닿아 실제 수리가 되는지 봅니다. 핵심은 셋입니다. <b>AI는 명령하지 않고, 원인을 가려 정비 계획을 제안할 뿐입니다. 사람이 승인해야 계획이 시작되고, 계획의 단계 하나하나가 요청서가 되어 세 번 검사를 받습니다. 손으로 고치는 일은 정비팀이 합니다.</b></p>
+
+<ol class="steps">
+<li class="o"><b>베어링이 닳기 시작한다.</b> 어느 오후, 교반기 M-101의 베어링이 닳기 시작합니다. 소리도 연기도 없지만 저절로 낫지도 않습니다. 닳은 베어링이 마찰을 키우니 모터 전류가 먼저 9.6 A 선을 넘고, 몇 초 뒤 진동이 7.1 mm/s를 넘습니다. 이 값들은 이야기 ①의 길을 따라 장부까지 내려갑니다.</li>
+<li><b>검사관이 알아챈다.</b> Flink의 한계값 체가 울리고, 순서 패턴 체에 "전류가 먼저, 진동이 나중"이 걸립니다.</li>
+<li class="p"><b>운전실에도 알린다.</b> 알림 비서가 한 건으로 묶은 경고가 접수처를 거쳐 운전실 화면의 "분석 경고(참고)" 칸에 뜹니다. 공장 스스로 판단하는 알람과는 칸을 나눠, 참고 정보라는 점을 분명히 합니다.</li>
+<li class="k"><b>에이전트가 깨어난다.</b> 업무 서비스(<span class="n">㉛</span>)가 경보를 사건 한 건으로 접수합니다. AI 업무 도우미(<span class="n">㉙</span>)는 곧바로 달려들지 않습니다. 고장 직후에는 전류·진동·순서 경보가 시차를 두고 줄줄이 붙어서, 첫 경보만 보고 시작하면 분석 도중에 사건의 모양이 바뀌기 때문입니다. 한계선을 넘은 경보가 있고, 새 종류의 경보가 15초 동안 더 붙지 않으면 그때 스스로 분석을 시작합니다.</li>
+<li class="k"><b>원인을 가린다.</b> 에이전트는 탐정처럼 단서를 모읍니다. 첫째, 접수처 기록 사본에서 <b>첫 경보가 울린 순간의 값</b>을 꺼냅니다. 시간이 지나면 전류도 진동도 다 높아져 무엇이 먼저였는지가 지워지기 때문입니다. 그 순간 전류는 13.7 A, 진동은 2.2 mm/s였습니다. 둘째, 설비 관계 지도(<span class="n">㉘</span> Neo4j)에서 두 용의자를 찾습니다. 베어링 마모와 축 정렬 불량입니다. 베어링이 닳으면 전류가 먼저 오르고, 축이 틀어지면 진동만 커지고 전류는 선 아래에 머뭅니다. 셋째, 매뉴얼을 뜻으로 찾아(RAG) 대응 절을 읽고, 같은 사건에서 이미 나온 정비 소견이 있으면 그것도 봅니다. 결론은 "전류가 먼저 선을 넘었다 → 베어링 마모 지지, 축 정렬 불량 반박"입니다. 본 것, 판단한 것, 근거를 나눠 적어 담당자가 따라가며 검산할 수 있게 합니다.</li>
+<li class="k"><b>고칠 방법은 계산기가 고른다.</b> 지금 멈추고 갈면 반쯤 만든 배치를 버리고, 배치를 끝까지 돌린 뒤 갈면 그동안 축이 상할 위험이 커집니다. 이 저울질은 언어 모델이 아니라 <b>판단 엔진</b>이 합니다. 같은 입력이면 늘 같은 답을 내는 계산기입니다. 온톨로지에 든 대안별 손익 식에, 업무 DB(<span class="n">㉒</span>)에 있는 생산·자재·정비 부서의 숫자 20개(남은 배치 1.5시간, 배치 폐기 손실 210만 원, 베어링 재고 1개, 축 고착 위험 시간당 90만 원 등)를 넣습니다. 먼저 규칙에 어긋나는 대안을 뺍니다(재고가 0이면 교체안, 진동이 위험 영역이면 "기다렸다 교체"). 그다음 순위를 매깁니다. "배치 끝까지 운전 후 교체" −449만 원, "지금 교체" −496만 원입니다. 마지막으로 어떤 숫자가 얼마가 되면 순위가 뒤집히는지 계산합니다(고착 위험 90 → 135만 원, 배치 폐기 손실 210 → 105만 원, 남은 배치 1.5 → 2.25시간).</li>
+<li class="k"><b>사람이 결정한다.</b> AI 화면(<span class="n">㉚</span>)에 정비 계획 카드가 뜹니다. 원인 판단 표, 대안 손익표, 뒤집힘 조건, 실행할 단계가 차례로 적혀 있습니다. "배치가 끝나면 교반기를 멈추고, 정비 모드로 잠근 뒤, 정비팀이 베어링을 교체하겠습니다. 승인하시겠습니까?" 담당자가 승인하면 계획이 시작됩니다. 사유를 적어 반려하면 요청은 한 건도 나가지 않고, 다시 분석하면 그 사유를 반영한 새 카드가 나옵니다. "고착 위험이 더 크다"는 사유로 반려하면 새 카드는 "지금 교체"를 고르면서, 손익 1위와의 차이(약 45만 원)를 숨기지 않고 적습니다.</li>
+<li class="r"><b>단계가 하나씩 요청서가 된다.</b> 정비 계획 실행기가 단계를 한 번에 하나씩 요청서로 만듭니다. 배치 종료 대기 → 교반기 정지 → 정비 모드 켜기 → 베어링 교체 → 잠금 해제 → 재가동. 요청서는 서류철에 먼저 기록되고, 번호가 장부(Kafka)에 적힙니다. 앞 단계가 끝났다고 판정돼야 다음 요청서가 나갑니다. 모든 요청서는 같은 세 번의 검사를 받습니다. <b>검사 1</b> 접수 창구(출입증·서식·허락된 작업·범위·보낸 쪽과 승인자·나이·중복, 통과하면 "30초 안에 처리 안 되면 폐기" 도장), <b>검사 2</b> 공장 접수 담당(지금 공장이 받을 수 있는가, 정비 중·현장 모드면 거절, "사람 확인 후" 모드면 운전원을 60초 기다림), <b>검사 3</b> PLC(인터록·범위·정비 모드·만료를 실행 직전에 다시 확인).</li>
+<li class="r"><b>정비팀이 고친다.</b> 기계를 멈추고 켜는 단계는 PLC가 실행합니다. 베어링 교체처럼 손이 가야 하는 단계는 공장 접수 담당이 공장 안의 <b>정비팀</b>에게 작업 지시로 넘깁니다. 정비팀 연락처는 접수 담당만 갖고 있습니다. 정비팀은 안전을 확인하고, 설비를 잠그고(LOTO), 작업한 뒤 소견을 돌려줍니다. "외륜 박리, 윤활 탄화. 베어링 교체." 엉뚱한 부품을 맡기면 "부품 정상, 교체 안 함"이라고 정직하게 답합니다.</li>
+<li><b>정말 고쳐졌는지 다시 본다.</b> 기계 단계는 확인 담당(<span class="n">㉛</span>)이 10초 안에 센서로 정말 그렇게 됐는지 다시 보고 "확인됨" 또는 "명령과 상태가 다름"을 적습니다. 정비 단계는 정비팀 소견이 곧 결과입니다. 모든 단계가 끝나면 실행기가 <b>회복</b>을 봅니다. 진동이 4.5 mm/s 아래로 내려오고 전류가 정상 운전 범위에 든 상태가 30초 유지돼야 고쳐진 것입니다. 화면의 회복 그래프에서 치솟았던 진동이 내려앉는 모습이 보입니다.</li>
+<li><b>보고서를 남긴다.</b> 실행기가 작업 보고서를 씁니다. 정비 전후 값, 예상했던 정지 시간·비용과 실제의 차이, 정비팀 소견이 들어가고, 설비 정비 이력(CMMS)에 한 줄이 더해집니다. 예상보다 오래 걸렸다면 그 차이도 숨기지 않습니다.</li>
+</ol>
+
+<h3>한 사건 = 프로세스 인스턴스 하나, task 단위로</h3>
+<p>같은 이야기를 일감 단위로 다시 묶으면 이렇습니다. 사건 한 건이 하나의 일감(프로세스 인스턴스)이고, 일감은 task로 나뉘며 task마다 맡는 쪽이 정해져 있습니다.</p>
+<div class="tscroll"><table class="tbl">
+<tr><th class="c">task</th><th>이름</th><th>맡는 쪽</th><th>결과</th></tr>
+<tr><td class="c">1</td><td>이상 감지</td><td>실시간 검사관(Flink) · 업무 서비스</td><td>사건 한 건</td></tr>
+<tr><td class="c">2</td><td>원인 분석</td><td>AI 에이전트</td><td>용의자별 지지 · 반박 · 모름</td></tr>
+<tr><td class="c">3</td><td>정비 대안 판단</td><td>판단 엔진(결정론 계산)</td><td>정비 계획 카드</td></tr>
+<tr><td class="c">4</td><td>승인</td><td>담당자</td><td>승인 → 5 / 반려 → 다시 분석하면 2부터</td></tr>
+<tr><td class="c">5</td><td>정비 실행</td><td>정비 계획 실행기 → PLC · 정비팀 · 운전원</td><td>단계별 확인됨 · 소견</td></tr>
+<tr><td class="c">6</td><td>회복 확인</td><td>정비 계획 실행기</td><td>회복 조건 30초 유지</td></tr>
+<tr><td class="c">7</td><td>작업 보고</td><td>정비 계획 실행기</td><td>보고서 · 정비 이력</td></tr>
+</table></div>
+
+<div class="box caution"><span class="tag">순조롭지 않을 때</span>
+<p><b>원인을 틀렸을 때.</b> 실제로는 축이 틀어졌는데 베어링 교체를 맡겼다면, 정비팀이 "부품 정상"으로 답하고 남은 단계는 멈춥니다. 이미 정비 모드로 잠근 뒤였다면 정비팀이 분해한 곳을 되돌리고 잠금을 풀어, 설비를 멈춘 상태로 넘깁니다. 다시 분석하면 에이전트는 방금 받은 소견을 단서로 다른 원인을 고르고, 이미 멈춘 설비라 "배치 끝나고 정비" 같은 대안은 규칙으로 빠집니다.</p>
+<p><b>결과를 모를 때.</b> 요청서의 답이 오지 않으면, 도착하지 못한 것인지 실행됐는데 답만 못 받은 것인지 알 수 없습니다. 그래서 같은 요청서를 다시 보내지 않고 그 단계에서 멈춰 화면에 이유를 남깁니다. 다시 보냈다가 같은 명령이 두 번 실행되는 일을 막기 위해서입니다.</p>
+<p><b>손익 1위가 규정 위반일 때.</b> 압력계가 실제보다 높게 가리켜 인터록이 걸린 날이라면, "인터록을 우회해 재가동"이 돈으로는 1등입니다. 그래도 규칙에 걸려 후보에서 빠지고, 카드에 "규정으로 제외"라고 적힙니다. 이때 인터록 리셋은 운전원이 운전실 화면에서 직접 하고, 실행기는 리셋될 때까지 기다립니다.</p></div>
+
+<div class="box principle"><span class="tag">요청서 한 장이 지나가는 시간</span>
+<p>원격 자동 모드에서 온도 설정값을 바꾸는 요청서 한 장을 재면, 승인을 0초로 볼 때 <b>0.03초</b>에 검사 1, <b>0.25초</b>에 검사 2, <b>0.26초</b>에 PLC 수용, <b>0.46초</b>에 실제 상태 확인까지 끝납니다(2026-09-30 실측). 각 구간을 더한 시간이 아니라 승인 뒤 흐른 누적 시각입니다. 정비 계획은 이런 요청서를 단계마다 한 장씩 보내고, 정비 단계에는 정비팀의 작업 시간이 더해집니다.</p></div>
+
+<div class="box inproj"><span class="tag">여기서는 "휘발"이 안전장치</span>
+<p>온도 값은 잃으면 안 되지만, <b>명령은 늦게 도착하면 위험합니다.</b> 네트워크가 30분 끊겼다가 돌아온 뒤 옛날의 "교반기 정지"가 실행되면, 그사이 다시 시작한 배치가 영문도 모른 채 멈춥니다. 그래서 요청서에는 일부러 30초 만료를 붙여, 제때 못 가면 우편함이 스스로 버리게 했습니다. 끊겼다 다시 이어 본 시험에서도 만료된 요청은 공장에 닿지 않았고 기계도 움직이지 않았습니다(실측). 앞에서는 "휘발"이 걱정거리였지만, 여기서는 일부러 쓴 설계입니다.</p></div>
+
+<p>요청서를 쓰는 쪽은 AI만이 아닙니다. 생산계획 시스템도 "다음 배치는 72 ℃로" 같은 지시를 <b>같은 창구, 같은 세 번의 검사</b>로 보냅니다. 공장 입장에서는 누가 보냈든 같은 규칙입니다. 그리고 <b>압력 인터록을 푸는 일</b>은 아예 요청할 수 있는 목록에 없습니다. 펌프 재가동은 정비 뒤 단계로 허용되어 있지만, 인터록이 잠겨 있는 동안에는 PLC가 받아 주지 않습니다. 인터록은 공장 안의 사람만 풀 수 있습니다.</p>
+
+<!-- ───────────── 5. 한 줄 답 ───────────── -->
+<h2 id="s5">5. 자주 묻는 질문, 한 줄씩</h2>
+<table class="tbl">
+<tr><th>질문</th><th>답</th></tr>
+<tr><td>MQTT가 휘발성이라는데?</td><td>MQTT 브로커는 <b>전달</b>하는 곳이지 <b>보관</b>하는 곳이 아니다. 지금 듣는 쪽에 밀어 주고, 받았다는 확인이 오면 지운다. 생중계다.</td></tr>
+<tr><td>EMQX는 풀링하면 휘발된다?</td><td>가져가면 지우는 건 모든 MQTT 브로커가 같다. 게다가 MQTT는 풀(pull)이 아니라 푸시(push)다. EMQX의 진짜 문제는 재시작 때 쌓아 둔 것을 잃은 것이었고(실측), 라이선스·메모리 문제까지 겹쳐 지금은 Mosquitto다.</td></tr>
+<tr><td>그래서 Kafka를 써야 한다?</td><td>MQTT <b>대신</b>이 아니라 MQTT <b>다음에</b>. 공장은 생중계(MQTT), 사무실은 녹화(Kafka). Kafka는 여럿이, 각자 속도로, 나중에 다시 읽게 해 준다.</td></tr>
+<tr><td>DMZ가 연결다리?</td><td>다리가 아니라 다리 한가운데의 <b>접수처</b>다. 다리는 공장이 먼저 건 전화 한 통(MQTT 브리지). 사무실이 뚫려도 공장에는 새 전화를 걸 수 없다.</td></tr>
+<tr><td>PLC는 안전 인터록 하나 때문에 있나?</td><td>아니다. 0.1초마다 센서를 다 읽고, 운전 일정대로 기계를 돌리고, 운전원·바깥 요청을 검사해 받거나 거부하고, 켰는데 전류가 안 오르면 멈춘다. 인터록은 그중 "절대 넘으면 안 되는 선"을 지키는 일이다. AI의 답을 기다리지 않고 그 자리에서 멈춰야 하니 기계 옆 PLC가 맡는다.</td></tr>
+<tr><td>설비가 많으면 PLC는 몇 대?</td><td>보통 기계·라인·설비 묶음마다 한 대, 큰 공장은 수십~수백 대다(연속 공정은 DCS, 안전 차단은 별도 SIS가 흔하다). 이 공장은 라인 하나라 한 대가 설비 8대·센서 17개를 맡는다.</td></tr>
+<tr><td>AI가 기계를 고치나?</td><td>아니다. AI는 원인을 가리고 정비 계획을 제안한다. 고칠 방법의 손익과 규칙 계산은 판단 엔진이, 승인은 사람이, 기계 조작은 PLC가, 손으로 고치는 일은 정비팀이 한다.</td></tr>
+</table>
+
+</div>
+<!--PART2-->
+</body>
+</html>

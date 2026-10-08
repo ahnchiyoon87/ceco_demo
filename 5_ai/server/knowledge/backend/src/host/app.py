@@ -21,7 +21,10 @@ from ..modules.operations.agent import router as manufacturing_agent_router, ini
 from ..modules.ontology.prepare import router as knowledge_prepare_router
 from ..modules.ontology.build import router as knowledge_build_router, initialize as initialize_knowledge_builds, mark_interrupted as mark_knowledge_interrupted
 from ..modules.operations.thermal_observation import run as observe_temperature
+from ..modules.operations.maintenance import run as run_maintenance_plans
+from ..modules.operations.agent import run_auto as run_auto_analysis
 from ..modules.operations.fault_ontology import router as fault_ontology_router
+from ..modules.operations.decision import router as maintenance_router
 
 
 @asynccontextmanager
@@ -39,11 +42,13 @@ async def lifespan(app: FastAPI):
     mark_knowledge_interrupted()
     stop = asyncio.Event()
     observer = asyncio.create_task(observe_temperature(stop))
+    executor = asyncio.create_task(run_maintenance_plans(stop))
+    auto = asyncio.create_task(run_auto_analysis(stop))
     try:
         yield
     finally:
         stop.set()
-        await observer
+        await asyncio.gather(observer, executor, auto)
 
 
 def create_app() -> FastAPI:
@@ -67,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(knowledge_prepare_router)
     app.include_router(knowledge_build_router)
     app.include_router(fault_ontology_router)
+    app.include_router(maintenance_router)
     return app
 
 

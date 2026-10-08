@@ -7,10 +7,10 @@ const selectedId = ref(null), run = ref(null), error = ref(''), loading = ref(fa
 let timer, generation=0
 const current = computed(() => props.incidents.find(x=>x.id===selectedId.value) || props.incidents[0])
 const emptyMessage = computed(() => loading.value ? '저장된 실행 확인 중' : error.value ? '분석 기록을 확인하지 못했습니다.' : !current.value ? '대응 사건을 기다립니다.' : '아직 AI 분석 기록이 없습니다.')
-const open = computed(() => props.incidents.filter(x=>!['closed','rejected'].includes(x.status)).length)
+const open = computed(() => props.incidents.filter(x=>!['closed','rejected','resolved'].includes(x.status)).length)
 const review = computed(() => props.incidents.filter(x=>x.status==='awaiting_review').length)
-const label = item => item.correlation_key?.includes('mixer') ? '교반기 전류·진동 이상' : `${item.alarm?.tag || item.device} · ${item.alarm?.alert_type || '이상 신호'}`
-const statuses = {received:'접수',awaiting_review:'검토 대기',executing:'조치 중',observing:'온도 관측 중',awaiting_maintenance:'점검 대기',unresolved:'미해결',closed:'종결',rejected:'반려'}
+const label = item => item.correlation_key?.includes('mixer') ? '교반기 전류·진동 이상' : item.correlation_key?.includes('thermal') ? '반응기 온도 상승 · 냉각 계통' : item.correlation_key?.includes('pressure') ? '반응기 고압 · 인터록' : `${item.alarm?.tag || item.device} · ${item.alarm?.alert_type || '이상 신호'}`
+const statuses = {received:'접수',awaiting_review:'검토 대기',executing:'조치 중',observing:'온도 관측 중',awaiting_maintenance:'점검 대기',resolved:'정비 완료',unresolved:'미해결',closed:'종결',rejected:'반려'}
 async function load() {
   clearTimeout(timer)
   const token=++generation, id=current.value?.id

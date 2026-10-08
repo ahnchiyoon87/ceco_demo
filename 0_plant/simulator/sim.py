@@ -3,7 +3,9 @@
   · Modbus/TCP 슬레이브 — soft-PLC 하나만 붙는다(계측값 읽기, 구동기·설정값 쓰기, 현장 패널 읽기)
   · 강사·실습 도구 API(API_PORT)    — 고장 주입·해제·상태 조회. 강사 계정(Basic 인증), 호스트 전용 포트
   · 현장 패널(API_PANEL_PORT)       — 모드 선택·현장 기동정지·정비·비상정지 스위치. 패널 계정(Basic 인증)
-  두 계정은 어떤 컨테이너에도 주지 않는다(사람이 호스트에서만 쓴다).
+  · 정비팀 작업(API_CREW_PORT)      — 가상 정비팀이 현장에서 하는 정비(점검·교체·세정·교정). 정비팀 계정(Basic 인증)은
+                                      OT 작업 요청 수신기(엣지)만 갖는다. 승인된 작업 지시만 이 길로 온다.
+  강사·패널 계정은 어떤 컨테이너에도 주지 않는다(사람이 호스트에서만 쓴다).
 
 동작에 필요한 모든 값은 plant.yaml 과 환경변수에서 읽는다.
 """
@@ -38,8 +40,10 @@ CONFIG_PATH = os.getenv("PLANT_CONFIG", "/app/plant.yaml")
 MODBUS_PORT = int(os.getenv("MODBUS_PORT", "502"))
 API_PORT = int(os.getenv("API_PORT", "8080"))
 PANEL_PORT = int(os.getenv("API_PANEL_PORT", "8081"))
+CREW_PORT = int(os.getenv("API_CREW_PORT", "8082"))
 INSTRUCTOR = (os.getenv("INSTRUCTOR_USER", ""), os.getenv("INSTRUCTOR_PASSWORD", ""))
 PANEL = (os.getenv("FIELD_PANEL_USER", ""), os.getenv("FIELD_PANEL_PASSWORD", ""))
+CREW = (os.getenv("FIELD_CREW_USER", ""), os.getenv("FIELD_CREW_PASSWORD", ""))
 
 FC_COIL = 1
 FC_HOLDING = 3
@@ -78,14 +82,14 @@ class Simulator:
             single=True,
         )
         self.store = self.context[0]
+        self.crew_jobs: dict[str, object] = {}
         self._seed_defaults()
         self.started = time.time()
 
     # ── 초기값: 제어기가 붙기 전의 현장 상태(구동기 켜짐, 설정값 기본, 현장 스위치 REMOTE) ──
     def _seed_defaults(self) -> None:
-        for key in ("pump_run", "agitator_run", "heater_enable"):
+        for key in ("pump_run", "agitator_run", "heater_enable", "cooler_enable"):
             self.store.setValues(FC_COIL, self.coils[key]["addr"], [1])
-        self.store.setValues(FC_COIL, self.coils["cooler_enable"]["addr"], [0])
         for spec in self.holding.values():
             self.store.setValues(FC_HOLDING, spec["addr"], [int(spec["default"])])
         self.store.setValues(FC_HOLDING, self.panel["mode_selector"], [1])
@@ -147,6 +151,46 @@ class Simulator:
         log.warning("현장 패널: %s %s", action, {k: v for k, v in body.items() if k != "action"})
         return self.panel_state()
 
+    # ── 가상 정비팀: 현장 정비 작업 ─────────────────────────────────
+    async def field_task(self, task: str, job_id: str, release_maintenance: bool) -> dict:
+        """현장 안전 확인 → 격리(LOTO) → 작업(설비 시간만큼) → 효과·소견 → 격리 해제(→ 필요하면 정비 해제 키).
+        같은 작업 지시 ID 는 한 번만 수행한다(중복 수신은 이전 결과를 돌려준다)."""
+        done = self.crew_jobs.get(job_id)
+        if done is not None:
+            return done if not isinstance(done, asyncio.Future) else await asyncio.shield(done)
+        spec = self.cfg.get("field_tasks", {}).get(task)
+        if spec is None:
+            return {"status": "REJECTED", "reason": "UNKNOWN_TASK", "finding": f"정비팀이 모르는 작업: {task}"}
+        fut = asyncio.get_running_loop().create_future()
+        self.crew_jobs[job_id] = fut
+        p = self.plant
+        started = time.time()
+        blocked = p.field_check(task, spec)
+        if blocked:
+            result = {"status": "REJECTED", "reason": "FIELD_SAFETY", "finding": blocked, "task": task}
+        else:
+            iso = set(spec.get("isolate", [])) - p.isolated
+            p.isolated |= iso
+            log.warning("정비팀 작업 시작: %s (%s, 격리 %s)", task, job_id, sorted(iso))
+            try:
+                await asyncio.sleep(float(spec["duration_s"]) / max(p.time_scale, 1e-9))
+                effect = p.field_apply(task)
+            finally:
+                p.isolated -= iso
+            result = {"status": "DONE" if not effect.get("mismatch") else "DONE_NO_FAULT", "task": task,
+                      "effective": bool(effect.get("effective")), "finding": effect["finding"],
+                      "plant_duration_s": spec["duration_s"], "wall_s": round(time.time() - started, 2)}
+            if release_maintenance:
+                self.panel_action("maintenance_release", {"by": "field-crew"})
+                result["maintenance_released"] = True
+            log.warning("정비팀 작업 완료: %s → %s", task, result["finding"])
+        self.crew_jobs[job_id] = result
+        fut.set_result(result)
+        if len(self.crew_jobs) > 256:
+            for k in list(self.crew_jobs)[:-128]:
+                self.crew_jobs.pop(k, None)
+        return result
+
     # ── 상태 스냅샷(강사 도구용. 제어 시스템 경로가 아니다) ─────────────
     def snapshot(self) -> dict:
         p = self.plant
@@ -164,6 +208,10 @@ class Simulator:
                           "temp_sp_c": round(p.sp_temp_c, 1)},
             "thermal_model": {key: round(value, 3) for key, value in p.thermal.items()},
             "field_panel": self.panel_state(),
+            "degradation": {"cw_basket": p.cw_basket, "basket_foul": {k: round(v, 3) for k, v in p.basket_foul.items()},
+                            "jacket_clean": round(p.jacket_clean, 3), "bearing_wear": round(p.bearing_wear, 3),
+                            "misalign": round(p.misalign, 3), "pt101_drift": round(p.pt101_drift, 3),
+                            "cv_stick": round(p.cv_stick, 3), "isolated": sorted(p.isolated)},
             "active_faults": {
                 k: {"elapsed_s": round(f.elapsed, 1), "remaining_s": round(f.expires_at - p._clock(f.clock), 1)}
                 for k, f in p.faults.items()
@@ -215,12 +263,47 @@ def build_instructor_api(sim: Simulator) -> web.Application:
         log.info("전체 고장 해제")
         return web.json_response({"cleared": True})
 
+    async def page(_):
+        return web.Response(text=INSTRUCTOR_HTML, content_type="text/html")
+
+    app.router.add_get("/", page)
     app.router.add_get("/health", health)
     app.router.add_get("/state", state)
     app.router.add_get("/faults", faults)
     app.router.add_post("/fault", inject)
     app.router.add_post("/fault/clear", clear)
     return app
+
+
+INSTRUCTOR_HTML = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>AR-100 강사 도구</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font-family:system-ui,sans-serif;background:#f6f8f7;color:#1d2a24;margin:16px;max-width:980px}
+h1{font-size:19px}section{background:#fff;border:1px solid #d5e1db;border-radius:9px;padding:14px;margin:10px 0}
+h2{font-size:15px;margin:0 0 8px}p{font-size:13px;color:#5b6d64;margin:4px 0 10px}
+button{margin:4px 6px 4px 0;padding:9px 14px;border-radius:6px;border:1px solid #1f7a62;background:#1f7a62;color:#fff;cursor:pointer;font-size:14px}
+button.alt{background:#fff;color:#1f7a62}button.reset{background:#8a3b2e;border-color:#8a3b2e}
+table{border-collapse:collapse;font-size:13px}td{padding:3px 10px 3px 0;font-variant-numeric:tabular-nums}
+pre{background:#eef3f0;padding:8px;border-radius:6px;font-size:12px;white-space:pre-wrap}</style></head><body>
+<h1>AR-100 강사 도구 — 이상 발생</h1>
+<p>버튼은 설비에 열화를 시작시킨다. 열화는 저절로 낫지 않고 현장 정비로만 회복된다. AI 화면에는 고장 이름이 전달되지 않는다.</p>
+<section><h2>시나리오 1 · 반응기 온도 상승(냉각수 계통)</h2><p>주 원인: 냉각수 스트레이너 막힘 · 헷갈리는 변형: 재킷 냉각 코일 스케일</p>
+<button onclick="go('strainer_fouling')">이상 발생</button><button class="alt" onclick="go('jacket_fouling')">변형: 재킷 스케일</button></section>
+<section><h2>시나리오 2 · 교반기 진동(회전기계)</h2><p>주 원인: 베어링 마모 · 헷갈리는 변형: 축 정렬 불량</p>
+<button onclick="go('bearing_wear')">이상 발생</button><button class="alt" onclick="go('shaft_misalignment')">변형: 축 정렬 불량</button></section>
+<section><h2>시나리오 3 · 반응기 고압(계기·배출)</h2><p>주 원인: PT-101 압력계 드리프트(오지시로 인터록 작동) · 헷갈리는 변형: 배출 밸브 고착(실제 고압)</p>
+<button onclick="go('pt_drift')">이상 발생</button><button class="alt" onclick="go('outlet_valve_stick')">변형: 배출 밸브 고착</button></section>
+<section><h2>초기화</h2><p>모든 고장·열화를 새 설비 상태로 되돌린다(정비가 아님). 시연을 처음부터 다시 할 때만.</p>
+<button class="reset" onclick="clr()">전체 초기화</button></section>
+<section><h2>현재 설비(강사만 보는 진값)</h2><table id="t"></table><pre id="out"></pre></section>
+<script>
+const show=['TT-101','TT-104','FT-103','PDT-103','IT-102','VT-101','PT-101','PT-102','LT-102','FT-101','FT-102'];
+async function go(s){const r=await fetch('fault',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:s})});document.getElementById('out').textContent=await r.text();}
+async function clr(){if(!confirm('모든 고장과 열화를 지웁니다.'))return;const r=await fetch('fault/clear',{method:'POST'});document.getElementById('out').textContent=await r.text();}
+async function tick(){try{const s=await (await fetch('state')).json();
+document.getElementById('t').innerHTML=show.map(k=>`<tr><td>${k}</td><td>${s.readings[k]??'—'}</td></tr>`).join('')+
+`<tr><td>열화</td><td>${JSON.stringify(s.degradation)}</td></tr><tr><td>고장</td><td>${Object.keys(s.active_faults).join(', ')||'없음'}</td></tr>`;}catch(e){}}
+setInterval(tick,1000);tick();
+</script></body></html>"""
 
 
 PANEL_HTML = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>AR-100 현장 패널</title>
@@ -247,6 +330,26 @@ document.getElementById('loc').innerHTML=eq.map(e=>`${e} <button onclick="act('l
 async function act(a,b){const r=await fetch('panel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:a,...b})});document.getElementById('out').textContent=await r.text();}
 fetch('panel').then(r=>r.text()).then(t=>document.getElementById('out').textContent=t);
 </script></body></html>"""
+
+
+def build_crew_app(sim: Simulator) -> web.Application:
+    """가상 정비팀 접점(OT 안). 승인·발송·수신 검사를 거친 작업 지시만 OT 수신기가 여기로 보낸다."""
+    app = web.Application(middlewares=[basic_auth(CREW)])
+
+    async def health(_):
+        return web.json_response({"status": "ok"})
+
+    async def task(request: web.Request):
+        body = await request.json()
+        job = str(body.get("job_order_id") or "")
+        if not (8 <= len(job) <= 80):
+            return web.json_response({"status": "REJECTED", "reason": "BAD_JOB_ID"}, status=400)
+        result = await sim.field_task(str(body.get("task", "")), job, bool(body.get("release_maintenance")))
+        return web.json_response({"job_order_id": job, **result})
+
+    app.router.add_get("/health", health)
+    app.router.add_post("/tasks", task)
+    return app
 
 
 def build_panel_app(sim: Simulator) -> web.Application:
@@ -281,7 +384,8 @@ async def main() -> None:
     log.info("AR-100 가상설비 기동 | 태그 %d점 | 스캔 %dms | 배속 %g | Modbus :%d | 강사 API :%d | 현장 패널 :%d",
              len(cfg["tags"]), cfg["scan_interval_ms"], sim.plant.time_scale, MODBUS_PORT, API_PORT, PANEL_PORT)
 
-    for app, port in ((build_instructor_api(sim), API_PORT), (build_panel_app(sim), PANEL_PORT)):
+    for app, port in ((build_instructor_api(sim), API_PORT), (build_panel_app(sim), PANEL_PORT),
+                      (build_crew_app(sim), CREW_PORT)):
         runner = web.AppRunner(app, access_log=None)
         await runner.setup()
         await web.TCPSite(runner, "0.0.0.0", port).start()

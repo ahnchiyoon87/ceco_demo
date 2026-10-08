@@ -267,6 +267,14 @@ def t3_detection() -> None:
 
 def t4_storage() -> None:
     section("Tier 4 · 저장 · 감시")
+    if not sh("docker", "ps", "-q", "-f", f"name={c('it-influx')}").strip():
+        print("  - IT 결과 InfluxDB 검사: 해당 없음(monitoring 프로필 꺼짐 — 읽는 쪽이 Grafana 뿐)")
+    else:
+        _it_history_checks()
+    _dmz_and_prom_checks()
+
+
+def _it_history_checks() -> None:
     csv = influx_query(IT_INFLUX, ENV["IT_INFLUX_TOKEN"], f'''
 from(bucket: "{ENV['IT_INFLUX_BUCKET']}") |> range(start: -5m) |> filter(fn: (r) => r._measurement == "process")
   |> group(columns: ["tag"]) |> count()''')
@@ -276,11 +284,17 @@ from(bucket: "{ENV['IT_INFLUX_BUCKET']}") |> range(start: -5m) |> filter(fn: (r)
 from(bucket: "{ENV['IT_INFLUX_BUCKET']}") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "process")
   |> group(columns: ["quality"]) |> count()''')
     check("quality 태그 보존", "GOOD" in csvq, "실측/추정 구분이 히스토리안까지 전달됨")
+
+
+def _dmz_and_prom_checks() -> None:
     csvd = influx_query(DMZ_INFLUX, ENV["DMZ_INFLUX_TOKEN"], f'''
 from(bucket: "{ENV['DMZ_INFLUX_BUCKET']}") |> range(start: -1m) |> filter(fn: (r) => r._measurement == "process_raw")
   |> group(columns: ["tag"]) |> count()''')
     dtags = {line.split(",")[-1].strip() for line in csvd.splitlines()[1:] if line.strip()}
     check("DMZ 원시 사본 적재 (OT 원시값, IT 는 조회만)", len(dtags) >= 12, f"최근 1분 태그 {len(dtags)}종")
+    if not sh("docker", "ps", "-q", "-f", f"name={c('prometheus')}").strip():
+        print("  - Prometheus 검사 3건: 해당 없음(monitoring 프로필 꺼짐. 켜려면 docker compose --profile monitoring up -d)")
+        return
     series = get(f"{PROM}/api/v1/label/__name__/values")["data"]
     leak = [m for m in series if any(t.replace("-", "_").lower() in m.lower() for t in ["LT_101", "TT_101", "PT_101", "pH_101"])]
     check("Prometheus 에 공정 데이터 없음 (역할 분리)", not leak, f"메트릭 {len(series)}종 중 공정태그 {len(leak)}개")

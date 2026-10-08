@@ -2,7 +2,7 @@
 
 1) 번들 A(등록부 인벤토리 + 교육 문서 + 검토한 설비 관계), B(고장 지식 문서 ↔ 설비), C(고장 온톨로지 v2)를
    검토·게시 모듈(review.publish)로 넣는다. 같은 묶음은 digest 가 같아 다시 넣어도 중복되지 않는다.
-2) LLM 게이트웨이(OPENAI_BASE_URL·OPENAI_API_KEY = GCP LiteLLM)가 설정돼 있으면 매뉴얼 절과 온톨로지 개체를
+2) OpenAI 키(OPENAI_API_KEY, 5_ai/server/.env.local)가 설정돼 있으면 매뉴얼 절과 온톨로지 개체를
    EMBEDDING_MODEL 로 임베딩하고 벡터 색인을 만든다(바뀐 것만). 빠진 벡터나 0 벡터가 남으면 실패로 끝낸다.
    설정이 없으면(키 파일 없는 복제본) 임베딩을 건너뛴다고 알린다.
     python 5_ai/server/seed_graph.py        (knowledge 이미지 안, 저장소가 /repo 에 읽기 전용으로 붙은 상태)
@@ -27,8 +27,8 @@ import build_ontology_bundle  # noqa: E402
 
 
 def embed() -> int:
-    if not (os.environ.get("OPENAI_BASE_URL") and os.environ.get("OPENAI_API_KEY")):
-        print("[graph-seed] 임베딩 건너뜀: LLM 게이트웨이 설정 없음(5_ai/server/.env.local). 매뉴얼 검색은 설정 뒤 다시 기동하면 된다", flush=True)
+    if not os.environ.get("OPENAI_API_KEY"):
+        print("[graph-seed] 임베딩 건너뜀: OpenAI 키 설정 없음(5_ai/server/.env.local). 매뉴얼 검색은 설정 뒤 다시 기동하면 된다", flush=True)
         return 0
     from backend.src.modules.ontology.embedding import _get_dimensions
     from backend.src.modules.ontology.tools import _embed_entity_nodes, _run_query
@@ -48,6 +48,20 @@ def embed() -> int:
     return 0 if left == 0 and zero == 0 else 1
 
 
+def retire_stale_ontology(digest: str) -> dict:
+    """고장 온톨로지(번들 C, v2/*)는 YAML 이 정본이다. 게시는 MERGE 라 이전 판의 개체·관계가 남는다.
+    이번 판(digest)에 없는 v2/* 개체와, v2/* 에 닿는 이전 판 관계를 지운다(다른 번들의 관계는 건드리지 않는다)."""
+    from backend.src.modules.ontology.tools import _run_query
+    rels = _run_query("""MATCH (a:_Entity)-[r]->(b:_Entity)
+        WHERE (a._source_id STARTS WITH 'v2/' OR b._source_id STARTS WITH 'v2/')
+          AND r._batch_id IS NOT NULL AND r._batch_id <> $d
+          AND EXISTS { MATCH (old:_ImportBatch {sha256: r._batch_id})-[:IMPORTED]->(x) WHERE x._source_id STARTS WITH 'v2/' }
+        DELETE r RETURN count(r) AS n""", {"d": digest})[0]["n"]
+    nodes = _run_query("""MATCH (n:_Entity) WHERE n._source_id STARTS WITH 'v2/' AND n._batch_id <> $d
+        DETACH DELETE n RETURN count(n) AS n""", {"d": digest})[0]["n"]
+    return {"relationships": rels, "nodes": nodes}
+
+
 def main() -> int:
     bundles = [("A 등록부·교육 문서", build_knowledge_bundle.build()),
                ("B 고장 지식 문서", build_ontology_bundle.arm_b()),
@@ -59,6 +73,9 @@ def main() -> int:
                 result = publish(Publish(batch=batch, expected_sha256=batch.digest(), review_note=f"기동 시드: {name}"))
                 print(f"[graph-seed] {name}: {'이미 있음' if result.get('duplicate') else '게시'} "
                       f"(노드 {len(batch.nodes)}, 관계 {len(batch.relationships)}, {result['sha256'][:12]})", flush=True)
+                if name.startswith("C "):
+                    gone = retire_stale_ontology(batch.digest())
+                    print(f"[graph-seed] 이전 판 고장 온톨로지 정리: 개체 {gone['nodes']}, 관계 {gone['relationships']}", flush=True)
             return embed()
         except Exception as exc:  # Neo4j 가 막 떴을 때의 연결 오류만 다시 시도한다
             if "ServiceUnavailable" not in type(exc).__name__ and "Connection" not in type(exc).__name__:

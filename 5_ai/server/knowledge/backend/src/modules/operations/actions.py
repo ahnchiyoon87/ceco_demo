@@ -39,10 +39,12 @@ class Proposal(BaseModel):
     model_config = ConfigDict(extra="forbid")
     expected_revision: int = Field(gt=0)
     summary: str = Field(min_length=10, max_length=10000)
-    action: Literal["stop_mixer", "enable_cooling", "inspect_only"] = Field(
+    action: Literal["maintenance_plan", "inspect_only", "stop_mixer", "enable_cooling"] = Field(
         description='Required explicit action code. Include this field even when summary names the action. '
-                    'inspect_only records an inspection request; stop_mixer requests reviewed simulator stopping; '
-                    'enable_cooling enables the supported cooler at the reviewed current temperature target.')
+                    'maintenance_plan proposes the maintenance option option_id (steps, field work, recovery check) from '
+                    'evaluate_maintenance_options; inspect_only records an inspection request without equipment work.')
+    option_id: str | None = Field(default=None, description='Required when action is maintenance_plan: an eligible, '
+                                  'not excluded option_id returned by evaluate_maintenance_options.')
     citations: list[str] = Field(min_length=1, max_length=30)
     uncertainties: list[str] = Field(min_length=1, max_length=30)
 
@@ -63,12 +65,19 @@ def initialize():
             expires_at timestamptz NOT NULL DEFAULT now()+interval '5 minutes',
             started_at timestamptz, completed_at timestamptz
         )""")
+        conn.execute("ALTER TABLE manufacturing_proposals ADD COLUMN IF NOT EXISTS plan jsonb")
+
+
+SWITCH_COMMANDS = ("pump_run", "agitator_run", "heater_enable", "cooler_enable")
 
 
 def fingerprint(state):
-    # Readings change every second. Bind approval to commands/interlock and exact device,
-    # while the incident revision binds it to the alarm/evidence snapshot.
-    value = {key: state[key] for key in ("site", "device", "commands", "interlock")}
+    # Readings change every second and the PLC production schedule moves setpoints. Bind approval to
+    # run/enable switches, interlock and maintenance mode of the exact device; the incident revision
+    # binds it to the alarm/evidence snapshot. Setpoints are rechecked by the plan's own ranges.
+    commands = state.get("commands") or {}
+    value = {"site": state.get("site"), "device": state.get("device"), "interlock": state.get("interlock"),
+             "maintenance": state.get("maintenance"), "switches": {k: commands.get(k) for k in SWITCH_COMMANDS}}
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
 
 
@@ -180,6 +189,9 @@ def create_proposal(incident_id: UUID, body: Proposal, evidence: dict, *, origin
         require_current_thermal_anomaly(evidence, state)
         if evidence.get("history", {}).get("status") != "available" or "AR100-THERMAL-RESPONSE" not in body.citations:
             raise HTTPException(422, "온도 이력과 적용 온도 대응 절차가 필요합니다.")
+    plan = None
+    if body.action == "maintenance_plan":
+        plan = build_plan(incident_id, body, evidence, state)
     with connection() as conn:
         row = conn.execute("SELECT * FROM manufacturing_incidents WHERE id=%s FOR UPDATE", (incident_id,)).fetchone()
         if not row:
@@ -194,12 +206,65 @@ def create_proposal(incident_id: UUID, body: Proposal, evidence: dict, *, origin
             raise HTTPException(409, "사건과 조치 대상이 다릅니다.")
         conn.execute("UPDATE manufacturing_proposals SET status='superseded' WHERE incident_id=%s AND status='pending'", (incident_id,))
         proposal = conn.execute("""INSERT INTO manufacturing_proposals
-            (id,incident_id,status,incident_revision,body,evidence,state_fingerprint,origin)
-            VALUES (%s,%s,'pending',%s,%s,%s,%s,%s) RETURNING *""",
-            (uuid4(), incident_id, row["review_revision"], Jsonb(body.model_dump()), Jsonb(evidence), fingerprint(state), origin)).fetchone()
+            (id,incident_id,status,incident_revision,body,evidence,state_fingerprint,origin,plan)
+            VALUES (%s,%s,'pending',%s,%s,%s,%s,%s,%s) RETURNING *""",
+            (uuid4(), incident_id, row["review_revision"], Jsonb(body.model_dump()), Jsonb(evidence), fingerprint(state), origin,
+             Jsonb(plan) if plan else None)).fetchone()
         conn.execute("UPDATE manufacturing_incidents SET status='awaiting_review' WHERE id=%s", (incident_id,))
         event(conn, incident_id, "proposal_created", {"proposal_id": str(proposal["id"]), "origin": origin})
     return proposal
+
+
+def assessment_of(body) -> dict[str, str]:
+    items = getattr(body, "cause_assessment", None) or []
+    return {(c.failure_mode if hasattr(c, "failure_mode") else c["failure_mode"]):
+            (c.status if hasattr(c, "status") else c["status"]) for c in items}
+
+
+def incident_trace(incident_id) -> list[dict]:
+    from .api import get_incident
+    from .fault_ontology import signatures, trace
+    detail = get_incident(str(incident_id))
+    alarm = detail["incident"]["alarm"]
+    return trace(alarm["site"], alarm["device"], signatures(detail))
+
+
+def incident_symptoms(incident_id) -> list[str]:
+    return sorted({c["symptom"] for c in incident_trace(incident_id)})
+
+
+def build_plan(incident_id, body, evidence, state) -> dict:
+    """정비 계획: 결정 엔진으로 대안 자격·제외·순위를 다시 계산하고, 고른 대안의 단계를 지금 상태로 고정한다."""
+    from . import decision
+    if not body.option_id:
+        raise HTTPException(422, "정비 계획에는 option_id 가 필요합니다.")
+    assessment = assessment_of(body)
+    if not assessment:
+        raise HTTPException(422, "정비 계획에는 고장모드별 원인 평가가 필요합니다.")
+    candidates = incident_trace(incident_id)
+    symptoms = sorted({c["symptom"] for c in candidates})
+    evaluation = decision.analyze(symptoms, state, assessment)
+    row = next((o for d in evaluation["decisions"] for o in d["options"] if o["option_id"] == body.option_id), None)
+    if row is None:
+        raise HTTPException(422, "이 사건의 결정에 없는 대안입니다.")
+    if row["excluded"]:
+        raise HTTPException(422, "규칙으로 제외된 대안입니다: " + ", ".join(r["reason"] for r in row["rules"]))
+    if not row["eligible"]:
+        raise HTTPException(422, f"원인 평가와 맞지 않는 대안입니다: {row['eligibility']}")
+    if row["total"] is None or not row["executable"]:
+        raise HTTPException(422, "손익을 계산할 수 없거나 실행 단계가 없는 대안입니다.")
+    procedure_docs = {ref.split("#", 1)[0] for ref in row["procedure"]}
+    if not procedure_docs & set(body.citations):
+        raise HTTPException(422, "대안의 정비 절차 문서를 인용해야 합니다: " + ", ".join(sorted(procedure_docs)))
+    plan = decision.materialize(decision.decision_for(symptoms, body.option_id), body.option_id, state)
+    chosen = next(d for d in evaluation["decisions"] if any(o["option_id"] == body.option_id for o in d["options"]))
+    plan.update(evaluation={**evaluation, "decisions": [chosen]}, assessment=assessment, symptoms=symptoms,
+                failure_modes={c["failure_mode"]: {"name": c["name"], "symptom": c["symptom_name"],
+                                                   "field_checks": [k.get("field_check") for k in c["checks"] if k.get("field_check")]}
+                               for c in candidates},
+                rank=row.get("rank"), recommended=chosen["recommended"],
+                differs_from_recommended=chosen["recommended"] != body.option_id)
+    return plan
 
 
 @router.get("/incidents/{incident_id}/proposals")
@@ -336,6 +401,8 @@ def decide(proposal_id: UUID, body: Decision):
             require_current_mixer_anomaly(fresh_evidence)
         elif proposal["body"]["action"] == "enable_cooling":
             require_current_thermal_anomaly(fresh_evidence, before)
+        elif proposal["body"]["action"] == "maintenance_plan":
+            return start_plan(conn, incident, proposal, body, before, fresh_evidence)
         conn.execute("UPDATE manufacturing_proposals SET status='executing',decision=%s,started_at=now() WHERE id=%s", (Jsonb(body.model_dump()), proposal_id))
         conn.execute("UPDATE manufacturing_incidents SET status='executing' WHERE id=%s", (incident["id"],))
         event(conn, incident["id"], "action_authorized", {"proposal_id": str(proposal_id), "note": body.note, "before": before,
@@ -389,6 +456,31 @@ def decide(proposal_id: UUID, body: Decision):
         proposal = conn.execute("UPDATE manufacturing_proposals SET status=%s,result=%s,completed_at=CASE WHEN %s THEN NULL ELSE now() END WHERE id=%s RETURNING *", (final, Jsonb(result), final=="observing", proposal_id)).fetchone()
         conn.execute("UPDATE manufacturing_incidents SET status=%s,revision=revision+1,review_revision=review_revision+1 WHERE id=%s", (final, incident["id"]))
         event(conn, incident["id"], "action_result", {"proposal_id": str(proposal_id), **result})
+    return {"proposal": proposal, "replayed": False}
+
+
+def start_plan(conn, incident, proposal, body, before, fresh_evidence):
+    """승인: 손익·규칙을 지금 사실값·관측으로 다시 계산해 고른 대안이 여전히 유효한지 본 뒤 실행기로 넘긴다(IO 없음)."""
+    from . import decision
+    from .maintenance import start_state
+    plan = proposal["plan"]
+    evaluation = decision.analyze(plan["symptoms"], before, plan["assessment"])
+    row = next((o for d in evaluation["decisions"] for o in d["options"] if o["option_id"] == plan["option_id"]), None)
+    if row is None or row["excluded"] or not row["eligible"] or row["total"] is None:
+        why = ", ".join(r["reason"] for r in (row or {}).get("rules", [])) or (row or {}).get("eligibility") or "대안 없음"
+        raise HTTPException(409, f"승인 시점에 다시 계산한 결과 이 대안을 실행할 수 없습니다({why}). 재분석이 필요합니다.")
+    approver = os.environ.get("AI_APPROVER_ID", "operator-01")
+    state = start_state(plan, before, approver, body.note)
+    state["evaluation_at_approval"] = {"total": row["total"], "rank": row.get("rank"),
+                                       "recommended": next(d["recommended"] for d in evaluation["decisions"]
+                                                           if any(o["option_id"] == plan["option_id"] for o in d["options"]))}
+    result = {"status": "executing_plan", "reason": "승인된 정비 계획을 실행합니다.", "plan_state": state}
+    proposal = conn.execute("""UPDATE manufacturing_proposals SET status='executing',decision=%s,started_at=now(),result=%s
+                               WHERE id=%s RETURNING *""", (Jsonb(body.model_dump()), Jsonb(result), proposal["id"])).fetchone()
+    conn.execute("UPDATE manufacturing_incidents SET status='executing' WHERE id=%s", (incident["id"],))
+    event(conn, incident["id"], "action_authorized", {"proposal_id": str(proposal["id"]), "note": body.note, "before": before,
+          "plan": plan["option_id"], "current_observations": fresh_evidence.get("current_history"),
+          "knowledge_sha256": knowledge_fingerprint(fresh_evidence)})
     return {"proposal": proposal, "replayed": False}
 
 

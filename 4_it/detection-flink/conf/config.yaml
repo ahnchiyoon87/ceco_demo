@@ -14,16 +14,20 @@ jobmanager:
     port: 6123
   memory:
     process:
-      size: 768m    # 힙 사용 약 250 MB
+      size: 576m    # 10-06 실측: 힙 101/192 MB, 메타스페이스 72 MB, 다이렉트 32 MB
+    jvm-metaspace:
+      size: 128m    # 기본 256 MB → 실사용 72 MB 의 1.8배
+    jvm-overhead:
+      min: 96m      # 기본 최소 192 MB
   execution:
     failover-strategy: region
   bind-host: 0.0.0.0
 
-# Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 이 파일로 덮으므로 함께 둔다(없으면 잡 제출 때 InaccessibleObjectException).
+# 작은 컨테이너용 JVM(직렬 GC·C1 JIT·코드 캐시 48 MB·스레드 스택 512 KB, 10-06 메모리 축소) + Java 17 모듈 접근 옵션. 이미지 기본 config.yaml 을 이 파일로 덮으므로 함께 둔다(없으면 잡 제출 때 InaccessibleObjectException).
 env:
   java:
     opts:
-      all: --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+      all: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:ReservedCodeCacheSize=48m -Xss512k --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
 
 taskmanager:
   bind-host: 0.0.0.0
@@ -31,7 +35,7 @@ taskmanager:
   numberOfTaskSlots: 4
   memory:
     process:
-      size: 1024m
+      size: 832m    # 실측 RSS 588 MB·힙 사용 약 22 %(BASE_VERIFY §5). ONNX 네이티브 메모리는 JVM 오버헤드 몫에서 쓴다
     managed:
       fraction: 0.0 # HashMap 상태 저장은 관리 메모리를 쓰지 않는다(공식 문서)
 
