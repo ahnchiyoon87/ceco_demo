@@ -92,6 +92,8 @@ watch(() => props.incidentId, () => {
   selectionInitialized=false;selectedStage.value='received'
   load()
 }, { immediate:true })
+// 열어 둔 사건의 저장 상태가 바뀌면(자동 분석이 카드를 냄 · 실행 종료 등) 기록을 다시 읽는다. 분석이 돌지 않을 때는 위 폴링이 멈추므로 이 신호가 없으면 새 카드가 보이지 않는다.
+watch(() => props.incidentStatus, (status, prior) => { if (prior !== undefined && status !== prior) load() })
 onUnmounted(() => { selectionVersion++; generation++; clearTimeout(poll);clearInterval(expiryClock) })
 async function submitAction(action, { clearNote=false, notify=false, errorHint='' }={}) {
   if (submitting.value) return

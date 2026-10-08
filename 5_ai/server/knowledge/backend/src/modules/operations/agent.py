@@ -154,8 +154,9 @@ trace_fault_ontology, search_manual_sections, get_precedents. 고장모드 후�
 - 점검형(kind=inspect) 대안은 엔진이 자격을 준 경우(그 대안이 다루는 후보가 둘 이상 지지·미확인)에만 고를 수 있습니다.
   센서로 원래 확인할 수 없는 후보(observable=false, 예: 임계 속도)가 unknown 으로 남은 것은 "원인을 좁히지 못함"이 아닙니다.
   지지된 후보가 하나이고 나머지가 반박됐으면 그 후보를 다루는 원인 대응 대안 중에서 고르세요.
-- 반려 사유가 있으면 그 요구(예: "지금 멈춰라")를 만족하는 자격 있는 대안 중 손익이 가장 나은 것을 고르고, 사유와 손익 차이를 함께 밝히세요.
-- 이전 반려가 있으면 그 사유에 답하세요. 같은 안을 같은 근거로 다시 내지 마세요.
+- 이 사건(this_incident)에 반려 사유가 있으면 그 요구(예: "지금 멈춰라")를 만족하는 자격 있는 대안 중 손익이 가장 나은 것을 고르고, 사유와 손익 차이를 함께 밝히세요.
+  다른 사건의 기록은 대안 선택의 근거가 아닙니다. 이 사건에 반려가 없으면 손익 1위를 기본으로 고르세요.
+- 이 사건에 이전 반려가 있으면 그 사유에 답하세요. 같은 안을 같은 근거로 다시 내지 마세요.
 - 대안이 하나도 없거나 근거가 부족하면 NeedsEvidence 형식으로 부족한 자료와 다음 확인 단계를 남기세요.
 
 summary 는 담당자가 읽는 조치 카드 본문입니다. 아래 다섯 줄 머리를 그대로 쓰고 각 2~4문장으로 짧게 쓰세요.
@@ -187,7 +188,8 @@ def precedents(incident_id, symptoms):
         same = conn.execute("""SELECT id, status, body->>'option_id' AS option_id, body->>'action' AS action,
                 decision->>'note' AS reviewer_note, result->>'status' AS result_status, result->'report' AS report, created_at
             FROM manufacturing_proposals WHERE incident_id=%s AND status <> 'pending' ORDER BY created_at""", (incident_id,)).fetchall()
-        others = conn.execute("""SELECT p.incident_id, p.status, p.plan->>'option_id' AS option_id, p.decision->>'note' AS reviewer_note,
+        # 다른 사건의 검토 의견(반려 사유)은 넘기지 않는다: 그 사람의 그때 판단이지 이 사건의 요구가 아니다(대안 선택은 이 사건의 사유만)
+        others = conn.execute("""SELECT p.incident_id, p.status, p.plan->>'option_id' AS option_id,
                 p.result->'report'->>'headline' AS headline, p.result->'report'->'findings' AS findings, p.completed_at
             FROM manufacturing_proposals p WHERE p.incident_id <> %s AND p.plan IS NOT NULL
               AND p.plan->'symptoms' ?| %s AND p.status IN ('resolved','unresolved','rejected')

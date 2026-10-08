@@ -28,6 +28,10 @@ class CoolingTCPTest(unittest.IsolatedAsyncioTestCase):
         await self.server.shutdown()
 
     async def test_command_ack_readback_and_actual_temperature_are_distinct(self):
+        # 냉각은 정상 운전에서 상시 켜져 있으므로(plant.py) 먼저 끈 상태를 만든 뒤 켜는 명령을 본다.
+        self.assertFalse((await self.client.write_coil(3, False, slave=1)).isError())
+        self.sim.scan()
+        self.assertFalse(self.sim.snapshot()["commands"]["cooler_enable"])
         ack = await self.client.write_coil(3, True, slave=1)
         self.assertFalse(ack.isError())
         # A Modbus acknowledgement precedes the plant scan and is not recovery.
@@ -37,7 +41,7 @@ class CoolingTCPTest(unittest.IsolatedAsyncioTestCase):
         coil = await self.client.read_coils(3, count=1, slave=1)
         self.assertTrue(coil.bits[0])
         self.assertTrue(before["commands"]["cooler_enable"])
-        for _ in range(120):
+        for _ in range(600):   # 설비 시간 10분: 반응기 열용량·냉각수 계통(10-06 열 모델)을 거쳐 실제 온도가 분명히 내려가는 데 걸리는 시간
             self.sim.scan()
         after = self.sim.snapshot()
         registers = await self.client.read_holding_registers(4, count=2, slave=1)
