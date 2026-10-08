@@ -46,7 +46,7 @@
 | 최종 실행 뒤 수정분(10-06 16:20~17:19): `api.py`(사건 목록 한계 경보 표시), `maintenance.py`(보고서의 배치 폐기를 승인 시점 교반기 운전 중일 때만 계산), 화면 `5_ai/web/src/App.vue`·`5_ai/web/src/features/operations/MaintenancePlanCard.vue`·`5_ai/web/src/manufacturing.css`·`5_ai/web/src/features/operations/ScadaLive.vue`(공정 대시보드에 냉각수 계통 FT-103·TT-103·TT-104·PDT-103·PT-102) | **부분 검증**: 단위 시험 19건·화면 빌드·카드 캡처(`experiments/MAINT-SCN/screens/`)까지. 실제 스택 재실행과 대시보드 실데이터는 미검증 | §5 |
 | 메모리 | 검증됨: 감시 프로필 끈 ceco 상시 약 3.0~3.3 GB(10-06 실측) | decision-log #192 |
 | Docker 메모리 상한 8 GB(`C:\Users\roede\.wslconfig`) | 적용됨(10-08 `docker info` MemTotal 8.3 GB) | — |
-| git | `ceco_demo`는 git 저장소다. 마지막 커밋은 2026-09-30 `e060538`이고, 10-06 이후 작업(정비 시나리오·문서, 루트 `HANDOFF.md` 삭제 포함)은 커밋되지 않았다(10-08 기준 `git status --short` 90여 줄, `docs/기록/` 일부도 아직 git 밖) | `git log`·`git status` |
+| git | 원격 `https://github.com/ahnchiyoon87/ceco_demo`(공개, `main`). 10-08에 10-06 이후 작업까지 커밋·push했다. `.env`(데모 비밀번호·토큰)는 git 에서 빼고 견본 `.env.example`(비밀 자리 `CHANGE_ME`)만 올린다. 지난 이력에서도 `.env`를 지우고 강제 push해 커밋 해시가 모두 바뀌었다(옛 해시로 된 기록은 지금 저장소에 없다) | `git log`, `git ls-remote origin` |
 | 컨테이너 | 내려 둔 상태, 볼륨 유지. 다른 스택(hyd) 컨테이너 없음(10-08 확인). `dmz-influx`가 종료 코드 2로 남아 있으나 로그에 오류 없음 | `docker ps -a` |
 | 마스터 가이드 | `docs/마스터_가이드.html`·`.pdf`(24쪽, 10-07 23:44 빌드): 시스템 아키텍처 그림 한 장 + 이야기 「베어링이 닳던 날」(서막·1~11장) + 갈림길·데이터 리니지 요약·알려진 한계·출처 | 빌드 `python docs/기록/src/master_build.py`(Playwright). 빌드가 그림 ⊇ compose 서비스·볼륨·망·토픽, 이야기 ⊇ 화살표 103개를 대조 |
 
@@ -87,7 +87,7 @@
 사용자 확인이 필요한 것:
 - 시험으로 쌓인 사건 DB 정리. 데이터 삭제라서 시연 전에 지울지 묻는다.
 - `experiments/`의 수정 전 사본(`*.bak-1006`, `master-1007/`) 정리.
-- git 커밋. 사용자가 요청할 때만 한다.
+- git 커밋·push. 사용자가 요청할 때만 한다. 커밋은 경로를 지정하고 `.env`·`.env.local`은 올리지 않는다.
 
 하지 않는 것: 메모리 2 GB 목표를 위한 구조 변경(Kafka·Flink를 더 가벼운 부품으로 교체). 필요하다는 설명만 했고 사용자가 진행을 지시하지 않았다.
 
