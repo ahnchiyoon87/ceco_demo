@@ -4,7 +4,8 @@
   python master_build.py --html     → HTML 만
 그림: arch_layers.py(렌더러) + arch_layers_ceco.py(카드 · 화살표). 이야기: guide_story.py. 틀: guide_tpl.html.
 빌드 검사: ① compose 서비스 · 볼륨 · 망 · Kafka 토픽이 모두 그림에 이름으로 있다(arch_appendix_ceco 가 저장소에서 직접 뽑음)
-           ② 그림의 화살표 1~N 이 모두 이야기에 나온다 ③ 치환 잔여 · 없는 앵커 · 중복 id 가 없다.
+           ② 그림의 화살표 1~N 이 모두 이야기에 나온다 ③ 치환 잔여 · 없는 앵커 · 중복 id 가 없다
+           ④ 그림 밖 본문에 이야기 밖 표현(OFF_STORY)이 없다.
 이전 판(1부 이야기 + 2부 300쪽 상세)은 experiments/master-1007/이전판/ 에 있다.
 """
 import collections, html, pathlib, re, sys
@@ -13,6 +14,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 DOCS = HERE.parent.parent
 OUT_HTML = DOCS / "마스터_가이드.html"
 OUT_PDF = DOCS / "마스터_가이드.pdf"
+OFF_STORY = ["데모", "시연", "가상", "강사", "훈련", "흉내", "배속"]   # 이야기 밖 표현(사용자 2026-10-07 "이 데모에서라는말을 넣지마")
 sys.path.insert(0, str(HERE))
 
 
@@ -57,6 +59,11 @@ def build_html():
     assert not dup, f"중복 id: {dup[:10]}"
     miss = sorted({h for h in re.findall(r'href="#([^"]+)"', s)} - set(ids))
     assert not miss, f"없는 앵커: {miss[:10]}"
+    # ④ 그림 밖 본문은 하나의 공장 이야기다 — 이야기 밖 표현이 없어야 한다(그림 속 부품 이름은 실제 구성 이름이라 세지 않는다)
+    body = re.sub(r"<[^>]+>", " ", re.sub(r"<svg.*?</svg>|<style.*?</style>|<script.*?</script>", "", s, flags=re.S))
+    off = {w: [body[max(0, m.start() - 20):m.end() + 20] for m in re.finditer(w, body)] for w in OFF_STORY}
+    off = {w: v for w, v in off.items() if v}
+    assert not off, f"이야기 밖 표현: {off}"
     OUT_HTML.write_text(s, encoding="utf-8")
     plain = re.sub(r"<[^>]+>|\{a:\d+\}", "", alltxt)
     print(f"HTML {OUT_HTML.name} {len(s.encode())} bytes · 그림 카드 {len(LC.CARDS)} · 화살표 {len(LC.ARROWS)}(이야기에 전부) · 장 {len(GS.CHAPTERS)} · 이야기 {len(plain)}자")
