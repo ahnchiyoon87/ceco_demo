@@ -12,7 +12,11 @@ SET 'pipeline.name' = 'AR100-Tier1-Threshold';
 
 -- ── ① 엔지니어링 임계치(USL/LSL) 감지 ────────────────────────────────────
 INSERT INTO alerts
-SELECT
+-- 규격표는 한 번 읽는 고정 CSV다. 이미 판정한 과거 센서 행은 다시
+-- 결합할 필요가 없으므로 센서 쪽만 60초 후 정리한다. 규격표 쪽은
+-- 만료시키지 않는다(전역 TTL을 설정하면 고정 규격표까지 사라진다).
+-- https://nightlies.apache.org/flink/flink-docs-release-2.2/docs/dev/table/sql/queries/hints/#state-ttl-hints
+SELECT /*+ STATE_TTL('t' = '60s') */
     t.ts, t.site, t.device, t.`tag`, t.`value`,
     CASE WHEN l.usl IS NOT NULL AND t.`value` > l.usl THEN 'THRESHOLD_USL'
          ELSE 'THRESHOLD_LSL' END                                   AS alert_type,

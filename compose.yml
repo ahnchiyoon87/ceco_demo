@@ -704,13 +704,40 @@ services:
       retries: 18
       start_period: 30s
 
-  web:   # AI 업무 화면(담당자 승인). 설비 조작 화면은 없다(FUXA 가 대신)
-    build: { context: ./5_ai/web, args: { VITE_FUXA_URL: "http://127.0.0.1:${PORT_FUXA}/" } }
-    image: ceco-ai-web:base
+  portal-controls:  # 사람용 단일 포털의 가상설비 이상 발생·초기화. AI 백엔드에는 계정을 주지 않는다.
+    build: ./5_ai/portal-controls
+    image: ceco-portal-controls:base
     restart: unless-stopped
-    ports: [ "127.0.0.1:${PORT_AI_WEB}:8080" ]
+    environment:
+      SIMULATOR_URL: http://host.docker.internal:${PORT_SIM_API}
+      SIMULATOR_USER: ${INSTRUCTOR_USER}
+      SIMULATOR_PASSWORD: ${INSTRUCTOR_PASSWORD}
+      PORTAL_CONTROL_TOKEN: ${PORTAL_CONTROL_TOKEN}
+      KNOWLEDGE_URL: http://knowledge:8000
+      FUXA_URL: http://host.docker.internal:${PORT_FUXA}
+      HMI_GATE_USER: ${HMI_GATE_USER}
+      HMI_GATE_PASSWORD: ${HMI_GATE_PASSWORD}
+      FUXA_OPERATOR_PASSWORD: ${FUXA_OPERATOR_PASSWORD}
     networks: [it-net]
     depends_on: { knowledge: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8090/healthz')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  web:   # 단일 포털: 설비·이상 발생·대시보드·AI 검토. 정비 실행은 기존 승인 경로.
+    build: { context: ./5_ai/web }
+    image: ceco-ai-web:base
+    restart: unless-stopped
+    environment:
+      PORTAL_CONTROL_TOKEN: ${PORTAL_CONTROL_TOKEN}
+      FUXA_GATE_URL: http://host.docker.internal:${PORT_FUXA}
+      HMI_GATE_USER: ${HMI_GATE_USER}
+      HMI_GATE_PASSWORD: ${HMI_GATE_PASSWORD}
+    ports: [ "127.0.0.1:${PORT_AI_WEB}:8080" ]
+    networks: [it-net]
+    depends_on: { knowledge: { condition: service_healthy }, portal-controls: { condition: service_healthy } }
     healthcheck: { test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/healthz"], interval: 10s, timeout: 3s, retries: 3 }
 
   business:   # 업무 서비스: Kafka alert·응답·PLC 상태 → 사건·alert 상태·workflow·audit, 5 s·10 s 타이머

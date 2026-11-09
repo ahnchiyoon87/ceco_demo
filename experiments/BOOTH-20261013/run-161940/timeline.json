@@ -1,0 +1,67 @@
+{
+  "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+  "scenes": [
+    {
+      "id": "normal",
+      "start": 2.3136097999522462,
+      "end": 22.325029899948277
+    },
+    {
+      "id": "fault",
+      "start": 22.32503559999168,
+      "end": 45.541293999995105
+    },
+    {
+      "id": "pipeline",
+      "start": 45.5412970999605,
+      "end": 73.49837459996343
+    },
+    {
+      "id": "incident",
+      "start": 73.49837599997409,
+      "end": 90.71625319996383
+    },
+    {
+      "id": "analysis",
+      "start": 90.71625519997906,
+      "end": 113.87299799994798
+    },
+    {
+      "id": "causes",
+      "start": 113.87300019996474,
+      "end": 146.34372819995042
+    },
+    {
+      "id": "options",
+      "start": 146.34373099997174,
+      "end": 178.5448762999731
+    },
+    {
+      "id": "approval",
+      "start": 178.54487859999062,
+      "approval_offset_s": 9.206319399992935,
+      "end": 189.7660779999569
+    },
+    {
+      "id": "repair",
+      "start": 189.76608019997366,
+      "end": 197.0737850999576
+    },
+    {
+      "id": "recovery",
+      "start": 197.07378679997055,
+      "end": 234.17667969997274
+    },
+    {
+      "id": "report",
+      "start": 234.17668179998873,
+      "end": 261.47670279996237
+    },
+    {
+      "id": "final",
+      "start": 261.4767042999738,
+      "end": 277.733916600002
+    }
+  ],
+  "verification": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\verification.json"
+}

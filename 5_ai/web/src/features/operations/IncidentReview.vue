@@ -2,14 +2,15 @@
 import { ref, watch, computed, onUnmounted, defineAsyncComponent, nextTick } from 'vue'
 import {processState} from './processState.js'
 import {actionPresentation} from './actionPresentation.js'
+const GuidedIncident = defineAsyncComponent(() => import('./GuidedIncident.vue'))
 const ProcessFlow = defineAsyncComponent(() => import('./ProcessFlow.vue'))
 const ProposalFacts = defineAsyncComponent(() => import('./ProposalFacts.vue'))
 const ExecutionTrace = defineAsyncComponent(() => import('./ExecutionTrace.vue'))
 const ThermalObservation = defineAsyncComponent(() => import('./ThermalObservation.vue'))
 const MaintenancePlanCard = defineAsyncComponent(() => import('./MaintenancePlanCard.vue'))
-const props = defineProps({ incidentId: { type: String, required: true }, incidentStatus: { type: String, default: 'received' } })
+const props = defineProps({ incidentId: { type: String, required: true }, incidentStatus: { type: String, default: 'received' }, guided: { type: Boolean, default: false } })
 const canAnalyze = computed(() => ['received', 'awaiting_review', 'unresolved'].includes(props.incidentStatus))
-const emit = defineEmits(['updated'])
+const emit = defineEmits(['updated', 'control'])
 const items = ref([]), error = ref(''), loading = ref(false), submitting = ref(false), note = ref('')
 const runs = ref([]), model = ref(null)
 const errorNotice = ref(null)
@@ -74,14 +75,14 @@ async function load() {
       const priorStatus = latestRun.value?.status
       const priorProposalStatus = flowProposal.value?.status
       items.value = data.items; runs.value = analysis.items; model.value = status
-      if(!selectionInitialized){selectedStage.value=currentStage.value;selectionInitialized=true}
+      if(props.guided||!selectionInitialized){selectedStage.value=currentStage.value;selectionInitialized=true}
       if ((priorStatus && priorStatus !== latestRun.value?.status) || (priorProposalStatus && priorProposalStatus !== flowProposal.value?.status)) emit('updated')
     }
   } catch (e) { if (generation === current) error.value = e.message }
   finally { if (generation === current) {
     loading.value = false
     // Retry transient read failures; never retry a POST or an equipment action.
-    if (runActive.value || error.value) poll = setTimeout(load, error.value ? 6000 : items.value.some(p=>p.status==='executing') ? 1500 : 3000)
+    if (props.guided || runActive.value || error.value) poll = setTimeout(load, error.value ? 6000 : items.value.some(p=>p.status==='executing') ? 1500 : 3000)
   } }
 }
 let selectionVersion = 0
@@ -144,7 +145,8 @@ async function recover(proposal) {
 </script>
 
 <template>
-  <section class="review-section">
+  <GuidedIncident v-if="guided" :run="latestRun" :proposal="flowProposal" :incident-status="incidentStatus" :loading="loading" :error="error" v-model:note="note" :submitting="submitting" :expired="flowProposal?expired(flowProposal):false" :can-analyze="canAnalyze" :configured="!!model?.configured" @decide="value=>decide(flowProposal,value)" @analyze="analyze" @recover="recoverRun(latestRun)" @reload="load" @control="emit('control')" />
+  <section v-else class="review-section">
     <ProcessFlow ref="flowView" :run="latestRun" :proposal="flowProposal" :selected="selectedStage" @select="selectStage" />
     <div ref="stagePanel" class="stage-toolbar" tabindex="-1" :aria-label="stageNames[selectedStage]"><h3>{{stageNames[selectedStage]}}</h3><button @click="showProcess">프로세스 보기</button><button @click="resumeFollow">현재 처리 단계 보기 · {{stageNames[currentStage]}}</button></div>
     <p class="panel-hint">선택한 카드의 내용입니다. 처리 상태는 계속 갱신되며, 보고 있는 카드는 자동으로 바뀌지 않습니다.</p>

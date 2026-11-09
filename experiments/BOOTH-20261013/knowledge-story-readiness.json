@@ -1,0 +1,27 @@
+{
+  "healthy": 23,
+  "completed_helpers": 5,
+  "pipeline": [
+    {
+      "key": "plant",
+      "status": "available",
+      "detail": "스캔 17646"
+    },
+    {
+      "key": "history",
+      "status": "available",
+      "detail": "17/17 센서 · 15초 이내 GOOD"
+    },
+    {
+      "key": "flink",
+      "status": "available",
+      "detail": "4/4 작업 RUNNING"
+    }
+  ],
+  "active_faults": {},
+  "readings": {
+    "TT-101": 78.0605,
+    "FT-103": 30.006,
+    "PDT-103": 0.116
+  }
+}

@@ -28,6 +28,12 @@ class CoolingTCPTest(unittest.IsolatedAsyncioTestCase):
         await self.server.shutdown()
 
     async def test_command_ack_readback_and_actual_temperature_are_distinct(self):
+        # Normal exothermic operation now starts with cooling enabled. Establish
+        # an explicit OFF state before testing the OFF -> ON acknowledgement.
+        off = await self.client.write_coil(3, False, slave=1)
+        self.assertFalse(off.isError())
+        self.sim.scan()
+        self.assertFalse(self.sim.snapshot()["commands"]["cooler_enable"])
         ack = await self.client.write_coil(3, True, slave=1)
         self.assertFalse(ack.isError())
         # A Modbus acknowledgement precedes the plant scan and is not recovery.
@@ -37,7 +43,9 @@ class CoolingTCPTest(unittest.IsolatedAsyncioTestCase):
         coil = await self.client.read_coils(3, count=1, slave=1)
         self.assertTrue(coil.bits[0])
         self.assertTrue(before["commands"]["cooler_enable"])
-        for _ in range(120):
+        # The exothermic reaction continues supplying heat while cooling runs.
+        # Observe three plant minutes before asserting a 3-degree reduction.
+        for _ in range(180):
             self.sim.scan()
         after = self.sim.snapshot()
         registers = await self.client.read_holding_registers(4, count=2, slave=1)

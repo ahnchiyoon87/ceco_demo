@@ -1,0 +1,1129 @@
+{
+  "duration_s": 281,
+  "audio": [
+    {
+      "id": 1,
+      "scene": "documents",
+      "source_window": [
+        0.0,
+        6.5
+      ],
+      "speech_start": 0.25,
+      "speech_end": 4.345458333333333,
+      "trim": [
+        0,
+        4.1
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 2,
+      "scene": "documents",
+      "source_window": [
+        6.5,
+        13.0
+      ],
+      "speech_start": 6.75,
+      "speech_end": 12.765645833333334,
+      "trim": [
+        0,
+        6.02
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 3,
+      "scene": "sources",
+      "source_window": [
+        13.0,
+        28.0
+      ],
+      "speech_start": 13.25,
+      "speech_end": 21.6636875,
+      "trim": [
+        0,
+        8.42
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 4,
+      "scene": "knowledge_build",
+      "source_window": [
+        28,
+        42
+      ],
+      "speech_start": 28.25,
+      "speech_end": 34.427770833333334,
+      "trim": [
+        0,
+        6.18
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 5,
+      "scene": "knowledge_build",
+      "source_window": [
+        42,
+        46
+      ],
+      "speech_start": 42.25,
+      "speech_end": 44.663666666666664,
+      "trim": [
+        0,
+        2.42
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 6,
+      "scene": "knowledge_review",
+      "source_window": [
+        46,
+        60
+      ],
+      "speech_start": 46.25,
+      "speech_end": 54.25714583333333,
+      "trim": [
+        0,
+        8.02
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 7,
+      "scene": "knowledge_review",
+      "source_window": [
+        60,
+        64
+      ],
+      "speech_start": 60.25,
+      "speech_end": 62.90541666666667,
+      "trim": [
+        0,
+        2.66
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 8,
+      "scene": "ontology",
+      "source_window": [
+        64,
+        76
+      ],
+      "speech_start": 64.25,
+      "speech_end": 69.94054166666666,
+      "trim": [
+        0,
+        5.699999999999999
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 9,
+      "scene": "ontology",
+      "source_window": [
+        76,
+        84
+      ],
+      "speech_start": 76.25,
+      "speech_end": 81.78541666666666,
+      "trim": [
+        0,
+        5.54
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 10,
+      "scene": "normal",
+      "source_window": [
+        84.0,
+        94.0
+      ],
+      "speech_start": 84.25,
+      "speech_end": 90.66270833333333,
+      "trim": [
+        0,
+        6.42
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 11,
+      "scene": "fault",
+      "source_window": [
+        94.0,
+        102.333
+      ],
+      "speech_start": 94.25,
+      "speech_end": 99.3078125,
+      "trim": [
+        0,
+        5.06
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 12,
+      "scene": "fault",
+      "source_window": [
+        102.333,
+        110.667
+      ],
+      "speech_start": 102.583,
+      "speech_end": 107.64004166666666,
+      "trim": [
+        0,
+        5.06
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 13,
+      "scene": "fault",
+      "source_window": [
+        110.667,
+        119.0
+      ],
+      "speech_start": 110.917,
+      "speech_end": 117.1738125,
+      "trim": [
+        0,
+        6.26
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 14,
+      "scene": "pipeline",
+      "source_window": [
+        119.0,
+        126.0
+      ],
+      "speech_start": 119.25,
+      "speech_end": 123.26402083333333,
+      "trim": [
+        0,
+        4.02
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 15,
+      "scene": "pipeline",
+      "source_window": [
+        126.0,
+        133.0
+      ],
+      "speech_start": 126.25,
+      "speech_end": 131.3054375,
+      "trim": [
+        0,
+        5.06
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 16,
+      "scene": "incident",
+      "source_window": [
+        133.0,
+        137.0
+      ],
+      "speech_start": 133.25,
+      "speech_end": 135.98185416666666,
+      "trim": [
+        0,
+        2.74
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 17,
+      "scene": "incident",
+      "source_window": [
+        137.0,
+        141.0
+      ],
+      "speech_start": 137.25,
+      "speech_end": 139.9079375,
+      "trim": [
+        0,
+        2.66
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 18,
+      "scene": "analysis",
+      "source_window": [
+        141.0,
+        145.5
+      ],
+      "speech_start": 141.25,
+      "speech_end": 144.30041666666668,
+      "trim": [
+        0,
+        3.06
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 19,
+      "scene": "analysis",
+      "source_window": [
+        145.5,
+        150.0
+      ],
+      "speech_start": 145.75,
+      "speech_end": 148.08447916666665,
+      "trim": [
+        0,
+        2.3400000000000003
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 20,
+      "scene": "analysis",
+      "source_window": [
+        150.0,
+        154.5
+      ],
+      "speech_start": 150.25,
+      "speech_end": 153.94820833333333,
+      "trim": [
+        0,
+        3.7
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 21,
+      "scene": "analysis",
+      "source_window": [
+        154.5,
+        159.0
+      ],
+      "speech_start": 154.75,
+      "speech_end": 158.12425,
+      "trim": [
+        0,
+        3.38
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 22,
+      "scene": "causes",
+      "source_window": [
+        159.0,
+        164.333
+      ],
+      "speech_start": 159.25,
+      "speech_end": 162.22347916666666,
+      "trim": [
+        0,
+        2.98
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 23,
+      "scene": "causes",
+      "source_window": [
+        164.333,
+        169.667
+      ],
+      "speech_start": 164.583,
+      "speech_end": 169.52639583333334,
+      "trim": [
+        0,
+        5.22
+      ],
+      "time_stretch": 1.0579651398459662
+    },
+    {
+      "id": 24,
+      "scene": "causes",
+      "source_window": [
+        169.667,
+        175.0
+      ],
+      "speech_start": 169.917,
+      "speech_end": 173.9346875,
+      "trim": [
+        0,
+        4.02
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 25,
+      "scene": "options",
+      "source_window": [
+        175.0,
+        179.0
+      ],
+      "speech_start": 175.25,
+      "speech_end": 178.1403125,
+      "trim": [
+        0,
+        2.9
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 26,
+      "scene": "options",
+      "source_window": [
+        179.0,
+        183.0
+      ],
+      "speech_start": 179.25,
+      "speech_end": 182.84195833333334,
+      "trim": [
+        0,
+        3.62
+      ],
+      "time_stretch": 1.0055555555555555
+    },
+    {
+      "id": 27,
+      "scene": "options",
+      "source_window": [
+        183.0,
+        187.0
+      ],
+      "speech_start": 183.25,
+      "speech_end": 185.74422916666666,
+      "trim": [
+        0,
+        2.5
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 28,
+      "scene": "approval",
+      "source_window": [
+        187,
+        200
+      ],
+      "speech_start": 187.25,
+      "speech_end": 194.62539583333333,
+      "trim": [
+        0,
+        7.38
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 29,
+      "scene": "approval",
+      "source_window": [
+        200,
+        204
+      ],
+      "speech_start": 200.25,
+      "speech_end": 203.38279166666666,
+      "trim": [
+        0,
+        3.14
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 30,
+      "scene": "repair",
+      "source_window": [
+        204.0,
+        208.0
+      ],
+      "speech_start": 204.25,
+      "speech_end": 207.840625,
+      "trim": [
+        0,
+        3.62
+      ],
+      "time_stretch": 1.0055555555555555
+    },
+    {
+      "id": 31,
+      "scene": "repair",
+      "source_window": [
+        208.0,
+        212.0
+      ],
+      "speech_start": 208.25,
+      "speech_end": 210.98258333333334,
+      "trim": [
+        0,
+        2.74
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 32,
+      "scene": "repair",
+      "source_window": [
+        212.0,
+        216.0
+      ],
+      "speech_start": 212.25,
+      "speech_end": 215.54702083333333,
+      "trim": [
+        0,
+        3.3000000000000003
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 33,
+      "scene": "recovery",
+      "source_window": [
+        216.0,
+        230.0
+      ],
+      "speech_start": 216.25,
+      "speech_end": 224.02379166666665,
+      "trim": [
+        0,
+        7.779999999999999
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 34,
+      "scene": "recovery",
+      "source_window": [
+        230.0,
+        244.0
+      ],
+      "speech_start": 230.25,
+      "speech_end": 237.54502083333333,
+      "trim": [
+        0,
+        7.3
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 35,
+      "scene": "recovery",
+      "source_window": [
+        244.0,
+        258.0
+      ],
+      "speech_start": 244.25,
+      "speech_end": 249.7843125,
+      "trim": [
+        0,
+        5.54
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 36,
+      "scene": "report",
+      "source_window": [
+        258.0,
+        262.667
+      ],
+      "speech_start": 258.25,
+      "speech_end": 261.62175,
+      "trim": [
+        0,
+        3.38
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 37,
+      "scene": "report",
+      "source_window": [
+        262.667,
+        267.333
+      ],
+      "speech_start": 262.917,
+      "speech_end": 266.52793749999995,
+      "trim": [
+        0,
+        3.62
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 38,
+      "scene": "report",
+      "source_window": [
+        267.333,
+        272.0
+      ],
+      "speech_start": 267.583,
+      "speech_end": 270.79895833333336,
+      "trim": [
+        0,
+        3.22
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 39,
+      "scene": "final",
+      "source_window": [
+        272.0,
+        276.5
+      ],
+      "speech_start": 272.25,
+      "speech_end": 275.86620833333336,
+      "trim": [
+        0,
+        3.62
+      ],
+      "time_stretch": 1
+    },
+    {
+      "id": 40,
+      "scene": "final",
+      "source_window": [
+        276.5,
+        281.0
+      ],
+      "speech_start": 276.75,
+      "speech_end": 280.85608333333334,
+      "trim": [
+        0,
+        4.58
+      ],
+      "time_stretch": 1.1170731707317074
+    }
+  ],
+  "captions": [
+    {
+      "scene": "documents",
+      "parent_cue": 1,
+      "start": 0.13,
+      "end": 6.46,
+      "text": "설비에 문제가 생기면, 무엇을 보고 어떻게 대응해야 할까요?",
+      "lines": [
+        "설비에 문제가 생기면, 무엇을",
+        "보고 어떻게 대응해야 할까요?"
+      ]
+    },
+    {
+      "scene": "documents",
+      "parent_cue": 2,
+      "start": 6.63,
+      "end": 9.020000000000001,
+      "text": "출발점은 매뉴얼입니다.",
+      "lines": [
+        "출발점은 매뉴얼입니다."
+      ]
+    },
+    {
+      "scene": "documents",
+      "parent_cue": 2,
+      "start": 9.030000000000001,
+      "end": 12.96,
+      "text": "이상 징후와 정비 절차, 회복 기준을 확인합니다.",
+      "lines": [
+        "이상 징후와 정비 절차, 회복 기준을 확인합니다."
+      ]
+    },
+    {
+      "scene": "sources",
+      "parent_cue": 3,
+      "start": 13.13,
+      "end": 17.04,
+      "text": "설비 목록과 정비 매뉴얼을 등록합니다.",
+      "lines": [
+        "설비 목록과 정비 매뉴얼을 등록합니다."
+      ]
+    },
+    {
+      "scene": "sources",
+      "parent_cue": 3,
+      "start": 17.05,
+      "end": 27.96,
+      "text": "현장 문서를 AI가 찾아 쓸 수 있는 지식으로 바꾸는 첫 단계입니다.",
+      "lines": [
+        "현장 문서를 AI가 찾아 쓸 수 있는",
+        "지식으로 바꾸는 첫 단계입니다."
+      ]
+    },
+    {
+      "scene": "knowledge_build",
+      "parent_cue": 4,
+      "start": 28.13,
+      "end": 41.96,
+      "text": "AI가 원문을 읽고, 어떤 설비에 어떤 센서와 문서가 연결되는지 제안합니다.",
+      "lines": [
+        "AI가 원문을 읽고, 어떤 설비에 어떤",
+        "센서와 문서가 연결되는지 제안합니다."
+      ]
+    },
+    {
+      "scene": "knowledge_build",
+      "parent_cue": 5,
+      "start": 42.13,
+      "end": 45.96,
+      "text": "이제 담당자가 검토할 차례입니다.",
+      "lines": [
+        "이제 담당자가 검토할 차례입니다."
+      ]
+    },
+    {
+      "scene": "knowledge_review",
+      "parent_cue": 6,
+      "start": 46.13,
+      "end": 51.56,
+      "text": "제안이 원문과 맞는지, 연결에 근거가 있는지 살펴봅니다.",
+      "lines": [
+        "제안이 원문과 맞는지,",
+        "연결에 근거가 있는지 살펴봅니다."
+      ]
+    },
+    {
+      "scene": "knowledge_review",
+      "parent_cue": 6,
+      "start": 51.57,
+      "end": 59.96,
+      "text": "검토를 마치고 게시할 내용을 정합니다.",
+      "lines": [
+        "검토를 마치고 게시할 내용을 정합니다."
+      ]
+    },
+    {
+      "scene": "knowledge_review",
+      "parent_cue": 7,
+      "start": 60.13,
+      "end": 63.96,
+      "text": "검토한 지식이 그래프에 반영됐습니다.",
+      "lines": [
+        "검토한 지식이 그래프에 반영됐습니다."
+      ]
+    },
+    {
+      "scene": "ontology",
+      "parent_cue": 8,
+      "start": 64.13,
+      "end": 68.11999999999999,
+      "text": "설비와 센서, 문서를 이어 놓은 지식 지도.",
+      "lines": [
+        "설비와 센서, 문서를 이어 놓은 지식 지도."
+      ]
+    },
+    {
+      "scene": "ontology",
+      "parent_cue": 8,
+      "start": 68.13,
+      "end": 75.96,
+      "text": "이것이 온톨로지입니다.",
+      "lines": [
+        "이것이 온톨로지입니다."
+      ]
+    },
+    {
+      "scene": "ontology",
+      "parent_cue": 9,
+      "start": 76.13,
+      "end": 83.96,
+      "text": "냉각수 필터를 선택하면, 연결된 센서와 정비 문서를 함께 찾을 수 있습니다.",
+      "lines": [
+        "냉각수 필터를 선택하면, 연결된 센서와",
+        "정비 문서를 함께 찾을 수 있습니다."
+      ]
+    },
+    {
+      "scene": "normal",
+      "parent_cue": 10,
+      "start": 84.13,
+      "end": 86.52,
+      "text": "이제 설비를 보겠습니다.",
+      "lines": [
+        "이제 설비를 보겠습니다."
+      ]
+    },
+    {
+      "scene": "normal",
+      "parent_cue": 10,
+      "start": 86.53,
+      "end": 93.96,
+      "text": "먼저 정상 상태의 온도와 냉각수 흐름을 확인합니다.",
+      "lines": [
+        "먼저 정상 상태의 온도와 냉각수 흐름을 확인합니다."
+      ]
+    },
+    {
+      "scene": "fault",
+      "parent_cue": 11,
+      "start": 94.13,
+      "end": 102.29299999999999,
+      "text": "냉각수 필터에 찌꺼기가 쌓여, 물이 잘 흐르지 않는 상황을 재현합니다.",
+      "lines": [
+        "냉각수 필터에 찌꺼기가 쌓여,",
+        "물이 잘 흐르지 않는 상황을 재현합니다."
+      ]
+    },
+    {
+      "scene": "fault",
+      "parent_cue": 12,
+      "start": 102.463,
+      "end": 110.627,
+      "text": "필터가 막히면서 냉각수 흐름은 줄고, 반응기 온도는 올라갑니다.",
+      "lines": [
+        "필터가 막히면서 냉각수 흐름은 줄고,",
+        "반응기 온도는 올라갑니다."
+      ]
+    },
+    {
+      "scene": "fault",
+      "parent_cue": 13,
+      "start": 110.797,
+      "end": 114.14699999999999,
+      "text": "필터 앞뒤의 압력 차이도 커집니다.",
+      "lines": [
+        "필터 앞뒤의 압력 차이도 커집니다."
+      ]
+    },
+    {
+      "scene": "fault",
+      "parent_cue": 13,
+      "start": 114.157,
+      "end": 118.96,
+      "text": "이 변화들이 원인을 찾는 단서가 됩니다.",
+      "lines": [
+        "이 변화들이 원인을 찾는 단서가 됩니다."
+      ]
+    },
+    {
+      "scene": "pipeline",
+      "parent_cue": 14,
+      "start": 119.13,
+      "end": 125.96,
+      "text": "센서값은 현장에서 분석 시스템으로 계속 전달됩니다.",
+      "lines": [
+        "센서값은 현장에서 분석",
+        "시스템으로 계속 전달됩니다."
+      ]
+    },
+    {
+      "scene": "pipeline",
+      "parent_cue": 15,
+      "start": 126.13,
+      "end": 132.96,
+      "text": "분석 시스템은 쌓인 기록에서 이상 징후를 찾아, 경보를 발생시킵니다.",
+      "lines": [
+        "분석 시스템은 쌓인 기록에서 이상",
+        "징후를 찾아, 경보를 발생시킵니다."
+      ]
+    },
+    {
+      "scene": "incident",
+      "parent_cue": 16,
+      "start": 133.13,
+      "end": 136.96,
+      "text": "관련 경보를 하나의 사건으로 묶습니다.",
+      "lines": [
+        "관련 경보를 하나의 사건으로 묶습니다."
+      ]
+    },
+    {
+      "scene": "incident",
+      "parent_cue": 17,
+      "start": 137.13,
+      "end": 140.96,
+      "text": "이 사건을 따라 처리 상태를 확인합니다.",
+      "lines": [
+        "이 사건을 따라 처리 상태를 확인합니다."
+      ]
+    },
+    {
+      "scene": "analysis",
+      "parent_cue": 18,
+      "start": 141.13,
+      "end": 145.46,
+      "text": "AI가 경보 시점의 센서값을 살핍니다.",
+      "lines": [
+        "AI가 경보 시점의 센서값을 살핍니다."
+      ]
+    },
+    {
+      "scene": "analysis",
+      "parent_cue": 19,
+      "start": 145.63,
+      "end": 149.96,
+      "text": "연결된 정비 매뉴얼도 찾아봅니다.",
+      "lines": [
+        "연결된 정비 매뉴얼도 찾아봅니다."
+      ]
+    },
+    {
+      "scene": "analysis",
+      "parent_cue": 20,
+      "start": 150.13,
+      "end": 154.46,
+      "text": "온도와 유량, 필터 압력 차이를 함께 봅니다.",
+      "lines": [
+        "온도와 유량, 필터 압력 차이를 함께 봅니다."
+      ]
+    },
+    {
+      "scene": "analysis",
+      "parent_cue": 21,
+      "start": 154.63,
+      "end": 158.96,
+      "text": "이 근거로 원인을 좁혀 정비안을 만듭니다.",
+      "lines": [
+        "이 근거로 원인을 좁혀 정비안을 만듭니다."
+      ]
+    },
+    {
+      "scene": "causes",
+      "parent_cue": 22,
+      "start": 159.13,
+      "end": 164.293,
+      "text": "관측된 증상을 원인 후보와 대조합니다.",
+      "lines": [
+        "관측된 증상을 원인 후보와 대조합니다."
+      ]
+    },
+    {
+      "scene": "causes",
+      "parent_cue": 23,
+      "start": 164.463,
+      "end": 167.40205747126438,
+      "text": "유량 감소와 압력 차이 상승.",
+      "lines": [
+        "유량 감소와 압력 차이 상승."
+      ]
+    },
+    {
+      "scene": "causes",
+      "parent_cue": 23,
+      "start": 167.41205747126438,
+      "end": 169.627,
+      "text": "필터 막힘을 의심하는 근거입니다.",
+      "lines": [
+        "필터 막힘을 의심하는 근거입니다."
+      ]
+    },
+    {
+      "scene": "causes",
+      "parent_cue": 24,
+      "start": 169.797,
+      "end": 174.96,
+      "text": "실제 원인은 정비 현장의 소견으로 한 번 더 확인합니다.",
+      "lines": [
+        "실제 원인은 정비 현장의",
+        "소견으로 한 번 더 확인합니다."
+      ]
+    },
+    {
+      "scene": "options",
+      "parent_cue": 25,
+      "start": 175.13,
+      "end": 178.96,
+      "text": "생산 영향과 비용을 함께 비교합니다.",
+      "lines": [
+        "생산 영향과 비용을 함께 비교합니다."
+      ]
+    },
+    {
+      "scene": "options",
+      "parent_cue": 26,
+      "start": 179.13,
+      "end": 182.96,
+      "text": "운전을 유지할 수 있는 예비 필터 전환을 선택합니다.",
+      "lines": [
+        "운전을 유지할 수 있는 예비 필터 전환을 선택합니다."
+      ]
+    },
+    {
+      "scene": "options",
+      "parent_cue": 27,
+      "start": 183.13,
+      "end": 186.96,
+      "text": "작업 순서와 회복 기준도 정합니다.",
+      "lines": [
+        "작업 순서와 회복 기준도 정합니다."
+      ]
+    },
+    {
+      "scene": "approval",
+      "parent_cue": 28,
+      "start": 187.13,
+      "end": 191.76,
+      "text": "이제 담당자가 근거와 작업 순서를 검토합니다.",
+      "lines": [
+        "이제 담당자가 근거와 작업 순서를 검토합니다."
+      ]
+    },
+    {
+      "scene": "approval",
+      "parent_cue": 28,
+      "start": 191.76999999999998,
+      "end": 199.96,
+      "text": "의견을 작성하고, 정비를 승인합니다.",
+      "lines": [
+        "의견을 작성하고, 정비를 승인합니다."
+      ]
+    },
+    {
+      "scene": "approval",
+      "parent_cue": 29,
+      "start": 200.13,
+      "end": 203.96,
+      "text": "승인된 작업 요청이 현장으로 전달됩니다.",
+      "lines": [
+        "승인된 작업 요청이 현장으로 전달됩니다."
+      ]
+    },
+    {
+      "scene": "repair",
+      "parent_cue": 30,
+      "start": 204.13,
+      "end": 207.96,
+      "text": "예비 필터로 전환하고, 막힌 필터를 세척합니다.",
+      "lines": [
+        "예비 필터로 전환하고, 막힌 필터를 세척합니다."
+      ]
+    },
+    {
+      "scene": "repair",
+      "parent_cue": 31,
+      "start": 208.13,
+      "end": 211.96,
+      "text": "현장의 진행 상황이 포털로 돌아옵니다.",
+      "lines": [
+        "현장의 진행 상황이 포털로 돌아옵니다."
+      ]
+    },
+    {
+      "scene": "repair",
+      "parent_cue": 32,
+      "start": 212.13,
+      "end": 215.96,
+      "text": "정비가 끝나면 센서값으로 회복을 확인합니다.",
+      "lines": [
+        "정비가 끝나면 센서값으로 회복을 확인합니다."
+      ]
+    },
+    {
+      "scene": "recovery",
+      "parent_cue": 33,
+      "start": 216.13,
+      "end": 220.52,
+      "text": "정비 후, 온도와 냉각수 흐름을 지켜봅니다.",
+      "lines": [
+        "정비 후, 온도와 냉각수 흐름을 지켜봅니다."
+      ]
+    },
+    {
+      "scene": "recovery",
+      "parent_cue": 33,
+      "start": 220.53,
+      "end": 229.96,
+      "text": "작업 완료만으로 정상 복귀를 판정하지는 않습니다.",
+      "lines": [
+        "작업 완료만으로 정상 복귀를 판정하지는 않습니다."
+      ]
+    },
+    {
+      "scene": "recovery",
+      "parent_cue": 34,
+      "start": 230.13,
+      "end": 235.56,
+      "text": "온도는 목표 범위로 내려오고, 냉각수는 기준 이상으로 흘러야 합니다.",
+      "lines": [
+        "온도는 목표 범위로 내려오고,",
+        "냉각수는 기준 이상으로 흘러야 합니다."
+      ]
+    },
+    {
+      "scene": "recovery",
+      "parent_cue": 34,
+      "start": 235.57,
+      "end": 243.96,
+      "text": "두 조건을 함께 확인합니다.",
+      "lines": [
+        "두 조건을 함께 확인합니다."
+      ]
+    },
+    {
+      "scene": "recovery",
+      "parent_cue": 35,
+      "start": 244.13,
+      "end": 257.96,
+      "text": "이 정상 상태가 30초 이상 유지되어야, 안정적으로 회복됐다고 판정합니다.",
+      "lines": [
+        "이 정상 상태가 30초 이상 유지되어야,",
+        "안정적으로 회복됐다고 판정합니다."
+      ]
+    },
+    {
+      "scene": "report",
+      "parent_cue": 36,
+      "start": 258.13,
+      "end": 262.62699999999995,
+      "text": "발견한 원인과 정비 내용을 보고서로 남깁니다.",
+      "lines": [
+        "발견한 원인과 정비 내용을 보고서로 남깁니다."
+      ]
+    },
+    {
+      "scene": "report",
+      "parent_cue": 37,
+      "start": 262.79699999999997,
+      "end": 267.293,
+      "text": "정비 전후의 센서값과 작업 결과를 비교합니다.",
+      "lines": [
+        "정비 전후의 센서값과 작업 결과를 비교합니다."
+      ]
+    },
+    {
+      "scene": "report",
+      "parent_cue": 38,
+      "start": 267.463,
+      "end": 271.96,
+      "text": "이 기록은 다음 이상에 대응할 근거가 됩니다.",
+      "lines": [
+        "이 기록은 다음 이상에 대응할 근거가 됩니다."
+      ]
+    },
+    {
+      "scene": "final",
+      "parent_cue": 39,
+      "start": 272.13,
+      "end": 276.46,
+      "text": "막혔던 필터를 정비해, 정상 운전으로 돌아왔습니다.",
+      "lines": [
+        "막혔던 필터를 정비해, 정상 운전으로 돌아왔습니다."
+      ]
+    },
+    {
+      "scene": "final",
+      "parent_cue": 40,
+      "start": 276.63,
+      "end": 280.96,
+      "text": "문서의 지식이 진단과 정비, 정상 복귀로 이어집니다.",
+      "lines": [
+        "문서의 지식이 진단과 정비, 정상 복귀로 이어집니다."
+      ]
+    }
+  ],
+  "caption_font": "Malgun Gothic Bold",
+  "caption_px": 72,
+  "band": [
+    0,
+    900,
+    1920,
+    1080
+  ],
+  "single_layer": true,
+  "original_ui_frames_preserved": true
+}

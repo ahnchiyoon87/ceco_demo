@@ -1,0 +1,569 @@
+{
+  "passed": true,
+  "target": [
+    960.0,
+    990.0
+  ],
+  "cues": [
+    {
+      "cue": 1,
+      "at": 3.25,
+      "ink_bounds_in_band": [
+        602,
+        28,
+        1319,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 2,
+      "at": 9.75,
+      "ink_bounds_in_band": [
+        549,
+        27,
+        1375,
+        150
+      ],
+      "visual_center": [
+        962.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 3,
+      "at": 20.5,
+      "ink_bounds_in_band": [
+        614,
+        28,
+        1307,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 4,
+      "at": 35.0,
+      "ink_bounds_in_band": [
+        560,
+        28,
+        1354,
+        150
+      ],
+      "visual_center": [
+        957.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 5,
+      "at": 44.0,
+      "ink_bounds_in_band": [
+        522,
+        27,
+        1398,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 6,
+      "at": 53.0,
+      "ink_bounds_in_band": [
+        516,
+        27,
+        1405,
+        153
+      ],
+      "visual_center": [
+        960.5,
+        990.0
+      ]
+    },
+    {
+      "cue": 7,
+      "at": 62.0,
+      "ink_bounds_in_band": [
+        498,
+        63,
+        1425,
+        114
+      ],
+      "visual_center": [
+        961.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 8,
+      "at": 70.0,
+      "ink_bounds_in_band": [
+        616,
+        28,
+        1304,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 9,
+      "at": 80.0,
+      "ink_bounds_in_band": [
+        524,
+        28,
+        1402,
+        150
+      ],
+      "visual_center": [
+        963.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 10,
+      "at": 89.0,
+      "ink_bounds_in_band": [
+        369,
+        63,
+        1552,
+        114
+      ],
+      "visual_center": [
+        960.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 11,
+      "at": 98.1665,
+      "ink_bounds_in_band": [
+        587,
+        28,
+        1336,
+        150
+      ],
+      "visual_center": [
+        961.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 12,
+      "at": 106.5,
+      "ink_bounds_in_band": [
+        570,
+        28,
+        1351,
+        153
+      ],
+      "visual_center": [
+        960.5,
+        990.5
+      ]
+    },
+    {
+      "cue": 13,
+      "at": 114.8335,
+      "ink_bounds_in_band": [
+        550,
+        28,
+        1371,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 14,
+      "at": 122.5,
+      "ink_bounds_in_band": [
+        342,
+        63,
+        1579,
+        114
+      ],
+      "visual_center": [
+        960.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 15,
+      "at": 129.5,
+      "ink_bounds_in_band": [
+        550,
+        28,
+        1371,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 16,
+      "at": 135.0,
+      "ink_bounds_in_band": [
+        575,
+        28,
+        1346,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 17,
+      "at": 139.0,
+      "ink_bounds_in_band": [
+        523,
+        28,
+        1398,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 18,
+      "at": 143.25,
+      "ink_bounds_in_band": [
+        339,
+        64,
+        1579,
+        114
+      ],
+      "visual_center": [
+        959.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 19,
+      "at": 147.75,
+      "ink_bounds_in_band": [
+        514,
+        28,
+        1407,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 20,
+      "at": 152.25,
+      "ink_bounds_in_band": [
+        551,
+        28,
+        1366,
+        150
+      ],
+      "visual_center": [
+        958.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 21,
+      "at": 156.75,
+      "ink_bounds_in_band": [
+        577,
+        27,
+        1343,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 22,
+      "at": 161.66649999999998,
+      "ink_bounds_in_band": [
+        510,
+        27,
+        1404,
+        150
+      ],
+      "visual_center": [
+        957.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 23,
+      "at": 167.0,
+      "ink_bounds_in_band": [
+        356,
+        28,
+        1568,
+        150
+      ],
+      "visual_center": [
+        962.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 24,
+      "at": 172.33350000000002,
+      "ink_bounds_in_band": [
+        504,
+        27,
+        1413,
+        150
+      ],
+      "visual_center": [
+        958.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 25,
+      "at": 177.0,
+      "ink_bounds_in_band": [
+        570,
+        28,
+        1353,
+        150
+      ],
+      "visual_center": [
+        961.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 26,
+      "at": 181.0,
+      "ink_bounds_in_band": [
+        467,
+        28,
+        1450,
+        150
+      ],
+      "visual_center": [
+        958.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 27,
+      "at": 185.0,
+      "ink_bounds_in_band": [
+        574,
+        27,
+        1348,
+        150
+      ],
+      "visual_center": [
+        961.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 28,
+      "at": 193.5,
+      "ink_bounds_in_band": [
+        604,
+        28,
+        1317,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 29,
+      "at": 202.0,
+      "ink_bounds_in_band": [
+        611,
+        27,
+        1309,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 30,
+      "at": 206.0,
+      "ink_bounds_in_band": [
+        577,
+        28,
+        1344,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 31,
+      "at": 210.0,
+      "ink_bounds_in_band": [
+        550,
+        27,
+        1371,
+        150
+      ],
+      "visual_center": [
+        960.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 32,
+      "at": 214.0,
+      "ink_bounds_in_band": [
+        541,
+        28,
+        1379,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 33,
+      "at": 223.0,
+      "ink_bounds_in_band": [
+        601,
+        28,
+        1318,
+        150
+      ],
+      "visual_center": [
+        959.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 34,
+      "at": 237.0,
+      "ink_bounds_in_band": [
+        514,
+        28,
+        1406,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 35,
+      "at": 251.0,
+      "ink_bounds_in_band": [
+        534,
+        28,
+        1388,
+        150
+      ],
+      "visual_center": [
+        961.0,
+        989.0
+      ]
+    },
+    {
+      "cue": 36,
+      "at": 260.33349999999996,
+      "ink_bounds_in_band": [
+        557,
+        27,
+        1358,
+        150
+      ],
+      "visual_center": [
+        957.5,
+        988.5
+      ]
+    },
+    {
+      "cue": 37,
+      "at": 265.0,
+      "ink_bounds_in_band": [
+        359,
+        63,
+        1561,
+        114
+      ],
+      "visual_center": [
+        960.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 38,
+      "at": 269.66650000000004,
+      "ink_bounds_in_band": [
+        507,
+        28,
+        1416,
+        150
+      ],
+      "visual_center": [
+        961.5,
+        989.0
+      ]
+    },
+    {
+      "cue": 39,
+      "at": 274.25,
+      "ink_bounds_in_band": [
+        606,
+        27,
+        1318,
+        150
+      ],
+      "visual_center": [
+        962.0,
+        988.5
+      ]
+    },
+    {
+      "cue": 40,
+      "at": 278.75,
+      "ink_bounds_in_band": [
+        567,
+        28,
+        1353,
+        150
+      ],
+      "visual_center": [
+        960.0,
+        989.0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "width": 1920,
+    "nodes": 220,
+    "edges": 356,
+    "selected_direct_connections": 8,
+    "keyboard_deselection": true,
+    "search_selection_readable": true,
+    "no_page_overflow": true,
+    "labels_inside_nodes": true,
+    "browser_errors": [],
+    "writes": []
+  },
+  {
+    "width": 1280,
+    "nodes": 220,
+    "edges": 356,
+    "selected_direct_connections": 8,
+    "keyboard_deselection": true,
+    "search_selection_readable": true,
+    "no_page_overflow": true,
+    "labels_inside_nodes": true,
+    "browser_errors": [],
+    "writes": []
+  },
+  {
+    "width": 375,
+    "nodes": 220,
+    "edges": 356,
+    "selected_direct_connections": 8,
+    "keyboard_deselection": true,
+    "search_selection_readable": true,
+    "no_page_overflow": true,
+    "labels_inside_nodes": true,
+    "browser_errors": [],
+    "writes": []
+  }
+]

@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import copy
 import math
 import random
 import time
@@ -145,7 +146,9 @@ class ReactorPlant:
 
     def inject(self, scenario: str, duration_s: float | None = None) -> Fault:
         """duration_s 는 그 고장의 시계 단위(process = 설비 초, event = 실제 초)."""
-        spec = self.cfg["faults"][scenario]
+        # Progress belongs to this injection, not the reusable configuration.
+        # In particular _deposited must start over after clear/re-injection.
+        spec = copy.deepcopy(self.cfg["faults"][scenario])
         dur = duration_s if duration_s is not None else spec["default_duration_s"]
         clock = "plant" if spec.get("kind", "process") == "process" else "wall"
         f = Fault(
@@ -425,6 +428,10 @@ class ReactorPlant:
             basket = "B" if self.cw_basket == "A" else "A"
             foul = self.basket_foul[basket]
             self.basket_foul[basket] = 0.0
+            f = self.faults.get("strainer_fouling")
+            if (f and f.spec.get("_deposited", 0.0) >= 1.0
+                    and all(v == 0.0 for v in self.basket_foul.values())):
+                drop("strainer_fouling")
             return {"effective": foul > 0.3,
                     "finding": f"대기 바스켓 {basket} 분해 세척. " + ("이물(스케일 조각·섬유) 다량 제거." if foul > 0.3 else "이물 거의 없음.")}
         if task == "jacket_descale":

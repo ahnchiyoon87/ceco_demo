@@ -1,0 +1,29 @@
+[
+  {
+    "width": 1920,
+    "height": 1080,
+    "no_horizontal_overflow": true,
+    "native_fault_options": 6,
+    "key_readings": 6,
+    "single_entry_url": "http://localhost:38180/",
+    "browser_errors": []
+  },
+  {
+    "width": 1280,
+    "height": 800,
+    "no_horizontal_overflow": true,
+    "native_fault_options": 6,
+    "key_readings": 6,
+    "single_entry_url": "http://localhost:38180/",
+    "browser_errors": []
+  },
+  {
+    "width": 375,
+    "height": 812,
+    "no_horizontal_overflow": true,
+    "native_fault_options": 6,
+    "key_readings": 6,
+    "single_entry_url": "http://localhost:38180/",
+    "browser_errors": []
+  }
+]

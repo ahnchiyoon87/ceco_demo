@@ -1,0 +1,831 @@
+{
+  "checked_at": "2026-10-13T16:47:28.306140+09:00",
+  "services": [
+    {
+      "Service": "alertmanager",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "business",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "dmz-broker",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "dmz-gateway",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "dmz-influx",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "dmz-loader",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "edge",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "flink-job-submitter",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "flink-jobmanager",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "flink-taskmanager",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "fuxa",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "fuxa-provisioner",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "graph",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "graph-seed",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "hmi-gate",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "it-collector",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "kafka",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "kafka-init",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "knowledge",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "model-trainer",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "ot-hub",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "plant-sim",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "plc",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "portal-controls",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "postgres",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "router",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "web",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "zookeeper",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    }
+  ],
+  "pipeline": {
+    "checked_at": "2026-10-13T07:47:26.226020+00:00",
+    "items": [
+      {
+        "key": "plant",
+        "name": "공정 상태 조회",
+        "status": "available",
+        "detail": "스캔 23278",
+        "boundary": "DMZ 설비 사본 조회 가능 여부. 엣지·브리지·Kafka 각 구간의 개별 정상 판정은 아닙니다."
+      },
+      {
+        "key": "history",
+        "name": "센서 이력 수집",
+        "status": "available",
+        "detail": "17/17 센서 · 15초 이내 GOOD",
+        "source": "DMZ InfluxDB/process_raw(OT 원시값 사본)",
+        "boundary": "최근 30초 이력에서 각 센서의 마지막 값과 품질을 확인합니다."
+      },
+      {
+        "key": "flink",
+        "name": "Flink 이상 탐지",
+        "status": "available",
+        "detail": "4/4 작업 RUNNING",
+        "jobs": [
+          {
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier1-Threshold",
+            "state": "CANCELED"
+          },
+          {
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "boundary": "이 프로젝트의 SQL 3개 + ONNX 1개 작업 상태. 탐지 정확도 검증과 다릅니다."
+      }
+    ],
+    "notice": "관측 지점별 상태이며 전체 경로의 무손실 또는 AI 분석 성공을 보증하지 않습니다."
+  },
+  "plant": {
+    "site": "AR-100",
+    "device": "reactor-line-01",
+    "uptime_s": 23279.1,
+    "sim_time_s": 13968600.0,
+    "physics_time_scale": 600.0,
+    "seq": 23281,
+    "readings": {
+      "LT-101": 69.9851,
+      "LT-102": 50.6452,
+      "TT-101": 78.789,
+      "TT-102": 68.1423,
+      "PT-101": 3.1465,
+      "FT-101": 5.9398,
+      "FT-102": 6.0028,
+      "IT-101": 6.1752,
+      "IT-102": 6.0403,
+      "VT-101": 2.0204,
+      "pH-101": 7.3123,
+      "CT-101": 3.5074,
+      "FT-103": 30.3247,
+      "TT-103": 20.049,
+      "TT-104": 29.1396,
+      "PDT-103": 0.1228,
+      "PT-102": 3.1573
+    },
+    "commands": {
+      "pump_run": true,
+      "agitator_run": true,
+      "heater_enable": true,
+      "cooler_enable": true,
+      "pump_speed_sp": 58.0,
+      "valve_open_sp": 45.0,
+      "temp_sp_c": 78.3
+    },
+    "thermal_model": {
+      "heater_kw": 0.0,
+      "cooler_kw": 320.537,
+      "cooling_capacity_kw": 588.342,
+      "reaction_kw": 719.129
+    },
+    "field_panel": {
+      "mode_selector": "REMOTE",
+      "operator_id": 0,
+      "estop": false
+    },
+    "degradation": {
+      "cw_basket": "B",
+      "basket_foul": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "jacket_clean": 1.0,
+      "bearing_wear": 0.0,
+      "misalign": 0.0,
+      "pt101_drift": 0.0,
+      "cv_stick": 0.0,
+      "isolated": []
+    },
+    "active_faults": {}
+  },
+  "portal_url": "http://localhost:38180",
+  "frontend_tests": 44,
+  "layout": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "no_horizontal_overflow": true,
+      "native_fault_options": 6,
+      "key_readings": 6,
+      "single_entry_url": "http://localhost:38180/",
+      "always_visible_process": true,
+      "normal_manual_analysis_buttons": 0,
+      "browser_errors": []
+    },
+    {
+      "width": 1280,
+      "height": 800,
+      "no_horizontal_overflow": true,
+      "native_fault_options": 6,
+      "key_readings": 6,
+      "single_entry_url": "http://localhost:38180/",
+      "always_visible_process": true,
+      "normal_manual_analysis_buttons": 0,
+      "browser_errors": []
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "no_horizontal_overflow": true,
+      "native_fault_options": 6,
+      "key_readings": 6,
+      "single_entry_url": "http://localhost:38180/",
+      "always_visible_process": true,
+      "normal_manual_analysis_buttons": 0,
+      "browser_errors": []
+    }
+  ],
+  "operator_access_passed": true,
+  "latest_post_ttl_recovery": {
+    "source": "run-164003/verification.json",
+    "report": {
+      "kpi": {
+        "actual": {
+          "parts": [
+            {
+              "cost": 5.0,
+              "item": "스트레이너 가스켓·소모품"
+            }
+          ],
+          "maint_cost": -10.0,
+          "quality_loss": -20.0,
+          "batch_scrapped": false,
+          "equipment_risk": -10.0,
+          "over_limit_tag": "TT-101",
+          "production_loss": 0.0,
+          "downtime_plant_h": 0.0,
+          "field_work_plant_h": 0.42,
+          "over_limit_plant_h": 0.17
+        },
+        "predicted": {
+          "KPI-MAINT-COST": -10.0,
+          "KPI-QUALITY-LOSS": -10.0,
+          "KPI-EQUIPMENT-RISK": -5.0
+        },
+        "predicted_total": -25.0
+      },
+      "next": "회복 기준을 유지했습니다. 다음 정기 점검에서 같은 설비의 재발 여부를 확인합니다.",
+      "steps": [
+        {
+          "wm": "WM-FLD-STRAINER-SWITCH",
+          "say": "정비팀이 예비 바스켓으로 전환한다",
+          "kind": "field",
+          "order": 1,
+          "reason": null,
+          "status": "done",
+          "wall_s": 1.1,
+          "finding": "사용 바스켓 A→B 전환. 전환 전 A 막힘 추정 100%, 전환 전 차압 1.72 bar.",
+          "job_order_id": "ai-147d13221a3546c3a7179f85a3d3b1a8"
+        },
+        {
+          "wm": "WM-FLD-STRAINER-CLEAN",
+          "say": "막힌 바스켓을 격리해 분해 세척한다",
+          "kind": "field",
+          "order": 2,
+          "reason": null,
+          "status": "done",
+          "wall_s": 3.2,
+          "finding": "대기 바스켓 A 분해 세척. 이물(스케일 조각·섬유) 다량 제거.",
+          "job_order_id": "ai-4bc78a0d8eb2465e8d8fb5d619bbc0b8"
+        }
+      ],
+      "option": {
+        "id": "OPT-CW-SWITCH-ONLINE",
+        "name": "예비 스트레이너로 전환하고 막힌 바스켓 세척(운전 유지)",
+        "decision": "DEC-COOLING-RECOVERY"
+      },
+      "reason": "회복 기준을 30초 이상 유지했습니다.",
+      "cleanup": null,
+      "outcome": "recovered",
+      "approver": "operator-01",
+      "findings": [
+        {
+          "say": "정비팀이 예비 바스켓으로 전환한다",
+          "order": 1,
+          "finding": "사용 바스켓 A→B 전환. 전환 전 A 막힘 추정 100%, 전환 전 차압 1.72 bar.",
+          "field_status": "DONE"
+        },
+        {
+          "say": "막힌 바스켓을 격리해 분해 세척한다",
+          "order": 2,
+          "finding": "대기 바스켓 A 분해 세척. 이물(스케일 조각·섬유) 다량 제거.",
+          "field_status": "DONE"
+        }
+      ],
+      "headline": "정비 완료·회복 확인",
+      "recovery": {
+        "last": {
+          "at": 1791877429.0285525,
+          "results": [
+            {
+              "ok": true,
+              "criterion": "o_TT_101 <= c_temp_sp_c + 2.0"
+            },
+            {
+              "ok": true,
+              "criterion": "o_FT_103 >= 20"
+            }
+          ]
+        },
+        "held_s": 30.8,
+        "hold_s": 30,
+        "criteria": [
+          "o_TT_101 <= c_temp_sp_c + 2.0",
+          "o_FT_103 >= 20"
+        ]
+      },
+      "started_at": "2026-10-13T07:43:10.148538+00:00",
+      "finished_at": "2026-10-13T07:43:49.033466+00:00",
+      "before_after": [
+        {
+          "tag": "FT-103",
+          "after": 30.039,
+          "before": 2.3614
+        },
+        {
+          "tag": "TT-101",
+          "after": 72.4639,
+          "before": 106.2941
+        }
+      ],
+      "approval_note": "센서 관측과 매뉴얼을 확인했습니다. 예비 필터 전환과 막힌 필터 세척을 승인합니다.",
+      "work_order_id": "WO-261013-1596FC07"
+    },
+    "browser_actions": [
+      {
+        "method": "POST",
+        "path": "/simulation/fault"
+      },
+      {
+        "method": "POST",
+        "path": "/api/operations/analysis/0bae3b2d-a3eb-49ff-9f70-0fbe120b2b59/decision"
+      }
+    ],
+    "browser_errors": []
+  },
+  "video_quality": {
+    "duration": 300,
+    "width": 1920,
+    "height": 1080,
+    "readyState": 4,
+    "error": null,
+    "full_decode_passed": true,
+    "start_and_end_browser_playback": true,
+    "subtitle_cues": 40,
+    "subtitle_timeline_no_overlap": true,
+    "captions_follow_all_chapters": true,
+    "chapter_count": 17,
+    "caption_font_px": 72,
+    "process_not_covered": true,
+    "matching_sidecar_absent": true,
+    "file_size_bytes": 12977976,
+    "samples": [
+      6,
+      16,
+      28,
+      40,
+      52,
+      65,
+      80,
+      95,
+      105,
+      132,
+      165,
+      185,
+      202,
+      220,
+      248,
+      278,
+      295
+    ],
+    "captions_follow_actual_actions": true,
+    "actual_recovery_verified": true,
+    "work_order": "WO-261013-6BCA7BA6",
+    "knowledge_publication_verified": true,
+    "all_captions_centered_in_band": true,
+    "all_captions_inside_band": true,
+    "caption_layout_frames": 40
+  },
+  "flink_stability": {
+    "passed": true,
+    "observation_s": 300,
+    "samples": [
+      {
+        "at": "2026-10-13T07:40:15.802479+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 401217224,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 19,
+          "in_progress": 0,
+          "completed": 19,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100937
+      },
+      {
+        "at": "2026-10-13T07:40:54.067328+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 405315248,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 23,
+          "in_progress": 0,
+          "completed": 23,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100613
+      },
+      {
+        "at": "2026-10-13T07:41:32.291111+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 389098488,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 26,
+          "in_progress": 0,
+          "completed": 26,
+          "failed": 0
+        },
+        "threshold_state_bytes": 99722
+      },
+      {
+        "at": "2026-10-13T07:42:10.565426+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 371848688,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 30,
+          "in_progress": 0,
+          "completed": 30,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100208
+      },
+      {
+        "at": "2026-10-13T07:42:48.811548+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 456964344,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 34,
+          "in_progress": 0,
+          "completed": 34,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100127
+      },
+      {
+        "at": "2026-10-13T07:43:27.020227+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 439352496,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 38,
+          "in_progress": 0,
+          "completed": 38,
+          "failed": 0
+        },
+        "threshold_state_bytes": 101909
+      },
+      {
+        "at": "2026-10-13T07:44:05.269655+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 421589288,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 42,
+          "in_progress": 0,
+          "completed": 42,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100451
+      },
+      {
+        "at": "2026-10-13T07:44:43.511630+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 400854072,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 45,
+          "in_progress": 0,
+          "completed": 45,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100370
+      },
+      {
+        "at": "2026-10-13T07:45:15.785515+00:00",
+        "jobs": [
+          {
+            "jid": "5960b17d859de3710da9b1945d8972cb",
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "2755d4646746b0e1a74adb074d715450",
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bde4860251fe93a8a29613edc4af6fe4",
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "jid": "bf3232520b0f4737b8e92c7980360aa8",
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "heap": {
+          "Used": 381152712,
+          "Max": 630521856
+        },
+        "checkpoint_counts": {
+          "restored": 1,
+          "total": 49,
+          "in_progress": 0,
+          "completed": 49,
+          "failed": 0
+        },
+        "threshold_state_bytes": 100046
+      }
+    ]
+  }
+}

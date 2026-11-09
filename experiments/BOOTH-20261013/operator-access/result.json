@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "viewport": 1920,
+      "fresh_browser_no_credentials": true,
+      "role": {
+        "username": "operator",
+        "groups": 2,
+        "hasToken": true
+      },
+      "live_readings_changed": true,
+      "sockets": [
+        {
+          "path": "/operator/socket.io/",
+          "messages": 5
+        },
+        {
+          "path": "/operator/socket.io/",
+          "messages": 1
+        }
+      ],
+      "reopen_expired_session": true,
+      "javascript_errors": 0
+    },
+    {
+      "viewport": 1280,
+      "fresh_browser_no_credentials": true,
+      "role": {
+        "username": "operator",
+        "groups": 2,
+        "hasToken": true
+      },
+      "live_readings_changed": true,
+      "sockets": [
+        {
+          "path": "/operator/socket.io/",
+          "messages": 5
+        },
+        {
+          "path": "/operator/socket.io/",
+          "messages": 2
+        }
+      ],
+      "reopen_expired_session": true,
+      "javascript_errors": 0
+    },
+    {
+      "viewport": 375,
+      "fresh_browser_no_credentials": true,
+      "role": {
+        "username": "operator",
+        "groups": 2,
+        "hasToken": true
+      },
+      "live_readings_changed": true,
+      "sockets": [
+        {
+          "path": "/operator/socket.io/",
+          "messages": 4
+        },
+        {
+          "path": "/operator/socket.io/",
+          "messages": 2
+        }
+      ],
+      "reopen_expired_session": true,
+      "javascript_errors": 0
+    }
+  ],
+  "raw_gate_status": 401,
+  "cross_origin_session_status": 403,
+  "equipment_commands_sent": 0,
+  "connection_failure_retry": true
+}

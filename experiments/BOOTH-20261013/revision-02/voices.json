@@ -1,0 +1,13 @@
+{
+  "glow-speak:ko_kss": {
+    "gender": "F",
+    "id": "ko_kss",
+    "language": "ko",
+    "locale": "ko-ko",
+    "multispeaker": false,
+    "name": "kss",
+    "speakers": null,
+    "tag": null,
+    "tts_name": "glow-speak"
+  }
+}

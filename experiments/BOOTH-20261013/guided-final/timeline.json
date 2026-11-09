@@ -1,0 +1,334 @@
+{
+  "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+  "scenes": [
+    {
+      "id": "documents",
+      "start": 2.064157899993006,
+      "end": 14.34600339998724,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\page@0602222910d705b4f155a1f7a9a892e3.webm"
+    },
+    {
+      "id": "sources",
+      "start": 14.346011699992232,
+      "end": 28.27977209998062,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\page@0602222910d705b4f155a1f7a9a892e3.webm"
+    },
+    {
+      "id": "knowledge_build",
+      "start": 28.279773699992802,
+      "end": 93.92233659996418,
+      "segments": [
+        {
+          "start": 28.279849399987143,
+          "end": 37.68089560000226
+        },
+        {
+          "start": 85.91726689995266,
+          "end": 93.92232079996029
+        }
+      ],
+      "caption_split_actual_s": 9.401046200015116,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\page@0602222910d705b4f155a1f7a9a892e3.webm"
+    },
+    {
+      "id": "knowledge_review",
+      "start": 93.92233829997713,
+      "end": 117.28323859994998,
+      "segments": [
+        {
+          "start": 93.92239309998695,
+          "end": 100.14477459999034
+        },
+        {
+          "start": 106.13531569996849,
+          "end": 117.28320359997451
+        }
+      ],
+      "caption_split_actual_s": 10.35086250002496,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\page@0602222910d705b4f155a1f7a9a892e3.webm"
+    },
+    {
+      "id": "ontology",
+      "start": 117.2832413999713,
+      "caption_split_actual_s": 10.363651800027583,
+      "end": 140.0149504999863,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\page@0602222910d705b4f155a1f7a9a892e3.webm"
+    },
+    {
+      "id": "normal",
+      "start": 2.3136097999522462,
+      "end": 22.325029899948277,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    },
+    {
+      "id": "fault",
+      "start": 22.32503559999168,
+      "end": 45.541293999995105,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    },
+    {
+      "id": "pipeline",
+      "start": 45.5412970999605,
+      "end": 73.49837459996343,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    },
+    {
+      "id": "incident",
+      "start": 73.49837599997409,
+      "end": 90.71625319996383,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    },
+    {
+      "id": "analysis",
+      "start": 90.71625519997906,
+      "end": 113.87299799994798,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    },
+    {
+      "id": "causes",
+      "start": 113.87300019996474,
+      "end": 146.34372819995042,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "options",
+      "start": 146.34373099997174,
+      "end": 178.5448762999731,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "approval",
+      "start": 178.54487859999062,
+      "approval_offset_s": 9.206319399992935,
+      "end": 189.7660779999569,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "repair",
+      "start": 189.76608019997366,
+      "end": 197.0737850999576,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "recovery",
+      "start": 197.07378679997055,
+      "end": 234.17667969997274,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "report",
+      "start": 234.17668179998873,
+      "end": 261.47670279996237,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm",
+      "focus_rect": [
+        960,
+        0,
+        960,
+        700
+      ]
+    },
+    {
+      "id": "final",
+      "start": 261.4767042999738,
+      "end": 277.733916600002,
+      "raw": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\page@3b0fcccccd90377d85e27da9bd9c2f86.webm"
+    }
+  ],
+  "verification": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\guided-final\\verification.json",
+  "storyboard": [
+    [
+      "documents",
+      12,
+      "01  지식의 출발점: 원본 문서",
+      [
+        "설비 구성과 이상 대응 방법은 원본 문서에 정리되어 있습니다.",
+        "이 문서에는 필터 막힘을 구분하는 단서와 정비·회복 기준이 들어 있습니다."
+      ]
+    ],
+    [
+      "sources",
+      8,
+      "02  자료를 실제로 등록",
+      [
+        "정비 매뉴얼과 설비 목록을 지식 스튜디오에 등록합니다."
+      ]
+    ],
+    [
+      "knowledge_build",
+      15,
+      "03  문서에서 관계 후보 생성",
+      [
+        "AI가 선택한 원본을 읽고 설비·센서·문서의 관계를 제안합니다.",
+        "원문과 대조한 관계 후보입니다. 담당자 검토를 거쳐야 사용할 수 있습니다."
+      ]
+    ],
+    [
+      "knowledge_review",
+      10,
+      "04  검토한 지식을 게시",
+      [
+        "담당자가 원본 근거와 연결 관계를 확인합니다.",
+        "검토한 지식을 그래프에 적재했습니다."
+      ]
+    ],
+    [
+      "ontology",
+      15,
+      "05  온톨로지: 설비와 근거를 연결",
+      [
+        "온톨로지는 설비·센서·문서가 어떻게 연결되는지 정리한 지식 지도입니다.",
+        "냉각수 필터를 선택하면 관련 센서와 정비 문서를 함께 찾을 수 있습니다."
+      ]
+    ],
+    [
+      "normal",
+      10,
+      "06  하나의 포털에서 설비 확인",
+      [
+        "같은 포털에서 설비 상태를 실시간으로 확인하고, 제어 패널도 바로 열 수 있습니다."
+      ]
+    ],
+    [
+      "fault",
+      20,
+      "07  냉각 성능 저하",
+      [
+        "냉각수 필터에 찌꺼기가 쌓이는 상황을 재현합니다.",
+        "필터가 막히면 물이 줄고, 반응기 온도가 올라갑니다.",
+        "물의 흐름과 필터 앞뒤의 압력 차이가 원인을 찾는 단서입니다."
+      ]
+    ],
+    [
+      "pipeline",
+      10,
+      "08  센서에서 이상 탐지까지",
+      [
+        "센서값은 현장 제어기와 수집기를 거쳐 중간 구역으로 전달됩니다.",
+        "원본 기록을 보관하고, 분석 시스템이 이상 징후를 찾습니다.",
+        "센서 이력 수집과 이상 탐지 작업의 연결 상태를 확인합니다."
+      ]
+    ],
+    [
+      "incident",
+      10,
+      "09  하나의 사건으로 접수",
+      [
+        "같은 문제에서 발생한 여러 경보를 하나의 사건으로 묶습니다.",
+        "담당자는 이 사건에서 분석과 정비의 진행 상황을 확인합니다."
+      ]
+    ],
+    [
+      "analysis",
+      45,
+      "10  AI가 근거를 조사",
+      [
+        "AI는 경보가 발생한 당시의 센서값부터 확인합니다.",
+        "설비의 연결 관계를 살펴보고, 이 설비에 맞는 정비 매뉴얼을 찾습니다.",
+        "온도 상승과 유량 감소, 압력 차이 상승을 함께 살펴봅니다.",
+        "모은 근거로 가능한 원인을 비교하고 정비 계획을 작성합니다."
+      ]
+    ],
+    [
+      "causes",
+      20,
+      "11  원인 후보를 비교",
+      [
+        "AI의 정비 계획입니다. 센서 관측과 맞는 원인과 맞지 않는 원인을 비교합니다.",
+        "물의 흐름이 줄고 필터의 압력 차이가 커져, 필터 막힘을 의심합니다.",
+        "원인을 좁힌 뒤, 실제 정비에서 확인한 소견으로 판단을 확인합니다."
+      ]
+    ],
+    [
+      "options",
+      20,
+      "12  정비 방법을 선택",
+      [
+        "고치는 방법을 비교합니다. 생산 영향과 정비 비용도 함께 봅니다.",
+        "예비 필터로 전환하고 막힌 필터를 세척하면, 운전을 유지하며 정비할 수 있습니다.",
+        "선택한 방법에 따라 작업 순서와 회복 확인 기준을 정합니다."
+      ]
+    ],
+    [
+      "approval",
+      15,
+      "13  담당자가 확인하고 승인",
+      [
+        "담당자가 계획의 근거와 작업 순서를 확인한 뒤 승인합니다.",
+        "승인된 작업 요청이 현장으로 전달되고 정비가 시작됩니다."
+      ]
+    ],
+    [
+      "repair",
+      20,
+      "14  현장 정비를 실행",
+      [
+        "정비팀이 예비 필터로 전환하고, 막힌 필터를 분리해 세척합니다.",
+        "작업 상태와 현장에서 확인한 소견이 화면으로 돌아옵니다.",
+        "작업이 끝나면 실제 센서값이 회복되는지 확인합니다."
+      ]
+    ],
+    [
+      "recovery",
+      35,
+      "15  안정적인 회복을 확인",
+      [
+        "작업 후 온도와 냉각수 흐름을 다시 관찰합니다.",
+        "온도가 목표 범위로 내려오고, 물의 흐름이 기준 이상인지 확인합니다.",
+        "정상 조건이 30초 이상 유지되어야 회복으로 판정합니다."
+      ]
+    ],
+    [
+      "report",
+      25,
+      "16  작업 결과를 기록",
+      [
+        "회복이 확인되면, 무엇을 발견하고 고쳤는지 작업 보고서에 남깁니다.",
+        "정비 전후 센서값과 예상했던 비용, 실제 결과를 비교합니다.",
+        "이 기록은 다음 이상 상황에서 원인과 대응 방법을 검토할 근거가 됩니다."
+      ]
+    ],
+    [
+      "final",
+      10,
+      "17  정상 운전으로 복귀",
+      [
+        "필터 막힘을 감지하고 원인을 찾아 정비한 뒤, 정상 운전으로 돌아왔습니다.",
+        "사람이 확인하고 승인하면, 시스템이 작업을 연결하고 결과를 기록합니다."
+      ]
+    ]
+  ],
+  "source_recordings": {
+    "knowledge": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-160911\\timeline.json",
+    "operations": "D:\\work\\study\\ceco_demo\\experiments\\BOOTH-20261013\\run-161940\\timeline.json"
+  }
+}

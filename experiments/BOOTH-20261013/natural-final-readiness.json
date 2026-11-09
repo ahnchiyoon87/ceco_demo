@@ -1,0 +1,121 @@
+{
+  "healthy": 23,
+  "completed_helpers": 5,
+  "data_path": {
+    "checked_at": "2026-10-13T09:07:01.989763+00:00",
+    "items": [
+      {
+        "key": "plant",
+        "name": "공정 상태 조회",
+        "status": "available",
+        "detail": "스캔 28055",
+        "boundary": "DMZ 설비 사본 조회 가능 여부. 엣지·브리지·Kafka 각 구간의 개별 정상 판정은 아닙니다."
+      },
+      {
+        "key": "history",
+        "name": "센서 이력 수집",
+        "status": "available",
+        "detail": "17/17 센서 · 15초 이내 GOOD",
+        "source": "DMZ InfluxDB/process_raw(OT 원시값 사본)",
+        "boundary": "최근 30초 이력에서 각 센서의 마지막 값과 품질을 확인합니다."
+      },
+      {
+        "key": "flink",
+        "name": "Flink 이상 탐지",
+        "status": "available",
+        "detail": "4/4 작업 RUNNING",
+        "jobs": [
+          {
+            "name": "AR100-Tier1-Threshold",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier1-ZScore",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier2-OnnxAnomalyDetection",
+            "state": "RUNNING"
+          },
+          {
+            "name": "AR100-Tier1-CEP",
+            "state": "RUNNING"
+          }
+        ],
+        "boundary": "이 프로젝트의 SQL 3개 + ONNX 1개 작업 상태. 탐지 정확도 검증과 다릅니다."
+      }
+    ],
+    "notice": "관측 지점별 상태이며 전체 경로의 무손실 또는 AI 분석 성공을 보증하지 않습니다."
+  },
+  "active_faults": {},
+  "readings": {
+    "LT-101": 70.0219,
+    "LT-102": 56.6769,
+    "TT-101": 78.3732,
+    "TT-102": 64.5297,
+    "PT-101": 3.6113,
+    "FT-101": 7.3733,
+    "FT-102": 7.3299,
+    "IT-101": 7.2874,
+    "IT-102": 6.2183,
+    "VT-101": 2.0189,
+    "pH-101": 7.3326,
+    "CT-101": 3.4726,
+    "FT-103": 29.9972,
+    "TT-103": 20.0045,
+    "TT-104": 31.4146,
+    "PDT-103": 0.1228,
+    "PT-102": 3.647
+  },
+  "recording": "run-173439",
+  "work_order": "WO-261013-84617E74",
+  "checked_at": "2026-10-13T09:06:59.904751+00:00",
+  "ui_reference": "hyd remote main 6f350503",
+  "frontend_tests": 49,
+  "ontology_nodes": 220,
+  "ontology_edges": 356,
+  "video_duration_s": 281,
+  "video_quality": {
+    "duration": 281,
+    "width": 1920,
+    "height": 1080,
+    "readyState": 4,
+    "error": null,
+    "full_decode_passed": true,
+    "start_and_end_browser_playback": true,
+    "subtitle_cues": 40,
+    "subtitle_timeline_no_overlap": true,
+    "captions_follow_all_chapters": true,
+    "chapter_count": 17,
+    "caption_font_px": 72,
+    "process_not_covered": true,
+    "matching_sidecar_absent": true,
+    "file_size_bytes": 28519520,
+    "samples": [
+      6,
+      20,
+      37,
+      55,
+      74,
+      89,
+      106,
+      126,
+      137,
+      150,
+      167,
+      181,
+      196,
+      210,
+      237,
+      265,
+      276
+    ],
+    "captions_follow_actual_actions": true,
+    "actual_recovery_verified": true,
+    "work_order": "WO-261013-84617E74",
+    "knowledge_publication_verified": true,
+    "all_captions_centered_in_band": true,
+    "all_captions_inside_band": true,
+    "caption_layout_frames": 40
+  }
+}

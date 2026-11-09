@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-const props = defineProps({ run: Object, mode:{type:String,default:'investigate'} })
+const props = defineProps({ run: Object, mode:{type:String,default:'investigate'}, simplified:Boolean })
 const emit = defineEmits(['state'])
 const streaming=ref(false)
 let stream
@@ -41,9 +41,36 @@ const calls = computed(() => {
     const key = p.call_id
     const previous = rows.get(key)
     rows.set(key, { ...previous, ...p, key, time: previous?.time || event.created_at,
+      updatedOrder: events.value.indexOf(event),
       state: event.kind === 'agent_tool_result' ? 'complete' : event.kind === 'agent_tool_failed' ? 'failed' : active.value ? 'running' : 'unknown' })
   }
   return [...rows.values()]
+})
+const toolActivity={
+ alarm:['경보 조회','경보 조회 도구로 기준을 벗어난 센서를 확인하고 있습니다.'],
+ documents:['설비·문서 조회','설비·문서 조회 도구로 관련 설비와 적용 문서를 확인하고 있습니다.'],
+ observations:['센서 조회','센서 조회 도구로 사건 당시와 현재의 센서값을 비교하고 있습니다.'],
+ ontology:['온톨로지 조회','온톨로지 조회 도구로 증상과 원인 후보의 연결을 확인하고 있습니다.'],
+ manual_search:['매뉴얼 검색','매뉴얼 검색 도구로 진단 조건과 정비 절차를 찾고 있습니다.'],
+ options:['정비 대안 평가','정비 대안 평가 도구로 가능한 정비 방법과 영향을 비교하고 있습니다.'],
+ precedents:['처리 이력 조회','처리 이력 조회 도구로 앞선 정비와 검토 기록을 확인하고 있습니다.'],
+}
+const activity=computed(()=>{
+ if(error.value)return {text:'진행 상태 연결을 다시 확인하고 있습니다.',recent:'마지막으로 확인한 기록을 유지합니다.'}
+ const status=props.run?.status
+ if(status==='awaiting_review')return {text:'분석을 마쳤습니다. 판단 근거와 대응안을 검토해 주세요.'}
+ if(status==='resuming')return {text:'검토 결과를 반영하고 실행 조건을 다시 확인하고 있습니다.'}
+ if(status==='needs_evidence')return {text:'자료를 더 확인해야 대응안을 작성할 수 있습니다.'}
+ if(['failed','interrupted'].includes(status))return {text:'분석이 중단되었습니다. 저장된 결과를 확인해 주세요.'}
+ if(status==='finished')return {text:'분석과 검토 과정이 기록되었습니다.'}
+ if(status!=='running')return {text:'처리 상태를 확인하고 있습니다.'}
+ const running=calls.value.filter(c=>c.state==='running').at(-1)
+ const latest=calls.value.reduce((last,c)=>!last||c.updatedOrder>last.updatedOrder?c:last,null)
+ if(running)return {text:toolActivity[running.tool]?.[1]||'조회 도구로 추가 근거를 확인하고 있습니다.'}
+ if(latest?.state==='failed')return {text:'자료 조회에 실패했습니다. 처리 상태를 확인하고 있습니다.'}
+ const completed=calls.value.filter(c=>c.state==='complete').sort((a,b)=>a.updatedOrder-b.updatedOrder).at(-1)
+ return {text:calls.value.length?'조회한 근거로 원인과 대응안을 정리하고 있습니다.':'분석을 시작했습니다. 조회할 자료를 확인하고 있습니다.',
+  recent:completed?(toolActivity[completed.tool]?.[0]||'자료 조회')+'를 마쳤습니다.':''}
 })
 const clock = value => new Date(value).toLocaleTimeString('ko-KR')
 async function load() {
@@ -69,7 +96,11 @@ onUnmounted(() => { generation++; clearTimeout(timer);stream?.close();if(typeof 
 </script>
 
 <template>
-  <section v-if="run" class="execution-trace" aria-label="AI 도구 실행 과정">
+  <section v-if="run&&simplified" class="simple-trace" aria-label="분석 과정">
+    <p class="activity-line" role="status" aria-live="polite"><i :class="{active:active&&!error}"></i>{{activity.text}}</p>
+    <p v-if="activity.recent" class="activity-recent">{{activity.recent}}</p>
+  </section>
+  <section v-else-if="run" class="execution-trace" aria-label="AI 도구 실행 과정">
     <header><div><small>{{mode==='execute'?'ACTION TRACE':'EXECUTION TRACE'}}</small><h4><i :class="{ active }"></i>{{ statuses[run.status] || run.status }}</h4></div><button @click="load">기록 갱신</button></header>
     <p class="trace-caption">{{ run.model }} · {{ clock(run.created_at) }} 시작<br>실행 <code>{{ run.id }}</code></p>
     <p v-if="error" class="trace-error" role="alert">{{ error }} · 마지막 기록을 표시합니다. 자동 재연결 중입니다.</p>
@@ -97,3 +128,7 @@ onUnmounted(() => { generation++; clearTimeout(timer);stream?.close();if(typeof 
 </style>
 
 
+
+<style scoped>.simple-trace{font-size:14px;color:#426468}.simple-trace p{line-height:1.8}.simple-trace ol{list-style:none;margin:12px 0;padding:0}.simple-trace li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e4ece8}.simple-trace span{font-size:12px;color:#19816a}</style>
+
+<style scoped>.simple-trace{margin:14px 0 0;padding:13px 16px;background:#f7faf9;border:1px solid #dfe9e5;border-radius:9px}.simple-trace .activity-line{margin:0;font-size:14px;line-height:1.8;color:#31594f}.simple-trace .activity-recent{margin:4px 0 0 15px;font-size:12px;color:#69827c}.activity-line i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#91a89f;margin-right:8px}.activity-line i.active{background:#16836b;animation:trace-pulse 1.4s infinite}</style>

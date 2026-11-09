@@ -3,11 +3,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-ARG VITE_FUXA_URL
-ENV VITE_FUXA_URL=$VITE_FUXA_URL
 RUN npm run build
 
 FROM nginx:1.28-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chmod=755 30-portal-controls.sh /docker-entrypoint.d/30-portal-controls.sh
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080

@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 # Flink 2.2.1 서버 설정(JobManager·TaskManager 공용, config.yaml 형식)
-# 부하: 태그 12개 × 초당 1건. 잡 4개(규칙 SQL 3 + ONNX 1)가 병렬도 1로 슬롯 4개를 쓴다.
+# 부하: 태그 17개 × 초당 1건. 잡 4개(규칙 SQL 3 + ONNX 1)가 병렬도 1로 슬롯 4개를 쓴다.
 # ═══════════════════════════════════════════════════════════════
 # 장애 복구는 Flink 기본값(체크포인트가 켜져 있으면 exponential-delay: 1 s 부터 1.5배, 최대 1분)
 
@@ -35,7 +35,7 @@ taskmanager:
   numberOfTaskSlots: 4
   memory:
     process:
-      size: 832m    # 실측 RSS 588 MB·힙 사용 약 22 %(BASE_VERIFY §5). ONNX 네이티브 메모리는 JVM 오버헤드 몫에서 쓴다
+      size: 1280m   # 10-13 832m에서 Java heap OOM 반복. JVM 힙 192→약 621 MiB, task heap 64→약 493 MiB 확보. ONNX 네이티브는 JVM 오버헤드 몫
     managed:
       fraction: 0.0 # HashMap 상태 저장은 관리 메모리를 쓰지 않는다(공식 문서)
 
@@ -58,7 +58,7 @@ execution:
 
 state:
   backend:
-    type: hashmap                 # 태그 12개 창 상태라 작다. 체크포인트·HA 복구 지원
+    type: hashmap                 # 태그 17개 창 상태. 체크포인트·HA 복구 지원
 
 # ── Prometheus 노출: 체크포인트 소요·실패, 백프레셔 등 인프라 지표(공정 데이터는 InfluxDB) ──
 metrics:

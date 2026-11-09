@@ -68,6 +68,38 @@ class CoolingWater(unittest.TestCase):
         run(p, 300)                                              # 설비 시간 50시간
         self.assertGreater(p.readings["TT-101"], 95)
 
+    def test_strainer_can_be_reinjected_after_reset_without_shared_progress(self):
+        p = plant()
+        for _ in range(2):
+            p.inject("strainer_fouling")
+            r = run(p, 10)
+            self.assertGreater(r["TT-101"], 95)
+            self.assertLess(r["FT-103"], 10)
+            self.assertGreater(r["PDT-103"], 1.0)
+            self.assertNotIn("_deposited", p.cfg["faults"]["strainer_fouling"])
+            p.clear_faults()
+            self.assertGreater(run(p, 20)["FT-103"], 28)
+
+    def test_switch_and_clean_clear_completed_clog_and_allow_next_real_clog(self):
+        p = plant()
+        p.inject("strainer_fouling")
+        run(p, 10)
+        self.assertTrue(p.field_apply("strainer_switch")["effective"])
+        self.assertTrue(p.field_apply("strainer_clean")["effective"])
+        self.assertNotIn("strainer_fouling", p.faults)
+        self.assertEqual(p.basket_foul, {"A": 0.0, "B": 0.0})
+        self.assertLess(run(p, 15)["TT-101"], 74)
+        p.inject("strainer_fouling")
+        self.assertLess(run(p, 10)["FT-103"], 10)
+
+    def test_clean_does_not_clear_clog_while_current_basket_is_still_dirty(self):
+        p = plant()
+        p.inject("strainer_fouling")
+        run(p, 10)
+        p.field_apply("strainer_clean")  # the unused basket, not the clogged active one
+        self.assertIn("strainer_fouling", p.faults)
+        self.assertLess(run(p, 5)["FT-103"], 10)
+
 
 class Agitator(unittest.TestCase):
     def test_bearing_current_exceeds_limit_at_any_level_misalignment_never(self):

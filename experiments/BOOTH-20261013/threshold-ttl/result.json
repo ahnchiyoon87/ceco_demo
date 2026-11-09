@@ -1,0 +1,12 @@
+{
+  "old_job": "9f1d68c419a40355a472656df305d27b",
+  "new_job": "5960b17d859de3710da9b1945d8972cb",
+  "restore_from": "file:/opt/flink/checkpoints/booth-threshold-ttl/savepoint-9f1d68-7adee5509409",
+  "restored": true,
+  "other_jobs": [
+    "2755d4646746b0e1a74adb074d715450",
+    "bde4860251fe93a8a29613edc4af6fe4",
+    "bf3232520b0f4737b8e92c7980360aa8"
+  ],
+  "checked_at": 1791877034.5755687
+}

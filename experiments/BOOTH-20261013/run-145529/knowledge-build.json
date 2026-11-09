@@ -1,0 +1,1709 @@
+{
+  "id": "758faefd-b24e-4da7-b510-1354ad983be2",
+  "status": "candidate",
+  "model": "openai:gpt-6-luna",
+  "question": "냉각 계통에서 알람 센서가 어느 설비에 속하고 어떤 대응 문서를 읽어야 하는지 원본 근거로 연결해 주세요. 설비 목록과 냉각수 정비 문서를 모두 읽으세요. 추가 노드는 Asset R-101, HX-102, ST-103만 제안하고 site=AR-100, device=reactor-line-01, ID는 AR-100/reactor-line-01/asset/설비명으로 사용하세요. 현재 게시된 설비와 식별자를 맞추기 위해 Asset.properties.name은 반드시 R-101, HX-102, ST-103 중 해당 ID로 기록하세요. 반응기·냉각기 같은 원본의 한글 이름은 properties.description에 기록하세요. 그 밖의 노드와 실행 지시는 추가하지 마세요. 이 세 설비에 실제로 속한 센서의 HAS_SENSOR 관계와 냉각수 문서 AR100-COOLING-WATER의 HAS_PROCEDURE 관계를 제안하세요. 기존 추출 노드는 그대로 유지하고, 각 제안에는 선택 원본의 정확한 인용을 붙이며 남은 제약은 unresolved에 기록하세요.",
+  "result": {
+    "batch": {
+      "nodes": [
+        {
+          "id": "AR-100/reactor-line-01",
+          "class": "Device",
+          "properties": {
+            "area": "reaction",
+            "name": "reactor-line-01",
+            "site": "AR-100",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/LT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": 10.0,
+            "usl": 95.0,
+            "name": "LT-101",
+            "unit": "%",
+            "description": "원료탱크 레벨",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "TK-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=TK-101].signals[tag=LT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/LT-102",
+          "class": "Sensor",
+          "properties": {
+            "lsl": 15.0,
+            "usl": 90.0,
+            "name": "LT-102",
+            "unit": "%",
+            "description": "반응기 레벨",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=LT-102]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/TT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": 40.0,
+            "usl": 95.0,
+            "name": "TT-101",
+            "unit": "degC",
+            "description": "반응기 온도",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=TT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/PT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 6.0,
+            "name": "PT-101",
+            "unit": "barg",
+            "description": "반응기 압력",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=PT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/pH-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": 6.2,
+            "usl": 8.4,
+            "name": "pH-101",
+            "unit": "pH",
+            "description": "반응기 pH",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=pH-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/CT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": null,
+            "name": "CT-101",
+            "unit": "mS/cm",
+            "description": "전도도",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=CT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/PT-102",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 6.0,
+            "name": "PT-102",
+            "unit": "barg",
+            "description": "반응기 압력(독립 계기)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].signals[tag=PT-102]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/temp_sp_x10",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "temp_sp_x10",
+            "command": "temp_sp",
+            "readonly": false,
+            "description": "반응기 온도 설정값",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=R-101].commands[name=temp_sp]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/TT-102",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 125.0,
+            "name": "TT-102",
+            "unit": "degC",
+            "description": "재킷 온도",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-101].signals[tag=TT-102]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/heater_enable",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "heater_enable",
+            "command": "enable",
+            "readonly": false,
+            "description": "재킷 히터 Enable",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-101].commands[name=enable]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/FT-103",
+          "class": "Sensor",
+          "properties": {
+            "lsl": 20.0,
+            "usl": null,
+            "name": "FT-103",
+            "unit": "m3/h",
+            "description": "냉각수 유량",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-102].signals[tag=FT-103]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/TT-103",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 28.0,
+            "name": "TT-103",
+            "unit": "degC",
+            "description": "냉각수 공급 온도",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-102].signals[tag=TT-103]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/TT-104",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 45.0,
+            "name": "TT-104",
+            "unit": "degC",
+            "description": "냉각수 회수 온도",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-102].signals[tag=TT-104]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/cooler_enable",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "cooler_enable",
+            "command": "enable",
+            "readonly": false,
+            "description": "가상 냉각기 Enable",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=HX-102].commands[name=enable]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/PDT-103",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 0.8,
+            "name": "PDT-103",
+            "unit": "bar",
+            "description": "스트레이너 차압",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "ST-103",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=ST-103].signals[tag=PDT-103]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/FT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": null,
+            "name": "FT-101",
+            "unit": "m3/h",
+            "description": "공급 유량",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=P-101].signals[tag=FT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/IT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 14.0,
+            "name": "IT-101",
+            "unit": "A",
+            "description": "펌프 전류",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=P-101].signals[tag=IT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/pump_run",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "pump_run",
+            "command": "run",
+            "readonly": false,
+            "description": "공급 펌프 기동",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=P-101].commands[name=run]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/pump_speed_sp",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "pump_speed_sp",
+            "command": "speed_sp",
+            "readonly": false,
+            "description": "펌프 속도 설정값",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=P-101].commands[name=speed_sp]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/FT-102",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": null,
+            "name": "FT-102",
+            "unit": "m3/h",
+            "description": "배출 유량",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "CV-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=CV-101].signals[tag=FT-102]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/valve_open_sp",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "valve_open_sp",
+            "command": "open_sp",
+            "readonly": false,
+            "description": "밸브 개도 설정값",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "CV-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=CV-101].commands[name=open_sp]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/IT-102",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 9.6,
+            "name": "IT-102",
+            "unit": "A",
+            "description": "교반기 전류",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=M-101].signals[tag=IT-102]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/sensor/VT-101",
+          "class": "Sensor",
+          "properties": {
+            "lsl": null,
+            "usl": 7.1,
+            "name": "VT-101",
+            "unit": "mm/s",
+            "description": "교반기 진동",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=M-101].signals[tag=VT-101]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/point/agitator_run",
+          "class": "ControlPoint",
+          "properties": {
+            "name": "agitator_run",
+            "command": "run",
+            "readonly": false,
+            "description": "교반기 기동",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "assets[id=M-101].commands[name=run]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-M101-STOP",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-M101-STOP",
+            "description": "교반기 정지(AI stop_mixer)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-M101-STOP]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-HX102-ENABLE",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-HX102-ENABLE",
+            "description": "냉각기 기동(AI enable_cooling)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-HX102-ENABLE]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-R101-TEMPSP",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-R101-TEMPSP",
+            "description": "반응기 온도 설정값 변경(운전 범위 안 조정)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-R101-TEMPSP]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-M101-START",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-M101-START",
+            "description": "교반기 재기동(정비 뒤)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-M101-START]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-P101-SPEED",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-P101-SPEED",
+            "description": "공급 펌프 속도 변경(부하 조정)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-P101-SPEED]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-P101-STOP",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-P101-STOP",
+            "description": "공급 펌프 정지",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-P101-STOP]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-P101-START",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-P101-START",
+            "description": "공급 펌프 재기동",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "P-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-P101-START]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-PLC-MAINT-ON",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-PLC-MAINT-ON",
+            "description": "정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "PLC-01",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-PLC-MAINT-ON]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-SWITCH",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-STRAINER-SWITCH",
+            "description": "냉각수 스트레이너 예비 바스켓 전환",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "ST-103",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-STRAINER-SWITCH]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-CLEAN",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-STRAINER-CLEAN",
+            "description": "대기 바스켓 분해 세척",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "ST-103",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-STRAINER-CLEAN]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-JACKET-DESCALE",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-JACKET-DESCALE",
+            "description": "재킷 냉각 코일 화학 세정",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "HX-102",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-JACKET-DESCALE]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-BEARING-REPLACE",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-BEARING-REPLACE",
+            "description": "교반기 베어링 점검·교체",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-BEARING-REPLACE]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-SHAFT-ALIGN",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-SHAFT-ALIGN",
+            "description": "교반기 축 정렬 점검·조정",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "M-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-SHAFT-ALIGN]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-PT101-CALIBRATE",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-PT101-CALIBRATE",
+            "description": "PT-101 비교 교정(계기 격리)",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "R-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-PT101-CALIBRATE]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-CV101-REPAIR",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-CV101-REPAIR",
+            "description": "배출 밸브 분해 정비",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "CV-101",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-CV101-REPAIR]"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/work-master/WM-FLD-LOTO-RELEASE",
+          "class": "WorkMaster",
+          "properties": {
+            "name": "WM-FLD-LOTO-RELEASE",
+            "description": "작업 완료 확인·격리 해제·정비 해제 키",
+            "environment": "simulation",
+            "source_path": "uploads/equipment.yaml",
+            "equipment_id": "PLC-01",
+            "review_status": "candidate",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "source_locator": "work_masters[id=WM-FLD-LOTO-RELEASE]"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER",
+          "class": "Document",
+          "properties": {
+            "name": "AR100-COOLING-WATER",
+            "content": "---\ndocument_id: AR100-COOLING-WATER\nversion: 1\nstatus: educational-draft\napplies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\nalarm_types: [THRESHOLD_USL, THRESHOLD_LSL, ZSCORE]\nsource_kind: authored-simulation-procedure\n---\n\n# 냉각수 계통 이상과 반응기 온도 상승 대응\n\nAR-100 가상 공정의 교육용 절차다. 근거는 `0_plant/simulator/plant.py`의 열수지 모델과 `shared/registry/equipment.yaml`의 규격이며 실물 반응기의 운전 승인 문서가 아니다.\n\n## 1. 계통 구성\n\nR-101 반응은 발열 반응이다. 공급 원료 1 m3/h마다 약 120 kW의 반응열이 나므로 정상 운전에서도 냉각기 HX-102(재킷 냉각 코일)가 상시 열을 뺀다. 냉각수는 공용 유틸리티에서 약 20°C로 공급되어 이중 스트레이너 ST-103(바스켓 A/B 중 하나만 사용)을 거쳐 재킷 코일로 들어간다.\n\n| 계측 | 의미 | 정상 범위(정격 운전) |\n|---|---|---|\n| FT-103 | 냉각수 유량 | 약 30 m3/h, 하한 20 |\n| TT-103 | 냉각수 공급 온도 | 약 20°C |\n| TT-104 | 냉각수 회수 온도 | 약 30~32°C |\n| PDT-103 | 스트레이너 차압 | 약 0.12 bar, 상한 0.8 |\n| TT-101 | 반응기 온도 | 목표 ±1.5°C, 상한 95°C |\n\n열 제거량은 냉각수 유량 × 비열 × (회수 − 공급) 온도차다. 냉각 능력은 유량이 줄거나 전열면이 오염되면 떨어진다.\n\n## 2. 원인 구분 — 유량 문제인가, 전열 문제인가\n\n반응기 온도가 오를 때 냉각수 쪽 세 값을 함께 본다.\n\n| 관측 | 스트레이너 막힘 | 재킷 전열면 스케일 | 냉각 명령 꺼짐 |\n|---|---|---|---|\n| FT-103 냉각수 유량 | 크게 감소(하한 미만) | 정상 | 정상 |\n| PDT-103 스트레이너 차압 | 크게 상승(상한 초과) | 정상 | 정상 |\n| TT-104 − TT-103 온도차 | 크게 벌어짐(적은 물이 열을 받아 뜨거워짐) | 작아짐(열이 넘어가지 않음) | 거의 0 |\n| cooler_enable | 켜짐 | 켜짐 | 꺼짐 |\n\n유량이 정상인데 온도차가 작고 반응기 온도가 오르면 전열 저하(스케일)다. 유량이 낮고 차압이 높으면 유로 막힘이다. 두 판단 모두 센서 근거이며 확정은 현장 정비 소견으로 한다. 히터 출력 고착·목표 온도 과대 설정은 AR100-FAILURE-MODES 2절로 따로 확인한다.\n\n## 3. 스트레이너 전환·세척 절차\n\n이중 스트레이너는 운전 중에 예비 바스켓으로 전환할 수 있다(생산 정지 없음).\n\n1. (선택) 전환 중 온도 상승을 줄이려면 공급 펌프 P-101 속도를 낮춰 반응열을 줄인다.\n2. 정비팀이 예비 바스켓으로 전환한다(약 5분). 전환 직후 FT-103 회복과 PDT-103 하강을 확인한다.\n3. 막힌 바스켓을 격리 상태로 분해 세척한다(약 20분, 운전 중 가능). 이물의 양과 종류를 소견으로 남긴다.\n4. 펌프 속도를 원래 값으로 되돌린다.\n\n예비 바스켓도 막혀 있으면 전환할 수 없다. 이 경우 먼저 세척한다.\n\n## 4. 재킷 화학 세정 절차\n\n전열면 스케일은 운전 중에 제거할 수 없다.\n\n1. 공급 펌프를 정지해 반응열을 없앤다.\n2. 정비 모드를 켜서 원격 명령을 막는다(LOTO).\n3. 정비팀이 재킷 코일을 화학 세정한다(약 2시간). 세정제 재고(ERP)가 있어야 한다.\n4. 정비팀이 정비 해제 키를 돌리면 펌프를 재기동한다.\n\n감속 운전으로 버티는 방법은 상한 초과 온도가 계속되면 허용하지 않는다(AR100-MAINT-POLICY 3절).\n\n## 5. 회복 확인\n\n정비가 끝났다고 회복이 아니다. 다음이 30초 이상 유지되어야 회복으로 판정한다.\n\n- TT-101이 현재 목표 온도 + 2°C 이하\n- FT-103이 하한 20 m3/h 이상\n\n시간 안에 기준을 넘지 못하면 조치 실패로 기록하고 현장 소견을 근거로 다시 판단한다.\n",
+            "version": 1,
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_sha256": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9",
+            "source_status": "educational-draft"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/0",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "",
+            "content": "\n# 냉각수 계통 이상과 반응기 온도 상승 대응\n\nAR-100 가상 공정의 교육용 절차다. 근거는 `0_plant/simulator/plant.py`의 열수지 모델과 `shared/registry/equipment.yaml`의 규격이며 실물 반응기의 운전 승인 문서가 아니다.\n\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:0"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/1",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "1. 계통 구성",
+            "content": "1. 계통 구성\n\nR-101 반응은 발열 반응이다. 공급 원료 1 m3/h마다 약 120 kW의 반응열이 나므로 정상 운전에서도 냉각기 HX-102(재킷 냉각 코일)가 상시 열을 뺀다. 냉각수는 공용 유틸리티에서 약 20°C로 공급되어 이중 스트레이너 ST-103(바스켓 A/B 중 하나만 사용)을 거쳐 재킷 코일로 들어간다.\n\n| 계측 | 의미 | 정상 범위(정격 운전) |\n|---|---|---|\n| FT-103 | 냉각수 유량 | 약 30 m3/h, 하한 20 |\n| TT-103 | 냉각수 공급 온도 | 약 20°C |\n| TT-104 | 냉각수 회수 온도 | 약 30~32°C |\n| PDT-103 | 스트레이너 차압 | 약 0.12 bar, 상한 0.8 |\n| TT-101 | 반응기 온도 | 목표 ±1.5°C, 상한 95°C |\n\n열 제거량은 냉각수 유량 × 비열 × (회수 − 공급) 온도차다. 냉각 능력은 유량이 줄거나 전열면이 오염되면 떨어진다.\n\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:1"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/2",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "2. 원인 구분 — 유량 문제인가, 전열 문제인가",
+            "content": "2. 원인 구분 — 유량 문제인가, 전열 문제인가\n\n반응기 온도가 오를 때 냉각수 쪽 세 값을 함께 본다.\n\n| 관측 | 스트레이너 막힘 | 재킷 전열면 스케일 | 냉각 명령 꺼짐 |\n|---|---|---|---|\n| FT-103 냉각수 유량 | 크게 감소(하한 미만) | 정상 | 정상 |\n| PDT-103 스트레이너 차압 | 크게 상승(상한 초과) | 정상 | 정상 |\n| TT-104 − TT-103 온도차 | 크게 벌어짐(적은 물이 열을 받아 뜨거워짐) | 작아짐(열이 넘어가지 않음) | 거의 0 |\n| cooler_enable | 켜짐 | 켜짐 | 꺼짐 |\n\n유량이 정상인데 온도차가 작고 반응기 온도가 오르면 전열 저하(스케일)다. 유량이 낮고 차압이 높으면 유로 막힘이다. 두 판단 모두 센서 근거이며 확정은 현장 정비 소견으로 한다. 히터 출력 고착·목표 온도 과대 설정은 AR100-FAILURE-MODES 2절로 따로 확인한다.\n\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:2"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/3",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "3. 스트레이너 전환·세척 절차",
+            "content": "3. 스트레이너 전환·세척 절차\n\n이중 스트레이너는 운전 중에 예비 바스켓으로 전환할 수 있다(생산 정지 없음).\n\n1. (선택) 전환 중 온도 상승을 줄이려면 공급 펌프 P-101 속도를 낮춰 반응열을 줄인다.\n2. 정비팀이 예비 바스켓으로 전환한다(약 5분). 전환 직후 FT-103 회복과 PDT-103 하강을 확인한다.\n3. 막힌 바스켓을 격리 상태로 분해 세척한다(약 20분, 운전 중 가능). 이물의 양과 종류를 소견으로 남긴다.\n4. 펌프 속도를 원래 값으로 되돌린다.\n\n예비 바스켓도 막혀 있으면 전환할 수 없다. 이 경우 먼저 세척한다.\n\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:3"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/4",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "4. 재킷 화학 세정 절차",
+            "content": "4. 재킷 화학 세정 절차\n\n전열면 스케일은 운전 중에 제거할 수 없다.\n\n1. 공급 펌프를 정지해 반응열을 없앤다.\n2. 정비 모드를 켜서 원격 명령을 막는다(LOTO).\n3. 정비팀이 재킷 코일을 화학 세정한다(약 2시간). 세정제 재고(ERP)가 있어야 한다.\n4. 정비팀이 정비 해제 키를 돌리면 펌프를 재기동한다.\n\n감속 운전으로 버티는 방법은 상한 초과 온도가 계속되면 허용하지 않는다(AR100-MAINT-POLICY 3절).\n\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:4"
+          }
+        },
+        {
+          "id": "AR100-COOLING-WATER/section/5",
+          "class": "DocumentSection",
+          "properties": {
+            "name": "5. 회복 확인",
+            "content": "5. 회복 확인\n\n정비가 끝났다고 회복이 아니다. 다음이 30초 이상 유지되어야 회복으로 판정한다.\n\n- TT-101이 현재 목표 온도 + 2°C 이하\n- FT-103이 하한 20 m3/h 이상\n\n시간 안에 기준을 넘지 못하면 조치 실패로 기록하고 현장 소견을 근거로 다시 판단한다.\n",
+            "document_id": "AR100-COOLING-WATER",
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_locator": "section:5"
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/asset/R-101",
+          "class": "Asset",
+          "properties": {
+            "name": "R-101",
+            "site": "AR-100",
+            "device": "reactor-line-01",
+            "description": "반응기",
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+            "source_excerpt": "  - id: R-101\n    type: Reactor\n    name: \"반응기\""
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/asset/HX-102",
+          "class": "Asset",
+          "properties": {
+            "name": "HX-102",
+            "site": "AR-100",
+            "device": "reactor-line-01",
+            "description": "냉각기",
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+            "source_excerpt": "  - id: HX-102\n    type: Cooler\n    name: \"냉각기\""
+          }
+        },
+        {
+          "id": "AR-100/reactor-line-01/asset/ST-103",
+          "class": "Asset",
+          "properties": {
+            "name": "ST-103",
+            "site": "AR-100",
+            "device": "reactor-line-01",
+            "description": "냉각수 스트레이너",
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+            "source_excerpt": "  - id: ST-103\n    type: Strainer\n    name: \"냉각수 스트레이너\""
+          }
+        }
+      ],
+      "status": "candidate",
+      "unresolved": [
+        "Explicit asset-to-sensor membership requires review.",
+        "A control point or work master does not grant AI execution permission; requests pass OT acceptance and PLC checks.",
+        "Alarm logic is in Flink SQL; tag limits alone are not the alarm contract.",
+        "AR100-COOLING-WATER.md: 적용 대상과 절차 관계는 검토 후 명시적으로 연결해야 합니다.",
+        "AR100-COOLING-WATER.md는 status: educational-draft이며 본문에서 실물 반응기의 운전 승인 문서가 아니라고 명시합니다. HAS_PROCEDURE는 가상 공정의 교육용 대응 문서 연결로만 검토해야 합니다.",
+        "문서는 센서 근거만으로 고장 원인을 확정하지 말고 현장 정비 소견으로 확인하라고 합니다. 센서 알람 해석과 원인 확정은 별도 검토가 필요합니다.",
+        "냉각수 문서는 ST-103을 HX-102 재킷 코일로 이어지는 유로상에 설명하지만 물리적 설치/구성 관계의 정확한 방향과 자산 포함 관계는 명시적으로 확정하지 않았으므로 INSTALLED_IN 관계는 제안하지 않았습니다.",
+        "추출 구조의 기존 노드 및 관계는 변경하지 않았습니다. 추가 관계는 후보이며 게시 또는 운영 승인 사실을 뜻하지 않습니다."
+      ],
+      "relationships": [
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/LT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/LT-102",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/pH-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/CT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PT-102",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/temp_sp_x10",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-102",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/heater_enable",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/FT-103",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-103",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-104",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/cooler_enable",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PDT-103",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/FT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/IT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/pump_run",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/pump_speed_sp",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/FT-102",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/valve_open_sp",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/IT-102",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/VT-101",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "EXPOSES_POINT",
+          "to_id": "AR-100/reactor-line-01/point/agitator_run",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-M101-STOP",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-HX102-ENABLE",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-R101-TEMPSP",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-M101-START",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-P101-SPEED",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-P101-STOP",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-P101-START",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-PLC-MAINT-ON",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-SWITCH",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-CLEAN",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-JACKET-DESCALE",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-BEARING-REPLACE",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-SHAFT-ALIGN",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-PT101-CALIBRATE",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-CV101-REPAIR",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "OFFERS_WORK",
+          "to_id": "AR-100/reactor-line-01/work-master/WM-FLD-LOTO-RELEASE",
+          "from_id": "AR-100/reactor-line-01",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/0",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/1",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/2",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/3",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/4",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SECTION",
+          "to_id": "AR100-COOLING-WATER/section/5",
+          "from_id": "AR100-COOLING-WATER",
+          "properties": {}
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/LT-102",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 LT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: LT-102, class: level,       unit: \"%\",     desc: \"반응기 레벨\", lsl: 15.0, usl: 90.0, plc_ir: 2 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-101",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 TT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: TT-101, class: temperature, unit: \"degC\",  desc: \"반응기 온도\", lsl: 40.0, usl: 95.0, plc_ir: 4 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PT-101",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 PT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: PT-101, class: pressure,    unit: \"barg\",  desc: \"반응기 압력\", lsl: null, usl: 6.0,  plc_ir: 8 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/pH-101",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 pH-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: pH-101, class: analytic,    unit: \"pH\",    desc: \"반응기 pH\",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/CT-101",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 CT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: CT-101, class: analytic,    unit: \"mS/cm\", desc: \"전도도\",      lsl: null, usl: null, plc_ir: 22 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PT-102",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "R-101의 signals 항목에 PT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: PT-102, class: pressure,    unit: \"barg\",  desc: \"반응기 압력(독립 계기)\", lsl: null, usl: 6.0, plc_ir: 36 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/FT-103",
+          "from_id": "AR-100/reactor-line-01/asset/HX-102",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "HX-102의 signals 항목에 FT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: FT-103, class: flow,        unit: \"m3/h\", desc: \"냉각수 유량\",      lsl: 20.0, usl: null, plc_ir: 28 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-103",
+          "from_id": "AR-100/reactor-line-01/asset/HX-102",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "HX-102의 signals 항목에 TT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: TT-103, class: temperature, unit: \"degC\", desc: \"냉각수 공급 온도\", lsl: null, usl: 28.0, plc_ir: 30 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/TT-104",
+          "from_id": "AR-100/reactor-line-01/asset/HX-102",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "HX-102의 signals 항목에 TT-104가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: TT-104, class: temperature, unit: \"degC\", desc: \"냉각수 회수 온도\", lsl: null, usl: 45.0, plc_ir: 32 }"
+          }
+        },
+        {
+          "type": "HAS_SENSOR",
+          "to_id": "AR-100/reactor-line-01/sensor/PDT-103",
+          "from_id": "AR-100/reactor-line-01/asset/ST-103",
+          "properties": {
+            "source_path": "uploads/equipment.yaml",
+            "source_sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "ST-103의 signals 항목에 PDT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+            "source_excerpt": "      - { tag: PDT-103, class: pressure, unit: \"bar\", desc: \"스트레이너 차압\", lsl: null, usl: 0.8, plc_ir: 34 }"
+          }
+        },
+        {
+          "type": "HAS_PROCEDURE",
+          "to_id": "AR100-COOLING-WATER",
+          "from_id": "AR-100/reactor-line-01/asset/R-101",
+          "properties": {
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_sha256": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "문서 front matter가 R-101을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+            "source_excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]"
+          }
+        },
+        {
+          "type": "HAS_PROCEDURE",
+          "to_id": "AR100-COOLING-WATER",
+          "from_id": "AR-100/reactor-line-01/asset/HX-102",
+          "properties": {
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_sha256": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "문서 front matter가 HX-102를 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+            "source_excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]"
+          }
+        },
+        {
+          "type": "HAS_PROCEDURE",
+          "to_id": "AR100-COOLING-WATER",
+          "from_id": "AR-100/reactor-line-01/asset/ST-103",
+          "properties": {
+            "source_path": "uploads/AR100-COOLING-WATER.md",
+            "source_sha256": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9",
+            "mapping_method": "model-proposed-awaiting-review",
+            "mapping_reason": "문서 front matter가 ST-103을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+            "source_excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]"
+          }
+        }
+      ],
+      "schema_version": 1
+    },
+    "sha256": "99aa00489d5a8cfa37a8bf55d6d9aa7264747b1793fca7b789544ec346ebb7d3",
+    "summary": "equipment.yaml의 원본 설비 ID와 signals[].tag 소속을 기준으로 Asset R-101, HX-102, ST-103만 추가하고, 추출되어 있는 센서 노드는 그대로 유지합니다. 해당 설비가 실제로 보유한 센서 각각에 HAS_SENSOR를 제안합니다. AR100-COOLING-WATER 문서는 front matter의 applies_to에 세 설비가 명시되어 있어 각 Asset에서 문서로 HAS_PROCEDURE를 제안합니다. 요청 범위를 넘는 노드나 실행 관련 사실은 추가하지 않습니다.",
+    "node_count": 51,
+    "unresolved": [
+      "Explicit asset-to-sensor membership requires review.",
+      "A control point or work master does not grant AI execution permission; requests pass OT acceptance and PLC checks.",
+      "Alarm logic is in Flink SQL; tag limits alone are not the alarm contract.",
+      "AR100-COOLING-WATER.md: 적용 대상과 절차 관계는 검토 후 명시적으로 연결해야 합니다.",
+      "AR100-COOLING-WATER.md는 status: educational-draft이며 본문에서 실물 반응기의 운전 승인 문서가 아니라고 명시합니다. HAS_PROCEDURE는 가상 공정의 교육용 대응 문서 연결로만 검토해야 합니다.",
+      "문서는 센서 근거만으로 고장 원인을 확정하지 말고 현장 정비 소견으로 확인하라고 합니다. 센서 알람 해석과 원인 확정은 별도 검토가 필요합니다.",
+      "냉각수 문서는 ST-103을 HX-102 재킷 코일로 이어지는 유로상에 설명하지만 물리적 설치/구성 관계의 정확한 방향과 자산 포함 관계는 명시적으로 확정하지 않았으므로 INSTALLED_IN 관계는 제안하지 않았습니다.",
+      "추출 구조의 기존 노드 및 관계는 변경하지 않았습니다. 추가 관계는 후보이며 게시 또는 운영 승인 사실을 뜻하지 않습니다."
+    ],
+    "preparation": "model-proposed-semantic-mapping",
+    "source_files": [
+      "equipment.yaml",
+      "AR100-COOLING-WATER.md"
+    ],
+    "relationship_count": 59
+  },
+  "trace": [
+    {
+      "at": "2026-10-13T05:57:24.474241+00:00",
+      "stage": "model_requested",
+      "status": "started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-13T05:57:27.960946+00:00",
+      "tool": "read_registered_source",
+      "sha256": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+      "status": "returned",
+      "filename": "equipment.yaml"
+    },
+    {
+      "at": "2026-10-13T05:57:27.980639+00:00",
+      "tool": "read_registered_source",
+      "sha256": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9",
+      "status": "returned",
+      "filename": "AR100-COOLING-WATER.md"
+    },
+    {
+      "at": "2026-10-13T05:57:28.001957+00:00",
+      "tool": "read_extracted_structure",
+      "nodes": 48,
+      "status": "returned",
+      "relationships": 46
+    },
+    {
+      "at": "2026-10-13T05:58:00.347345+00:00",
+      "stage": "model_returned",
+      "status": "returned",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-13T05:58:00.361052+00:00",
+      "stage": "source_quotes_verified",
+      "status": "returned",
+      "attempt": 1
+    },
+    {
+      "messages": [
+        {
+          "id": "ac7543a1-55d5-47af-8961-73d69d6ffee3",
+          "name": null,
+          "type": "human",
+          "content": "냉각 계통에서 알람 센서가 어느 설비에 속하고 어떤 대응 문서를 읽어야 하는지 원본 근거로 연결해 주세요. 설비 목록과 냉각수 정비 문서를 모두 읽으세요. 추가 노드는 Asset R-101, HX-102, ST-103만 제안하고 site=AR-100, device=reactor-line-01, ID는 AR-100/reactor-line-01/asset/설비명으로 사용하세요. 현재 게시된 설비와 식별자를 맞추기 위해 Asset.properties.name은 반드시 R-101, HX-102, ST-103 중 해당 ID로 기록하세요. 반응기·냉각기 같은 원본의 한글 이름은 properties.description에 기록하세요. 그 밖의 노드와 실행 지시는 추가하지 마세요. 이 세 설비에 실제로 속한 센서의 HAS_SENSOR 관계와 냉각수 문서 AR100-COOLING-WATER의 HAS_PROCEDURE 관계를 제안하세요. 기존 추출 노드는 그대로 유지하고, 각 제안에는 선택 원본의 정확한 인용을 붙이며 남은 제약은 unresolved에 기록하세요.\n선택 원본: equipment.yaml, AR100-COOLING-WATER.md",
+          "additional_kwargs": {},
+          "response_metadata": {}
+        },
+        {
+          "id": "resp_0370b81a4ca72f7c006acdc8459a8087d091a414c4cf75a4f0",
+          "name": null,
+          "type": "ai",
+          "content": [
+            {
+              "id": "fc_0370b81a4ca72f7c006acdc848059487d090c1d4d1c05760da",
+              "name": "read_registered_source",
+              "type": "function_call",
+              "status": "completed",
+              "call_id": "call_QPZAJWMMv1cNjffqIIYYeJnT",
+              "arguments": "{\"filename\":\"equipment.yaml\"}"
+            },
+            {
+              "id": "fc_0370b81a4ca72f7c006acdc84805a487d08eb94c31c66758de",
+              "name": "read_registered_source",
+              "type": "function_call",
+              "status": "completed",
+              "call_id": "call_EEmcDb8PJ5VaDjYRXpIFTYWw",
+              "arguments": "{\"filename\":\"AR100-COOLING-WATER.md\"}"
+            },
+            {
+              "id": "fc_0370b81a4ca72f7c006acdc84805ac87d0830990b4edf49ca7",
+              "name": "read_extracted_structure",
+              "type": "function_call",
+              "status": "completed",
+              "call_id": "call_2ActLJHiuM96s5lGsV5aX9XY",
+              "arguments": "{}"
+            }
+          ],
+          "tool_calls": [
+            {
+              "id": "call_QPZAJWMMv1cNjffqIIYYeJnT",
+              "args": {
+                "filename": "equipment.yaml"
+              },
+              "name": "read_registered_source",
+              "type": "tool_call"
+            },
+            {
+              "id": "call_EEmcDb8PJ5VaDjYRXpIFTYWw",
+              "args": {
+                "filename": "AR100-COOLING-WATER.md"
+              },
+              "name": "read_registered_source",
+              "type": "tool_call"
+            },
+            {
+              "id": "call_2ActLJHiuM96s5lGsV5aX9XY",
+              "args": {},
+              "name": "read_extracted_structure",
+              "type": "tool_call"
+            }
+          ],
+          "usage_metadata": {
+            "input_tokens": 1306,
+            "total_tokens": 1379,
+            "output_tokens": 73,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "additional_kwargs": {},
+          "response_metadata": {
+            "id": "resp_0370b81a4ca72f7c006acdc8459a8087d091a414c4cf75a4f0",
+            "model": "gpt-6-luna",
+            "object": "response",
+            "status": "completed",
+            "metadata": {},
+            "created_at": 1791871045.0,
+            "model_name": "gpt-6-luna",
+            "service_tier": "default",
+            "model_provider": "openai"
+          },
+          "invalid_tool_calls": []
+        },
+        {
+          "id": "1eb43b5f-7761-49b7-8f8d-8d1bd87ee6fa",
+          "name": "read_registered_source",
+          "type": "tool",
+          "status": "success",
+          "content": "{\"text\": \"# ═══════════════════════════════════════════════════════════════════════════\\n# 설비 등록부 — 정본 (HANDOFF §2-2 확장, §2-1 ④ 작업 정의)\\n#\\n# 이 파일 하나가 설비·신호·명령·작업 정의의 정본이다. shared/registry/generate.py 가\\n# 여기서 엣지 설정, UNS 토픽, Kafka 키, Flink 규칙 범위, JSON Schema,\\n# 작업 정의 표 두 개(OT 수신기용 / DMZ·IT 허용 목록), PostgreSQL 등록부 SQL 을 만든다.\\n# 속성 이름은 ISA-95(사이트·구역·라인·설비)와 AAS(식별자·의미 ID) 이름을 따른다.\\n# 가상설비 물리 파라미터·고장 정의는 0_plant/simulator/plant.yaml 에 남는다(현장 장치 쪽 정본).\\n# ═══════════════════════════════════════════════════════════════════════════\\n\\nhierarchy:            # ISA-95 설비 계층. 토픽 = {site}/{area}/{line}/{asset}/{kind}/{name}\\n  site: AR-100\\n  area: reaction\\n  line: reactor-line-01\\n\\n# ── 신호 종류별 수집 값(17번 D2 추천, HANDOFF §2-2 표) ──────────────────────\\n#   scan_s·max_interval_s 는 공정(설비) 시간. 벽시계 = 공정 ÷ 배속, 하한은 엣지 폴링 주기.\\n#   deadband_rule: noise_half = 가상 센서 잡음(0_plant/simulator/plant.yaml noise)의 ½ (계기 정밀도의 ½ 역할)\\n#   표에 없는 신호(액위·pH·전도도)는 같은 규칙으로 deadband 를 정하고 scan_s 는 가까운 종류를 따른다(설계 기본값).\\nsignal_classes:\\n  temperature: { scan_s: 10, deadband_rule: noise_half, max_interval_s: 600 }\\n  pressure:    { scan_s: 5,  deadband_rule: noise_half, max_interval_s: 600 }\\n  flow:        { scan_s: 5,  deadband_rule: noise_half, max_interval_s: 600 }\\n  level:       { scan_s: 5,  deadband_rule: noise_half, max_interval_s: 600 }\\n  vibration:   { scan_s: 10, deadband_rule: noise_half, max_interval_s: 600 }\\n  current:     { scan_s: 10, deadband_rule: noise_half, max_interval_s: 600 }\\n  analytic:    { scan_s: 10, deadband_rule: noise_half, max_interval_s: 600 }\\n  state:       { scan_s: 1,  deadband: 0,               max_interval_s: 28800 }\\n\\n# ── 설비 종류 모델(UDT 흉내). 인스턴스는 아래 assets ─────────────────────────\\nequipment_types:\\n  Tank:        { description: \\\"저장 탱크\\\" }\\n  Reactor:     { description: \\\"교반 반응기\\\" }\\n  Pump:        { description: \\\"원심 펌프(가변속)\\\" }\\n  ControlValve: { description: \\\"제어 밸브\\\" }\\n  Agitator:    { description: \\\"교반기(전동기)\\\" }\\n  Heater:      { description: \\\"재킷 히터\\\" }\\n  Cooler:      { description: \\\"냉각기(재킷 냉각 코일)\\\" }\\n  Strainer:    { description: \\\"이중 스트레이너(A/B 바스켓)\\\" }\\n  Controller:  { description: \\\"제어기(soft-PLC)\\\" }\\n\\n# ── 설비 개체 ───────────────────────────────────────────────────────────────\\n#   signals[].plc_ir : PLC 입력 레지스터(float32 시작 주소, OpenPLC %IW) — 엣지가 FC4 로 읽는다\\n#   commands[].code  : PLC 명령 코드(PLC 프로그램 1_control/plc-openplc/project/pous/programs/main.st 와 같은 값)\\n#   commands[].control_point: AI 온톨로지의 제어점(ControlPoint) 이름\\nassets:\\n  - id: TK-101\\n    type: Tank\\n    name: \\\"원료탱크\\\"\\n    signals:\\n      - { tag: LT-101, class: level, unit: \\\"%\\\", desc: \\\"원료탱크 레벨\\\", lsl: 10.0, usl: 95.0, plc_ir: 0 }\\n  - id: R-101\\n    type: Reactor\\n    name: \\\"반응기\\\"\\n    signals:\\n      - { tag: LT-102, class: level,       unit: \\\"%\\\",     desc: \\\"반응기 레벨\\\", lsl: 15.0, usl: 90.0, plc_ir: 2 }\\n      - { tag: TT-101, class: temperature, unit: \\\"degC\\\",  desc: \\\"반응기 온도\\\", lsl: 40.0, usl: 95.0, plc_ir: 4 }\\n      - { tag: PT-101, class: pressure,    unit: \\\"barg\\\",  desc: \\\"반응기 압력\\\", lsl: null, usl: 6.0,  plc_ir: 8 }\\n      - { tag: pH-101, class: analytic,    unit: \\\"pH\\\",    desc: \\\"반응기 pH\\\",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }\\n      - { tag: CT-101, class: analytic,    unit: \\\"mS/cm\\\", desc: \\\"전도도\\\",      lsl: null, usl: null, plc_ir: 22 }\\n      - { tag: PT-102, class: pressure,    unit: \\\"barg\\\",  desc: \\\"반응기 압력(독립 계기)\\\", lsl: null, usl: 6.0, plc_ir: 36 }\\n    commands:\\n      - { name: temp_sp, control_point: temp_sp_x10, code: 7, kind: setpoint, unit: \\\"degC\\\", scale: 10, min: 20.0, max: 100.0, desc: \\\"반응기 온도 설정값\\\" }\\n  - id: HX-101\\n    type: Heater\\n    name: \\\"재킷 히터\\\"\\n    signals:\\n      - { tag: TT-102, class: temperature, unit: \\\"degC\\\", desc: \\\"재킷 온도\\\", lsl: null, usl: 125.0, plc_ir: 6 }\\n    commands:\\n      - { name: enable, control_point: heater_enable, code: 3, kind: switch, desc: \\\"재킷 히터 Enable\\\" }\\n  - id: HX-102\\n    type: Cooler\\n    name: \\\"냉각기\\\"\\n    signals:\\n      - { tag: FT-103, class: flow,        unit: \\\"m3/h\\\", desc: \\\"냉각수 유량\\\",      lsl: 20.0, usl: null, plc_ir: 28 }\\n      - { tag: TT-103, class: temperature, unit: \\\"degC\\\", desc: \\\"냉각수 공급 온도\\\", lsl: null, usl: 28.0, plc_ir: 30 }\\n      - { tag: TT-104, class: temperature, unit: \\\"degC\\\", desc: \\\"냉각수 회수 온도\\\", lsl: null, usl: 45.0, plc_ir: 32 }\\n    commands:\\n      - { name: enable, control_point: cooler_enable, code: 4, kind: switch, desc: \\\"가상 냉각기 Enable\\\" }\\n  - id: ST-103\\n    type: Strainer\\n    name: \\\"냉각수 스트레이너\\\"\\n    signals:\\n      - { tag: PDT-103, class: pressure, unit: \\\"bar\\\", desc: \\\"스트레이너 차압\\\", lsl: null, usl: 0.8, plc_ir: 34 }\\n  - id: P-101\\n    type: Pump\\n    name: \\\"공급 펌프\\\"\\n    signals:\\n      - { tag: FT-101, class: flow,    unit: \\\"m3/h\\\", desc: \\\"공급 유량\\\", lsl: null, usl: null, plc_ir: 10 }\\n      - { tag: IT-101, class: current, unit: \\\"A\\\",    desc: \\\"펌프 전류\\\", lsl: null, usl: 14.0, plc_ir: 14 }\\n    commands:\\n      - { name: run,      control_point: pump_run,      code: 1, kind: switch,   desc: \\\"공급 펌프 기동\\\" }\\n      - { name: speed_sp, control_point: pump_speed_sp, code: 5, kind: setpoint, unit: \\\"%\\\", scale: 1, min: 0, max: 100, desc: \\\"펌프 속도 설정값\\\" }\\n  - id: CV-101\\n    type: ControlValve\\n    name: \\\"배출 밸브\\\"\\n    signals:\\n      - { tag: FT-102, class: flow, unit: \\\"m3/h\\\", desc: \\\"배출 유량\\\", lsl: null, usl: null, plc_ir: 12 }\\n    commands:\\n      - { name: open_sp, control_point: valve_open_sp, code: 6, kind: setpoint, unit: \\\"%\\\", scale: 1, min: 0, max: 100, desc: \\\"밸브 개도 설정값\\\" }\\n  - id: M-101\\n    type: Agitator\\n    name: \\\"교반기\\\"\\n    signals:\\n      - { tag: IT-102, class: current,   unit: \\\"A\\\",    desc: \\\"교반기 전류\\\", lsl: null, usl: 9.6, plc_ir: 16 }\\n      - { tag: VT-101, class: vibration, unit: \\\"mm/s\\\", desc: \\\"교반기 진동\\\", lsl: null, usl: 7.1, plc_ir: 18 }\\n    commands:\\n      - { name: run, control_point: agitator_run, code: 2, kind: switch, desc: \\\"교반기 기동\\\" }\\n  - id: PLC-01\\n    type: Controller\\n    name: \\\"제어기\\\"\\n    signals: []\\n    commands:\\n      - { name: mode,        code: 10, kind: mode, desc: \\\"운전 모드(1=REMOTE_MANUAL, 2=REMOTE_AUTO)\\\" }\\n      - { name: maintenance, code: 11, kind: maintenance_on, desc: \\\"정비 모드 켜기(값 = 담당자 ID)\\\" }\\n      - { name: interlock_reset, code: 12, kind: reset, desc: \\\"고압 인터록 리셋(압력이 해제 값 아래일 때만, 운전원만)\\\" }\\n\\n# ── 제어기(soft-PLC) 설정 — shared/registry/generate.py 가 PLC 프로그램 상수로 넣는다 ──\\ncontroller:\\n  interlock:                 # 고압 인터록: trip_barg 에서 트립·펌프 정지(기억), reset_barg 아래에서 운전원 리셋으로 해제\\n    tag: PT-101\\n    trip_barg: 6.5\\n    reset_barg: 5.2\\n  feedback_timeout_s: 5      # 되읽기 감시: 기동 명령 뒤 전류가 안 오르면 정지(벽시계 초)\\n  running_current_a: 1.0     # 전동기 운전 판정 전류(펌프·교반기)\\n  dry_run_min_level_pct: 5.0 # 펌프 기동 물리 타당성: 원료탱크 레벨이 이보다 낮으면 거부\\n  field_comm_timeout_s: 3    # 현장 장치 스캔 순번이 이 시간 동안 안 바뀌면 통신 이상(벽시계 초)\\n  time_sync_timeout_s: 5     # 엣지 시각 동기가 이 시간 넘게 멈추면 만료 검사를 할 수 없어 외부 요청 거부\\n\\n# ── 작업 정의(OPC UA ISA-95 Job Control 의 WorkMaster). 외부 시스템(우리 AI)이 요청할 수 있는 것만 ──\\n#   parameters 가 없으면 고정 값 명령. 있으면 요청의 job_order_parameters 로 값과 범위를 받는다.\\n#   field_task 가 있으면 PLC 명령이 아니라 현장 정비 작업이다: OT 수신기가 가상 정비팀에게 넘긴다.\\n#   requires_maintenance: PLC 정비 모드(원격 명령 차단)가 켜져 있어야 받는다. 정비 해제는 따로 WM-FLD-LOTO-RELEASE(작업 완료 확인 뒤 정비팀이 해제 키).\\nwork_masters:\\n  - id: WM-M101-STOP\\n    equipment_id: M-101\\n    command: run\\n    value: 0\\n    desc: \\\"교반기 정지(AI stop_mixer)\\\"\\n  - id: WM-HX102-ENABLE\\n    equipment_id: HX-102\\n    command: enable\\n    value: 1\\n    desc: \\\"냉각기 기동(AI enable_cooling)\\\"\\n  - id: WM-R101-TEMPSP\\n    equipment_id: R-101\\n    command: temp_sp\\n    parameters:\\n      - { id: temp_sp_c, min: 60.0, max: 80.0, unit: \\\"degC\\\" }\\n    desc: \\\"반응기 온도 설정값 변경(운전 범위 안 조정)\\\"\\n  - id: WM-M101-START\\n    equipment_id: M-101\\n    command: run\\n    value: 1\\n    desc: \\\"교반기 재기동(정비 뒤)\\\"\\n  - id: WM-P101-SPEED\\n    equipment_id: P-101\\n    command: speed_sp\\n    parameters:\\n      - { id: pump_speed_pct, min: 20.0, max: 80.0, unit: \\\"%\\\" }\\n    desc: \\\"공급 펌프 속도 변경(부하 조정)\\\"\\n  - id: WM-P101-STOP\\n    equipment_id: P-101\\n    command: run\\n    value: 0\\n    desc: \\\"공급 펌프 정지\\\"\\n  - id: WM-P101-START\\n    equipment_id: P-101\\n    command: run\\n    value: 1\\n    desc: \\\"공급 펌프 재기동\\\"\\n  - id: WM-PLC-MAINT-ON\\n    equipment_id: PLC-01\\n    command: maintenance\\n    value: 901\\n    desc: \\\"정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)\\\"\\n  # ── 현장 정비(가상 정비팀) ──\\n  - { id: WM-FLD-STRAINER-SWITCH, equipment_id: ST-103, field_task: strainer_switch, desc: \\\"냉각수 스트레이너 예비 바스켓 전환\\\" }\\n  - { id: WM-FLD-STRAINER-CLEAN,  equipment_id: ST-103, field_task: strainer_clean,  desc: \\\"대기 바스켓 분해 세척\\\" }\\n  - { id: WM-FLD-JACKET-DESCALE,  equipment_id: HX-102, field_task: jacket_descale,  requires_maintenance: true, desc: \\\"재킷 냉각 코일 화학 세정\\\" }\\n  - { id: WM-FLD-BEARING-REPLACE, equipment_id: M-101,  field_task: bearing_replace, requires_maintenance: true, desc: \\\"교반기 베어링 점검·교체\\\" }\\n  - { id: WM-FLD-SHAFT-ALIGN,     equipment_id: M-101,  field_task: shaft_align,     requires_maintenance: true, desc: \\\"교반기 축 정렬 점검·조정\\\" }\\n  - { id: WM-FLD-PT101-CALIBRATE, equipment_id: R-101,  field_task: pt_calibrate,    desc: \\\"PT-101 비교 교정(계기 격리)\\\" }\\n  - { id: WM-FLD-CV101-REPAIR,    equipment_id: CV-101, field_task: cv_repair,       requires_maintenance: true, desc: \\\"배출 밸브 분해 정비\\\" }\\n  - { id: WM-FLD-LOTO-RELEASE,    equipment_id: PLC-01, field_task: release_lockout, requires_maintenance: true, release_maintenance: true, desc: \\\"작업 완료 확인·격리 해제·정비 해제 키\\\" }\\n\\n# ── 요청자·승인자 허용 목록(DMZ 게이트웨이 경계 검사) ──\\nrequesters:                    # 요청을 만드는 외부 시스템 ID 와 종류(요청 필드 requester·requester_type 이 둘 다 맞아야 한다)\\n  - { id: ai-ops, type: ai }     # AI 업무 도우미\\n  - { id: mes-01, type: mes }    # MES 흉내(생산 지시를 같은 요청 길로 보낸다)\\napprovers: [operator-01, operator-02, planner-01]   # planner-01: MES 생산 계획 담당\\n\", \"sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"filename\": \"equipment.yaml\"}",
+          "artifact": null,
+          "tool_call_id": "call_QPZAJWMMv1cNjffqIIYYeJnT",
+          "additional_kwargs": {},
+          "response_metadata": {}
+        },
+        {
+          "id": "c89d2a74-0f14-4d65-a240-699ad2454019",
+          "name": "read_registered_source",
+          "type": "tool",
+          "status": "success",
+          "content": "{\"text\": \"---\\ndocument_id: AR100-COOLING-WATER\\nversion: 1\\nstatus: educational-draft\\napplies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\\nalarm_types: [THRESHOLD_USL, THRESHOLD_LSL, ZSCORE]\\nsource_kind: authored-simulation-procedure\\n---\\n\\n# 냉각수 계통 이상과 반응기 온도 상승 대응\\n\\nAR-100 가상 공정의 교육용 절차다. 근거는 `0_plant/simulator/plant.py`의 열수지 모델과 `shared/registry/equipment.yaml`의 규격이며 실물 반응기의 운전 승인 문서가 아니다.\\n\\n## 1. 계통 구성\\n\\nR-101 반응은 발열 반응이다. 공급 원료 1 m3/h마다 약 120 kW의 반응열이 나므로 정상 운전에서도 냉각기 HX-102(재킷 냉각 코일)가 상시 열을 뺀다. 냉각수는 공용 유틸리티에서 약 20°C로 공급되어 이중 스트레이너 ST-103(바스켓 A/B 중 하나만 사용)을 거쳐 재킷 코일로 들어간다.\\n\\n| 계측 | 의미 | 정상 범위(정격 운전) |\\n|---|---|---|\\n| FT-103 | 냉각수 유량 | 약 30 m3/h, 하한 20 |\\n| TT-103 | 냉각수 공급 온도 | 약 20°C |\\n| TT-104 | 냉각수 회수 온도 | 약 30~32°C |\\n| PDT-103 | 스트레이너 차압 | 약 0.12 bar, 상한 0.8 |\\n| TT-101 | 반응기 온도 | 목표 ±1.5°C, 상한 95°C |\\n\\n열 제거량은 냉각수 유량 × 비열 × (회수 − 공급) 온도차다. 냉각 능력은 유량이 줄거나 전열면이 오염되면 떨어진다.\\n\\n## 2. 원인 구분 — 유량 문제인가, 전열 문제인가\\n\\n반응기 온도가 오를 때 냉각수 쪽 세 값을 함께 본다.\\n\\n| 관측 | 스트레이너 막힘 | 재킷 전열면 스케일 | 냉각 명령 꺼짐 |\\n|---|---|---|---|\\n| FT-103 냉각수 유량 | 크게 감소(하한 미만) | 정상 | 정상 |\\n| PDT-103 스트레이너 차압 | 크게 상승(상한 초과) | 정상 | 정상 |\\n| TT-104 − TT-103 온도차 | 크게 벌어짐(적은 물이 열을 받아 뜨거워짐) | 작아짐(열이 넘어가지 않음) | 거의 0 |\\n| cooler_enable | 켜짐 | 켜짐 | 꺼짐 |\\n\\n유량이 정상인데 온도차가 작고 반응기 온도가 오르면 전열 저하(스케일)다. 유량이 낮고 차압이 높으면 유로 막힘이다. 두 판단 모두 센서 근거이며 확정은 현장 정비 소견으로 한다. 히터 출력 고착·목표 온도 과대 설정은 AR100-FAILURE-MODES 2절로 따로 확인한다.\\n\\n## 3. 스트레이너 전환·세척 절차\\n\\n이중 스트레이너는 운전 중에 예비 바스켓으로 전환할 수 있다(생산 정지 없음).\\n\\n1. (선택) 전환 중 온도 상승을 줄이려면 공급 펌프 P-101 속도를 낮춰 반응열을 줄인다.\\n2. 정비팀이 예비 바스켓으로 전환한다(약 5분). 전환 직후 FT-103 회복과 PDT-103 하강을 확인한다.\\n3. 막힌 바스켓을 격리 상태로 분해 세척한다(약 20분, 운전 중 가능). 이물의 양과 종류를 소견으로 남긴다.\\n4. 펌프 속도를 원래 값으로 되돌린다.\\n\\n예비 바스켓도 막혀 있으면 전환할 수 없다. 이 경우 먼저 세척한다.\\n\\n## 4. 재킷 화학 세정 절차\\n\\n전열면 스케일은 운전 중에 제거할 수 없다.\\n\\n1. 공급 펌프를 정지해 반응열을 없앤다.\\n2. 정비 모드를 켜서 원격 명령을 막는다(LOTO).\\n3. 정비팀이 재킷 코일을 화학 세정한다(약 2시간). 세정제 재고(ERP)가 있어야 한다.\\n4. 정비팀이 정비 해제 키를 돌리면 펌프를 재기동한다.\\n\\n감속 운전으로 버티는 방법은 상한 초과 온도가 계속되면 허용하지 않는다(AR100-MAINT-POLICY 3절).\\n\\n## 5. 회복 확인\\n\\n정비가 끝났다고 회복이 아니다. 다음이 30초 이상 유지되어야 회복으로 판정한다.\\n\\n- TT-101이 현재 목표 온도 + 2°C 이하\\n- FT-103이 하한 20 m3/h 이상\\n\\n시간 안에 기준을 넘지 못하면 조치 실패로 기록하고 현장 소견을 근거로 다시 판단한다.\\n\", \"sha256\": \"250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9\", \"filename\": \"AR100-COOLING-WATER.md\"}",
+          "artifact": null,
+          "tool_call_id": "call_EEmcDb8PJ5VaDjYRXpIFTYWw",
+          "additional_kwargs": {},
+          "response_metadata": {}
+        },
+        {
+          "id": "1cd1df33-844e-4389-a229-8ec663c121dc",
+          "name": "read_extracted_structure",
+          "type": "tool",
+          "status": "success",
+          "content": "{\"nodes\": [{\"id\": \"AR-100/reactor-line-01\", \"class\": \"Device\", \"properties\": {\"area\": \"reaction\", \"name\": \"reactor-line-01\", \"site\": \"AR-100\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/LT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": 10.0, \"usl\": 95.0, \"name\": \"LT-101\", \"unit\": \"%\", \"description\": \"원료탱크 레벨\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"TK-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=TK-101].signals[tag=LT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/LT-102\", \"class\": \"Sensor\", \"properties\": {\"lsl\": 15.0, \"usl\": 90.0, \"name\": \"LT-102\", \"unit\": \"%\", \"description\": \"반응기 레벨\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=LT-102]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/TT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": 40.0, \"usl\": 95.0, \"name\": \"TT-101\", \"unit\": \"degC\", \"description\": \"반응기 온도\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=TT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/PT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 6.0, \"name\": \"PT-101\", \"unit\": \"barg\", \"description\": \"반응기 압력\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=PT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/pH-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": 6.2, \"usl\": 8.4, \"name\": \"pH-101\", \"unit\": \"pH\", \"description\": \"반응기 pH\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=pH-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/CT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": null, \"name\": \"CT-101\", \"unit\": \"mS/cm\", \"description\": \"전도도\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=CT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/PT-102\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 6.0, \"name\": \"PT-102\", \"unit\": \"barg\", \"description\": \"반응기 압력(독립 계기)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].signals[tag=PT-102]\"}}, {\"id\": \"AR-100/reactor-line-01/point/temp_sp_x10\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"temp_sp_x10\", \"command\": \"temp_sp\", \"readonly\": false, \"description\": \"반응기 온도 설정값\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=R-101].commands[name=temp_sp]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/TT-102\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 125.0, \"name\": \"TT-102\", \"unit\": \"degC\", \"description\": \"재킷 온도\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-101].signals[tag=TT-102]\"}}, {\"id\": \"AR-100/reactor-line-01/point/heater_enable\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"heater_enable\", \"command\": \"enable\", \"readonly\": false, \"description\": \"재킷 히터 Enable\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-101].commands[name=enable]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/FT-103\", \"class\": \"Sensor\", \"properties\": {\"lsl\": 20.0, \"usl\": null, \"name\": \"FT-103\", \"unit\": \"m3/h\", \"description\": \"냉각수 유량\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-102].signals[tag=FT-103]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/TT-103\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 28.0, \"name\": \"TT-103\", \"unit\": \"degC\", \"description\": \"냉각수 공급 온도\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-102].signals[tag=TT-103]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/TT-104\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 45.0, \"name\": \"TT-104\", \"unit\": \"degC\", \"description\": \"냉각수 회수 온도\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-102].signals[tag=TT-104]\"}}, {\"id\": \"AR-100/reactor-line-01/point/cooler_enable\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"cooler_enable\", \"command\": \"enable\", \"readonly\": false, \"description\": \"가상 냉각기 Enable\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=HX-102].commands[name=enable]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/PDT-103\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 0.8, \"name\": \"PDT-103\", \"unit\": \"bar\", \"description\": \"스트레이너 차압\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"ST-103\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=ST-103].signals[tag=PDT-103]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/FT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": null, \"name\": \"FT-101\", \"unit\": \"m3/h\", \"description\": \"공급 유량\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=P-101].signals[tag=FT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/IT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 14.0, \"name\": \"IT-101\", \"unit\": \"A\", \"description\": \"펌프 전류\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=P-101].signals[tag=IT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/point/pump_run\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"pump_run\", \"command\": \"run\", \"readonly\": false, \"description\": \"공급 펌프 기동\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=P-101].commands[name=run]\"}}, {\"id\": \"AR-100/reactor-line-01/point/pump_speed_sp\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"pump_speed_sp\", \"command\": \"speed_sp\", \"readonly\": false, \"description\": \"펌프 속도 설정값\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=P-101].commands[name=speed_sp]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/FT-102\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": null, \"name\": \"FT-102\", \"unit\": \"m3/h\", \"description\": \"배출 유량\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"CV-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=CV-101].signals[tag=FT-102]\"}}, {\"id\": \"AR-100/reactor-line-01/point/valve_open_sp\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"valve_open_sp\", \"command\": \"open_sp\", \"readonly\": false, \"description\": \"밸브 개도 설정값\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"CV-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=CV-101].commands[name=open_sp]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/IT-102\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 9.6, \"name\": \"IT-102\", \"unit\": \"A\", \"description\": \"교반기 전류\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=M-101].signals[tag=IT-102]\"}}, {\"id\": \"AR-100/reactor-line-01/sensor/VT-101\", \"class\": \"Sensor\", \"properties\": {\"lsl\": null, \"usl\": 7.1, \"name\": \"VT-101\", \"unit\": \"mm/s\", \"description\": \"교반기 진동\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=M-101].signals[tag=VT-101]\"}}, {\"id\": \"AR-100/reactor-line-01/point/agitator_run\", \"class\": \"ControlPoint\", \"properties\": {\"name\": \"agitator_run\", \"command\": \"run\", \"readonly\": false, \"description\": \"교반기 기동\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"assets[id=M-101].commands[name=run]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-M101-STOP\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-M101-STOP\", \"description\": \"교반기 정지(AI stop_mixer)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-M101-STOP]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-HX102-ENABLE\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-HX102-ENABLE\", \"description\": \"냉각기 기동(AI enable_cooling)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-HX102-ENABLE]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-R101-TEMPSP\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-R101-TEMPSP\", \"description\": \"반응기 온도 설정값 변경(운전 범위 안 조정)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-R101-TEMPSP]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-M101-START\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-M101-START\", \"description\": \"교반기 재기동(정비 뒤)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-M101-START]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-P101-SPEED\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-P101-SPEED\", \"description\": \"공급 펌프 속도 변경(부하 조정)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-P101-SPEED]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-P101-STOP\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-P101-STOP\", \"description\": \"공급 펌프 정지\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-P101-STOP]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-P101-START\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-P101-START\", \"description\": \"공급 펌프 재기동\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"P-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-P101-START]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-PLC-MAINT-ON\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-PLC-MAINT-ON\", \"description\": \"정비 모드 켜기(원격 명령 차단·정비팀 901 작업 시작)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"PLC-01\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-PLC-MAINT-ON]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-SWITCH\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-STRAINER-SWITCH\", \"description\": \"냉각수 스트레이너 예비 바스켓 전환\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"ST-103\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-STRAINER-SWITCH]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-CLEAN\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-STRAINER-CLEAN\", \"description\": \"대기 바스켓 분해 세척\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"ST-103\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-STRAINER-CLEAN]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-JACKET-DESCALE\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-JACKET-DESCALE\", \"description\": \"재킷 냉각 코일 화학 세정\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"HX-102\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-JACKET-DESCALE]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-BEARING-REPLACE\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-BEARING-REPLACE\", \"description\": \"교반기 베어링 점검·교체\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-BEARING-REPLACE]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-SHAFT-ALIGN\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-SHAFT-ALIGN\", \"description\": \"교반기 축 정렬 점검·조정\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"M-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-SHAFT-ALIGN]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-PT101-CALIBRATE\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-PT101-CALIBRATE\", \"description\": \"PT-101 비교 교정(계기 격리)\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"R-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-PT101-CALIBRATE]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-CV101-REPAIR\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-CV101-REPAIR\", \"description\": \"배출 밸브 분해 정비\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"CV-101\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-CV101-REPAIR]\"}}, {\"id\": \"AR-100/reactor-line-01/work-master/WM-FLD-LOTO-RELEASE\", \"class\": \"WorkMaster\", \"properties\": {\"name\": \"WM-FLD-LOTO-RELEASE\", \"description\": \"작업 완료 확인·격리 해제·정비 해제 키\", \"environment\": \"simulation\", \"source_path\": \"uploads/equipment.yaml\", \"equipment_id\": \"PLC-01\", \"review_status\": \"candidate\", \"source_sha256\": \"ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49\", \"source_locator\": \"work_masters[id=WM-FLD-LOTO-RELEASE]\"}}, {\"id\": \"AR100-COOLING-WATER\", \"class\": \"Document\", \"properties\": {\"name\": \"AR100-COOLING-WATER\", \"content\": \"---\\ndocument_id: AR100-COOLING-WATER\\nversion: 1\\nstatus: educational-draft\\napplies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\\nalarm_types: [THRESHOLD_USL, THRESHOLD_LSL, ZSCORE]\\nsource_kind: authored-simulation-procedure\\n---\\n\\n# 냉각수 계통 이상과 반응기 온도 상승 대응\\n\\nAR-100 가상 공정의 교육용 절차다. 근거는 `0_plant/simulator/plant.py`의 열수지 모델과 `shared/registry/equipment.yaml`의 규격이며 실물 반응기의 운전 승인 문서가 아니다.\\n\\n## 1. 계통 구성\\n\\nR-101 반응은 발열 반응이다. 공급 원료 1 m3/h마다 약 120 kW의 반응열이 나므로 정상 운전에서도 냉각기 HX-102(재킷 냉각 코일)가 상시 열을 뺀다. 냉각수는 공용 유틸리티에서 약 20°C로 공급되어 이중 스트레이너 ST-103(바스켓 A/B 중 하나만 사용)을 거쳐 재킷 코일로 들어간다.\\n\\n| 계측 | 의미 | 정상 범위(정격 운전) |\\n|---|---|---|\\n| FT-103 | 냉각수 유량 | 약 30 m3/h, 하한 20 |\\n| TT-103 | 냉각수 공급 온도 | 약 20°C |\\n| TT-104 | 냉각수 회수 온도 | 약 30~32°C |\\n| PDT-103 | 스트레이너 차압 | 약 0.12 bar, 상한 0.8 |\\n| TT-101 | 반응기 온도 | 목표 ±1.5°C, 상한 95°C |\\n\\n열 제거량은 냉각수 유량 × 비열 × (회수 − 공급) 온도차다. 냉각 능력은 유량이 줄거나 전열면이 오염되면 떨어진다.\\n\\n## 2. 원인 구분 — 유량 문제인가, 전열 문제인가\\n\\n반응기 온도가 오를 때 냉각수 쪽 세 값을 함께 본다.\\n\\n| 관측 | 스트레이너 막힘 | 재킷 전열면 스케일 | 냉각 명령 꺼짐 |\\n|---|---|---|---|\\n| FT-103 냉각수 유량 | 크게 감소(하한 미만) | 정상 | 정상 |\\n| PDT-103 스트레이너 차압 | 크게 상승(상한 초과) | 정상 | 정상 |\\n| TT-104 − TT-103 온도차 | 크게 벌어짐(적은 물이 열을 받아 뜨거워짐) | 작아짐(열이 넘어가지 않음) | 거의 0 |\\n| cooler_enable | 켜짐 | 켜짐 | 꺼짐 |\\n\\n유량이 정상인데 온도차가 작고 반응기 온도가 오르면 전열 저하(스케일)다. 유량이 낮고 차압이 높으면 유로 막힘이다. 두 판단 모두 센서 근거이며 확정은 현장 정비 소견으로 한다. 히터 출력 고착·목표 온도 과대 설정은 AR100-FAILURE-MODES 2절로 따로 확인한다.\\n\\n## 3. 스트레이너 전환·세척 절차\\n\\n이중 스트레이너는 운전 중에 예비 바스켓으로 전환할 수 있다(생산 정지 없음).\\n\\n1. (선택) 전환 중 온도 상승을 줄이려면 공급 펌프 P-101 속도를 낮춰 반응열을 줄인다.\\n2. 정비팀이 예비 바스켓으로 전환한다(약 5분). 전환 직후 FT-103 회복과 PDT-103 하강을 확인한다.\\n3. 막힌 바스켓을 격리 상태로 분해 세척한다(약 20분, 운전 중 가능). 이물의 양과 종류를 소견으로 남긴다.\\n4. 펌프 속도를 원래 값으로 되돌린다.\\n\\n예비 바스켓도 막혀 있으면 전환할 수 없다. 이 경우 먼저 세척한다.\\n\\n## 4. 재킷 화학 세정 절차\\n\\n전열면 스케일은 운전 중에 제거할 수 없다.\\n\\n1. 공급 펌프를 정지해 반응열을 없앤다.\\n2. 정비 모드를 켜서 원격 명령을 막는다(LOTO).\\n3. 정비팀이 재킷 코일을 화학 세정한다(약 2시간). 세정제 재고(ERP)가 있어야 한다.\\n4. 정비팀이 정비 해제 키를 돌리면 펌프를 재기동한다.\\n\\n감속 운전으로 버티는 방법은 상한 초과 온도가 계속되면 허용하지 않는다(AR100-MAINT-POLICY 3절).\\n\\n## 5. 회복 확인\\n\\n정비가 끝났다고 회복이 아니다. 다음이 30초 이상 유지되어야 회복으로 판정한다.\\n\\n- TT-101이 현재 목표 온도 + 2°C 이하\\n- FT-103이 하한 20 m3/h 이상\\n\\n시간 안에 기준을 넘지 못하면 조치 실패로 기록하고 현장 소견을 근거로 다시 판단한다.\\n\", \"version\": 1, \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_sha256\": \"250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9\", \"source_status\": \"educational-draft\"}}, {\"id\": \"AR100-COOLING-WATER/section/0\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"\", \"content\": \"\\n# 냉각수 계통 이상과 반응기 온도 상승 대응\\n\\nAR-100 가상 공정의 교육용 절차다. 근거는 `0_plant/simulator/plant.py`의 열수지 모델과 `shared/registry/equipment.yaml`의 규격이며 실물 반응기의 운전 승인 문서가 아니다.\\n\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:0\"}}, {\"id\": \"AR100-COOLING-WATER/section/1\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"1. 계통 구성\", \"content\": \"1. 계통 구성\\n\\nR-101 반응은 발열 반응이다. 공급 원료 1 m3/h마다 약 120 kW의 반응열이 나므로 정상 운전에서도 냉각기 HX-102(재킷 냉각 코일)가 상시 열을 뺀다. 냉각수는 공용 유틸리티에서 약 20°C로 공급되어 이중 스트레이너 ST-103(바스켓 A/B 중 하나만 사용)을 거쳐 재킷 코일로 들어간다.\\n\\n| 계측 | 의미 | 정상 범위(정격 운전) |\\n|---|---|---|\\n| FT-103 | 냉각수 유량 | 약 30 m3/h, 하한 20 |\\n| TT-103 | 냉각수 공급 온도 | 약 20°C |\\n| TT-104 | 냉각수 회수 온도 | 약 30~32°C |\\n| PDT-103 | 스트레이너 차압 | 약 0.12 bar, 상한 0.8 |\\n| TT-101 | 반응기 온도 | 목표 ±1.5°C, 상한 95°C |\\n\\n열 제거량은 냉각수 유량 × 비열 × (회수 − 공급) 온도차다. 냉각 능력은 유량이 줄거나 전열면이 오염되면 떨어진다.\\n\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:1\"}}, {\"id\": \"AR100-COOLING-WATER/section/2\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"2. 원인 구분 — 유량 문제인가, 전열 문제인가\", \"content\": \"2. 원인 구분 — 유량 문제인가, 전열 문제인가\\n\\n반응기 온도가 오를 때 냉각수 쪽 세 값을 함께 본다.\\n\\n| 관측 | 스트레이너 막힘 | 재킷 전열면 스케일 | 냉각 명령 꺼짐 |\\n|---|---|---|---|\\n| FT-103 냉각수 유량 | 크게 감소(하한 미만) | 정상 | 정상 |\\n| PDT-103 스트레이너 차압 | 크게 상승(상한 초과) | 정상 | 정상 |\\n| TT-104 − TT-103 온도차 | 크게 벌어짐(적은 물이 열을 받아 뜨거워짐) | 작아짐(열이 넘어가지 않음) | 거의 0 |\\n| cooler_enable | 켜짐 | 켜짐 | 꺼짐 |\\n\\n유량이 정상인데 온도차가 작고 반응기 온도가 오르면 전열 저하(스케일)다. 유량이 낮고 차압이 높으면 유로 막힘이다. 두 판단 모두 센서 근거이며 확정은 현장 정비 소견으로 한다. 히터 출력 고착·목표 온도 과대 설정은 AR100-FAILURE-MODES 2절로 따로 확인한다.\\n\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:2\"}}, {\"id\": \"AR100-COOLING-WATER/section/3\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"3. 스트레이너 전환·세척 절차\", \"content\": \"3. 스트레이너 전환·세척 절차\\n\\n이중 스트레이너는 운전 중에 예비 바스켓으로 전환할 수 있다(생산 정지 없음).\\n\\n1. (선택) 전환 중 온도 상승을 줄이려면 공급 펌프 P-101 속도를 낮춰 반응열을 줄인다.\\n2. 정비팀이 예비 바스켓으로 전환한다(약 5분). 전환 직후 FT-103 회복과 PDT-103 하강을 확인한다.\\n3. 막힌 바스켓을 격리 상태로 분해 세척한다(약 20분, 운전 중 가능). 이물의 양과 종류를 소견으로 남긴다.\\n4. 펌프 속도를 원래 값으로 되돌린다.\\n\\n예비 바스켓도 막혀 있으면 전환할 수 없다. 이 경우 먼저 세척한다.\\n\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:3\"}}, {\"id\": \"AR100-COOLING-WATER/section/4\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"4. 재킷 화학 세정 절차\", \"content\": \"4. 재킷 화학 세정 절차\\n\\n전열면 스케일은 운전 중에 제거할 수 없다.\\n\\n1. 공급 펌프를 정지해 반응열을 없앤다.\\n2. 정비 모드를 켜서 원격 명령을 막는다(LOTO).\\n3. 정비팀이 재킷 코일을 화학 세정한다(약 2시간). 세정제 재고(ERP)가 있어야 한다.\\n4. 정비팀이 정비 해제 키를 돌리면 펌프를 재기동한다.\\n\\n감속 운전으로 버티는 방법은 상한 초과 온도가 계속되면 허용하지 않는다(AR100-MAINT-POLICY 3절).\\n\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:4\"}}, {\"id\": \"AR100-COOLING-WATER/section/5\", \"class\": \"DocumentSection\", \"properties\": {\"name\": \"5. 회복 확인\", \"content\": \"5. 회복 확인\\n\\n정비가 끝났다고 회복이 아니다. 다음이 30초 이상 유지되어야 회복으로 판정한다.\\n\\n- TT-101이 현재 목표 온도 + 2°C 이하\\n- FT-103이 하한 20 m3/h 이상\\n\\n시간 안에 기준을 넘지 못하면 조치 실패로 기록하고 현장 소견을 근거로 다시 판단한다.\\n\", \"document_id\": \"AR100-COOLING-WATER\", \"source_path\": \"uploads/AR100-COOLING-WATER.md\", \"source_locator\": \"section:5\"}}], \"status\": \"candidate\", \"unresolved\": [\"Explicit asset-to-sensor membership requires review.\", \"A control point or work master does not grant AI execution permission; requests pass OT acceptance and PLC checks.\", \"Alarm logic is in Flink SQL; tag limits alone are not the alarm contract.\", \"AR100-COOLING-WATER.md: 적용 대상과 절차 관계는 검토 후 명시적으로 연결해야 합니다.\"], \"relationships\": [{\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/LT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/LT-102\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/TT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/PT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/pH-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/CT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/PT-102\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/temp_sp_x10\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/TT-102\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/heater_enable\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/FT-103\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/TT-103\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/TT-104\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/cooler_enable\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/PDT-103\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/FT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/IT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/pump_run\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/pump_speed_sp\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/FT-102\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/valve_open_sp\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/IT-102\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_SENSOR\", \"to_id\": \"AR-100/reactor-line-01/sensor/VT-101\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"EXPOSES_POINT\", \"to_id\": \"AR-100/reactor-line-01/point/agitator_run\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-M101-STOP\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-HX102-ENABLE\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-R101-TEMPSP\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-M101-START\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-P101-SPEED\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-P101-STOP\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-P101-START\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-PLC-MAINT-ON\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-SWITCH\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-STRAINER-CLEAN\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-JACKET-DESCALE\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-BEARING-REPLACE\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-SHAFT-ALIGN\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-PT101-CALIBRATE\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-CV101-REPAIR\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"OFFERS_WORK\", \"to_id\": \"AR-100/reactor-line-01/work-master/WM-FLD-LOTO-RELEASE\", \"from_id\": \"AR-100/reactor-line-01\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/0\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/1\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/2\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/3\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/4\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}, {\"type\": \"HAS_SECTION\", \"to_id\": \"AR100-COOLING-WATER/section/5\", \"from_id\": \"AR100-COOLING-WATER\", \"properties\": {}}], \"schema_version\": 1}",
+          "artifact": null,
+          "tool_call_id": "call_2ActLJHiuM96s5lGsV5aX9XY",
+          "additional_kwargs": {},
+          "response_metadata": {}
+        },
+        {
+          "id": "resp_0370b81a4ca72f7c006acdc848daf087d0abc412c173d17816",
+          "name": null,
+          "type": "ai",
+          "content": [
+            {
+              "id": "rs_0370b81a4ca72f7c006acdc849e7d887d081302279d10ff787",
+              "type": "reasoning",
+              "content": [],
+              "summary": [],
+              "encrypted_content": "gAAAAABqzchoyQgXCczZsWv9KvdHUMNRIabAabQmRlAU9ia0TEVcdspa3v777gXnwU0PLkzDZIgVNK-SUHk57pyEeEWOd-ofR7oUakL7PlPUpj-gnOr4Z1dkxk8Ab1ELjYnOkCQiW6b51OG2UmoB7VBVYEU-hpML0IMPvuCeKgu06sfExw6udePP2KTpnmlTp6Ai5jfxtvjhnBWzY_ehOTZkpcCTWevxNDTsLhAIUbsnbqgBgG9dupmtqmULQn5ee091nvRkaCBOKUmqwpDrDH7ALqayiwJBkkr7hgu7CLO8DPV0VlQtRly8nxMMK8OBs64h3Trg2F_DdI0aFWlWeNCsMD6PjnJB7TcMP5WCMWh16uaoP63-Wj21DPLvyIxFhY2dY2xa0A9PvdqCEeDG8N-KPlyDg6L2DNnKN1oSVn0niXRu8oOGzOrCtLX3x3M7Tr8Ak0wKT_z1bcTmM_F7KOkpSvPqZAWlisBgCksbyUzBnQEI3YYobXMj1Qw9apvd_IBlCoGWP6WjsNeSpgbnk9WjIdcpXgmczAue7BzSbd2Ri2ap4g_ILdz_YhVl9TKUBTSoBq1FOIRTbeZj5_OPHeoUHdiVg4eTEC7dBEri6x4TtIJ767RBrcO-1KIKpdmLBIhmLlc22py3TBKAsIPQfe4et7im2Jyat1rJC6qRxH-7gccwdDUzreqLcILhYxyFu8ndf3_118cB1to1Hu3fW1WWe8BXHrdpGLTNiaq-YIPWLpm5H0jSxjeIj1AEJOvtCu9C1K9vLBhMaVZLD8FXtH66j2OHqFt0qkJeZpHsrxrd3S-8Uf92pYz1z0PnMX4dqxbPQPxfr1T1ppIw2C3XeHoMGMS7FFYtYIc_DLGPV2UUKqCJg57q0C_ph6OYDXxerNqH2ClQYIAxgQZEloPwxweIE-aN5cnvatMiQsJPJcPlPJ2tL3V5p2TstTqm9aPEdx9-yMfDVCzbU8dcWUt7DEEznSU5x6OGximQ2KDOxgHSgmUnqOh1YjGiW4ZFzs_buqUMjaimI6lUxK5OILBdSCAKxrjqmjBT8RmAMp6-waxkGAXkvXSAsvjkXkqD5bMI_XngHGed5ksuhxw4HAVO7spdzKjYSba4yRnC2ZVju812MJl1Zd_1FZUAIOsgNKnN9jt12NlIsClOI4kH-DZg5YfGWG66QFeQzxrFYIMdj-POsIhL0_2JpdEb91vQR9i-vqzCb6rfTRL4wR4xcVamUsDJdBd-s5lFcXWTAhPQ0QG55XobWQyRPPdJS4DOoqMCqpT84OZCW1N8rRftar-tKT-Hy7UfXzE0NCG7nGeVwyI9_zRGKzLF88Y4E6Aw6NrdW_AuH_f2A6YFoR1I8TBO6RvCXv2hsMHKPgccnJN1qakeJpvx6tkSprkpnUu6VA7poBacotDah5B_FHLyuUBriIX-AVfdU22fWLTGEA5oy_Du11FCGDSY7510uhSU55OLZ31sjU80ATjGQQ9uipLrLM9BcJbykoyeDhs2m8RyOPrsBCQVaxJpmY9xU9TDSUYwASqf8jtiYFHmE4sjy8FGKyheQJLxq04sc-xVWgve3wEjxkg4I1TPHA8QBzDoB_78BBc2tA5kTyjVcaoBCLunuwdb_wODwhDEhqp_lvyvD7JfYacTnjI4iZ-0ODP_iv3VtwCb1iOqVeYKc0ZogldPGELIwpnQE6yN3YAKv30bSv659D5JMukaZl3W9AZ-lnrKGlhgEk-2bjKXNZwU0HUtAEw5DU6UKtOHURWYcQAxzpQMq8ZfeHWrLy018OLgSeAd8ZcMV0-4zUS8s_Lr3d2p-_djnTrYyjLCfeLTfBY7CDDZ5UJrnl6nHCDfMiFfKXuCatLPI-Hs2euJ7KBLy3WEmogNYN2ySbJCt6uJ1El3rEjKMAVPfnVrdZfW4NgEiwsTFmsCH0FE783j1VP8R1r7LA2xlV1iakhWndhP02FdMYoLQTJqtHTJPqkquPVuZUoLRn-STLdBpvgo-85C5ntZU_MNhL7Kaj-pPZsLirEVSLOHZ9_tWUFjWfnqvgfkEK_7pTjAoeG9TAUEJWHbuVXK7xyBTjBWt0gIEwwFb1YvIOag37LuN-aLNFineQpV80R4SXsZuin7bcVvAtKtLHoHvIrvmFy2fERcWkwkFcd_PND8r6yK3Rbq6EH5J-3nwi9p4kjW22EuSH3S1A6NB_hNbj85iM-AXmP_GjvjE4-qsNvk5p9CEvEZkTQFeXZF9WpTrIM2aMhtPgNM1O4Ye8uKf4dpi8US2q9W2PqL-LEfzo4QQhns1NZkasOI_ulbAh20sScPPHRWKlcvHmTwhW2vkXuT88DCqp0WJrEy6vNfkfgAZ5b1gGvBcxacg0I3bO-xiHFeKYG4by19IWxMlj8pIuaZqFI2PBz7Uf8EpqcvXdm2dpjjTv-vQMAJUnE1Ewk16WDc5woIMfeFrpLH9ZpV9vouWHvPEuk2FihkjmeTfL9k-1DLnrgI2OW0o76dlyEqY3R45WyFLFU4BJTzDLXvS6WRETZ8_9B8_wepCxaF7agWyi8KSecHrb5B33zWsoh0us9jNSMTCCGPFBwCt6fskMdOzUOQhTDg5guQLM9sTXx1ihq5YTq-S_HnwbO_3Trhy_1vCG3LRfG3PzaRPOf4sWNvoh7NLjGce_hY6Qzzd-7fz4oQnyQ2yHkqf6Sas7E6l30wtP1bMERWaQi2YOaLhR43K5yre-ykY4bpbzB3UhrK334A67hCzYukBMaeN54ZtowFIIxbM06gTI9Ay5nZ6zYPRqTlrDzdbD6l1-lsv2Djq6xAE8MFWZwgqmarzrCkBUfCgO8_BGlYtjDuBY_96Bf4bNygQl3NqKKJNk7RPDsPf6JCSjUgG117Qz3eNNas68a0gNl7k3q6vVE8zdfJGPuG8PZwnDtGaXFSpZ_gG85eaT7xM3cl8NAs0DTkVBoCz4SjvCzK5LKCeJtLS_RIhx-norgGndzcYtwXjpAb1T5PU2IvysVb_yFI_T_99_SRQI7Cg02SeQvjQ9MqPNmkLM5ZZ2OOQOlbkGw0oQ29cmteoL8CEG0YIwoo4J_bbOQE44Ql-6O75IZwoKymTX7TMXyzOKEfbdZz-uTD42HbSef8hhlof3l4XmpUqrVQpOjchLBf4WFT7ZF12BS06AJfZDx3rSnvI1izIngEoRf4pmcktoia5ADM9Aj8wjv3ixvWJZW55cY49bz4nVsAoq4eruQ7cUSv5RiAc-2Q54dY7aqDuCu-R8xn5o7R3y3bRKyI9QT00z5zCtWIgXSd1ah_IU1RRfUip8LVfm-1AuhExC2hqQ0r8d8o3ZTdclEkwVA238tzyn8CqYFCVV-Az7gLBPkicA0-cG9AbzphuA_0PdnDdbqLAjoR8ojFmtrjpXhlomTjWD_rae8dakjS99H22hSWzwrRGjtuMu5Uyz_eoZxIOvCafQM1t3ScdAzrgKQDOklEpscdtGsoAm8lR6fKfF2vAl5ziBaLWO8fCd48W5aBdjoA8855YWngq7atP0aCW1MLjUjDif-oNuXA3yqdPQe_tQf_x1P4hIb-rTFNCq1RE78TrkynfKEwEW7m65dW7JrKl3--iX67dZkW_FazITXJiNX5TCFEgFpZBomCpny7xBX4lxHr8l05vk5PDDv_ptFIBEpko8A5CIxGJ4KbwpfrIvWRP0MI5zsg0kTmyG5eX0Qv7p9zduYhv-VFJBsf43Wqkc2kFSw2InpW2tg_bKhK_W8WudoB38T1jb5ROkiyScvWq4PPJd4rmFaKBUQU6-eG4VD5afGENorLXgXY2bT-CFXtgO1e7Mz02IdEgn9qFv6UFwkkoNuwcB1oEH-V4sdmkAmecAYBZtKNB-K9UE3dVDfstToQjtKKWLO03S34LokAn1jtnd5SHQu8CSG9ymi2JxQx6lonzsXtmtDGfC5KbAPRrWuqEhtQ5D0e4qCLPSjYdu4PgIkDXpsoZ7xxBYx761G9YeISl6gJi2uUWIkNAv1vcB3w31D8KGnfmdbQCBJATxqhUwBvAnwx5k84Ulk7GUT9o2VpMu71U7jIMjd5ZuBqORfGrDLiG8shZt8xguidI5wi9UB0mpwUMH_TK4jXHMsemEAC_AWkkt4NJllCv2jjlrLpk7v6D1nQ5Ub5OgtRIxYF3XyOYZ3-g_Qn4IAaW1EBEQyzpT8JSGaFtimyLQkPoB-jfYH_mkD4IBrvvEVjsCwlGjzlkfJcZiv11gRkv7WCYctNXEBoemsvfeLdN215VRajan4pAGYWZ2piEFtAawAwfy3xUx41kjaZrcaLcsex1LiANUc1EucnwfPtUDg6hh4ATGKN5wRqpNHRflxpfgb6fVcdG3EIdxIvOL5vE0xALMWgf62vIN-eKFEh_xXlHZmHWCfzHHjVjgQIowISFTuOANEk_9CDr6G-sANhfVkycSj7i2cCa8Qh5Hj_7IhlbJZkBPgflulm2mdhj69o2V7iQVAQpPU65uq3jkUEidrHmFg4rbkQj8Da2Mh_Gc44AkStf35-PRlRJUz77fhjXx3An7gQDzS_he6tCfbKlpx82aaUGLECHv2M3E9NL_uuoOi549NTXjo82BSbFleZtwyvoR85PXTjE3EJH3c9j5-Rej3o-1BI0t0KppminfVeKbYNeT-8jtOXa6kMAWWg1YNb9nuFxKHxv0PhYwXclUS6T1gkSTU45tkscmsHfZ6tYNpZjUDMuknZhebj2Bz8yBKvabJxiQvTHT_47RMUmwnb_MD5zbF9x4BYyM_ZWmaJG4kWdG9B08C_0yphPBSisc5YluWB5jwdRbknf_yXvY1HzLVlS8K2q5JUmU9bcfWIoExVwjAIgg0nAUZJgg9jQq-XKyYQdrsq4dbvYeFdAkbr4ZtkW6CsR4ggcHa8jkT7t-uc3wUbbVajeOcVqfAqkaVBHHmjxSkxEYuOyO6MhYeT90sdGz2ytu7jg10gZnUbHZHJYuN_kL8kLbeLqT2twG4DtrnUrhCNQ-Aq4ZjgHk7TxospKnKUIkXg9UgWqIblufA5sy4GeIHLxJTjLFUr5owzn1vvggSqVPDgoFcsBkmCAWlL5zXXhaRpdSotHeKSFTtqkrzR48rx_mkkrNIBxGXHvMCc7s5iR-7buHriHvw_QtQZs0H4X0VPZ0lipHmOEFpk8TyXuf0VI2rzTTgn_RtsK3MpVPXVmY2r0rvE77NiwR3OQ3iJ06wxToza9HHfudN7vQe8vKslUJEq4dzEhalOpx9GVUwW7mthHFeJdpTUA_-W1zO8RD8-ygUlFyxQ_YGoTY-T2xfxtIUFEyNczab7vMwNxnTs4e98-C5hfxCLbm_eHTi47w02kSzbkHv7Pidu0oGGa8C_KVZILSl91uHurfkCbm-WPKe3MP3nN2wiYI_5Wba2iNwRolblH4d5Oajpxbitw4vyCkH-LmbhdwhGugrUt_W-K_Q71OoHB9v0pUNMCLt3bYX3LoGhuV2TkWnIJ7DlFzZNV8baBWgppkdXC-1YErEEhDppBCEY3h2dnOATnCrAnkDagRbHIGEUaxeMPRQ5GWoUm1CO6yYeh5sT2-6pI3LmoMRmhOgBO0ZSbi0mocv7IRVPcWL_4ZozYXOZQS-h1hbPsTCc47BsRBN77kIyya4r9GOM1CVTYNDUhQp6NiF4r9cVekG1uWR20ZyO5ICfjtdnJiSuTzaC7iwMJG69VyekRt3a34qzT23_OEebu2sTPjuhrIQV_JhWLZCLZmJArshpCOSvAYMK9eJMDq30-ruryJjLcfeDoTJLeutZYkhI1GA3ncAKtRgaHyeJAjTlKu716_TGjRcf_bsa4aMROGQ7sMRv5RKl2cwhFu75dcPUlJO54_aFNz0pbrjvXKEqZ0Ib-LSFuGrwHsPljnvEVC--Lnq8AC4b-9qkIABfis22Yg67ZXV2LBnWsHY2cHvpDsZeA7DOMkurx7YouKk3XnGLSbll68l1sHchtgkDL-YVNSZCV1Uqbihv3k4oxtoJsTa36G4JLmNGsJRmFPL0lvzGRLrBKJ230X5mvbd7yGEssm0r5URcU8J3noIuAZV5CHNGHd9TcEo7t-oFC4fQz6rvSwSAJqehg-8JfDw9PE_Wh2o0vSO98pz7oTDz9YmO47KqMsq5V6d8TgWYCBGcNIrnyKmNV9fF6a9wbab3rxRRxNP4D1ZUGL5oFqASJqtFQ_S5nCuIH-_LUDYGd_7e79tRROAoCivLiFML5heIaiQenNuQd-nUD4tld4FJKXDrNdBZ4KS1dR5ONxo03myTuAHguHysd5-6X2eie5VPZhuebEjOpLfwLnMo4hJJ5ItNyvwUc6ZUop04MuOD98mO4578MDyewEvPScVdIvN5f5un-6yPQtca2TpWktwkkAc21xiFmiPcbuahTRvR8R5se3qH-3UnuoaNzq4XmDFEXm3mVU5_Gkp3M8PHgHGJOdBOIvlNEKESAddBo9JxAJQiQN8R2WvPdvng0tYOqf9ybXJJnROfbSbtLIzqqSJU0ft4FCYG58ay9XD8w2QpEkJcxgcynd7ko-mVV6GdN72x1jYiiHHFz2UJ4clA55iMLMVLklfl44QVNdbOJlHko2RACyt_F-b9hZw22LA-XZwTCyBCakR4DmLr651SDeUhykoT5KB2VoG0_m2CyI5rVtAl4amXqgVibe1DzFcOlHYg9jfxZfjEZIaUiABUtCNzayFlMx7olMbVW7jHUTsMEVWGJicG04SS4Ar6LGvi92azE-iCa8Yd0grAtgRx4PA7iFAJo-OE1db7q9tJGPkPrSH5GWo-LVTKZgGTLEzKgI12PtNzleHOL_wMhtiP2hxOikmY-QA4-5mkaJ92I388KYFltmBzxHIQeN5KT3nrjw4dFrgUlp3-WnmMOxBGdj5WNxUhaU6ZjCIzXrUPig24fu6TC8YY9KJco56-dAy6o3TUSyVxk_4PAXgb7WBqVFqXFy3-_9G6NFz-yeOeg_0-kEaMVwssFD_Gw3FlCTIViCHhSAFywKiA0JdumANRsNjHfyC3h3l_a_xEj4I7muvhiCrg0h4hp_2AOjDticlXlVOZ8rJTC3ROU5FXeo8YTy221OnCQLzk-niQqUJSxi1pqEe8TwCH1X2gEXvUJ1-xq4jP7tznz8ZW3fU6vFH7qVZZ96OzUAfO7oOTXb4Z5wT5UUse9ijUOxYYK3fcCVphDksgw6eP2VVO-q10ZaCqE7l-cXDITJSdoNMNIzPAeY0FDC6SQoIYU0olDs_wVSBy6CThoHz5gm0G6uhlxFS7nZaa4DwmHc8y1LogO2k4dl44t2sfjven1IgaYQrvf-EWoAWzSKpjE7dTBNNk49sHC8RuVp4_ebRPUPLHhvXwdgrtqlKU6iJJ3ykCXpJ9Cw5kPZub8sRs-NXhxPTqg9sjwPNfyxB9H411XPp94PA-gmDIw70ok-GpYw8mlyaveGQG01NMlxuHFH9-BkoblrGpwB_q7w8ePJcXfbcz-WaZH1a3ZXlHhXS1hRZ9XkCuxUt__KPIbRGw3qH2G6XHO2fzygWE4lTXptk9-7h6frOXH8k1Ydm_acgsGvl9bHiO5rGywZP4w1k86laRabVO_oeW2OFE9bPqOxFTvJaA-yGK_Nd6rUDq3OiN24GmlzirmEWvrXkiZUgaIC6MpZt80SkYtxwV-UmAO_d6ZDFMCzH2klyeMUPcLFySoDh4H4geZ3xQ62uEHa4XsrOFoCBuzNx11PASuGkDoT3gJ0RRbXXIfNIRSfXKkywrv3rGEbUSPbtmHRr9kXmgfylo3VzMZnVVW2yIODsuqBBMcJTVcbw_eZLoDiHjudcZfjLac_3_SZAqBx-f5YSa8-KoqNusvyApz7XnX0LVBnj9onkXig9CbdrwmaizujbARI0hktNJ7rau5uoM3tH8-8yY38GWS55XqV9xN0irv0gMMdrFPkWr811itj-Df95kF9O_VGqM0pun91SwWjLPiYqGIXQHdbrRvWTnzlImBTDrgwOMmMbAtiOHsz4aXaibkpOZ64KFvI5ccGnP2Mz3YwZ1JqPdhVO2GOXA8msCyQ7JmXQih22ANmdIXbxuIYirJjVJ4gmZ0q_elD886uhHowiF4Ol7qvEHvT6fx_NnBLXxStuPIZ51pq_gakFPXoh4n5N-yCe_YDYYkuMhhCK9AdNjUV-WkcFaLwmFwSafxdyDcNcD-DH5HBlQc6UV78Csne6ygb8eU17t0ieZ"
+            },
+            {
+              "id": "rs_0370b81a4ca72f7c006acdc8508c9487d09af95bbc33726753",
+              "type": "reasoning",
+              "content": [],
+              "summary": [],
+              "encrypted_content": "gAAAAABqzchoViTxOilfmik9cTaDZuqcTJbLG5bouJcS7xOowco16VGmFxC7XUIp1zwxChlYioZ43x5AwqbNgxZz9fmIwbkKns8admloUOUtGiv7czOXzoWUJUacYh2EgYoTIm-WE548OkYaSkh93cVsaTucToWpg8svVSYQTWTEVwskpfqmafPdE2tKxCtVNOYQuCtxYS_yByCIjVatUbUAzy60BwdcuI4OwT3x6Rsn_wfDh1seLhz_SsvqoEFiI5eDFiJB78YngRpEdVGwKcIp-7ixQdFNa9vMX8NlSkNbVTHEI8IR9YGr4LO9opaO79d4tyhhwvr-wmu3PGe7Vg3nIUkf2aQc9VQgncxqblh3AP2KuPepKPAiQsKDlSKUPmDlaPTxH53lNi7MO5Ix93nxzzw2TnqpNGqXRx6wCtvSpn5Ssx3rbPzylwGeDYNOTiW38vI7r1Jf7KC3BIi0bYiMFwfPN7HrHiTEcPK2hcxgjBCDKt0DeiFmU6vSsDXe4IBv6dh-aCNcTCQhPK61yrM3TdQTWfouJCz9yQ2D72xdymdNa0Ge1IVlXTvE2ljVJrRZnoMOng1sYGUfIq3IXDibaUp6jh_rLN3PgqajnS4sxdoPGGNd1utGo8eDX8_LXiCdLL97izFx3rNk5dRKamzp-4HyMWedctQ-PQc1a-yg1t4k13qi-4raFexQYj5fKLZxnVZ5y3SNK7Z7ulQekikWMpSLsoVEj0dUw5anqaPaRggs_pQ2GSeakks8NG07U_BwQ-cHSB86U8jobECmzKPZzG0QvMHdVfE-DlZSka1puBSNNRAk5EutUM12j9t6hOHHBFxdS33pNYVJcM_NRpH7u0YRIjtEoadbbBn9jHiVlG2RKepm3x0rVWAwgkuVeDAZYszbSmIS240HL7AP1H4L43tVKviCaS19hMERHC9D9Up-K_ggOtSBbGKhhJhqotgbJOmDiSdntZt25MGExpu_oE7s87ZPNcjbCw4u5FkE3ZMdzXOvBHMCOu0FwzOkqldcDDACsyRmOgsnBlpSyJM4TIcdnNS_wcvYwJq2Z5QSCdpT5kzjfbuBgQ0pvKavfP1RDE1_NG0dNlA29crhyM43xlogPX22_yi2DgfQFMQWVczH5_qLQE0QsJSQ6cDMz9hnhhyOKEpkrJMolosnfYQQF9G6KYD7ikKRo6B7TUX25Fb-UTFpegljsoHCgKKKaP93mSXccV6gKv-PAxL7O0PpddNohwKzENwLEnGau116OoM8g3bQ2XkDOG92Xa1yhdBb3xBr7oBJu6kNcAd4sahJJlQjA8MwktwFnp1y623P851JwxmLU_Gl9c06k1UHKC0trgCL9EROhqrCQqdQwLoo9Mo26bkaE5pSnL_9V0hxim6MSyLV9PI3MjDZvLDpfrQTDqsQkvQyfkbI2WvM17RGBaVSDnrknvwjvX6Q0Vqr-PMG2ntFF4mc6siJohULeWdq0Ew_wT6GuAtrtFpn4pTSryb8KMbte4_U7OxvAy7xXv2W5B9iz4HMw860ldULeR5PnKniP2LfcX9S4IysUZ7JtczzVRcJdB6ztT9ivpBE87Lvdo7QLppKYqPDSDkCjbjpmPxq9GBuzSwa30m_uKxpQ__42ws7pCTMRdLWhgkx2srlaf9kP2Kkkas6CPPMCTXiVM72pShzQz3VVt51IThIQ2ZdIo0rIrkL3FVzX9g_4S-Fl11fn835gVOeCZFJsx9E65KnJRTm1tgZcHnQLKSPr8CJk_SeCVDxk5xIkVZ7-WqW5WcKLFC5EoM1OcKbpsGS1LW43tSmPHtXaO24xHkB71iTd4o6hF_xOIewh1yLorK91iKnfMqHEgabvN6JZxNJjdXkkonpbejvbCjrfL75k_x8YkQ5qd4zMRiyCe8YDlZEr40M_9QtCq-V2ZZ6-t-9J1F4p68oCWGOXKzwPisdZ_zomyZb9CArz2pJ5HQJN746PEtcv3BJm8HoPtgR59lgxBT2edsOOpW50MWVU0zaQyZ-HRNJX4HRaIzGXQU8XT1WArPEZF4j4fUys7UtsPheDUBkUNZsq44HC6zI6FIH7dR_oIhAO79q-y8V9Zxn1QK1gmWuhCg1sIq0OEBwdih1EWD1YIH4IWjjmxOXQB1GqW9xjX1VBLmcc7MELnFpfegUPbUxFmzeKgY36KJVNGeivP8M3yH2c2rfhAAxLcR3I9AztN5DPKNoODQ4Kl9yncmknJYyqX1U_YtRoVaDzegEfEkohbCt7_c3Q5eSXTTmKuexHWneZ-bsuKRqshuBjpv1nx7o0hSP-MdeMIQKYKmqkiZrYdonINbv1xdB3bDMgr0XRODqqr94UP5ak2DH0XXEfX7lwCknspugPKBFMugBDcsQyHYBEcJUaGvEdGLTYPMEJbLAnT4SIq5t_jsz8TXGXHKQRsIN9pV6FOz_4aqzd15V7SE-XeWhCPXm5QbJRXOVqxyuVMpS2lCUQu4VZJUNybgPlmnFAkimSmzvDjQ8ub1VZX9lMkN1-r-gVl2g8UaL-E9Ffw5qCTFPnA8tV9M_fLlO4bTWaF9QFnWZoa0tDTNG1-eysVfQ0ZvOxSOtPO4bWu_NG2C0TE5-aKghpcNwQZBSr6Pz67PfJDOKgAAqo0WhFxneNv9zWACBqSfp9VBdrGIgsTtSYYBdIJ2KEDMmU4pfA_LlPF8_u94IhNLe3V86heKHxDrKZnB2qKI85BVQFMlRHcgFPQpeCB9qJrIG76hjGt9ZMYKpuqi3hmBR2mB0MmIntUU3SkBzx9qf9CBaFXam2U-dsr7Jxjm3ocvSY7-mbeZYPtjdEjAr9FuOjYBaRe9kpMa_paWhJYg8JjppVhKqhF0fidQl3AISAhW1vJRLlw2aqLWBSSPd42Uq87F4-LuA3_mkdM5TvrooEthLjoHdwW4xbK6u-M6ppMmepQVBPDPebG2oFR35YimmV8rXiTKz2vAlw7el0zuthScTQ7Q5kBZWVzQsV998mMyye9iFRDU="
+            },
+            {
+              "id": "fc_0370b81a4ca72f7c006acdc852be5087d0967a95831cff27ec",
+              "name": "MeaningPlan",
+              "type": "function_call",
+              "status": "completed",
+              "call_id": "call_vQd3V1MfjXcFvHSzIDJ7VJ7d",
+              "arguments": "{\"summary\":\"equipment.yaml의 원본 설비 ID와 signals[].tag 소속을 기준으로 Asset R-101, HX-102, ST-103만 추가하고, 추출되어 있는 센서 노드는 그대로 유지합니다. 해당 설비가 실제로 보유한 센서 각각에 HAS_SENSOR를 제안합니다. AR100-COOLING-WATER 문서는 front matter의 applies_to에 세 설비가 명시되어 있어 각 Asset에서 문서로 HAS_PROCEDURE를 제안합니다. 요청 범위를 넘는 노드나 실행 관련 사실은 추가하지 않습니다.\",\"additional_nodes\":[{\"node\":{\"id\":\"AR-100/reactor-line-01/asset/R-101\",\"class\":\"Asset\",\"properties\":{\"site\":\"AR-100\",\"device\":\"reactor-line-01\",\"name\":\"R-101\",\"description\":\"반응기\"}},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"  - id: R-101\\n    type: Reactor\\n    name: \\\"반응기\\\"\"},\"reason\":\"원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.\"},{\"node\":{\"id\":\"AR-100/reactor-line-01/asset/HX-102\",\"class\":\"Asset\",\"properties\":{\"site\":\"AR-100\",\"device\":\"reactor-line-01\",\"name\":\"HX-102\",\"description\":\"냉각기\"}},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"  - id: HX-102\\n    type: Cooler\\n    name: \\\"냉각기\\\"\"},\"reason\":\"원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.\"},{\"node\":{\"id\":\"AR-100/reactor-line-01/asset/ST-103\",\"class\":\"Asset\",\"properties\":{\"site\":\"AR-100\",\"device\":\"reactor-line-01\",\"name\":\"ST-103\",\"description\":\"냉각수 스트레이너\"}},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"  - id: ST-103\\n    type: Strainer\\n    name: \\\"냉각수 스트레이너\\\"\"},\"reason\":\"원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.\"}],\"additional_relationships\":[{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/LT-102\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: LT-102, class: level,       unit: \\\"%\\\",     desc: \\\"반응기 레벨\\\", lsl: 15.0, usl: 90.0, plc_ir: 2 }\"},\"reason\":\"R-101의 signals 항목에 LT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/TT-101\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: TT-101, class: temperature, unit: \\\"degC\\\",  desc: \\\"반응기 온도\\\", lsl: 40.0, usl: 95.0, plc_ir: 4 }\"},\"reason\":\"R-101의 signals 항목에 TT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/PT-101\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: PT-101, class: pressure,    unit: \\\"barg\\\",  desc: \\\"반응기 압력\\\", lsl: null, usl: 6.0,  plc_ir: 8 }\"},\"reason\":\"R-101의 signals 항목에 PT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/pH-101\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: pH-101, class: analytic,    unit: \\\"pH\\\",    desc: \\\"반응기 pH\\\",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }\"},\"reason\":\"R-101의 signals 항목에 pH-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/CT-101\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: CT-101, class: analytic,    unit: \\\"mS/cm\\\", desc: \\\"전도도\\\",      lsl: null, usl: null, plc_ir: 22 }\"},\"reason\":\"R-101의 signals 항목에 CT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR-100/reactor-line-01/sensor/PT-102\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: PT-102, class: pressure,    unit: \\\"barg\\\",  desc: \\\"반응기 압력(독립 계기)\\\", lsl: null, usl: 6.0, plc_ir: 36 }\"},\"reason\":\"R-101의 signals 항목에 PT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/HX-102\",\"to_id\":\"AR-100/reactor-line-01/sensor/FT-103\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: FT-103, class: flow,        unit: \\\"m3/h\\\", desc: \\\"냉각수 유량\\\",      lsl: 20.0, usl: null, plc_ir: 28 }\"},\"reason\":\"HX-102의 signals 항목에 FT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/HX-102\",\"to_id\":\"AR-100/reactor-line-01/sensor/TT-103\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: TT-103, class: temperature, unit: \\\"degC\\\", desc: \\\"냉각수 공급 온도\\\", lsl: null, usl: 28.0, plc_ir: 30 }\"},\"reason\":\"HX-102의 signals 항목에 TT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/HX-102\",\"to_id\":\"AR-100/reactor-line-01/sensor/TT-104\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: TT-104, class: temperature, unit: \\\"degC\\\", desc: \\\"냉각수 회수 온도\\\", lsl: null, usl: 45.0, plc_ir: 32 }\"},\"reason\":\"HX-102의 signals 항목에 TT-104가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/ST-103\",\"to_id\":\"AR-100/reactor-line-01/sensor/PDT-103\",\"type\":\"HAS_SENSOR\"},\"evidence\":{\"filename\":\"equipment.yaml\",\"excerpt\":\"      - { tag: PDT-103, class: pressure, unit: \\\"bar\\\", desc: \\\"스트레이너 차압\\\", lsl: null, usl: 0.8, plc_ir: 34 }\"},\"reason\":\"ST-103의 signals 항목에 PDT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/R-101\",\"to_id\":\"AR100-COOLING-WATER\",\"type\":\"HAS_PROCEDURE\"},\"evidence\":{\"filename\":\"AR100-COOLING-WATER.md\",\"excerpt\":\"applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\"},\"reason\":\"문서 front matter가 R-101을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/HX-102\",\"to_id\":\"AR100-COOLING-WATER\",\"type\":\"HAS_PROCEDURE\"},\"evidence\":{\"filename\":\"AR100-COOLING-WATER.md\",\"excerpt\":\"applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\"},\"reason\":\"문서 front matter가 HX-102를 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.\"},{\"relationship\":{\"from_id\":\"AR-100/reactor-line-01/asset/ST-103\",\"to_id\":\"AR100-COOLING-WATER\",\"type\":\"HAS_PROCEDURE\"},\"evidence\":{\"filename\":\"AR100-COOLING-WATER.md\",\"excerpt\":\"applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]\"},\"reason\":\"문서 front matter가 ST-103을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.\"}],\"unresolved\":[\"AR100-COOLING-WATER.md는 status: educational-draft이며 본문에서 실물 반응기의 운전 승인 문서가 아니라고 명시합니다. HAS_PROCEDURE는 가상 공정의 교육용 대응 문서 연결로만 검토해야 합니다.\",\"문서는 센서 근거만으로 고장 원인을 확정하지 말고 현장 정비 소견으로 확인하라고 합니다. 센서 알람 해석과 원인 확정은 별도 검토가 필요합니다.\",\"냉각수 문서는 ST-103을 HX-102 재킷 코일로 이어지는 유로상에 설명하지만 물리적 설치/구성 관계의 정확한 방향과 자산 포함 관계는 명시적으로 확정하지 않았으므로 INSTALLED_IN 관계는 제안하지 않았습니다.\",\"추출 구조의 기존 노드 및 관계는 변경하지 않았습니다. 추가 관계는 후보이며 게시 또는 운영 승인 사실을 뜻하지 않습니다.\"]}"
+            }
+          ],
+          "tool_calls": [
+            {
+              "id": "call_vQd3V1MfjXcFvHSzIDJ7VJ7d",
+              "args": {
+                "summary": "equipment.yaml의 원본 설비 ID와 signals[].tag 소속을 기준으로 Asset R-101, HX-102, ST-103만 추가하고, 추출되어 있는 센서 노드는 그대로 유지합니다. 해당 설비가 실제로 보유한 센서 각각에 HAS_SENSOR를 제안합니다. AR100-COOLING-WATER 문서는 front matter의 applies_to에 세 설비가 명시되어 있어 각 Asset에서 문서로 HAS_PROCEDURE를 제안합니다. 요청 범위를 넘는 노드나 실행 관련 사실은 추가하지 않습니다.",
+                "unresolved": [
+                  "AR100-COOLING-WATER.md는 status: educational-draft이며 본문에서 실물 반응기의 운전 승인 문서가 아니라고 명시합니다. HAS_PROCEDURE는 가상 공정의 교육용 대응 문서 연결로만 검토해야 합니다.",
+                  "문서는 센서 근거만으로 고장 원인을 확정하지 말고 현장 정비 소견으로 확인하라고 합니다. 센서 알람 해석과 원인 확정은 별도 검토가 필요합니다.",
+                  "냉각수 문서는 ST-103을 HX-102 재킷 코일로 이어지는 유로상에 설명하지만 물리적 설치/구성 관계의 정확한 방향과 자산 포함 관계는 명시적으로 확정하지 않았으므로 INSTALLED_IN 관계는 제안하지 않았습니다.",
+                  "추출 구조의 기존 노드 및 관계는 변경하지 않았습니다. 추가 관계는 후보이며 게시 또는 운영 승인 사실을 뜻하지 않습니다."
+                ],
+                "additional_nodes": [
+                  {
+                    "node": {
+                      "id": "AR-100/reactor-line-01/asset/R-101",
+                      "class": "Asset",
+                      "properties": {
+                        "name": "R-101",
+                        "site": "AR-100",
+                        "device": "reactor-line-01",
+                        "description": "반응기"
+                      }
+                    },
+                    "reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+                    "evidence": {
+                      "excerpt": "  - id: R-101\n    type: Reactor\n    name: \"반응기\"",
+                      "filename": "equipment.yaml"
+                    }
+                  },
+                  {
+                    "node": {
+                      "id": "AR-100/reactor-line-01/asset/HX-102",
+                      "class": "Asset",
+                      "properties": {
+                        "name": "HX-102",
+                        "site": "AR-100",
+                        "device": "reactor-line-01",
+                        "description": "냉각기"
+                      }
+                    },
+                    "reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+                    "evidence": {
+                      "excerpt": "  - id: HX-102\n    type: Cooler\n    name: \"냉각기\"",
+                      "filename": "equipment.yaml"
+                    }
+                  },
+                  {
+                    "node": {
+                      "id": "AR-100/reactor-line-01/asset/ST-103",
+                      "class": "Asset",
+                      "properties": {
+                        "name": "ST-103",
+                        "site": "AR-100",
+                        "device": "reactor-line-01",
+                        "description": "냉각수 스트레이너"
+                      }
+                    },
+                    "reason": "원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.",
+                    "evidence": {
+                      "excerpt": "  - id: ST-103\n    type: Strainer\n    name: \"냉각수 스트레이너\"",
+                      "filename": "equipment.yaml"
+                    }
+                  }
+                ],
+                "additional_relationships": [
+                  {
+                    "reason": "R-101의 signals 항목에 LT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: LT-102, class: level,       unit: \"%\",     desc: \"반응기 레벨\", lsl: 15.0, usl: 90.0, plc_ir: 2 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/LT-102",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "R-101의 signals 항목에 TT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: TT-101, class: temperature, unit: \"degC\",  desc: \"반응기 온도\", lsl: 40.0, usl: 95.0, plc_ir: 4 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/TT-101",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "R-101의 signals 항목에 PT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: PT-101, class: pressure,    unit: \"barg\",  desc: \"반응기 압력\", lsl: null, usl: 6.0,  plc_ir: 8 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/PT-101",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "R-101의 signals 항목에 pH-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: pH-101, class: analytic,    unit: \"pH\",    desc: \"반응기 pH\",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/pH-101",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "R-101의 signals 항목에 CT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: CT-101, class: analytic,    unit: \"mS/cm\", desc: \"전도도\",      lsl: null, usl: null, plc_ir: 22 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/CT-101",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "R-101의 signals 항목에 PT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: PT-102, class: pressure,    unit: \"barg\",  desc: \"반응기 압력(독립 계기)\", lsl: null, usl: 6.0, plc_ir: 36 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/PT-102",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "HX-102의 signals 항목에 FT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: FT-103, class: flow,        unit: \"m3/h\", desc: \"냉각수 유량\",      lsl: 20.0, usl: null, plc_ir: 28 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/FT-103",
+                      "from_id": "AR-100/reactor-line-01/asset/HX-102"
+                    }
+                  },
+                  {
+                    "reason": "HX-102의 signals 항목에 TT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: TT-103, class: temperature, unit: \"degC\", desc: \"냉각수 공급 온도\", lsl: null, usl: 28.0, plc_ir: 30 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/TT-103",
+                      "from_id": "AR-100/reactor-line-01/asset/HX-102"
+                    }
+                  },
+                  {
+                    "reason": "HX-102의 signals 항목에 TT-104가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: TT-104, class: temperature, unit: \"degC\", desc: \"냉각수 회수 온도\", lsl: null, usl: 45.0, plc_ir: 32 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/TT-104",
+                      "from_id": "AR-100/reactor-line-01/asset/HX-102"
+                    }
+                  },
+                  {
+                    "reason": "ST-103의 signals 항목에 PDT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.",
+                    "evidence": {
+                      "excerpt": "      - { tag: PDT-103, class: pressure, unit: \"bar\", desc: \"스트레이너 차압\", lsl: null, usl: 0.8, plc_ir: 34 }",
+                      "filename": "equipment.yaml"
+                    },
+                    "relationship": {
+                      "type": "HAS_SENSOR",
+                      "to_id": "AR-100/reactor-line-01/sensor/PDT-103",
+                      "from_id": "AR-100/reactor-line-01/asset/ST-103"
+                    }
+                  },
+                  {
+                    "reason": "문서 front matter가 R-101을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+                    "evidence": {
+                      "excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]",
+                      "filename": "AR100-COOLING-WATER.md"
+                    },
+                    "relationship": {
+                      "type": "HAS_PROCEDURE",
+                      "to_id": "AR100-COOLING-WATER",
+                      "from_id": "AR-100/reactor-line-01/asset/R-101"
+                    }
+                  },
+                  {
+                    "reason": "문서 front matter가 HX-102를 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+                    "evidence": {
+                      "excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]",
+                      "filename": "AR100-COOLING-WATER.md"
+                    },
+                    "relationship": {
+                      "type": "HAS_PROCEDURE",
+                      "to_id": "AR100-COOLING-WATER",
+                      "from_id": "AR-100/reactor-line-01/asset/HX-102"
+                    }
+                  },
+                  {
+                    "reason": "문서 front matter가 ST-103을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.",
+                    "evidence": {
+                      "excerpt": "applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]",
+                      "filename": "AR100-COOLING-WATER.md"
+                    },
+                    "relationship": {
+                      "type": "HAS_PROCEDURE",
+                      "to_id": "AR100-COOLING-WATER",
+                      "from_id": "AR-100/reactor-line-01/asset/ST-103"
+                    }
+                  }
+                ]
+              },
+              "name": "MeaningPlan",
+              "type": "tool_call"
+            }
+          ],
+          "usage_metadata": {
+            "input_tokens": 18774,
+            "total_tokens": 21847,
+            "output_tokens": 3073,
+            "input_token_details": {
+              "cache_read": 1180
+            },
+            "output_token_details": {
+              "reasoning": 629
+            }
+          },
+          "additional_kwargs": {},
+          "response_metadata": {
+            "id": "resp_0370b81a4ca72f7c006acdc848daf087d0abc412c173d17816",
+            "model": "gpt-6-luna",
+            "object": "response",
+            "status": "completed",
+            "metadata": {},
+            "created_at": 1791871048.0,
+            "model_name": "gpt-6-luna",
+            "service_tier": "default",
+            "model_provider": "openai"
+          },
+          "invalid_tool_calls": []
+        },
+        {
+          "id": "84177649-7e79-4a54-a8e8-e040a76d8054",
+          "name": "MeaningPlan",
+          "type": "tool",
+          "status": "success",
+          "content": "Returning structured response: summary='equipment.yaml의 원본 설비 ID와 signals[].tag 소속을 기준으로 Asset R-101, HX-102, ST-103만 추가하고, 추출되어 있는 센서 노드는 그대로 유지합니다. 해당 설비가 실제로 보유한 센서 각각에 HAS_SENSOR를 제안합니다. AR100-COOLING-WATER 문서는 front matter의 applies_to에 세 설비가 명시되어 있어 각 Asset에서 문서로 HAS_PROCEDURE를 제안합니다. 요청 범위를 넘는 노드나 실행 관련 사실은 추가하지 않습니다.' additional_nodes=[GroundedNode(node=Node(id='AR-100/reactor-line-01/asset/R-101', class_name='Asset', properties={'site': 'AR-100', 'device': 'reactor-line-01', 'name': 'R-101', 'description': '반응기'}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='  - id: R-101\\n    type: Reactor\\n    name: \"반응기\"'), reason='원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.'), GroundedNode(node=Node(id='AR-100/reactor-line-01/asset/HX-102', class_name='Asset', properties={'site': 'AR-100', 'device': 'reactor-line-01', 'name': 'HX-102', 'description': '냉각기'}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='  - id: HX-102\\n    type: Cooler\\n    name: \"냉각기\"'), reason='원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.'), GroundedNode(node=Node(id='AR-100/reactor-line-01/asset/ST-103', class_name='Asset', properties={'site': 'AR-100', 'device': 'reactor-line-01', 'name': 'ST-103', 'description': '냉각수 스트레이너'}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='  - id: ST-103\\n    type: Strainer\\n    name: \"냉각수 스트레이너\"'), reason='원본 설비 레코드의 식별자와 한글 이름을 사용하며, 요청된 site/device/ID 및 name 규칙에 맞춰 Asset 후보를 구성합니다.')] additional_relationships=[GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/LT-102', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: LT-102, class: level,       unit: \"%\",     desc: \"반응기 레벨\", lsl: 15.0, usl: 90.0, plc_ir: 2 }'), reason='R-101의 signals 항목에 LT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/TT-101', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: TT-101, class: temperature, unit: \"degC\",  desc: \"반응기 온도\", lsl: 40.0, usl: 95.0, plc_ir: 4 }'), reason='R-101의 signals 항목에 TT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/PT-101', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: PT-101, class: pressure,    unit: \"barg\",  desc: \"반응기 압력\", lsl: null, usl: 6.0,  plc_ir: 8 }'), reason='R-101의 signals 항목에 PT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/pH-101', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: pH-101, class: analytic,    unit: \"pH\",    desc: \"반응기 pH\",   lsl: 6.2,  usl: 8.4,  plc_ir: 20 }'), reason='R-101의 signals 항목에 pH-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/CT-101', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: CT-101, class: analytic,    unit: \"mS/cm\", desc: \"전도도\",      lsl: null, usl: null, plc_ir: 22 }'), reason='R-101의 signals 항목에 CT-101이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR-100/reactor-line-01/sensor/PT-102', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: PT-102, class: pressure,    unit: \"barg\",  desc: \"반응기 압력(독립 계기)\", lsl: null, usl: 6.0, plc_ir: 36 }'), reason='R-101의 signals 항목에 PT-102가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/HX-102', to_id='AR-100/reactor-line-01/sensor/FT-103', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: FT-103, class: flow,        unit: \"m3/h\", desc: \"냉각수 유량\",      lsl: 20.0, usl: null, plc_ir: 28 }'), reason='HX-102의 signals 항목에 FT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/HX-102', to_id='AR-100/reactor-line-01/sensor/TT-103', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: TT-103, class: temperature, unit: \"degC\", desc: \"냉각수 공급 온도\", lsl: null, usl: 28.0, plc_ir: 30 }'), reason='HX-102의 signals 항목에 TT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/HX-102', to_id='AR-100/reactor-line-01/sensor/TT-104', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: TT-104, class: temperature, unit: \"degC\", desc: \"냉각수 회수 온도\", lsl: null, usl: 45.0, plc_ir: 32 }'), reason='HX-102의 signals 항목에 TT-104가 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/ST-103', to_id='AR-100/reactor-line-01/sensor/PDT-103', type='HAS_SENSOR', properties={}), evidence=SourceEvidence(filename='equipment.yaml', excerpt='      - { tag: PDT-103, class: pressure, unit: \"bar\", desc: \"스트레이너 차압\", lsl: null, usl: 0.8, plc_ir: 34 }'), reason='ST-103의 signals 항목에 PDT-103이 명시되어 있어 이 기존 Sensor 노드를 해당 Asset에 연결합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/R-101', to_id='AR100-COOLING-WATER', type='HAS_PROCEDURE', properties={}), evidence=SourceEvidence(filename='AR100-COOLING-WATER.md', excerpt='applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]'), reason='문서 front matter가 R-101을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/HX-102', to_id='AR100-COOLING-WATER', type='HAS_PROCEDURE', properties={}), evidence=SourceEvidence(filename='AR100-COOLING-WATER.md', excerpt='applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]'), reason='문서 front matter가 HX-102를 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.'), GroundedRelationship(relationship=Relationship(from_id='AR-100/reactor-line-01/asset/ST-103', to_id='AR100-COOLING-WATER', type='HAS_PROCEDURE', properties={}), evidence=SourceEvidence(filename='AR100-COOLING-WATER.md', excerpt='applies_to: [AR-100, reactor-line-01, R-101, HX-102, ST-103]'), reason='문서 front matter가 ST-103을 적용 대상으로 직접 열거하므로 요청된 대응 절차 연결을 제안합니다.')] unresolved=['AR100-COOLING-WATER.md는 status: educational-draft이며 본문에서 실물 반응기의 운전 승인 문서가 아니라고 명시합니다. HAS_PROCEDURE는 가상 공정의 교육용 대응 문서 연결로만 검토해야 합니다.', '문서는 센서 근거만으로 고장 원인을 확정하지 말고 현장 정비 소견으로 확인하라고 합니다. 센서 알람 해석과 원인 확정은 별도 검토가 필요합니다.', '냉각수 문서는 ST-103을 HX-102 재킷 코일로 이어지는 유로상에 설명하지만 물리적 설치/구성 관계의 정확한 방향과 자산 포함 관계는 명시적으로 확정하지 않았으므로 INSTALLED_IN 관계는 제안하지 않았습니다.', '추출 구조의 기존 노드 및 관계는 변경하지 않았습니다. 추가 관계는 후보이며 게시 또는 운영 승인 사실을 뜻하지 않습니다.']",
+          "artifact": null,
+          "tool_call_id": "call_vQd3V1MfjXcFvHSzIDJ7VJ7d",
+          "additional_kwargs": {},
+          "response_metadata": {}
+        }
+      ]
+    },
+    {
+      "at": "2026-10-13T05:58:00.377480+00:00",
+      "stage": "candidate_validation",
+      "status": "started"
+    },
+    {
+      "at": "2026-10-13T05:58:00.400647+00:00",
+      "nodes": 51,
+      "stage": "candidate_validated",
+      "status": "returned",
+      "relationships": 59
+    }
+  ],
+  "error": null,
+  "created_at": "2026-10-13T05:57:24.449732+00:00",
+  "updated_at": "2026-10-13T05:58:00.435124+00:00"
+}

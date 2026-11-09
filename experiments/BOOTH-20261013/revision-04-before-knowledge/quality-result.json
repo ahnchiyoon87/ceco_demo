@@ -1,0 +1,30 @@
+{
+  "duration": 300,
+  "width": 1920,
+  "height": 1080,
+  "readyState": 4,
+  "error": null,
+  "full_decode_passed": true,
+  "start_and_end_browser_playback": true,
+  "subtitle_cues": 34,
+  "subtitle_timeline_no_overlap": true,
+  "captions_follow_all_12_chapters": true,
+  "caption_font_px": 44,
+  "process_not_covered": true,
+  "matching_sidecar_absent": true,
+  "file_size_bytes": 16542662,
+  "samples": [
+    10,
+    30,
+    51,
+    71,
+    100,
+    135,
+    165,
+    188,
+    208,
+    238,
+    270,
+    292
+  ]
+}

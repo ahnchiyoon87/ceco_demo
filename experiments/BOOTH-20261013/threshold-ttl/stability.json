@@ -1,0 +1,339 @@
+{
+  "passed": true,
+  "observation_s": 300,
+  "samples": [
+    {
+      "at": "2026-10-13T07:40:15.802479+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 401217224,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 19,
+        "in_progress": 0,
+        "completed": 19,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100937
+    },
+    {
+      "at": "2026-10-13T07:40:54.067328+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 405315248,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 23,
+        "in_progress": 0,
+        "completed": 23,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100613
+    },
+    {
+      "at": "2026-10-13T07:41:32.291111+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 389098488,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 26,
+        "in_progress": 0,
+        "completed": 26,
+        "failed": 0
+      },
+      "threshold_state_bytes": 99722
+    },
+    {
+      "at": "2026-10-13T07:42:10.565426+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 371848688,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 30,
+        "in_progress": 0,
+        "completed": 30,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100208
+    },
+    {
+      "at": "2026-10-13T07:42:48.811548+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 456964344,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 34,
+        "in_progress": 0,
+        "completed": 34,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100127
+    },
+    {
+      "at": "2026-10-13T07:43:27.020227+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 439352496,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 38,
+        "in_progress": 0,
+        "completed": 38,
+        "failed": 0
+      },
+      "threshold_state_bytes": 101909
+    },
+    {
+      "at": "2026-10-13T07:44:05.269655+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 421589288,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 42,
+        "in_progress": 0,
+        "completed": 42,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100451
+    },
+    {
+      "at": "2026-10-13T07:44:43.511630+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 400854072,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 45,
+        "in_progress": 0,
+        "completed": 45,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100370
+    },
+    {
+      "at": "2026-10-13T07:45:15.785515+00:00",
+      "jobs": [
+        {
+          "jid": "5960b17d859de3710da9b1945d8972cb",
+          "name": "AR100-Tier1-Threshold",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "2755d4646746b0e1a74adb074d715450",
+          "name": "AR100-Tier1-ZScore",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bde4860251fe93a8a29613edc4af6fe4",
+          "name": "AR100-Tier2-OnnxAnomalyDetection",
+          "state": "RUNNING"
+        },
+        {
+          "jid": "bf3232520b0f4737b8e92c7980360aa8",
+          "name": "AR100-Tier1-CEP",
+          "state": "RUNNING"
+        }
+      ],
+      "heap": {
+        "Used": 381152712,
+        "Max": 630521856
+      },
+      "checkpoint_counts": {
+        "restored": 1,
+        "total": 49,
+        "in_progress": 0,
+        "completed": 49,
+        "failed": 0
+      },
+      "threshold_state_bytes": 100046
+    }
+  ]
+}

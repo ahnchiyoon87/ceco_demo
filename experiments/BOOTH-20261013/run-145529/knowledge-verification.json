@@ -1,0 +1,27 @@
+{
+  "source_sha256": {
+    "equipment.yaml": "ea6785aadeb1de6bd425a1fcdf45859f606d7316c0c8991f6802fc4d86c79e49",
+    "AR100-COOLING-WATER.md": "250687227c29cfc4cb43413d87638f6cf1a3c8a82bc9b7939cb109c22094a4e9"
+  },
+  "build_id": "758faefd-b24e-4da7-b510-1354ad983be2",
+  "build_model": "openai:gpt-6-luna",
+  "build_status": "candidate",
+  "nodes": 51,
+  "relationships": 59,
+  "source_tools": [
+    "read_registered_source",
+    "read_registered_source",
+    "read_extracted_structure"
+  ],
+  "publication": {
+    "status": "published",
+    "sha256": "6dcd3e039bf9c62faf62a6d633386707de26e1e605aa8eac9959595a4e59eba6",
+    "duplicate": false,
+    "nodes": 51,
+    "relationships": 59
+  },
+  "graph_counts": {
+    "nodes": 220,
+    "relationships": 356
+  }
+}

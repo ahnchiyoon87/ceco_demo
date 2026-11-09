@@ -1,0 +1,8 @@
+{
+  "status": {
+    "id": "COMPLETED"
+  },
+  "operation": {
+    "location": "file:/opt/flink/checkpoints/booth-threshold-ttl/savepoint-9f1d68-7adee5509409"
+  }
+}

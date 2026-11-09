@@ -1,0 +1,26 @@
+{
+  "old": {
+    "before": {
+      "received": true,
+      "stdout": "before-old",
+      "stderr": ""
+    },
+    "after": {
+      "received": true,
+      "stdout": "after-old",
+      "stderr": ""
+    }
+  },
+  "fixed": {
+    "before": {
+      "received": true,
+      "stdout": "before-fixed",
+      "stderr": ""
+    },
+    "after": {
+      "received": true,
+      "stdout": "after-fixed",
+      "stderr": ""
+    }
+  }
+}

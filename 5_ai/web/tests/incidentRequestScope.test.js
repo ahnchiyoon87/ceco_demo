@@ -6,11 +6,13 @@ import { createRenderer, h, ref, nextTick } from 'vue'
 
 // Exercise the real SFC setup through Vue reactivity, without pretending to
 // verify DOM layout or browser interaction. Network promises are controlled.
+globalThis.window = { matchMedia: () => ({ matches: false }) }
 const source = await readFile(new URL('../src/features/operations/IncidentReview.vue', import.meta.url), 'utf8')
 const { descriptor } = parse(source)
 const code = compileScript(descriptor, { id: 'incident-scope-test' }).content
   .replace(/from 'vue'/g, `from '${import.meta.resolve('vue')}'`)
   .replace("from './processState.js'", `from '${new URL('../src/features/operations/processState.js',import.meta.url).href}'`)
+  .replace("from './actionPresentation.js'", `from '${new URL('../src/features/operations/actionPresentation.js',import.meta.url).href}'`)
 const { default: Review } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'))
 Review.render = () => null
 const renderer = createRenderer({
@@ -69,6 +71,33 @@ test('new analysis never inherits an older proposal in the process diagram', asy
     state.items.unshift({id:'new',origin:'ai-run:new-run:openai:coding',status:'pending'})
     assert.equal(state.flowProposal.id,'new')
   }finally{app.unmount();globalThis.fetch=original}
+})
+
+test('guided review keeps polling before automatic analysis and follows server stages without writes', async()=>{
+  const originalFetch=globalThis.fetch,originalTimer=globalThis.setTimeout
+  let review,nextRead,delay,posts=0
+  globalThis.setTimeout=(callback,ms)=>{nextRead=callback;delay=ms;return {fake:true}}
+  globalThis.fetch=async(url,options={})=>{
+    if(options.method==='POST')posts++
+    return {ok:true,json:async()=>url.endsWith('model-status')?{configured:true}:{items:[]}}
+  }
+  const app=renderer.createApp({render:()=>h(Review,{incidentId:'auto-case',guided:true,ref:x=>review=x})})
+  try{
+    app.mount({});await flush()
+    assert.equal(delay,3000);assert.equal(typeof nextRead,'function')
+    const s=review.$.setupState
+    s.runs=[{id:'automatic',status:'running'}]
+    await s.load();await flush()
+    // A fresh server read, rather than a stage button, determines the guided card.
+    globalThis.fetch=async(url,options={})=>{
+      if(options.method==='POST')posts++
+      return {ok:true,json:async()=>url.endsWith('model-status')?{configured:true}:{items:url.endsWith('/analysis')?[{id:'automatic',status:'awaiting_review'}]:[{id:'p',origin:'ai-run:automatic:x',status:'pending'}]}}
+    }
+    await nextRead();await flush()
+    assert.equal(s.currentStage,'review');assert.equal(s.selectedStage,'review')
+    assert.equal(posts,0,'polling must never analyze or approve on behalf of the user')
+    assert.equal(delay,3000,'approval waiting remains live')
+  }finally{app.unmount();globalThis.fetch=originalFetch;globalThis.setTimeout=originalTimer}
 })
 
 test('transient polling failure retries reads without replaying an action', async () => {

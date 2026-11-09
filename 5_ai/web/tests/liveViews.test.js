@@ -17,6 +17,26 @@ async function component(name) {
 const Live = await component('ScadaLive'), Trace = await component('ExecutionTrace')
 const Activity = await component('DashboardActivity')
 
+test('brief tool activity uses real running calls and stops claiming a completed tool is running',async()=>{
+ const original=globalThis.fetch;let view
+ globalThis.fetch=async()=>({ok:true,json:async()=>({items:[],truncated:false})})
+ const run=ref({id:'brief-tools',status:'running'})
+ const app=renderer.createApp({render:()=>h(Trace,{run:run.value,simplified:true,ref:x=>view=x})})
+ try{
+  app.mount({});await flush();const s=view.$.setupState
+  for(const tool of ['alarm','documents','observations','ontology','manual_search','options','precedents']){
+   s.events=[{kind:'agent_tool_started',payload:{call_id:tool,tool}}]
+   assert.ok(s.activity.text.includes(s.toolActivity[tool][0]),tool)
+   s.events.push({kind:'agent_tool_result',payload:{call_id:tool,tool,result:{status:'available'}}})
+   assert.ok(s.activity.text.includes('정리하고'))
+   assert.ok(s.activity.recent.includes('마쳤습니다'))
+  }
+  run.value.status='awaiting_review';await flush()
+  assert.equal(s.activity.text,'분석을 마쳤습니다. 판단 근거와 대응안을 검토해 주세요.')
+  s.error='offline';assert.ok(s.activity.text.includes('연결'))
+ }finally{app.unmount();globalThis.fetch=original}
+})
+
 test('dashboard clears loading when incidents disappear and ignores the late response', async () => {
   const original = globalThis.fetch
   let finish, view

@@ -1,0 +1,11 @@
+{
+  "repository": "uengine-oss/hyd-iot-edu",
+  "branch": "main",
+  "commit": "6f350503a78ca792cbcdf29a803d87da17867018",
+  "used": "remote files only; fixed category columns, dim unrelated nodes, highlight direct edges, detail below map",
+  "files": [
+    "it/portal/www/enterprise.js",
+    "it/portal/www/enterprise.css",
+    "it/portal/www/tokens.css"
+  ]
+}
